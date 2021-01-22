@@ -1,0 +1,5 @@
+to be done
+- Base64..
+- BodyResponse
+- ErrorResponse
+- MessageResponse
