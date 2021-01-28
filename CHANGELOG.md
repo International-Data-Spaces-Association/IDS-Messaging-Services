@@ -8,6 +8,8 @@ Documentation started on: 2021-01-20.
 ## Version 1.2-SNAPSHOT
 ### Added
 - Bugfix for KeyStoreManager
+- Support for DemoConnector
+- Update used infomodel-serializer to version 4.0.2-SNAPSHOT (as requested)
 
 ## Version 1.1-SNAPSHOT
 ### Added
