@@ -29,17 +29,15 @@ public class IdsHttpService implements HttpService {
 
     private ClientProvider  provider;
     private TimeoutSettings timeoutSettings;
-    private HttpService     httpService;
     private DapsValidator   dapsValidator;
     private ConfigContainer configContainer;
 
     /**
      * @param provider the {@link ClientProvider} used to generate HttpClients with the current connector configuration
      */
-    public IdsHttpService( ClientProvider provider, HttpService httpService, DapsValidator dapsValidator,
+    public IdsHttpService( ClientProvider provider, DapsValidator dapsValidator,
                            ConfigContainer configContainer ) {
         this.provider = provider;
-        this.httpService = httpService;
         this.dapsValidator = dapsValidator;
         this.configContainer = configContainer;
     }
@@ -239,7 +237,7 @@ public class IdsHttpService implements HttpService {
         Response response;
 
         try {
-            response = httpService.send(body, target);
+            response = send(body, target);
         } catch( IOException e ) {
             LOGGER.warn("Message could not be sent!");
             throw e;
@@ -257,7 +255,7 @@ public class IdsHttpService implements HttpService {
         Response response;
 
         try {
-            response = httpService.sendWithHeaders(body, target, headers);
+            response = sendWithHeaders(body, target, headers);
         } catch( IOException e ) {
             LOGGER.warn("Message could not be sent!");
             throw e;
