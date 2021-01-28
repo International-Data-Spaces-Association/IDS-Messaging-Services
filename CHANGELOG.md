@@ -5,8 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Documentation started on: 2021-01-20.
 
-## [Unreleased]
-- Version 1.0.0
+
+## Version 1.1-SNAPSHOT
 ### Added
-- Project Setup: add basic architecture
-- add basic Changelog
+- Initial functionality for messaging and DAPS DAT based on the functionalities of the IDS-Framework mapped to the new architecture
+- First refactorings of the code base in the core and messaging module
+
+## Version 1.0-SNAPSHOT
+### Added
+- Project Setup: Basic architecture
+- basic Changelog

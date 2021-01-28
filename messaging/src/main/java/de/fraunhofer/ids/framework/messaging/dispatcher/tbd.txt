@@ -1,5 +1,0 @@
-to be done
-- MessageDispatcher
-- MessageDispatcherProvider
-- RequestHandlerResolver
-- SpringRequestHandlerResolver
