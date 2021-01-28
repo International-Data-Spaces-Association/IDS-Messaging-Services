@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Documentation started on: 2021-01-20.
 
+## Version 1.2-SNAPSHOT
+### Added
+- Bugfix for KeyStoreManager
 
 ## Version 1.1-SNAPSHOT
 ### Added

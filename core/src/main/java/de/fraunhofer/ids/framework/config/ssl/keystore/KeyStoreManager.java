@@ -22,6 +22,7 @@ import de.fraunhofer.ids.framework.config.ssl.truststore.TrustStoreManager;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * The KeyStoreManager loads the IDSKeyStore and provides the TrustManager
@@ -103,7 +104,6 @@ public class KeyStoreManager {
     private KeyStore loadKeyStore( char[] pw, URI location )
             throws CertificateException, NoSuchAlgorithmException, IOException {
         LOGGER.info(String.format("Searching for keystore file %s", location.toString()));
-        var classLoader = getClass().getClassLoader();
         KeyStore store;
         try {
             store = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -119,8 +119,10 @@ public class KeyStoreManager {
                                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                                .toString();
         LOGGER.info("Path: " + pathString);
-        InputStream is = classLoader.getResourceAsStream(pathString);
-        if( is == null ) {
+
+        var keyStoreOnClassPath = new ClassPathResource(pathString).exists();
+
+        if( !keyStoreOnClassPath ) {
             LOGGER.warn("Could not load keystore from classpath, trying to find it at system scope!");
             try {
                 LOGGER.info(path.toString());
@@ -132,6 +134,8 @@ public class KeyStoreManager {
                 throw e;
             }
         } else {
+            LOGGER.info("Loading KeyStore from ClassPath...");
+            InputStream is = new ClassPathResource(pathString).getInputStream();
             try {
                 store.load(is, pw);
                 is.close();
