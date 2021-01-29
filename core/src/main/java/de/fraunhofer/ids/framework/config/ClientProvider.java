@@ -101,7 +101,7 @@ public class ClientProvider {
         }
         if( readTimeout != null ) {
             LOGGER.debug(String.format("Setting read timeout: %s ", readTimeout.toString()));
-            builder.callTimeout(callTimeout);
+            builder.readTimeout(readTimeout);
         }
         if( writeTimeout != null ) {
             LOGGER.debug(String.format("Setting write timeout: %s ", writeTimeout.toString()));
