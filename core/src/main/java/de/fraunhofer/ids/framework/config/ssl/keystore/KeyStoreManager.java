@@ -6,7 +6,6 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.security.*;
@@ -20,6 +19,7 @@ import java.util.stream.IntStream;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.framework.config.ssl.truststore.TrustStoreManager;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -55,37 +55,68 @@ public class KeyStoreManager {
      */
     public KeyStoreManager( ConfigurationModel configurationModel, char[] keystorePw, char[] trustStorePw,
                             String keyAlias ) throws KeyStoreManagerInitializationException {
-        LOGGER.debug("Initializing KeyStoreManager");
         try {
-            this.configurationModel = configurationModel;
-            this.keyStorePw = keystorePw;
-            this.trustStorePw = trustStorePw;
-            this.keyAlias = keyAlias;
-            //create the KeyStore (used for holding the PrivateKey for the DAPS)
-            keyStore = loadKeyStore(keystorePw, configurationModel.getKeyStore());
-            //create the TrustStore (used as TrustManager for building an OkHTTPClient)
-            trustStore = loadKeyStore(trustStorePw, configurationModel.getTrustStore());
-            var myManager = loadTrustManager(trustStorePw);
-            trustManager = trustStoreManager.configureTrustStore(myManager);
-            getPrivateKeyFromKeyStore(keyAlias);
+            LOGGER.debug("Initializing KeyStoreManager");
+            initClassVars(configurationModel, keystorePw, trustStorePw, keyAlias);
         } catch( IOException e ) {
-            LOGGER.error("Key- or Truststore could not be loaded!");
-            throw new KeyStoreManagerInitializationException(e.getMessage(), e.getCause());
-        } catch( CertificateException e ) {
-            LOGGER.error("Error while loading a Certificate!");
-            LOGGER.error(e.getMessage(), e);
-            throw new KeyStoreManagerInitializationException(e.getMessage(), e.getCause());
+            throwKeyStoreIntiException(e, "Key- or Truststore could not be loaded!");
+        } catch( CertificateException | NoSuchAlgorithmException e ) {
+            throwKeyStoreIntiException(e, "Error while loading a Certificate!");
         } catch( UnrecoverableKeyException e ) {
-            LOGGER.error("Could not initialize Key/Truststore: password is incorrect!");
-            throw new KeyStoreManagerInitializationException(e.getMessage(), e.getCause());
-        } catch( NoSuchAlgorithmException e ) {
-            LOGGER.error(e.getMessage(), e);
-            throw new KeyStoreManagerInitializationException(e.getMessage(), e.getCause());
+            throwKeyStoreIntiException(e, "Could not initialize Key/Truststore: password is incorrect!");
         } catch( KeyStoreException e ) {
-            LOGGER.error("Initialization of Key- or Truststore failed!");
-            LOGGER.error(e.getMessage(), e);
-            throw new KeyStoreManagerInitializationException(e.getMessage(), e.getCause());
+            throwKeyStoreIntiException(e, "Initialization of Key- or Truststore failed!");
         }
+    }
+
+    /**
+     * Getter for the expiration date of the Cert in the KeyStore
+     *
+     * @return expiration of currently used IDS Certificate
+     */
+    public Date getCertExpiration() {
+        return ( (X509Certificate) cert ).getNotAfter();
+    }
+
+    private void throwKeyStoreIntiException( Exception e, String message )
+            throws KeyStoreManagerInitializationException {
+        LOGGER.error(message);
+        LOGGER.error(e.getMessage(), e);
+        throw new KeyStoreManagerInitializationException(e.getMessage(), e.getCause());
+    }
+
+    private void initClassVars( ConfigurationModel configurationModel, char[] keystorePw, char[] trustStorePw,
+                                String keyAlias ) throws
+            CertificateException,
+            NoSuchAlgorithmException,
+            IOException,
+            KeyStoreException,
+            UnrecoverableKeyException {
+        this.configurationModel = configurationModel;
+        this.keyStorePw = keystorePw;
+        this.trustStorePw = trustStorePw;
+        this.keyAlias = keyAlias;
+
+        createKeyStore(configurationModel, keystorePw);
+        createTrustStore(configurationModel, trustStorePw);
+        initTrustManager(trustStorePw);
+        getPrivateKeyFromKeyStore(keyAlias);
+    }
+
+    private void initTrustManager( char[] trustStorePw )
+            throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
+        var myManager = loadTrustManager(trustStorePw);
+        trustManager = trustStoreManager.configureTrustStore(myManager);
+    }
+
+    private void createTrustStore( ConfigurationModel configurationModel, char[] trustStorePw )
+            throws CertificateException, NoSuchAlgorithmException, IOException {
+        trustStore = loadKeyStore(trustStorePw, configurationModel.getTrustStore());
+    }
+
+    private void createKeyStore( ConfigurationModel configurationModel, char[] keystorePw )
+            throws CertificateException, NoSuchAlgorithmException, IOException {
+        keyStore = loadKeyStore(keystorePw, configurationModel.getKeyStore());
     }
 
     /**
@@ -104,16 +135,12 @@ public class KeyStoreManager {
     private KeyStore loadKeyStore( char[] pw, URI location )
             throws CertificateException, NoSuchAlgorithmException, IOException {
         LOGGER.info(String.format("Searching for keystore file %s", location.toString()));
-        KeyStore store;
-        try {
-            store = KeyStore.getInstance(KeyStore.getDefaultType());
-        } catch( KeyStoreException e ) {
-            LOGGER.error("Could not create a KeyStore with default type!");
-            LOGGER.error(e.getMessage(), e);
-            return null;
-        }
-        var path = Paths.get(location);
-        var pathString = path.toString();
+        KeyStore store = getKeyStoreInstance();
+
+        if( store == null ) { return null; }
+
+        var pathString = Paths.get(location).toString();
+
         //remove leading /, \ and . from path
         pathString = pathString.chars().dropWhile(value -> IntStream.of('\\', '/', '.').anyMatch(v -> v == value))
                                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
@@ -122,20 +149,9 @@ public class KeyStoreManager {
 
         var keyStoreOnClassPath = new ClassPathResource(pathString).exists();
 
-        if( !keyStoreOnClassPath ) {
-            LOGGER.warn("Could not load keystore from classpath, trying to find it at system scope!");
-            try {
-                LOGGER.info(path.toString());
-                var fis = new FileInputStream(path.toString());
-                store.load(fis, pw);
-                fis.close();
-            } catch( IOException e ) {
-                LOGGER.warn("Could not find keystore at system scope, aborting!");
-                throw e;
-            }
-        } else {
+        if( keyStoreOnClassPath ) {
             LOGGER.info("Loading KeyStore from ClassPath...");
-            InputStream is = new ClassPathResource(pathString).getInputStream();
+            var is = new ClassPathResource(pathString).getInputStream();
             try {
                 store.load(is, pw);
                 is.close();
@@ -143,18 +159,32 @@ public class KeyStoreManager {
                 LOGGER.warn("Could not find keystore, aborting!");
                 throw e;
             }
+        } else {
+            LOGGER.warn("Could not load keystore from classpath, trying to find it at system scope!");
+            try {
+                LOGGER.info(pathString);
+                var fis = new FileInputStream(pathString);
+                store.load(fis, pw);
+                fis.close();
+            } catch( IOException e ) {
+                LOGGER.warn("Could not find keystore at system scope, aborting!");
+                throw e;
+            }
         }
         LOGGER.debug("Keystore loaded");
         return store;
     }
 
-    /**
-     * Getter for the expiration date of the Cert in the KeyStore
-     *
-     * @return expiration of currently used IDS Certificate
-     */
-    public Date getCertExpiration() {
-        return ( (X509Certificate) cert ).getNotAfter();
+    @Nullable
+    private KeyStore getKeyStoreInstance() {
+        KeyStore store = null;
+        try {
+            store = KeyStore.getInstance(KeyStore.getDefaultType());
+        } catch( KeyStoreException e ) {
+            LOGGER.error("Could not create a KeyStore with default type!");
+            LOGGER.error(e.getMessage(), e);
+        }
+        return store;
     }
 
     /**
