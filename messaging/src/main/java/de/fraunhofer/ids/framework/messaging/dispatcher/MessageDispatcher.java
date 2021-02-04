@@ -124,9 +124,10 @@ public class MessageDispatcher {
                 if( !result.isSuccess() ) {
                     logger.debug("A preDispatchingFilter failed!");
                     logger.error(result.getMessage(), result.getError());
+
                     return ErrorResponse
                             .withDefaultHeader(RejectionReason.MALFORMED_MESSAGE, result.getMessage(), connectorId,
-                                               modelVersion);
+                                               modelVersion, header.getId());
                 }
             } catch( Exception e ) {
                 logger.debug("A preDispatchingFilter threw an exception!");
@@ -148,14 +149,15 @@ public class MessageDispatcher {
             } catch( MessageHandlerException e ) {
                 logger.debug("The message handler threw an exception!");
                 return ErrorResponse.withDefaultHeader(RejectionReason.INTERNAL_RECIPIENT_ERROR,
-                                                       "Error while handling the request!", connectorId, modelVersion);
+                                                       "Error while handling the request!", connectorId, modelVersion,
+                                                       header.getId());
             }
         } else {
             logger.debug(String.format("No message handler exists for %s", header.getClass()));
             //If no handler for the type exists, the message type isn't supported
             return ErrorResponse.withDefaultHeader(RejectionReason.MESSAGE_TYPE_NOT_SUPPORTED,
                                                    "No handler for provided message type was found!", connectorId,
-                                                   modelVersion);
+                                                   modelVersion, header.getId());
         }
     }
 }
