@@ -7,6 +7,7 @@ Documentation started on: 2021-01-20.
 
 ## Version 1.3-SNAPSHOT (UNRELEASED)
 ### Changed
+- The connector developer can now specify a protocol with which he wants to transmit his message
 - Include ID of rejected message in RejectionMessage
 - Update referenced dependencies
 - Code refactoring
