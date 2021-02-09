@@ -8,11 +8,13 @@ import java.io.IOException;
 import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.ids.framework.config.ssl.keystore.KeyStoreManager;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
@@ -134,13 +136,24 @@ public class ClientProvider {
         LOGGER.debug("Creating OkHttp client");
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
-        X509TrustManager trustManager = manager.getTrustManager();
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, new TrustManager[]{ trustManager }, null);
-        SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-        builder.sslSocketFactory(sslSocketFactory, trustManager);
+        if(connector.getConnectorDeployMode() == ConnectorDeployMode.PRODUCTIVE_DEPLOYMENT){
+            LOGGER.debug("Productive Deployment, use Trustmanager vrom KeyStoreManager");
+            X509TrustManager trustManager = manager.getTrustManager();
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[]{ trustManager }, null);
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            builder.sslSocketFactory(sslSocketFactory, trustManager);
+        }else if (connector.getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT){
+            LOGGER.debug("Test Deployment, use all trusting trustmanager");
+            LOGGER.warn("Trustmanager is trusting all Certificates in TEST_DEPLOYMENT mode, you should not use this in production!");
+            var trustmanager = getAllTrustingTrustManager();
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustmanager, new SecureRandom());
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustmanager[0]);
+            builder.hostnameVerifier((hostname, session) -> true);
+        }
         LOGGER.debug("Created SSLSocketFactory");
-
         //if the connector has a proxy set
         if( connector.getConnectorProxy() != null ) {
             //if there is any proxy in the proxylist
@@ -197,5 +210,22 @@ public class ClientProvider {
             }
         }
         return builder;
+    }
+
+    private static TrustManager[] getAllTrustingTrustManager(){
+        return new TrustManager[] {
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType)  {
+                    }
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType)  {
+                    }
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[]{};
+                    }
+                }
+        };
     }
 }
