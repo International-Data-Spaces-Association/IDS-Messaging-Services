@@ -61,14 +61,6 @@
             <artifactId>maven-project-info-reports-plugin</artifactId>
             <version>3.1.1</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3 -->
-        <!-- License: Eclipse Public License - Version 2.0 -->
-        <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>1.2.5</version>
-        </dependency>
     </dependencies>
 
     <reporting>

@@ -5,7 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Documentation started on: 2021-01-20.
 
-## Version 1.3-SNAPSHOT (UNRELEASED)
+## Version 1.5-SNAPSHOT (UNRELEASED)
+- Remove initial untested implementation of MQTT-support
+
+## Version 1.4-SNAPSHOT
+### Added
+- New Exception structure for throwing exceptions for TokenManagerService
+### Changed
+- Extension of TEST_DEPLOYMENT-Mode: use an all-trusting trustmanager, accepting all SSL Certificates. This allows the use of selfsigned certificates in a TEST-environment
+
+## Version 1.3-SNAPSHOT
 ### Changed
 - The connector developer can now specify a protocol with which he wants to transmit his message
 - Include ID of rejected message in RejectionMessage
