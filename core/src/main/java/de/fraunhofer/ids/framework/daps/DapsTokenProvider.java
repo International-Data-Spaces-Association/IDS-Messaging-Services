@@ -12,12 +12,12 @@ public interface DapsTokenProvider {
      *
      * @return the Daps Token of the Connector
      */
-    String provideDapsToken();
+    String provideDapsToken() throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException;
 
     /**
      * Return the DAPS JWT Token in infomodel {@link DynamicAttributeToken} representation
      *
      * @return DynamicAttributeToken from the DAPS JWT
      */
-    DynamicAttributeToken getDAT();
+    DynamicAttributeToken getDAT() throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException;
 }

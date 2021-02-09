@@ -9,8 +9,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import okhttp3.*;
@@ -26,77 +28,91 @@ import static org.apache.commons.codec.binary.Hex.encodeHexString;
 
 /**
  * Manages Dynamic Attribute Tokens.
+ *
+ * @author Gerd Brost (gerd.brost@aisec.fraunhofer.de)
  */
 public class TokenManagerService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenManagerService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TokenManagerService.class);
 
-    private static SSLSocketFactory sslSocketFactory;
+    private static SSLSocketFactory sslSocketFactory = null;
 
     /**
      * Get the DAT from the DAPS at dapsURL using the current configuration
      *
      * @param container An IDS Connector Configuration
-     * @param dapsUrl   The URL of a DAPS Service
-     * @param provider  providing underlying OkHttpClient
-     *
-     * @return signed DAPS JWT (JWS) token for the Connector
+     * @param dapsUrl The URL of a DAPS Service
+     * @param provider providing underlying OkHttpClient
+     * @return signed DAPS JWT token for the Connector
      */
-    public static String acquireToken( ConfigContainer container, ClientProvider provider, String dapsUrl ) {
+    public static String acquireToken(ConfigContainer container, ClientProvider provider, String dapsUrl)
+            throws DapsConnectionException, DapsEmptyResponseException, ConnectorMissingCertExtensionException {
+
         var keyStoreManager = container.getKeyManager();
-        var dynamicAttributeToken = "INVALID_TOKEN";
-        var targetAudience = "idsc:IDS_CONNECTORS_ALL";
 
+        String dynamicAttributeToken = "INVALID_TOKEN";
+        String targetAudience = "idsc:IDS_CONNECTORS_ALL";
+
+        // Try clause for setup phase (loading keys, building trust manager)
         try {
-            //GET Certificate and PrivateKey
-            LOGGER.debug("Getting PrivateKey and Certificate from KeyStoreManager");
+
+            // get private key
+            LOG.debug("Getting PrivateKey and Certificate from KeyStoreManager");
             Key privKey = keyStoreManager.getPrivateKey();
-            X509Certificate cert = (X509Certificate) keyStoreManager.getCert(); // Get certificate of public key
+            // Get certificate of public key
+            X509Certificate cert = (X509Certificate) keyStoreManager.getCert();
 
-            //GET AKI (AuthorityKeyIdentifier)
-            LOGGER.debug("Get AKI from certificate");
-            var akiId = Extension.authorityKeyIdentifier.getId();
-            var rawAuthorityKeyIdentifier = cert.getExtensionValue(akiId);
-            verifyAKIIdentifier(rawAuthorityKeyIdentifier);
+            // Get AKI
+            //GET 2.5.29.14	SubjectKeyIdentifier / 2.5.29.35	AuthorityKeyIdentifier
+            LOG.debug("Get AKI from certificate");
+            String aki_oid = Extension.authorityKeyIdentifier.getId();
+            byte[] rawAuthorityKeyIdentifier = cert.getExtensionValue(aki_oid);
+            if(rawAuthorityKeyIdentifier == null){
+                throw new ConnectorMissingCertExtensionException("AKI of the Connector Certificate is null!");
+            }
+            ASN1OctetString akiOc = ASN1OctetString.getInstance(rawAuthorityKeyIdentifier);
+            AuthorityKeyIdentifier aki = AuthorityKeyIdentifier.getInstance(akiOc.getOctets());
+            byte[] authorityKeyIdentifier = aki.getKeyIdentifier();
 
-            var aki = AuthorityKeyIdentifier
-                    .getInstance(ASN1OctetString.getInstance(rawAuthorityKeyIdentifier).getOctets());
-            var authorityKeyIdentifier = aki.getKeyIdentifier();
+            //GET SKI
+            LOG.debug("Get SKI from certificate");
+            String ski_oid = Extension.subjectKeyIdentifier.getId();
+            byte[] rawSubjectKeyIdentifier = cert.getExtensionValue(ski_oid);
+            if(rawSubjectKeyIdentifier == null){
+                throw new ConnectorMissingCertExtensionException("SKI of the Connector Certificate is null!");
+            }
+            ASN1OctetString ski0c = ASN1OctetString.getInstance(rawSubjectKeyIdentifier);
+            SubjectKeyIdentifier ski = SubjectKeyIdentifier.getInstance(ski0c.getOctets());
+            byte[] subjectKeyIdentifier = ski.getKeyIdentifier();
 
-            //GET SKI (SubjectKeyIdentifier)
-            LOGGER.debug("Get SKI from certificate");
-            var skiId = Extension.subjectKeyIdentifier.getId();
-            var rawSubjectKeyIdentifier = cert.getExtensionValue(skiId);
-            verifySKIIdentifier(rawSubjectKeyIdentifier);
+            String aki_result = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
+            String ski_result = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
 
-            var ski0c = ASN1OctetString.getInstance(rawSubjectKeyIdentifier);
-            var ski = SubjectKeyIdentifier.getInstance(ski0c.getOctets());
-            var subjectKeyIdentifier = ski.getKeyIdentifier();
+            String connectorUUID = ski_result + "keyid:" + aki_result.substring(0, aki_result.length() - 1);
 
-            //GET connectorUUID (using AKI & SKI)
-            var akiResult = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
-            var skiResult = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
-            var connectorUUID = skiResult + "keyid:" + akiResult.substring(0, akiResult.length() - 1);
-            LOGGER.info("ConnectorUUID: " + connectorUUID);
+            LOG.info("ConnectorUUID: " + connectorUUID);
+            LOG.info("Retrieving Dynamic Attribute Token...");
 
-            //GET DAT (Dynamic Attribute Token)
-            LOGGER.info("Retrieving DAT (Dynamic Attribute Token)...");
-            LOGGER.debug("Building JWT (JSON Web Token)...");
-            var expiryDate = Date.from(Instant.now().plusSeconds(86400)); // expiry date one day from now
-            var jwtBuilder =
+
+            // create signed JWT (JWS)
+            // Create expiry date one day (86400 seconds) from now
+            LOG.debug("Building jwt token");
+            Date expiryDate = Date.from(Instant.now().plusSeconds(86400));
+            JwtBuilder jwtb =
                     Jwts.builder()
-                        .setIssuer(connectorUUID)
-                        .setSubject(connectorUUID)
-                        .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
-                        .claim("@type", "ids:DatRequestToken")
-                        .setExpiration(expiryDate)
-                        .setIssuedAt(Date.from(Instant.now().minusSeconds(10)))
-                        .setAudience(targetAudience)
-                        .setNotBefore(Date.from(Instant.now().minusSeconds(10)));
-            LOGGER.debug("Signing JWT token -> JWS (JSON Web Signature)");
-            var jws = jwtBuilder.signWith(SignatureAlgorithm.RS256, privKey).compact();
-            LOGGER.info("Request token: " + jws);
+                            .setIssuer(connectorUUID)
+                            .setSubject(connectorUUID)
+                            .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
+                            .claim("@type", "ids:DatRequestToken")
+                            .setExpiration(expiryDate)
+                            .setIssuedAt(Date.from(Instant.now().minusSeconds(10)))
+                            .setAudience(targetAudience)
+                            .setNotBefore(Date.from(Instant.now().minusSeconds(10)));
 
-            //build form body to embed client assertion into post request
+            LOG.debug("Signing jwt token");
+            String jws = jwtb.signWith(SignatureAlgorithm.RS256, privKey).compact();
+            LOG.info("Request token: " + jws);
+
+            // build form body to embed client assertion into post request
             RequestBody formBody =
                     new FormBody.Builder()
                             .add("grant_type", "client_credentials")
@@ -105,55 +121,52 @@ public class TokenManagerService {
                             .add("scope", "idsc:IDS_CONNECTOR_ATTRIBUTES_ALL")
                             .build();
 
-            //build Request and send Token
+            LOG.debug("Getting idsutils client");
             var client = provider.getClient();
-            Request request = new Request.Builder().url(dapsUrl + "/v2/token").post(formBody).build();
-            LOGGER.debug(String.format("Sending request to %s", dapsUrl + "/v2/token"));
-            Response jwtResponse = client.newCall(request).execute();
-            verifyJWTResponse(jwtResponse);
 
+            Request request = new Request.Builder().url(dapsUrl + "/v2/token").post(formBody).build();
+
+            LOG.debug(String.format("Sending request to %s", dapsUrl+"/v2/token"));
+            Response jwtResponse = client.newCall(request).execute();
+            if (!jwtResponse.isSuccessful()) {
+                LOG.debug("DAPS request was not successful");
+                throw new IOException("Unexpected code " + jwtResponse);
+            }
             var responseBody = jwtResponse.body();
-            verifyJWTResponseBody(responseBody);
+            if (responseBody == null) {
+                throw new DapsEmptyResponseException("JWT response is null.");
+            }
             var jwtString = responseBody.string();
-            LOGGER.info("Response body of token request:\n{}", jwtString);
-            var jsonObject = new JSONObject(jwtString);
+            LOG.info("Response body of token request:\n{}", jwtString);
+
+            JSONObject jsonObject = new JSONObject(jwtString);
             dynamicAttributeToken = jsonObject.getString("access_token");
 
-            LOGGER.info("Dynamic Attribute Token: " + dynamicAttributeToken);
-        } catch( IOException e ) {
-            LOGGER.error(String.format("Error retrieving token: %s", e.getMessage()));
-        } catch( EmptyDapsResponseException e ) {
-            LOGGER.error(String.format("Something else went wrong: %s", e.getMessage()));
-        } catch( MissingCertExtensionException e ) {
-            LOGGER.error("Certificate of the Connector is missing aki/ski extensions!");
-        }
+            LOG.info("Dynamic Attribute Token: " + dynamicAttributeToken);
 
+        }catch (IOException e) {
+            var error = String.format("DAPS Token Manager Service - Error retrieving token and connecting to DAPS: %s", e.getMessage());
+            LOG.error(error);
+
+            if( container.getConfigModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+                throw new DapsConnectionException(error);
+            }
+        }catch ( DapsEmptyResponseException e) {
+            var error = String.format("DAPS Token Manager Service - Empty DAPS Response, something went wrong: %s", e.getMessage());
+            LOG.error(error);
+
+            if( container.getConfigModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+                throw new DapsEmptyResponseException(error);
+            }
+        }catch ( ConnectorMissingCertExtensionException e){
+            var error = "DAPS Token Manager Service - Certificate of the Connector is missing aki/ski extensions!";
+            LOG.error(error);
+
+            if( container.getConfigModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+                throw new ConnectorMissingCertExtensionException(error);
+            }
+        }
         return dynamicAttributeToken;
-    }
-
-    private static void verifyJWTResponseBody( ResponseBody responseBody ) throws EmptyDapsResponseException {
-        if( responseBody == null ) {
-            throw new EmptyDapsResponseException("JWT response is null.");
-        }
-    }
-
-    private static void verifyJWTResponse( Response jwtResponse ) throws IOException {
-        if( !jwtResponse.isSuccessful() ) {
-            LOGGER.debug("DAPS request was not successful");
-            throw new IOException("Unexpected code " + jwtResponse);
-        }
-    }
-
-    private static void verifySKIIdentifier( byte[] rawSubjectKeyIdentifier ) throws MissingCertExtensionException {
-        if( rawSubjectKeyIdentifier == null ) {
-            throw new MissingCertExtensionException("SKI of the Connector Certificate is null!");
-        }
-    }
-
-    private static void verifyAKIIdentifier( byte[] rawAuthorityKeyIdentifier ) throws MissingCertExtensionException {
-        if( rawAuthorityKeyIdentifier == null ) {
-            throw new MissingCertExtensionException("AKI of the Connector Certificate is null!");
-        }
     }
 
     /***
@@ -162,10 +175,10 @@ public class TokenManagerService {
      * @param hexString HexString to be beautified
      * @return beautifiedHex result
      */
-    private static String beautifyHex( String hexString ) {
-        return Arrays.stream(split(hexString, 2))
-                     .map(s -> s + ":")
-                     .collect(Collectors.joining());
+    private static String beautifyHex(String hexString) {
+        return Arrays.stream(split(hexString,2))
+                .map(s -> s + ":")
+                .collect(Collectors.joining());
     }
 
     /***
@@ -175,11 +188,11 @@ public class TokenManagerService {
      * @param n number of chars per resulting string
      * @return Array of strings resulting from splitting the input string every n chars
      */
-    public static String[] split( String src, int n ) {
-        var result = new String[(int) Math.ceil((double) src.length() / (double) n)];
-        for( int i = 0; i < result.length; i++ ) {
-            result[i] = src.substring(i * n, Math.min(src.length(), ( i + 1 ) * n));
-        }
+    public static String[] split(String src, int n) {
+        String[] result = new String[(int)Math.ceil((double)src.length()/(double)n)];
+        for (int i=0; i<result.length; i++)
+            result[i] = src.substring(i*n, Math.min(src.length(), (i+1)*n));
         return result;
     }
+
 }
