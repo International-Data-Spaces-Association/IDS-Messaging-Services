@@ -5,7 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Documentation started on: 2021-01-20.
 
-## Version 1.5-SNAPSHOT (UNRELEASED)
+## Version 1.6-SNAPSHOT (UNRELEASED)
+
+## Version 1.5-SNAPSHOT
 ### Removed
 - Remove initial untested implementation of MQTT-support
 ### Added
