@@ -49,7 +49,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * @param configContainer the {@link ConfigContainer} managing the connector configuration
      * @param clientProvider         the {@link ClientProvider} providing HttpClients using the current connector configuration
-     * @param tokenManagerService
+     * @param tokenManagerService client to get a DAT Token from a DAPS (eg Orbiter/AISEC)
      */
     @Autowired
     public TokenProviderService(ConfigContainer configContainer, ClientProvider clientProvider, TokenManagerService tokenManagerService) {
@@ -138,6 +138,9 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * @return true if jwt expired
      */
     private boolean isExpired(String jwt){
+        if(publicKey == null){
+            getPublicKey();
+        }
         var claims = Jwts.parser()
                 .setSigningKey(publicKey)
                 .parseClaimsJws(jwt)
