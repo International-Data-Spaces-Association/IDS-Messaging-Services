@@ -38,12 +38,20 @@
             <version>0.9.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-fips -->
-        <!-- License: BouncyCastle (MIT) -->
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcmail-jdk15on -->
+        <!-- License: Bouncy Castle Licence -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-fips</artifactId>
-            <version>1.0.5</version>
+            <artifactId>bcmail-jdk15on</artifactId>
+            <version>1.68</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+        <!-- License: Bouncy Castle Licence -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.68</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.json/json -->

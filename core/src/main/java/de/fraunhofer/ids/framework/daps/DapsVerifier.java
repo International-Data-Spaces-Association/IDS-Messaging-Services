@@ -1,7 +1,9 @@
 package de.fraunhofer.ids.framework.daps;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -28,10 +30,10 @@ public class DapsVerifier {
     public static boolean verify( Jws<Claims> toVerify ) throws ClaimsException {
         try {
             Claims body = toVerify.getBody();
-            return (LocalDateTime.now().toLocalDate().isAfter(body.getNotBefore().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) ||
-                    LocalDateTime.now().toLocalDate().isEqual(body.getNotBefore().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())) &&
-                   (LocalDateTime.now().toLocalDate().isBefore(body.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) ||
-                    LocalDateTime.now().toLocalDate().isEqual(body.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+            var valid = body.getNotBefore().before(Date.from(Instant.now()));
+            valid &= body.getExpiration().after(Date.from(Instant.now()));
+            //TODO more DAT checks
+            return valid;
         }catch (Exception e){
             LOGGER.warn("Could not verify Claims of the DAT Token!");
             throw new ClaimsException(e.getMessage());

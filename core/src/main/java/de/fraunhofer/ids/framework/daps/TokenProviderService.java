@@ -2,6 +2,8 @@ package de.fraunhofer.ids.framework.daps;
 
 import java.io.IOException;
 import java.security.Key;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.Objects;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
@@ -9,6 +11,8 @@ import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
+import de.fraunhofer.ids.framework.daps.aisec.AisecTokenManagerService;
+import io.jsonwebtoken.Jwts;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -27,15 +31,17 @@ import org.springframework.stereotype.Service;
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenProviderService.class);
 
-    private ConfigContainer configContainer;
-    private ClientProvider  clientProvider;
-    private Key                    publicKey;
+    private final ConfigContainer configContainer;
+    private final ClientProvider  clientProvider;
+    private final TokenManagerService tokenManagerService;
+    private String currentJwt;
+    private Key  publicKey;
 
     @Value( "${daps.key.url}" )
     private String dapsKeyUrl;
 
     @Value( "${daps.token.url}" )
-    private String dapsUrl;
+    private String dapsTokenUrl;
 
     @Value( "${daps.kid.url:default}" )
     private String keyKid;
@@ -43,11 +49,13 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * @param configContainer the {@link ConfigContainer} managing the connector configuration
      * @param clientProvider         the {@link ClientProvider} providing HttpClients using the current connector configuration
+     * @param tokenManagerService
      */
     @Autowired
-    public TokenProviderService( ConfigContainer configContainer, ClientProvider clientProvider ) {
+    public TokenProviderService(ConfigContainer configContainer, ClientProvider clientProvider, TokenManagerService tokenManagerService) {
         this.configContainer = configContainer;
         this.clientProvider = clientProvider;
+        this.tokenManagerService = tokenManagerService;
     }
 
     /**
@@ -70,8 +78,11 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      */
     @Override
     public String provideDapsToken() throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
-        LOGGER.debug(String.format("Get a new DAT Token from %s", dapsUrl));
-        return TokenManagerService.acquireToken(configContainer, clientProvider, dapsUrl);
+        if(this.currentJwt == null || isExpired(currentJwt)) {
+            LOGGER.debug(String.format("Get a new DAT Token from %s", dapsTokenUrl));
+            currentJwt = tokenManagerService.acquireToken(dapsTokenUrl);
+        }
+        return currentJwt;
     }
 
     /**
@@ -120,5 +131,18 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
             LOGGER.warn("Could not create JsonWebKeySet from response!");
             LOGGER.warn(e.getMessage(), e);
         }
+    }
+
+    /**
+     * @param jwt the jwt to check expiration
+     * @return true if jwt expired
+     */
+    private boolean isExpired(String jwt){
+        var claims = Jwts.parser()
+                .setSigningKey(publicKey)
+                .parseClaimsJws(jwt)
+                .getBody();
+        LOGGER.debug("Current DAT will expire: "  + claims.getExpiration().toString());
+        return claims.getExpiration().before(Date.from(Instant.now()));
     }
 }
