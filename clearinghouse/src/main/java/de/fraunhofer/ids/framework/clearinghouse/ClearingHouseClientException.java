@@ -1,4 +1,4 @@
-package de.fraunhofer.ids.framework.messaging.clearinghouse;
+package de.fraunhofer.ids.framework.clearinghouse;
 
 public class ClearingHouseClientException extends Exception{
 
