@@ -5,6 +5,7 @@ import java.security.Key;
 import java.util.Map;
 
 import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.RejectionMessageImpl;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.util.MultipartParser;
 import io.jsonwebtoken.Claims;
@@ -60,6 +61,12 @@ public class DapsValidator {
      * @return true if DAT of Message is valid
      */
     public boolean checkDat( Message message ) {
+        //Don't check DAT of RejectionMessages
+        if(message instanceof RejectionMessageImpl ) {
+            LOGGER.warn("RejectionMessage, skipping DAT check!");
+            return true;
+        }
+
         Jws<Claims> claims;
         try {
             claims = getClaims(message, keyProvider.providePublicKey());
