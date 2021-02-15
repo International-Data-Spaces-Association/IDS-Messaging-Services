@@ -79,16 +79,23 @@ public class MessageController {
             log.debug("hand the incoming message to the message dispatcher!");
             final var response = this.messageDispatcher.process(requestHeader, payloadPart.getInputStream());
 
-            //get Response as MultiValueMap
-            final var responseAsMap = createMultiValueMap(response.createMultipartMap(serializer));
+            if(response != null) {
+                //get Response as MultiValueMap
+                final var responseAsMap = createMultiValueMap(response.createMultipartMap(serializer));
 
-            // return the ResponseEntity as Multipart content with created MultiValueMap
-            log.debug("sending response with status OK (200)");
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .body(responseAsMap);
-
+                // return the ResponseEntity as Multipart content with created MultiValueMap
+                log.debug("sending response with status OK (200)");
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .body(responseAsMap);
+            }else{
+                //if no response-body specified by the implemented handler of the connector (e.g. for received RequestInProcessMessage)
+                log.warn("Implemented Message-Handler didn't return a response!");
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .build();
+            }
         } catch( PreDispatchingFilterException e ) {
             log.error("Error during pre-processing with a PreDispatchingFilter!", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
