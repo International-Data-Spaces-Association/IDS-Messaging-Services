@@ -1,4 +1,4 @@
-package de.fraunhofer.ids.framework.client;
+package de.fraunhofer.ids.framework.broker;
 
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
