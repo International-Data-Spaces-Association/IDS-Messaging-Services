@@ -15,7 +15,7 @@ import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.framework.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
-import de.fraunhofer.ids.framework.messaging.util.MultipartDatapart;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -129,9 +129,11 @@ public class MessageController {
     private MultiValueMap<String, Object> createMultiValueMap( Map<String, Object> map ) {
         log.debug("Creating MultiValueMap for the response");
         var multiMap = new LinkedMultiValueMap<String, Object>();
+
         for( var entry : map.entrySet() ) {
             multiMap.put(entry.getKey(), List.of(entry.getValue()));
         }
+
         return multiMap;
     }
 
@@ -148,8 +150,10 @@ public class MessageController {
         try {
             var rejectionMessage = new RejectionMessageBuilder()
                     ._securityToken_(
-                            new DynamicAttributeTokenBuilder()._tokenFormat_(TokenFormat.JWT)._tokenValue_("rejected!")
-                                                              .build())
+                            new DynamicAttributeTokenBuilder()
+                                    ._tokenFormat_(TokenFormat.JWT)
+                                    ._tokenValue_("rejected!")
+                                    .build())
                     ._correlationMessage_(URI.create("https://INVALID"))
                     ._senderAgent_(configContainer.getConnector().getId())
                     ._modelVersion_(configContainer.getConnector().getOutboundModelVersion())
@@ -157,9 +161,11 @@ public class MessageController {
                     ._issuerConnector_(configContainer.getConnector().getId())
                     ._issued_(IdsMessageUtils.getGregorianNow())
                     .build();
+
             var multiMap = new LinkedMultiValueMap<String, Object>();
             multiMap.put(MultipartDatapart.HEADER.name(), List.of(serializer.serialize(rejectionMessage)));
             multiMap.put(MultipartDatapart.PAYLOAD.name(), List.of(errorMessage));
+
             return multiMap;
         } catch( IOException e ) {
             log.info(e.getMessage(), e);

@@ -2,13 +2,15 @@ package de.fraunhofer.ids.framework.messaging.dispatcher.filter;
 
 import java.util.Objects;
 
+import lombok.Getter;
+
 /**
  * Result that is returned by a PreDispatchingFilter (with information about why a message was accepted or rejected)
  */
 public class PreDispatchingFilterResult {
-    private final Throwable error;
-    private final boolean   success;
-    private final String    message;
+    @Getter private final Throwable error;
+    @Getter private final boolean   success;
+    @Getter private final String    message;
 
     /**
      * The result contains a message about its result, can contain an error if something went wrong and has a boolean flag for success
@@ -50,33 +52,6 @@ public class PreDispatchingFilterResult {
      */
     public static PreDispatchingFilterResult successResult( final String message ) {
         return new PreDispatchingFilterResult(null, true, message);
-    }
-
-    /**
-     * Getter for the error
-     *
-     * @return the error of the result
-     */
-    public Throwable getError() {
-        return error;
-    }
-
-    /**
-     * Getter for success status
-     *
-     * @return true if filter was successful
-     */
-    public boolean isSuccess() {
-        return success;
-    }
-
-    /**
-     * Getter for the message
-     *
-     * @return the message of the filter result
-     */
-    public String getMessage() {
-        return message;
     }
 
     @Override

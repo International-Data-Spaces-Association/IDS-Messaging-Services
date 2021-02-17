@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 
@@ -15,7 +16,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 public class MultipartParser implements UploadContext {
     private String              postBody;
     private String              boundary;
-    private Map<String, String> parameters = new HashMap<>();
+    @Getter private Map<String, String> parameters = new HashMap<>();
 
     /**
      * Constructor for the MultipartStringParser used internally to parse a multipart response to a Map<Partname, MessagePart>
@@ -28,11 +29,10 @@ public class MultipartParser implements UploadContext {
         this.postBody = postBody;
         this.boundary = postBody.substring(2, postBody.indexOf('\n')).trim();
 
-        final FileItemFactory factory = new DiskFileItemFactory();
-        FileUpload upload = new FileUpload(factory);
+        FileUpload upload = new FileUpload(new DiskFileItemFactory());
         List<FileItem> fileItems = upload.parseRequest(this);
 
-        for( FileItem fileItem : fileItems ) {
+        for( var fileItem : fileItems ) {
             if( fileItem.isFormField() ) {
                 //put the parameters into the map as "name, content"
                 parameters.put(fileItem.getFieldName(), fileItem.getString());
@@ -51,15 +51,6 @@ public class MultipartParser implements UploadContext {
      */
     public static Map<String, String> stringToMultipart( String postBody ) throws FileUploadException {
         return new MultipartParser(postBody).getParameters();
-    }
-
-    /**
-     * Getter for the parsed Map
-     *
-     * @return the parsed multipart Map
-     */
-    private Map<String, String> getParameters() {
-        return parameters;
     }
 
     //these methods must be implemented because of the UploadContext interface

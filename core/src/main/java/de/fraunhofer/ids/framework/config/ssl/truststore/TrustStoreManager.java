@@ -41,7 +41,7 @@ public class TrustStoreManager {
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         KeyStore blank = null;
         tmf.init(blank); // If keyStore is null, tmf will be initialized with the default jvm trust store
-        for( TrustManager tm : tmf.getTrustManagers() ) {
+        for( var tm : tmf.getTrustManagers() ) {
             if( tm instanceof X509TrustManager ) {
                 return (X509TrustManager) tm;
             }
