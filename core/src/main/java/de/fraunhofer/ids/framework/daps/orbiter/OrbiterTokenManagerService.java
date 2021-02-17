@@ -1,12 +1,29 @@
 package de.fraunhofer.ids.framework.daps.orbiter;
 
+import javax.security.auth.x500.X500Principal;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.daps.TokenManagerService;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.apache.jena.atlas.json.JsonObject;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -29,43 +46,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import javax.security.auth.x500.X500Principal;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-
+@Slf4j
 @Component
-@ConditionalOnProperty(prefix = "daps", name = "mode", havingValue = "orbiter")
+@ConditionalOnProperty( prefix = "daps", name = "mode", havingValue = "orbiter" )
 public class OrbiterTokenManagerService implements TokenManagerService {
-
     private static final String CLIENT_REGISTRATION_URL = "https://orbiter-daps-staging.truzzt.org/api/client/create";
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrbiterTokenManagerService.class);
-
+    private final ClientProvider  clientProvider;
     //TODO persist certificate, keypair and id (or decide if we even need them inside the library)
-    private X509Certificate clientCert;
-    private KeyPair generatedKeyPair;
-    private String id;
-    private final ClientProvider clientProvider;
+    private       X509Certificate clientCert;
+    private       KeyPair         generatedKeyPair;
+    private       String          id;
 
-    public OrbiterTokenManagerService(ClientProvider clientProvider) {
+    public OrbiterTokenManagerService( ClientProvider clientProvider ) {
         this.clientProvider = clientProvider;
     }
 
     /**
      * Create a Client at the Orbiter DAPS, request a DAT and return it
-     *
-     * @return the DAT received from Orbiter DAPS (or empty string if an error occurs)
      */
-    public void createClient(){
+    public void createClient() {
         var client = clientProvider.getClient();
         try {
             // generate a key pair
@@ -85,7 +84,6 @@ public class OrbiterTokenManagerService implements TokenManagerService {
             stringWriter.close();
             var csrString = stringWriter.toString();
 
-
             //build request
             var clientToCreate = new JSONObject();
             clientToCreate.put("grants", List.of("client_assertion_type"));
@@ -99,8 +97,8 @@ public class OrbiterTokenManagerService implements TokenManagerService {
             //parse client response
             var response = client.newCall(request).execute();
             var clientResponse = response.body().string();
-            LOGGER.info("Success: " + response.isSuccessful());
-            LOGGER.info(clientResponse);
+            log.info("Success: " + response.isSuccessful());
+            log.info(clientResponse);
 
             //read id and client certificate from json response
             var responseJson = new JSONObject(clientResponse);
@@ -108,14 +106,14 @@ public class OrbiterTokenManagerService implements TokenManagerService {
             var responseCert = responseJson.getJSONObject("cert");
             var responseData = responseCert.getJSONArray("data");
             byte[] bytes = new byte[responseData.length()];
-            for (int i = 0; i < responseData.length(); i++) {
-                bytes[i]=(byte)(((int)responseData.get(i)) & 0xFF);
+            for( int i = 0; i < responseData.length(); i++ ) {
+                bytes[i] = (byte) ( ( (int) responseData.get(i) ) & 0xFF );
             }
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
             InputStream in = new ByteArrayInputStream(bytes);
-            clientCert = (X509Certificate)certFactory.generateCertificate(in);
-        } catch (NoSuchAlgorithmException | OperatorCreationException | IOException | CertificateException e) {
-            LOGGER.warn(e.getMessage(), e);
+            clientCert = (X509Certificate) certFactory.generateCertificate(in);
+        } catch( NoSuchAlgorithmException | OperatorCreationException | IOException | CertificateException e ) {
+            log.warn(e.getMessage(), e);
         }
     }
 
@@ -123,8 +121,9 @@ public class OrbiterTokenManagerService implements TokenManagerService {
      * Generate a CSR which is sent to the Orbiter DAPS to register a Client
      *
      * @return a generated CSR
+     *
      * @throws OperatorCreationException when the ContentSigner cannot be created
-     * @throws IOException when the Extensions cannot be added to the CSR
+     * @throws IOException               when the Extensions cannot be added to the CSR
      */
     private PKCS10CertificationRequest createCSR() throws IOException, OperatorCreationException {
 
@@ -166,24 +165,24 @@ public class OrbiterTokenManagerService implements TokenManagerService {
      *
      * @return access jwt token as String
      */
-    public String acquireToken(String dapsUrl) {
+    public String acquireToken( String dapsUrl ) {
         var client = clientProvider.getClient();
         //register at Orbiter DAPS if this is called the first time
-        if(id == null || generatedKeyPair == null || clientCert == null){
+        if( id == null || generatedKeyPair == null || clientCert == null ) {
             //does this have to happen in the framework or should we expect a keystore provided by the user (like Aisec Daps Client)
             createClient();
         }
         //build and sign request token
         JwtBuilder jwtb =
                 Jwts.builder()
-                        .setIssuer("localhost")
-                        .setSubject(id)
-                        .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
-                        .claim("@type", "ids:DatRequestToken")
-                        .setExpiration(Date.from(Instant.now().plus(Duration.ofDays(1))))
-                        .setAudience("all")
-                        .setIssuedAt(Date.from(Instant.now().minusSeconds(10)))
-                        .setNotBefore(Date.from(Instant.now().minusSeconds(10)));
+                    .setIssuer("localhost")
+                    .setSubject(id)
+                    .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
+                    .claim("@type", "ids:DatRequestToken")
+                    .setExpiration(Date.from(Instant.now().plus(Duration.ofDays(1))))
+                    .setAudience("all")
+                    .setIssuedAt(Date.from(Instant.now().minusSeconds(10)))
+                    .setNotBefore(Date.from(Instant.now().minusSeconds(10)));
         var token = jwtb.signWith(SignatureAlgorithm.RS256, generatedKeyPair.getPrivate()).compact();
 
         //build request formbody
@@ -205,10 +204,10 @@ public class OrbiterTokenManagerService implements TokenManagerService {
             Response jwtResponse = client.newCall(request).execute();
             var responseJson = new JSONObject(jwtResponse.body().string());
             var jwtString = responseJson.getString("accessToken");
-            LOGGER.info("Response body of token request:\n{}", jwtString);
+            log.info("Response body of token request:\n{}", jwtString);
             return jwtString;
-        } catch (IOException e) {
-            LOGGER.warn(e.getMessage(), e);
+        } catch( IOException e ) {
+            log.warn(e.getMessage(), e);
             return "";
         }
     }

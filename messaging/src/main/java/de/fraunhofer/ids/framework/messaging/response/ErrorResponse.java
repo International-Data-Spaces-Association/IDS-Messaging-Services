@@ -8,6 +8,7 @@ import java.util.Map;
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -97,8 +98,8 @@ public class ErrorResponse implements MessageResponse {
     @Override
     public Map<String, Object> createMultipartMap( Serializer serializer ) throws IOException {
         var multiMap = new LinkedHashMap<String, Object>();
-        multiMap.put("header", serializer.serialize(rejectionMessage));
-        multiMap.put("payload", errorMessage);
+        multiMap.put(MultipartDatapart.HEADER.name(), serializer.serialize(rejectionMessage));
+        multiMap.put(MultipartDatapart.PAYLOAD.name(), errorMessage);
         return multiMap;
     }
 }

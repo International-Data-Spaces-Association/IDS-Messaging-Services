@@ -1,4 +1,4 @@
-package de.fraunhofer.ids.framework.messaging.util;
+package de.fraunhofer.ids.framework.util;
 
 public enum MultipartDatapart {
     HEADER("header"),

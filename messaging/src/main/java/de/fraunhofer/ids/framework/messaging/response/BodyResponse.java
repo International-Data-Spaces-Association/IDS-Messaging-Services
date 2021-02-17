@@ -7,7 +7,7 @@ import java.util.Map;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RequestMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.framework.messaging.util.MultipartDatapart;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 

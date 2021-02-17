@@ -22,17 +22,16 @@ import de.fraunhofer.ids.framework.messaging.handler.message.MessagePayloadInput
 import de.fraunhofer.ids.framework.messaging.handler.request.RequestMessageHandler;
 import de.fraunhofer.ids.framework.messaging.response.ErrorResponse;
 import de.fraunhofer.ids.framework.messaging.response.MessageResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 /**
  * The MessageDispatcher takes all incoming Messages, applies all defined PreDispatchingFilters onto them,
  * checks the DAPS token, gives Messages to the specified MessageHandlers depending on their type and returns
  * the results returned by the MessageHandlers.
  */
+@Slf4j
 public class MessageDispatcher {
-    private static final Logger logger = LoggerFactory.getLogger(MessageDispatcher.class);
-
     private final ObjectMapper               objectMapper;
     private final List<PreDispatchingFilter> preDispatchingFilters;
     private final RequestMessageHandler      requestMessageHandler;
@@ -69,7 +68,7 @@ public class MessageDispatcher {
                                                 ConfigContainer configurationContainer ) {
         //add DAT verification as PreDispatchingFilter
         registerPreDispatchingAction(in -> {
-            if( configurationContainer.getConfigModel().getConnectorDeployMode()
+            if( configurationContainer.getConfigurationModel().getConnectorDeployMode()
                 == ConnectorDeployMode.TEST_DEPLOYMENT ) {
                 return PreDispatchingFilterResult
                         .successResult("ConnectorDeployMode is Test. Skipping Token verification!");
@@ -117,21 +116,21 @@ public class MessageDispatcher {
         var connectorId = configContainer.getConnector().getId();
         var modelVersion = configContainer.getConnector().getOutboundModelVersion();
         //apply all preDispatchingFilters to the message
-        for( PreDispatchingFilter preDispatchingFilter : this.preDispatchingFilters ) {
-            logger.debug("Applying a preDispatchingFilter");
+        for( var preDispatchingFilter : this.preDispatchingFilters ) {
+            log.debug("Applying a preDispatchingFilter");
             try {
-                final var result = preDispatchingFilter.process(header);
+                val result = preDispatchingFilter.process(header);
                 if( !result.isSuccess() ) {
-                    logger.debug("A preDispatchingFilter failed!");
-                    logger.error(result.getMessage(), result.getError());
+                    log.debug("A preDispatchingFilter failed!");
+                    log.error(result.getMessage(), result.getError());
 
                     return ErrorResponse
                             .withDefaultHeader(RejectionReason.MALFORMED_MESSAGE, result.getMessage(), connectorId,
                                                modelVersion, header.getId());
                 }
             } catch( Exception e ) {
-                logger.debug("A preDispatchingFilter threw an exception!");
-                logger.debug(e.getMessage(), e);
+                log.debug("A preDispatchingFilter threw an exception!");
+                log.debug(e.getMessage(), e);
                 throw new PreDispatchingFilterException(e);
             }
         }
@@ -144,16 +143,16 @@ public class MessageDispatcher {
         if( resolvedHandler.isPresent() ) {
             //if an handler exists, let the handle handle the message and return its response
             try {
-                MessageHandler<R> handler = (MessageHandler<R>) resolvedHandler.get();
+                var handler = (MessageHandler<R>) resolvedHandler.get();
                 return handler.handleMessage(header, new MessagePayloadInputstream(payload, objectMapper));
             } catch( MessageHandlerException e ) {
-                logger.debug("The message handler threw an exception!");
+                log.debug("The message handler threw an exception!");
                 return ErrorResponse.withDefaultHeader(RejectionReason.INTERNAL_RECIPIENT_ERROR,
                                                        "Error while handling the request!", connectorId, modelVersion,
                                                        header.getId());
             }
         } else {
-            logger.debug(String.format("No message handler exists for %s", header.getClass()));
+            log.debug(String.format("No message handler exists for %s", header.getClass()));
             //If no handler for the type exists, the message type isn't supported
             return ErrorResponse.withDefaultHeader(RejectionReason.MESSAGE_TYPE_NOT_SUPPORTED,
                                                    "No handler for provided message type was found!", connectorId,

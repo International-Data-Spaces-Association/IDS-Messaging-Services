@@ -6,7 +6,7 @@ import java.net.URI;
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
-import de.fraunhofer.ids.framework.messaging.util.MultipartDatapart;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import okhttp3.MultipartBody;
 
 /**

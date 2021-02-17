@@ -9,7 +9,7 @@ import java.util.Map;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RequestMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.framework.messaging.util.MultipartDatapart;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
