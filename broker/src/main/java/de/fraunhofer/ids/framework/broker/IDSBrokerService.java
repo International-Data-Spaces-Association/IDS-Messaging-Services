@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Interface for Communication with IDS Brokers, implemented by {@link IDSBrokerServiceImpl}
+ * Interface for Communication with IDS Brokers, implemented by {@link BrokerService}
  */
 public interface IDSBrokerService {
 
