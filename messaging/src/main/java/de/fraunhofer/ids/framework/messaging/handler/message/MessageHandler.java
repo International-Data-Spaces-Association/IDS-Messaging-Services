@@ -15,5 +15,5 @@ public interface MessageHandler<T extends Message> {
      *
      * @throws MessageHandlerException if an error occurs while handling the incoming message
      */
-    MessageResponse handleMessage( final T queryHeader, final MessagePayload payload ) throws MessageHandlerException;
+    MessageResponse handleMessage( T queryHeader, MessagePayload payload ) throws MessageHandlerException;
 }

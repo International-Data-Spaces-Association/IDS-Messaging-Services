@@ -27,8 +27,8 @@ public class EndpointService {
      * @param requestMappingHandlerMapping for managing Springs http route mappings
      */
     @Autowired
-    public EndpointService( MessageController messageController,
-                            RequestMappingHandlerMapping requestMappingHandlerMapping ) {
+    public EndpointService( final MessageController messageController,
+                            final RequestMappingHandlerMapping requestMappingHandlerMapping ) {
         this.messageController = messageController;
         this.requestMappingHandlerMapping = requestMappingHandlerMapping;
 
@@ -59,7 +59,7 @@ public class EndpointService {
      *
      * @param url the url for which the {@link MessageController} should be unmapped for (RequestMappingInfo is deleted)
      */
-    public void removeMapping( String url ) {
+    public void removeMapping( final String url ) {
         log.debug(String.format("Remove mapping for url %s", url));
 
         var requestMappingInfo = getRequestMappingInfo(url);
@@ -67,7 +67,7 @@ public class EndpointService {
     }
 
     @NotNull
-    private RequestMappingInfo getRequestMappingInfo( String url ) {
+    private RequestMappingInfo getRequestMappingInfo( final String url ) {
         return RequestMappingInfo
                 .paths(url)
                 .methods(RequestMethod.POST)

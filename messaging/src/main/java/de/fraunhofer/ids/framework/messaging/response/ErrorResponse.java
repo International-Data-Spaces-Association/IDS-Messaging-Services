@@ -5,10 +5,15 @@ import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.RejectionMessage;
+import de.fraunhofer.iais.eis.RejectionMessageBuilder;
+import de.fraunhofer.iais.eis.RejectionReason;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,20 +22,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @Slf4j
+@AllArgsConstructor
 public class ErrorResponse implements MessageResponse {
     private final RejectionMessage rejectionMessage;
     private final String           errorMessage;
-
-    /**
-     * Create an ErrorResponse with a RejectionMessage header and errorReason String payload
-     *
-     * @param rejectionMessage a RejectionMessage
-     * @param errorMessage     a detailed Error description
-     */
-    public ErrorResponse( RejectionMessage rejectionMessage, String errorMessage ) {
-        this.rejectionMessage = rejectionMessage;
-        this.errorMessage = errorMessage;
-    }
 
     /**
      * Create an ErrorResponse with a RejectionMessage header and errorReason String payload
@@ -56,7 +51,8 @@ public class ErrorResponse implements MessageResponse {
      * @return an instance of ErrorResponse with the given parameters
      */
     public static ErrorResponse withDefaultHeader( final RejectionReason rejectionReason, final String errorMessage,
-                                                   final URI connectorId, final String modelVersion, URI messageId ) {
+                                                   final URI connectorId, final String modelVersion,
+                                                   URI messageId ) {
         if( messageId == null ) {
             messageId = URI.create("https://INVALID");
         }
@@ -96,7 +92,7 @@ public class ErrorResponse implements MessageResponse {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> createMultipartMap( Serializer serializer ) throws IOException {
+    public Map<String, Object> createMultipartMap( final Serializer serializer ) throws IOException {
         var multiMap = new LinkedHashMap<String, Object>();
         multiMap.put(MultipartDatapart.HEADER.name(), serializer.serialize(rejectionMessage));
         multiMap.put(MultipartDatapart.PAYLOAD.name(), errorMessage);

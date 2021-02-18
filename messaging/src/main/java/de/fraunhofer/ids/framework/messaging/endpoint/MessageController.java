@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.RejectionMessageBuilder;
+import de.fraunhofer.iais.eis.RejectionReason;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.messaging.dispatcher.MessageDispatcher;
@@ -79,7 +83,7 @@ public class MessageController {
             log.debug("hand the incoming message to the message dispatcher!");
             final var response = this.messageDispatcher.process(requestHeader, payloadPart.getInputStream());
 
-            if(response != null) {
+            if( response != null ) {
                 //get Response as MultiValueMap
                 final var responseAsMap = createMultiValueMap(response.createMultipartMap(serializer));
 
@@ -89,7 +93,7 @@ public class MessageController {
                         .status(HttpStatus.OK)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .body(responseAsMap);
-            }else{
+            } else {
                 //if no response-body specified by the implemented handler of the connector (e.g. for received RequestInProcessMessage)
                 log.warn("Implemented Message-Handler didn't return a response!");
                 return ResponseEntity
@@ -126,7 +130,7 @@ public class MessageController {
      *
      * @return a MultiValueMap used as ResponseEntity for Spring
      */
-    private MultiValueMap<String, Object> createMultiValueMap( Map<String, Object> map ) {
+    private MultiValueMap<String, Object> createMultiValueMap( final Map<String, Object> map ) {
         log.debug("Creating MultiValueMap for the response");
         var multiMap = new LinkedMultiValueMap<String, Object>();
 
@@ -145,8 +149,8 @@ public class MessageController {
      *
      * @return MultiValueMap with given error information that can be used for a multipart response
      */
-    private MultiValueMap<String, Object> createDefaultErrorMessage( RejectionReason rejectionReason,
-                                                                     String errorMessage ) {
+    private MultiValueMap<String, Object> createDefaultErrorMessage( final RejectionReason rejectionReason,
+                                                                     final String errorMessage ) {
         try {
             var rejectionMessage = new RejectionMessageBuilder()
                     ._securityToken_(

@@ -64,8 +64,8 @@ public class MessageDispatcher {
      * @param provider               DAPS Public Key Provider
      * @param configurationContainer Configuration
      */
-    private void registerDatVerificationFilter( DapsPublicKeyProvider provider,
-                                                ConfigContainer configurationContainer ) {
+    private void registerDatVerificationFilter( final DapsPublicKeyProvider provider,
+                                                final ConfigContainer configurationContainer ) {
         //add DAT verification as PreDispatchingFilter
         registerPreDispatchingAction(in -> {
             if( configurationContainer.getConfigurationModel().getConnectorDeployMode()
