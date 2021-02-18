@@ -8,8 +8,9 @@ Documentation started on: 2021-01-20.
 ## Version 1.6-SNAPSHOT (UNRELEASED)
 ### Changed
 - Received RejectionMessages are now passed to the connector-developer, regardless of the status of the DAT within the received RejectionMessage
-### Added
-- Initial functionalities for the Clearing House
+- Asynchronous Message-Flow Support (support RequestInProcessMessage-Handling)
+- Initial IDS-Broker support
+- Code refactoring
 
 ## Version 1.5-SNAPSHOT
 ### Removed
