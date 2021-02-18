@@ -41,10 +41,18 @@ import static org.apache.commons.codec.binary.Hex.encodeHexString;
 @Component
 @ConditionalOnProperty( prefix = "daps", name = "mode", havingValue = "aisec" )
 public class AisecTokenManagerService implements de.fraunhofer.ids.framework.daps.TokenManagerService {
-    private final ClientProvider  clientProvider;
+    public static final int SECONDS_TO_ADD = 86400;
+    public static final int SECONDS_TO_SUBTRACT = 10;
+
+    private final ClientProvider clientProvider;
     private final ConfigContainer configContainer;
 
-    public AisecTokenManagerService( ClientProvider clientProvider, ConfigContainer configContainer ) {
+    /**
+     * Constructor of AisecTokenManagerService
+     * @param clientProvider The clientProvider
+     * @param configContainer The configContainer
+     */
+    public AisecTokenManagerService( final ClientProvider clientProvider, final ConfigContainer configContainer ) {
         this.clientProvider = clientProvider;
         this.configContainer = configContainer;
     }
@@ -55,23 +63,23 @@ public class AisecTokenManagerService implements de.fraunhofer.ids.framework.dap
      * @param hexString HexString to be beautified
      * @return beautifiedHex result
      */
-    private static String beautifyHex( String hexString ) {
+    private static String beautifyHex( final String hexString ) {
         return Arrays.stream(split(hexString, 2))
                      .map(s -> s + ":")
                      .collect(Collectors.joining());
     }
 
     /***
-     * Split string every n chars and return string array
+     * Split string every splitEvery chars and return string array
      *
      * @param src a string that will be split into multiple substrings
-     * @param n number of chars per resulting string
-     * @return Array of strings resulting from splitting the input string every n chars
+     * @param splitEvery number of chars per resulting string
+     * @return Array of strings resulting from splitting the input string every splitEvery chars
      */
-    private static String[] split( String src, int n ) {
-        var result = new String[(int) Math.ceil((double) src.length() / (double) n)];
+    private static String[] split( final String src, final int splitEvery ) {
+        var result = new String[(int) Math.ceil((double) src.length() / (double) splitEvery)];
         for( int i = 0; i < result.length; i++ ) {
-            result[i] = src.substring(i * n, Math.min(src.length(), ( i + 1 ) * n));
+            result[i] = src.substring(i * splitEvery, Math.min(src.length(), ( i + 1 ) * splitEvery));
         }
         return result;
     }
@@ -83,50 +91,49 @@ public class AisecTokenManagerService implements de.fraunhofer.ids.framework.dap
      *
      * @return signed DAPS JWT token for the Connector
      */
-    public String acquireToken( String dapsUrl )
+    public String acquireToken( final String dapsUrl )
             throws DapsConnectionException, DapsEmptyResponseException, ConnectorMissingCertExtensionException {
 
         var keyStoreManager = configContainer.getKeyStoreManager();
 
-        String dynamicAttributeToken = "INVALID_TOKEN";
-        String targetAudience = "idsc:IDS_CONNECTORS_ALL";
+        var dynamicAttributeToken = "INVALID_TOKEN";
+        var targetAudience = "idsc:IDS_CONNECTORS_ALL";
 
         // Try clause for setup phase (loading keys, building trust manager)
         try {
-
             // get private key
             log.debug("Getting PrivateKey and Certificate from KeyStoreManager");
-            Key privKey = keyStoreManager.getPrivateKey();
+            var privKey = keyStoreManager.getPrivateKey();
             // Get certificate of public key
-            X509Certificate cert = (X509Certificate) keyStoreManager.getCert();
+            var cert = (X509Certificate) keyStoreManager.getCert();
 
             // Get AKI
             //GET 2.5.29.14	SubjectKeyIdentifier / 2.5.29.35	AuthorityKeyIdentifier
             log.debug("Get AKI from certificate");
-            String aki_oid = Extension.authorityKeyIdentifier.getId();
-            byte[] rawAuthorityKeyIdentifier = cert.getExtensionValue(aki_oid);
+            var akiOid = Extension.authorityKeyIdentifier.getId();
+            byte[] rawAuthorityKeyIdentifier = cert.getExtensionValue(akiOid);
             if( rawAuthorityKeyIdentifier == null ) {
                 throw new ConnectorMissingCertExtensionException("AKI of the Connector Certificate is null!");
             }
-            ASN1OctetString akiOc = ASN1OctetString.getInstance(rawAuthorityKeyIdentifier);
-            AuthorityKeyIdentifier aki = AuthorityKeyIdentifier.getInstance(akiOc.getOctets());
-            byte[] authorityKeyIdentifier = aki.getKeyIdentifier();
+            var akiOc = ASN1OctetString.getInstance(rawAuthorityKeyIdentifier);
+            var aki = AuthorityKeyIdentifier.getInstance(akiOc.getOctets());
+            var authorityKeyIdentifier = aki.getKeyIdentifier();
 
             //GET SKI
             log.debug("Get SKI from certificate");
-            String ski_oid = Extension.subjectKeyIdentifier.getId();
-            byte[] rawSubjectKeyIdentifier = cert.getExtensionValue(ski_oid);
+            var skiOid = Extension.subjectKeyIdentifier.getId();
+            var rawSubjectKeyIdentifier = cert.getExtensionValue(skiOid);
             if( rawSubjectKeyIdentifier == null ) {
                 throw new ConnectorMissingCertExtensionException("SKI of the Connector Certificate is null!");
             }
-            ASN1OctetString ski0c = ASN1OctetString.getInstance(rawSubjectKeyIdentifier);
-            SubjectKeyIdentifier ski = SubjectKeyIdentifier.getInstance(ski0c.getOctets());
-            byte[] subjectKeyIdentifier = ski.getKeyIdentifier();
+            var ski0c = ASN1OctetString.getInstance(rawSubjectKeyIdentifier);
+            var ski = SubjectKeyIdentifier.getInstance(ski0c.getOctets());
+            var subjectKeyIdentifier = ski.getKeyIdentifier();
 
-            String aki_result = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
-            String ski_result = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
+            var akiResult = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
+            var skiResult = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
 
-            String connectorUUID = ski_result + "keyid:" + aki_result.substring(0, aki_result.length() - 1);
+            var connectorUUID = skiResult + "keyid:" + akiResult.substring(0, akiResult.length() - 1);
 
             log.info("ConnectorUUID: " + connectorUUID);
             log.info("Retrieving Dynamic Attribute Token...");
@@ -134,20 +141,20 @@ public class AisecTokenManagerService implements de.fraunhofer.ids.framework.dap
             // create signed JWT (JWS)
             // Create expiry date one day (86400 seconds) from now
             log.debug("Building jwt token");
-            Date expiryDate = Date.from(Instant.now().plusSeconds(86400));
-            JwtBuilder jwtb =
+            var expiryDate = Date.from(Instant.now().plusSeconds(SECONDS_TO_ADD));
+            var jwtb =
                     Jwts.builder()
                         .setIssuer(connectorUUID)
                         .setSubject(connectorUUID)
                         .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
                         .claim("@type", "ids:DatRequestToken")
                         .setExpiration(expiryDate)
-                        .setIssuedAt(Date.from(Instant.now().minusSeconds(10)))
+                        .setIssuedAt(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)))
                         .setAudience(targetAudience)
-                        .setNotBefore(Date.from(Instant.now().minusSeconds(10)));
+                        .setNotBefore(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
 
             log.debug("Signing jwt token");
-            String jws = jwtb.signWith(SignatureAlgorithm.RS256, privKey).compact();
+            var jws = jwtb.signWith(SignatureAlgorithm.RS256, privKey).compact();
             log.info("Request token: " + jws);
 
             // build form body to embed client assertion into post request
@@ -162,10 +169,10 @@ public class AisecTokenManagerService implements de.fraunhofer.ids.framework.dap
             log.debug("Getting idsutils client");
             var client = clientProvider.getClient();
 
-            Request request = new Request.Builder().url(dapsUrl).post(formBody).build();
+            var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
             log.debug(String.format("Sending request to %s", dapsUrl));
-            Response jwtResponse = client.newCall(request).execute();
+            var jwtResponse = client.newCall(request).execute();
             if( !jwtResponse.isSuccessful() ) {
                 log.debug("DAPS request was not successful");
                 throw new IOException("Unexpected code " + jwtResponse);
@@ -177,7 +184,7 @@ public class AisecTokenManagerService implements de.fraunhofer.ids.framework.dap
             var jwtString = responseBody.string();
             log.info("Response body of token request:\n{}", jwtString);
 
-            JSONObject jsonObject = new JSONObject(jwtString);
+            var jsonObject = new JSONObject(jwtString);
             dynamicAttributeToken = jsonObject.getString("access_token");
 
             log.info("Dynamic Attribute Token: " + dynamicAttributeToken);
@@ -208,5 +215,4 @@ public class AisecTokenManagerService implements de.fraunhofer.ids.framework.dap
         }
         return dynamicAttributeToken;
     }
-
 }

@@ -17,5 +17,5 @@ public interface PreDispatchingFilter {
      *
      * @throws PreDispatchingFilterException if an error occurs while processing the message
      */
-    PreDispatchingFilterResult process( final Message in ) throws PreDispatchingFilterException;
+    PreDispatchingFilterResult process( Message in ) throws PreDispatchingFilterException;
 }

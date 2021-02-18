@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.daps.TokenManagerService;
@@ -23,7 +24,11 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -41,8 +46,6 @@ import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -50,14 +53,23 @@ import org.springframework.stereotype.Component;
 @Component
 @ConditionalOnProperty( prefix = "daps", name = "mode", havingValue = "orbiter" )
 public class OrbiterTokenManagerService implements TokenManagerService {
+    public static final  int    KEYSIZE                 = 2048;
+    public static final  int    SECONDS_TO_SUBTRACT     = 10;
     private static final String CLIENT_REGISTRATION_URL = "https://orbiter-daps-staging.truzzt.org/api/client/create";
-    private final ClientProvider  clientProvider;
-    //TODO persist certificate, keypair and id (or decide if we even need them inside the library)
-    private       X509Certificate clientCert;
-    private       KeyPair         generatedKeyPair;
-    private       String          id;
 
-    public OrbiterTokenManagerService( ClientProvider clientProvider ) {
+    private final ClientProvider clientProvider;
+
+    //TODO persist certificate, keypair and id (or decide if we even need them inside the library)
+    private X509Certificate clientCert;
+    private KeyPair         generatedKeyPair;
+    private String          id;
+
+    /**
+     * Constructor of OrbiterTokenManagerService
+     *
+     * @param clientProvider The ClientProvider
+     */
+    public OrbiterTokenManagerService( final ClientProvider clientProvider ) {
         this.clientProvider = clientProvider;
     }
 
@@ -69,7 +81,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         try {
             // generate a key pair
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", new BouncyCastleProvider());
-            keyPairGenerator.initialize(2048, new SecureRandom());
+            keyPairGenerator.initialize(KEYSIZE, new SecureRandom());
             generatedKeyPair = keyPairGenerator.generateKeyPair();
 
             //build csr
@@ -96,7 +108,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
 
             //parse client response
             var response = client.newCall(request).execute();
-            var clientResponse = response.body().string();
+            var clientResponse = Objects.requireNonNull(response.body()).string();
             log.info("Success: " + response.isSuccessful());
             log.info(clientResponse);
 
@@ -156,16 +168,17 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         ContentSigner signer = csBuilder.build(generatedKeyPair.getPrivate());
 
         //build and return the csr
-        PKCS10CertificationRequest csr = p10Builder.build(signer);
-        return csr;
+        return p10Builder.build(signer);
     }
 
     /**
      * Get the DAT Token from Orbiter DAPS
      *
+     * @param dapsUrl The URL of the DAPS
+     *
      * @return access jwt token as String
      */
-    public String acquireToken( String dapsUrl ) {
+    public String acquireToken( final String dapsUrl ) {
         var client = clientProvider.getClient();
         //register at Orbiter DAPS if this is called the first time
         if( id == null || generatedKeyPair == null || clientCert == null ) {
@@ -181,8 +194,8 @@ public class OrbiterTokenManagerService implements TokenManagerService {
                     .claim("@type", "ids:DatRequestToken")
                     .setExpiration(Date.from(Instant.now().plus(Duration.ofDays(1))))
                     .setAudience("all")
-                    .setIssuedAt(Date.from(Instant.now().minusSeconds(10)))
-                    .setNotBefore(Date.from(Instant.now().minusSeconds(10)));
+                    .setIssuedAt(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)))
+                    .setNotBefore(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
         var token = jwtb.signWith(SignatureAlgorithm.RS256, generatedKeyPair.getPrivate()).compact();
 
         //build request formbody
@@ -202,7 +215,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         try {
             //get token from response
             Response jwtResponse = client.newCall(request).execute();
-            var responseJson = new JSONObject(jwtResponse.body().string());
+            var responseJson = new JSONObject(Objects.requireNonNull(jwtResponse.body()).string());
             var jwtString = responseJson.getString("accessToken");
             log.info("Response body of token request:\n{}", jwtString);
             return jwtString;

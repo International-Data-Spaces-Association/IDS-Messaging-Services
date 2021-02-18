@@ -12,7 +12,7 @@ public class ConfigUpdateException extends Exception {
      * @param message error message of the exception
      * @param cause   cause for the exception
      */
-    public ConfigUpdateException( String message, Throwable cause ) {
+    public ConfigUpdateException( final String message, final Throwable cause ) {
         super(message, cause);
     }
 }

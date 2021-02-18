@@ -25,7 +25,7 @@ public class DapsValidator {
     private DapsPublicKeyProvider keyProvider;
     private Serializer            serializer = new Serializer();
 
-    public DapsValidator( DapsPublicKeyProvider keyProvider ) {
+    public DapsValidator( final DapsPublicKeyProvider keyProvider ) {
         this.keyProvider = keyProvider;
     }
 
@@ -39,7 +39,7 @@ public class DapsValidator {
      *
      * @throws ClaimsException if Token cannot be signed with the given key
      */
-    public static Jws<Claims> getClaims( Message message, Key signingKey ) throws ClaimsException {
+    public static Jws<Claims> getClaims( final Message message, final Key signingKey ) throws ClaimsException {
         var tokenValue = message.getSecurityToken().getTokenValue();
         try {
             return Jwts.parser()
@@ -58,9 +58,9 @@ public class DapsValidator {
      *
      * @return true if DAT of Message is valid
      */
-    public boolean checkDat( Message message ) {
+    public boolean checkDat( final Message message ) {
         //Don't check DAT of RejectionMessages
-        if(message instanceof RejectionMessageImpl ) {
+        if( message instanceof RejectionMessageImpl ) {
             log.warn("RejectionMessage, skipping DAT check!");
             return true;
         }
@@ -87,7 +87,7 @@ public class DapsValidator {
      *
      * @return true if DAT of response is valid
      */
-    public boolean checkDat( String responseBody ) {
+    public boolean checkDat( final String responseBody ) {
         Map<String, String> responseMap;
         Message responseHeader;
         try {

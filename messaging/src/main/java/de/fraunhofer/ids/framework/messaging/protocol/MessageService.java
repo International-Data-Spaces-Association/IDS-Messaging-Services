@@ -19,43 +19,57 @@ import org.springframework.stereotype.Service;
 public class MessageService {
     private final IdsHttpService httpService;
 
+    /**
+     * Constructor of MessageService class
+     *
+     * @param httpService the IdsHttpService
+     */
     @Autowired
-    public MessageService( IdsHttpService httpService ) {
+    public MessageService( final IdsHttpService httpService ) {
         this.httpService = httpService;
     }
 
     /**
      * Send messages in IDS to other actors with choice of the protocol used.
      *
-     * @param body The RequestBody of the message
-     * @param target The target of the message
+     * @param body         The RequestBody of the message
+     * @param target       The target of the message
      * @param protocolType The selected protocol which should be used for sending (see ProtocolType enum)
+     *
      * @return returns the response
+     *
      * @throws FileUploadException something went wrong with the file attached (if there was one)
-     * @throws ClaimsException something went wrong with the DAT
-     * @throws IOException DAPS or taget could not be reached
+     * @throws ClaimsException     something went wrong with the DAT
+     * @throws IOException         DAPS or taget could not be reached
      */
-    public Map<String, String> sendIdsMessage( RequestBody body, URI target, ProtocolType protocolType )
+    public Map<String, String> sendIdsMessage( final RequestBody body,
+                                               final URI target,
+                                               final ProtocolType protocolType )
             throws FileUploadException, ClaimsException, IOException {
+
         switch( protocolType ) {
             case MULTIPART:
                 return httpService.sendAndCheckDat(body, target);
             case REST:
                 return null;
+            default:
+                return httpService.sendAndCheckDat(body, target);
         }
-        return null;
     }
 
     /**
      * Send messages in IDS to other actors without choosing a specific protocol, will use Multipart as default.
-     * @param body The RequestBody of the message
+     *
+     * @param body   The RequestBody of the message
      * @param target The target of the message
+     *
      * @return returns the response
+     *
      * @throws FileUploadException something went wrong with the file attached (if there was one)
-     * @throws ClaimsException something went wrong with the DAT
-     * @throws IOException DAPS or taget could not be reached
+     * @throws ClaimsException     something went wrong with the DAT
+     * @throws IOException         DAPS or taget could not be reached
      */
-    public Map<String, String> sendIdsMessage( RequestBody body, URI target )
+    public Map<String, String> sendIdsMessage( final RequestBody body, final URI target )
             throws FileUploadException, ClaimsException, IOException {
         return sendIdsMessage(body, target, ProtocolType.MULTIPART);
     }

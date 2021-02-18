@@ -16,15 +16,7 @@ import org.springframework.stereotype.Service;
  * Resolver that uses the Spring dependency injection mechanism to find the matching message handler
  */
 @Service
-public class RequestMessageHandlerService implements RequestMessageHandler{
-    @Data
-    @RequiredArgsConstructor
-    private static class Tuple<K, V> {
-        final K key;
-        final V value;
-    }
-
-
+public class RequestMessageHandlerService implements RequestMessageHandler {
     private final ApplicationContext appContext;
 
     /**
@@ -53,5 +45,13 @@ public class RequestMessageHandlerService implements RequestMessageHandler{
                      .filter(t -> t.value.value().equals(messageType))
                 .<MessageHandler<R>>map(t -> appContext.getBean(t.key, MessageHandler.class))
                 .findFirst();
+    }
+
+
+    @Data
+    @RequiredArgsConstructor
+    private static class Tuple<K, V> {
+        private final K key;
+        private final V value;
     }
 }

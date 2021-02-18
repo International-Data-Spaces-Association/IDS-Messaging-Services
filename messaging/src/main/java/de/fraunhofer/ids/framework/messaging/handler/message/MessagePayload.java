@@ -22,5 +22,5 @@ public interface MessagePayload {
      *
      * @throws IOException if underlying input stream cannot be parsed
      */
-    <T> T readFromJSON( final Class<? extends T> targetType ) throws IOException;
+    <T> T readFromJSON( Class<? extends T> targetType ) throws IOException;
 }
