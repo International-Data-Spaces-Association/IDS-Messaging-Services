@@ -14,6 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 public class DapsVerifier {
 
     /**
+     * Utility classes (only static methods and fields) do not have a public constructor.
+     * Instantiating them does not make sense, prevent instantiating.
+     */
+    protected DapsVerifier() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Check notbefore and expiration of the DAT Token Claims
      *
      * The default rules check if the current Time is between NotBefore and Expiration
@@ -24,7 +32,7 @@ public class DapsVerifier {
      *
      * @throws ClaimsException when the claims of the DAT cannot be verified
      */
-    public static boolean verify( Jws<Claims> toVerify ) throws ClaimsException {
+    public static boolean verify( final Jws<Claims> toVerify ) throws ClaimsException {
         try {
             Claims body = toVerify.getBody();
             var valid = body.getNotBefore().before(Date.from(Instant.now()));

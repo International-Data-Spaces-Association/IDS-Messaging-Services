@@ -17,9 +17,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ConfigContainer {
-    @Getter private ConfigurationModel configurationModel;
-    @Getter private KeyStoreManager keyStoreManager;
-    @Setter private ClientProvider  clientProvider;
+    @Getter
+    private ConfigurationModel configurationModel;
+
+    @Getter
+    private KeyStoreManager keyStoreManager;
+
+    @Setter
+    private ClientProvider clientProvider;
 
     /**
      * Create a ConfigurationContainer with a ConfigurationModel and KeyStoreManager
@@ -27,7 +32,7 @@ public class ConfigContainer {
      * @param configurationModel the initial {@link ConfigurationModel} of the Connector
      * @param keyStoreManager    the KeyStoreManager, managing Key- and Truststore of the Connector
      */
-    public ConfigContainer( ConfigurationModel configurationModel, KeyStoreManager keyStoreManager ) {
+    public ConfigContainer( final ConfigurationModel configurationModel, final KeyStoreManager keyStoreManager ) {
         this.configurationModel = configurationModel;
         this.keyStoreManager = keyStoreManager;
     }
@@ -49,7 +54,7 @@ public class ConfigContainer {
      *
      * @throws ConfigUpdateException when the Key- and Truststore in the new Connector cannot be initialized
      */
-    public void updateConfiguration( ConfigurationModel configurationModel ) throws ConfigUpdateException {
+    public void updateConfiguration( final ConfigurationModel configurationModel ) throws ConfigUpdateException {
         try {
             log.debug("Updating the current configuration");
             var manager = rebuildKeyStoreManager(configurationModel);
@@ -79,7 +84,7 @@ public class ConfigContainer {
      *
      * @throws KeyStoreManagerInitializationException when the new KeyStoreManager cannot be initialized
      */
-    private KeyStoreManager rebuildKeyStoreManager( ConfigurationModel configurationModel )
+    private KeyStoreManager rebuildKeyStoreManager( final ConfigurationModel configurationModel )
             throws KeyStoreManagerInitializationException {
         log.debug("Creating a new KeyStoreManager using current configuration");
         var keyPw = keyStoreManager.getKeyStorePw();

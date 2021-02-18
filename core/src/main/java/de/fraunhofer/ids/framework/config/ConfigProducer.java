@@ -35,16 +35,16 @@ public class ConfigProducer {
     /**
      * Load the ConfigurationModel from the location specified in the application.properties, initialize the KeyStoreManager
      *
-     * @param SERIALIZER an infomodel serializer for reading the jsonLD configuration
+     * @param serializer an infomodel serializer for reading the jsonLD configuration
      * @param properties the {@link ConfigProperties} parsed from an application.properties file
      */
-    public ConfigProducer( final Serializer SERIALIZER, ConfigProperties properties ) {
+    public ConfigProducer( final Serializer serializer, final ConfigProperties properties ) {
         try {
             log.debug(String.format("Loading configuration from %s", properties.getPath()));
             var config = getConfiguration(properties);
 
             log.info("Importing configuration from file");
-            var configModel = SERIALIZER.deserialize(config, ConfigurationModel.class);
+            var configModel = serializer.deserialize(config, ConfigurationModel.class);
 
             //initialize the KeyStoreManager with Key and Truststore locations in the ConfigurationModel
             log.info("Initializing KeyStoreManager");
@@ -71,8 +71,7 @@ public class ConfigProducer {
         }
     }
 
-    private String getConfiguration( ConfigProperties properties ) throws IOException {
-        //load config jsonLD from given path
+    private String getConfiguration( final ConfigProperties properties ) throws IOException {
         if( Paths.get(properties.getPath()).isAbsolute() ) {
             return getAbsolutePathConfig(properties);
         } else {
@@ -80,7 +79,7 @@ public class ConfigProducer {
         }
     }
 
-    private String getClassPathConfig( ConfigProperties properties ) throws IOException {
+    private String getClassPathConfig( final ConfigProperties properties ) throws IOException {
         log.info(String.format("Loading config from classpath: %s", properties.getPath()));
         var configurationStream = new ClassPathResource(properties.getPath()).getInputStream();
         var config = IOUtils.toString(configurationStream);
@@ -88,7 +87,7 @@ public class ConfigProducer {
         return config;
     }
 
-    private String getAbsolutePathConfig( ConfigProperties properties ) throws IOException {
+    private String getAbsolutePathConfig( final ConfigProperties properties ) throws IOException {
         log.info(String.format("Loading config from absolute Path %s", properties.getPath()));
         var fis = new FileInputStream(properties.getPath());
         var config = IOUtils.toString(fis);
