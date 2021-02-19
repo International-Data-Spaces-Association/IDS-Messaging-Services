@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -32,10 +33,10 @@ import okhttp3.OkHttpClient;
  */
 @Slf4j
 public class ClientProvider {
+    private final ConfigContainer configContainer;
 
-    private ConfigContainer configContainer;
     @Getter
-    private OkHttpClient    client;
+    private OkHttpClient client;
 
     /**
      * Constructor, creating a Client provider using the KeyStore part from the ConfigurationContainer
@@ -48,9 +49,7 @@ public class ClientProvider {
     public ClientProvider( final ConfigContainer configContainer )
             throws KeyManagementException, NoSuchAlgorithmException {
         this.configContainer = configContainer;
-        this.client = createClientBuilder(
-                configContainer.getConfigurationModel(), configContainer.getKeyStoreManager()
-        ).build();
+        setClient(configContainer);
     }
 
     /**
@@ -67,86 +66,156 @@ public class ClientProvider {
     private static OkHttpClient.Builder createClientBuilder( final ConfigurationModel connector,
                                                              final KeyStoreManager manager )
             throws NoSuchAlgorithmException, KeyManagementException {
-        log.debug("Creating OkHttp client");
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+        var okHttpBuilder = getOkHttpBuilder();
 
         if( connector.getConnectorDeployMode() == ConnectorDeployMode.PRODUCTIVE_DEPLOYMENT ) {
             log.debug("Productive Deployment, use Trustmanager vrom KeyStoreManager");
-            var trustManager = manager.getTrustManager();
-            var sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, new TrustManager[]{ trustManager }, null);
-            var sslSocketFactory = sslContext.getSocketFactory();
-            builder.sslSocketFactory(sslSocketFactory, trustManager);
+            setSSLSocketFactory(manager, okHttpBuilder);
         } else if( connector.getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT ) {
-            log.debug("Test Deployment, use all trusting trustmanager");
-            log.warn(
-                    "Trustmanager is trusting all Certificates in TEST_DEPLOYMENT mode, you should not use this in production!");
-            var trustmanager = getAllTrustingTrustManager();
-            var sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustmanager, new SecureRandom());
-            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustmanager[0]);
-            builder.hostnameVerifier(( hostname, session ) -> true);
+            setAcceptingAllSSLCertificates(okHttpBuilder);
         }
+
         log.debug("Created SSLSocketFactory");
+
+        handleConnectorProxy(connector, okHttpBuilder);
+
+        return okHttpBuilder;
+    }
+
+    /**
+     * If Connector has a proxy set
+     * @param connector The Config of the Connector
+     * @param okHttpBuilder The Builder of the HTTPClient used to send messages
+     */
+    private static void handleConnectorProxy( ConfigurationModel connector, OkHttpClient.Builder okHttpBuilder ) {
         //if the connector has a proxy set
         if( connector.getConnectorProxy() != null ) {
             //if there is any proxy in the proxylist
-            var proxyconf = connector.getConnectorProxy().stream().findAny().orElse(null);
-            if( proxyconf != null ) {
+            var proxyConfiguration = connector.getConnectorProxy().stream().findAny().orElse(null);
+            if( proxyConfiguration != null ) {
                 log.debug("Proxy is set active! Configuring Proxy.");
-                //create and set Proxy Authenticator with BasicAuth if proxy username and password are set
-                if( proxyconf.getProxyAuthentication() != null
-                    && proxyconf.getProxyAuthentication().getAuthUsername() != null
-                    && proxyconf.getProxyAuthentication().getAuthPassword() != null ) {
-                    log.debug("Setting Proxy Authenticator");
-                    Authenticator proxyAuthenticator = ( route, response ) -> {
-                        String credential = Credentials.basic(proxyconf.getProxyAuthentication().getAuthUsername(),
-                                                              proxyconf.getProxyAuthentication().getAuthPassword());
-                        return response.request().newBuilder()
-                                       .header("Proxy-Authorization", credential)
-                                       .build();
-                    };
-                    builder.proxyAuthenticator(proxyAuthenticator);
-                } else {
-                    log.debug("No Proxy Authentication credentials are set!");
-                }
-                log.debug("Create a ProxySelector");
-                //create a custom proxySelector (will select the proxy when request goes to host not in NO_PROXY list, and NO_PROXY otherwise)
-                final ProxySelector proxySelector = new ProxySelector() {
-                    @Override
-                    public List<Proxy> select( URI uri ) {
-                        //create a List of size 1 containing the possible Proxy
-                        final List<Proxy> proxyList = new ArrayList<>(1);
-                        if( proxyconf.getNoProxy().contains(uri) ) {
-                            log.debug(String.format("URI %s is in NoProxy List, no proxy is used", uri.toString()));
-                            //if the called uri is in the Exceptions of the Connectors ProxyConfiguration use no proxy
-                            proxyList.add(Proxy.NO_PROXY);
-                        } else {
-                            log.debug(String.format("URI %s is not in NoProxy List, use configured Proxy",
-                                                    uri.toString()));
-                            //else use proxy with ProxyConfig
-                            URI proxyAddress = proxyconf.getProxyURI();
-                            String proxyHost = proxyAddress.getHost();
-                            int proxyPort = proxyAddress.getPort();
-                            log.info("Address: " + proxyHost + " ,Port: " + proxyPort);
-                            proxyList.add(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
-                        }
-                        return proxyList;
-                    }
 
-                    @Override
-                    public void connectFailed( URI uri, SocketAddress sa, IOException ioe ) {
-                        throw new UnsupportedOperationException("The selected Proxy is unavailable!");
-                    }
-                };
-                //set proxySelector for the okhttpclient
-                builder.proxySelector(proxySelector);
+                //create and set Proxy Authenticator with BasicAuth if proxy username and password are set
+                setProxyAuthenticator(okHttpBuilder, proxyConfiguration);
+
+                //create a custom proxySelector (will select the proxy when request goes to host not in NO_PROXY list, and NO_PROXY otherwise)
+                log.debug("Create a ProxySelector");
+                setProxySelector(okHttpBuilder, proxyConfiguration);
             }
         }
-        return builder;
     }
 
+    /**
+     * Select the Proxy being used
+     * @param okHttpBuilder The Cuilder of the okHttp Client used for sending messages
+     * @param proxyConfiguration the configuration of the proxy to be used
+     */
+    private static void setProxySelector( OkHttpClient.Builder okHttpBuilder, de.fraunhofer.iais.eis.Proxy proxyConfiguration ) {
+        var proxySelector = new ProxySelector() {
+            @Override
+            public List<Proxy> select( URI uri ) {
+                //create a List of size 1 containing the possible Proxy
+                final List<Proxy> proxyList = new ArrayList<>(1);
+                if( proxyConfiguration.getNoProxy().contains(uri) ) {
+                    log.debug(String.format("URI %s is in NoProxy List, no proxy is used", uri.toString()));
+                    //if the called uri is in the Exceptions of the Connectors ProxyConfiguration use no proxy
+                    proxyList.add(Proxy.NO_PROXY);
+                } else {
+                    log.debug(String.format("URI %s is not in NoProxy List, use configured Proxy",
+                                            uri.toString()));
+                    //else use proxy with ProxyConfig
+                    var proxyAddress = proxyConfiguration.getProxyURI();
+                    var proxyHost = proxyAddress.getHost();
+                    int proxyPort = proxyAddress.getPort();
+                    log.info("Address: " + proxyHost + " ,Port: " + proxyPort);
+                    proxyList.add(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
+                }
+                return proxyList;
+            }
+
+            @Override
+            public void connectFailed( URI uri, SocketAddress sa, IOException ioe ) {
+                throw new UnsupportedOperationException("The selected Proxy is unavailable!");
+            }
+        };
+        //set proxySelector for the okhttpclient
+        okHttpBuilder.proxySelector(proxySelector);
+    }
+
+    /**
+     * Set the Proxy-Authenticator
+     * @param okHttpBuilder The Cuilder of the okHttp Client used for sending messages
+     * @param proxyConfiguration the configuration of the proxy to be used
+     */
+    private static void setProxyAuthenticator( OkHttpClient.Builder okHttpBuilder,
+                                               de.fraunhofer.iais.eis.Proxy proxyConfiguration ) {
+        if( proxyConfiguration.getProxyAuthentication() != null
+            && proxyConfiguration.getProxyAuthentication().getAuthUsername() != null
+            && proxyConfiguration.getProxyAuthentication().getAuthPassword() != null ) {
+            log.debug("Setting Proxy Authenticator");
+            Authenticator proxyAuthenticator = ( route, response ) -> {
+                var credential = Credentials.basic(proxyConfiguration.getProxyAuthentication().getAuthUsername(),
+                                                      proxyConfiguration.getProxyAuthentication().getAuthPassword());
+                return response.request().newBuilder()
+                               .header("Proxy-Authorization", credential)
+                               .build();
+            };
+            okHttpBuilder.proxyAuthenticator(proxyAuthenticator);
+        } else {
+            log.debug("No Proxy Authentication credentials are set!");
+        }
+    }
+
+    /**
+     * Used only if Connector is in Test-Deployment mode
+     * @param okHttpBuilder the okHTTP-Builder used
+     * @throws NoSuchAlgorithmException exception thrown
+     * @throws KeyManagementException exception thrown
+     */
+    private static void setAcceptingAllSSLCertificates( OkHttpClient.Builder okHttpBuilder )
+            throws NoSuchAlgorithmException, KeyManagementException {
+        log.debug("Test Deployment, use all trusting trustmanager");
+        log.warn(
+                "Trustmanager is trusting all Certificates in TEST_DEPLOYMENT mode, you should not use this in production!");
+        var trustmanager = getAllTrustingTrustManager();
+        var sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, trustmanager, new SecureRandom());
+        final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+        okHttpBuilder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustmanager[0]);
+        okHttpBuilder.hostnameVerifier(( hostname, session ) -> true);
+    }
+
+    /**
+     * Sets the SSLSocketFactory of the ohHttpBuilder
+     * @param manager  The KeyStoreManager
+     * @param okHttpBuilder The ohHttpBuilder
+     * @throws NoSuchAlgorithmException exception thrown
+     * @throws KeyManagementException exception thrown
+     */
+    private static void setSSLSocketFactory( KeyStoreManager manager, OkHttpClient.Builder okHttpBuilder )
+            throws NoSuchAlgorithmException, KeyManagementException {
+        var trustManager = manager.getTrustManager();
+        var sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, new TrustManager[]{ trustManager }, null);
+        var sslSocketFactory = sslContext.getSocketFactory();
+        okHttpBuilder.sslSocketFactory(sslSocketFactory, trustManager);
+    }
+
+    /**
+     * Get the Builder for the OkHttpClient
+     * @return the OkHttpClient-Builder
+     */
+    @NotNull
+    private static OkHttpClient.Builder getOkHttpBuilder() {
+        log.debug("Creating OkHttp client");
+        return new OkHttpClient.Builder();
+    }
+
+    /**
+     * Get all trusting TrustManager
+     * @return array of TrustManagers
+     */
     private static TrustManager[] getAllTrustingTrustManager() {
         return new TrustManager[]{
                 new X509TrustManager() {
@@ -167,14 +236,28 @@ public class ClientProvider {
     }
 
     /**
+     * Set or update the Client
+     *
+     * @param configContainer The Configuration of the Connector
+     *
+     * @throws NoSuchAlgorithmException thrown exception
+     * @throws KeyManagementException   thrown exception
+     */
+    private void setClient( final ConfigContainer configContainer )
+            throws NoSuchAlgorithmException, KeyManagementException {
+        this.client = createClientBuilder(
+                configContainer.getConfigurationModel(), configContainer.getKeyStoreManager()
+        ).build();
+    }
+
+    /**
      * recreate the client builder with a new config (can be called when the configurationmodel or truststore changes)
      *
      * @throws NoSuchAlgorithmException if the cryptographic is unknown when building an {@link OkHttpClient}
      * @throws KeyManagementException   if there is an error with any configured key when building an {@link OkHttpClient}
      */
     public void updateConfig() throws KeyManagementException, NoSuchAlgorithmException {
-        this.client = createClientBuilder(configContainer.getConfigurationModel(), configContainer.getKeyStoreManager())
-                .build();
+        setClient(configContainer);
     }
 
     /**
