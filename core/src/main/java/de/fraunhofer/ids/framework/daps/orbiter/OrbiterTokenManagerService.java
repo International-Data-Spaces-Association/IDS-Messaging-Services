@@ -3,7 +3,6 @@ package de.fraunhofer.ids.framework.daps.orbiter;
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -23,9 +22,11 @@ import de.fraunhofer.ids.framework.daps.TokenManagerService;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -37,7 +38,6 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.ExtensionsGenerator;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
@@ -45,88 +45,108 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+/**
+ * Manages Dynamic Attribute Tokens.
+ */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @ConditionalOnProperty( prefix = "daps", name = "mode", havingValue = "orbiter" )
 public class OrbiterTokenManagerService implements TokenManagerService {
-    public static final  int    KEYSIZE                 = 2048;
-    public static final  int    SECONDS_TO_SUBTRACT     = 10;
-    private static final String CLIENT_REGISTRATION_URL = "https://orbiter-daps-staging.truzzt.org/api/client/create";
+    public static final  int            KEYSIZE                 = 2048;
+    public static final  int            SECONDS_TO_SUBTRACT     = 10;
+    private static final String         CLIENT_REGISTRATION_URL =
+            "https://orbiter-daps-staging.truzzt.org/api/client/create";
+    private final        ClientProvider clientProvider;
 
-    private final ClientProvider clientProvider;
-
-    //TODO persist certificate, keypair and id (or decide if we even need them inside the library)
     private X509Certificate clientCert;
     private KeyPair         generatedKeyPair;
     private String          id;
 
     /**
-     * Constructor of OrbiterTokenManagerService
-     *
-     * @param clientProvider The ClientProvider
-     */
-    public OrbiterTokenManagerService( final ClientProvider clientProvider ) {
-        this.clientProvider = clientProvider;
-    }
-
-    /**
-     * Create a Client at the Orbiter DAPS, request a DAT and return it
+     * Create a Client at the Orbiter DAPS, request a DAT and return it.
      */
     public void createClient() {
         var client = clientProvider.getClient();
         try {
-            // generate a key pair
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", new BouncyCastleProvider());
-            keyPairGenerator.initialize(KEYSIZE, new SecureRandom());
-            generatedKeyPair = keyPairGenerator.generateKeyPair();
+            setKeyPair();
 
-            //build csr
             var csr = createCSR();
 
             //write csr to string
-            PemObject pemObject = new PemObject("CERTIFICATE REQUEST", csr.getEncoded());
-            StringWriter stringWriter = new StringWriter();
-            PemWriter pemWriter = new PemWriter(stringWriter);
-            pemWriter.writeObject(pemObject);
-            pemWriter.close();
-            stringWriter.close();
-            var csrString = stringWriter.toString();
+            var csrString = getCertificateRequest(csr);
 
             //build request
-            var clientToCreate = new JSONObject();
-            clientToCreate.put("grants", List.of("client_assertion_type"));
-            clientToCreate.put("pkcs10Data", csrString);
-            clientToCreate.put("userId", "TEST");
-            var request = new Request.Builder()
-                    .url(CLIENT_REGISTRATION_URL)
-                    .post(RequestBody.create(clientToCreate.toString(), MediaType.parse("application/json")))
-                    .build();
+            var request = getCertificateRequestMessage(csrString);
 
             //parse client response
-            var response = client.newCall(request).execute();
-            var clientResponse = Objects.requireNonNull(response.body()).string();
-            log.info("Success: " + response.isSuccessful());
-            log.info(clientResponse);
+            var dapsResponse = sendCertificateRequest(client, request);
 
-            //read id and client certificate from json response
-            var responseJson = new JSONObject(clientResponse);
-            id = responseJson.getString("id");
-            var responseCert = responseJson.getJSONObject("cert");
-            var responseData = responseCert.getJSONArray("data");
-            byte[] bytes = new byte[responseData.length()];
-            for( int i = 0; i < responseData.length(); i++ ) {
-                bytes[i] = (byte) ( ( (int) responseData.get(i) ) & 0xFF );
-            }
-            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-            InputStream in = new ByteArrayInputStream(bytes);
-            clientCert = (X509Certificate) certFactory.generateCertificate(in);
+            var responseJson = new JSONObject(dapsResponse);
+
+            setClientId(responseJson);
+            setClientCertificate(responseJson);
+
         } catch( NoSuchAlgorithmException | OperatorCreationException | IOException | CertificateException e ) {
             log.warn(e.getMessage(), e);
         }
+    }
+
+    private void setClientCertificate( final JSONObject responseJson ) throws CertificateException {
+        var responseCert = responseJson.getJSONObject("cert");
+        var responseData = responseCert.getJSONArray("data");
+        var bytes = new byte[responseData.length()];
+        for( int i = 0; i < responseData.length(); i++ ) {
+            bytes[i] = (byte) ( ( (int) responseData.get(i) ) & 0xFF );
+        }
+        var certFactory = CertificateFactory.getInstance("X.509");
+        var in = new ByteArrayInputStream(bytes);
+        clientCert = (X509Certificate) certFactory.generateCertificate(in);
+    }
+
+    private void setClientId( final JSONObject responseJson ) {
+        id = responseJson.getString("id");
+    }
+
+    private String sendCertificateRequest( final OkHttpClient client, final Request request ) throws IOException {
+        var response = client.newCall(request).execute();
+        var clientResponse = Objects.requireNonNull(response.body()).string();
+        log.info("Success: " + response.isSuccessful());
+        log.info(clientResponse);
+        return clientResponse;
+    }
+
+    @NotNull
+    private Request getCertificateRequestMessage( final String csrString ) {
+        var clientToCreate = new JSONObject();
+        clientToCreate.put("grants", List.of("client_assertion_type"));
+        clientToCreate.put("pkcs10Data", csrString);
+        clientToCreate.put("userId", "TEST");
+        return new Request.Builder()
+                .url(CLIENT_REGISTRATION_URL)
+                .post(RequestBody.create(clientToCreate.toString(), MediaType.parse("application/json")))
+                .build();
+    }
+
+    private String getCertificateRequest( final PKCS10CertificationRequest csr ) throws IOException {
+        var pemObject = new PemObject("CERTIFICATE REQUEST", csr.getEncoded());
+        var stringWriter = new StringWriter();
+        var pemWriter = new PemWriter(stringWriter);
+        pemWriter.writeObject(pemObject);
+        pemWriter.close();
+        stringWriter.close();
+        return stringWriter.toString();
+    }
+
+    private void setKeyPair() throws NoSuchAlgorithmException {
+        var keyPairGenerator = KeyPairGenerator.getInstance("RSA", new BouncyCastleProvider());
+        keyPairGenerator.initialize(KEYSIZE, new SecureRandom());
+        generatedKeyPair = keyPairGenerator.generateKeyPair();
     }
 
     /**
@@ -164,8 +184,8 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         p10Builder.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_extensionRequest, extensions);
 
         //create csBuilder for signing the request
-        JcaContentSignerBuilder csBuilder = new JcaContentSignerBuilder("SHA256withRSA");
-        ContentSigner signer = csBuilder.build(generatedKeyPair.getPrivate());
+        var csBuilder = new JcaContentSignerBuilder("SHA256withRSA");
+        var signer = csBuilder.build(generatedKeyPair.getPrivate());
 
         //build and return the csr
         return p10Builder.build(signer);
@@ -185,7 +205,47 @@ public class OrbiterTokenManagerService implements TokenManagerService {
             //does this have to happen in the framework or should we expect a keystore provided by the user (like Aisec Daps Client)
             createClient();
         }
-        //build and sign request token
+
+        var token = getRequestToken();
+        var formBody = getRequestBody(token);
+        var request = getRequestMessage(dapsUrl, formBody);
+
+        try {
+            return getDAT(client, request);
+        } catch( IOException e ) {
+            log.warn(e.getMessage(), e);
+            return "";
+        }
+    }
+
+    private String getDAT( final OkHttpClient client, final Request request ) throws IOException {
+        Response jwtResponse = client.newCall(request).execute();
+        var responseJson = new JSONObject(Objects.requireNonNull(jwtResponse.body()).string());
+        var jwtString = responseJson.getString("accessToken");
+        log.info("Response body of token request:\n{}", jwtString);
+        return jwtString;
+    }
+
+    @NotNull
+    private Request getRequestMessage( final String dapsUrl, final RequestBody formBody ) {
+        return new Request.Builder()
+                .url(dapsUrl)
+                .post(formBody)
+                .build();
+    }
+
+    @NotNull
+    private RequestBody getRequestBody( final String token ) {
+        return new FormBody.Builder()
+                .add("grant_type", "client_assertion_type")
+                .add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
+                .add("client_assertion", token)
+                .add("scope", "idsc:IDS_CONNECTOR_ATTRIBUTES_ALL")
+                .add("client_id", id)
+                .build();
+    }
+
+    private String getRequestToken() {
         JwtBuilder jwtb =
                 Jwts.builder()
                     .setIssuer("localhost")
@@ -196,33 +256,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
                     .setAudience("all")
                     .setIssuedAt(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)))
                     .setNotBefore(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
-        var token = jwtb.signWith(SignatureAlgorithm.RS256, generatedKeyPair.getPrivate()).compact();
-
-        //build request formbody
-        RequestBody formBody = new FormBody.Builder()
-                .add("grant_type", "client_assertion_type")
-                .add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
-                .add("client_assertion", token)
-                .add("scope", "idsc:IDS_CONNECTOR_ATTRIBUTES_ALL")
-                .add("client_id", id)
-                .build();
-
-        //send request
-        Request request = new Request.Builder()
-                .url(dapsUrl)
-                .post(formBody)
-                .build();
-        try {
-            //get token from response
-            Response jwtResponse = client.newCall(request).execute();
-            var responseJson = new JSONObject(Objects.requireNonNull(jwtResponse.body()).string());
-            var jwtString = responseJson.getString("accessToken");
-            log.info("Response body of token request:\n{}", jwtString);
-            return jwtString;
-        } catch( IOException e ) {
-            log.warn(e.getMessage(), e);
-            return "";
-        }
+        return jwtb.signWith(SignatureAlgorithm.RS256, generatedKeyPair.getPrivate()).compact();
     }
 
 }
