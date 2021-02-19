@@ -85,10 +85,12 @@ public class ClientProvider {
 
     /**
      * If Connector has a proxy set
-     * @param connector The Config of the Connector
+     *
+     * @param connector     The Config of the Connector
      * @param okHttpBuilder The Builder of the HTTPClient used to send messages
      */
-    private static void handleConnectorProxy( ConfigurationModel connector, OkHttpClient.Builder okHttpBuilder ) {
+    private static void handleConnectorProxy( final ConfigurationModel connector,
+                                              final OkHttpClient.Builder okHttpBuilder ) {
         //if the connector has a proxy set
         if( connector.getConnectorProxy() != null ) {
             //if there is any proxy in the proxylist
@@ -108,13 +110,15 @@ public class ClientProvider {
 
     /**
      * Select the Proxy being used
-     * @param okHttpBuilder The Cuilder of the okHttp Client used for sending messages
+     *
+     * @param okHttpBuilder      The Cuilder of the okHttp Client used for sending messages
      * @param proxyConfiguration the configuration of the proxy to be used
      */
-    private static void setProxySelector( OkHttpClient.Builder okHttpBuilder, de.fraunhofer.iais.eis.Proxy proxyConfiguration ) {
+    private static void setProxySelector( final OkHttpClient.Builder okHttpBuilder,
+                                          final de.fraunhofer.iais.eis.Proxy proxyConfiguration ) {
         var proxySelector = new ProxySelector() {
             @Override
-            public List<Proxy> select( URI uri ) {
+            public List<Proxy> select( final URI uri ) {
                 //create a List of size 1 containing the possible Proxy
                 final List<Proxy> proxyList = new ArrayList<>(1);
                 if( proxyConfiguration.getNoProxy().contains(uri) ) {
@@ -135,7 +139,7 @@ public class ClientProvider {
             }
 
             @Override
-            public void connectFailed( URI uri, SocketAddress sa, IOException ioe ) {
+            public void connectFailed( final URI uri, final SocketAddress sa, final IOException ioe ) {
                 throw new UnsupportedOperationException("The selected Proxy is unavailable!");
             }
         };
@@ -145,18 +149,19 @@ public class ClientProvider {
 
     /**
      * Set the Proxy-Authenticator
-     * @param okHttpBuilder The Cuilder of the okHttp Client used for sending messages
+     *
+     * @param okHttpBuilder      The Cuilder of the okHttp Client used for sending messages
      * @param proxyConfiguration the configuration of the proxy to be used
      */
-    private static void setProxyAuthenticator( OkHttpClient.Builder okHttpBuilder,
-                                               de.fraunhofer.iais.eis.Proxy proxyConfiguration ) {
+    private static void setProxyAuthenticator( final OkHttpClient.Builder okHttpBuilder,
+                                               final de.fraunhofer.iais.eis.Proxy proxyConfiguration ) {
         if( proxyConfiguration.getProxyAuthentication() != null
             && proxyConfiguration.getProxyAuthentication().getAuthUsername() != null
             && proxyConfiguration.getProxyAuthentication().getAuthPassword() != null ) {
             log.debug("Setting Proxy Authenticator");
             Authenticator proxyAuthenticator = ( route, response ) -> {
                 var credential = Credentials.basic(proxyConfiguration.getProxyAuthentication().getAuthUsername(),
-                                                      proxyConfiguration.getProxyAuthentication().getAuthPassword());
+                                                   proxyConfiguration.getProxyAuthentication().getAuthPassword());
                 return response.request().newBuilder()
                                .header("Proxy-Authorization", credential)
                                .build();
@@ -169,11 +174,13 @@ public class ClientProvider {
 
     /**
      * Used only if Connector is in Test-Deployment mode
+     *
      * @param okHttpBuilder the okHTTP-Builder used
+     *
      * @throws NoSuchAlgorithmException exception thrown
-     * @throws KeyManagementException exception thrown
+     * @throws KeyManagementException   exception thrown
      */
-    private static void setAcceptingAllSSLCertificates( OkHttpClient.Builder okHttpBuilder )
+    private static void setAcceptingAllSSLCertificates( final OkHttpClient.Builder okHttpBuilder )
             throws NoSuchAlgorithmException, KeyManagementException {
         log.debug("Test Deployment, use all trusting trustmanager");
         log.warn(
@@ -188,12 +195,14 @@ public class ClientProvider {
 
     /**
      * Sets the SSLSocketFactory of the ohHttpBuilder
-     * @param manager  The KeyStoreManager
+     *
+     * @param manager       The KeyStoreManager
      * @param okHttpBuilder The ohHttpBuilder
+     *
      * @throws NoSuchAlgorithmException exception thrown
-     * @throws KeyManagementException exception thrown
+     * @throws KeyManagementException   exception thrown
      */
-    private static void setSSLSocketFactory( KeyStoreManager manager, OkHttpClient.Builder okHttpBuilder )
+    private static void setSSLSocketFactory( final KeyStoreManager manager, final OkHttpClient.Builder okHttpBuilder )
             throws NoSuchAlgorithmException, KeyManagementException {
         var trustManager = manager.getTrustManager();
         var sslContext = SSLContext.getInstance("TLS");
@@ -204,6 +213,7 @@ public class ClientProvider {
 
     /**
      * Get the Builder for the OkHttpClient
+     *
      * @return the OkHttpClient-Builder
      */
     @NotNull
@@ -214,17 +224,20 @@ public class ClientProvider {
 
     /**
      * Get all trusting TrustManager
+     *
      * @return array of TrustManagers
      */
     private static TrustManager[] getAllTrustingTrustManager() {
         return new TrustManager[]{
                 new X509TrustManager() {
                     @Override
-                    public void checkClientTrusted( java.security.cert.X509Certificate[] chain, String authType ) {
+                    public void checkClientTrusted( final java.security.cert.X509Certificate[] chain,
+                                                    final String authType ) {
                     }
 
                     @Override
-                    public void checkServerTrusted( java.security.cert.X509Certificate[] chain, String authType ) {
+                    public void checkServerTrusted( final java.security.cert.X509Certificate[] chain,
+                                                    final String authType ) {
                     }
 
                     @Override
