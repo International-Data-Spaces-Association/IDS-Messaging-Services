@@ -1,6 +1,7 @@
 package de.fraunhofer.ids.framework.clearinghouse;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import de.fraunhofer.iais.eis.LogMessage;
 import de.fraunhofer.iais.eis.LogMessageBuilder;
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
@@ -15,7 +17,8 @@ import de.fraunhofer.ids.framework.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
 import de.fraunhofer.ids.framework.messaging.protocol.http.HttpService;
 import de.fraunhofer.ids.framework.messaging.util.InfomodelMessageBuilder;
-import okhttp3.Response;
+import okhttp3.*;
+import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +31,8 @@ import static de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils.getGreg
 public class ClearingHouseClientImpl implements ClearingHouseClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClearingHouseClientImpl.class);
+    private static final Serializer SERIALIZER = new Serializer();
+
     private final ClientProvider    clientProvider;
     private final ConfigContainer   configContainer;
     private final DapsTokenProvider dapsTokenProvider;
@@ -48,11 +53,21 @@ public class ClearingHouseClientImpl implements ClearingHouseClient {
     @Override
     public Response sendLogToClearingHouse( String logMessage ) throws ClearingHouseClientException {
         try {
-            var header = buildHeader();
-            var body = InfomodelMessageBuilder.messageWithString(header, logMessage);
-            return httpService.sendWithHeaders(body, new URI(clearingHouseUrl + Math.abs(secureRandom.nextInt())),
-                                               Map.of("Authorization",
-                                                      "Bearer " + dapsTokenProvider.provideDapsToken()));
+            //OkHttp does not support setting Content Type on Multipart Parts directly on creation...
+            var headerHeader = new Headers.Builder()
+                    .add("Content-Disposition: form-data; name=\"header\"")
+                    .build();
+            var headerBody = RequestBody.create(SERIALIZER.serialize(buildHeader()), MediaType.parse("application/json"));
+            var header = MultipartBody.Part.create(headerHeader, headerBody);
+            var id = Math.abs(secureRandom.nextInt());
+            var payloadHeader = new Headers.Builder()
+                    .add("Content-Disposition: form-data; name=\"payload\"")
+                    .build();
+            var payloadBody = RequestBody.create(logMessage, MediaType.parse("application/json"));
+            var payload = MultipartBody.Part.create(payloadHeader, payloadBody);
+            var body = new MultipartBody.Builder().addPart(header).addPart(payload).build();
+
+            return httpService.send(body, new URI(clearingHouseUrl + id));
         } catch( DapsTokenManagerException e ) {
             LOGGER.warn(e.getMessage(), e);
             throw new ClearingHouseClientException("Could not get a DAT for sending the LogMessage!", e);
