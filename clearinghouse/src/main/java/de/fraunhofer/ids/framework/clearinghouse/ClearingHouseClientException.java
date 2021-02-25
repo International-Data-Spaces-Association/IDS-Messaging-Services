@@ -1,13 +1,13 @@
 package de.fraunhofer.ids.framework.clearinghouse;
 
-public class ClearingHouseClientException extends Exception{
-
-    public ClearingHouseClientException(String msg){
-        super(msg);
+public class ClearingHouseClientException extends Exception {
+    /**
+     * Exception which can be thrown while processing sending a log to the Clearing-House
+     *
+     * @param message The message (String) for the exception
+     * @param cause   The actual exception
+     */
+    public ClearingHouseClientException( final String message, final Exception cause ) {
+        super(message, cause);
     }
-
-    public ClearingHouseClientException(String msg, Exception cause){
-        super(msg, cause);
-    }
-
 }
