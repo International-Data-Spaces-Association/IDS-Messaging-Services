@@ -10,6 +10,7 @@ Documentation started on: 2021-01-20.
 - Received RejectionMessages are now passed to the connector-developer, regardless of the status of the DAT within the received RejectionMessage
 - Asynchronous Message-Flow Support (support RequestInProcessMessage-Handling)
 - Initial IDS-Broker support
+- Initial IDS-ClearingHouse support
 - Code refactoring
 
 ## Version 1.5-SNAPSHOT
