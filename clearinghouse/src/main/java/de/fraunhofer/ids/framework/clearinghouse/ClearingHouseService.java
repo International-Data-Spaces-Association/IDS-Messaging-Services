@@ -5,16 +5,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
 
-import de.fraunhofer.iais.eis.LogMessage;
-import de.fraunhofer.iais.eis.LogMessageBuilder;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.QueryLanguage;
-import de.fraunhofer.iais.eis.QueryMessage;
-import de.fraunhofer.iais.eis.QueryMessageBuilder;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
@@ -29,12 +24,10 @@ import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import static de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils.getGregorianNow;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ClearingHouseClientImpl implements ClearingHouseClient {
+public class ClearingHouseService implements IDSClearingHouseService {
     private final Serializer   serializer   = new Serializer();
     private final SecureRandom secureRandom = new SecureRandom();
 
@@ -64,9 +57,10 @@ public class ClearingHouseClientImpl implements ClearingHouseClient {
             throws ClearingHouseClientException {
         try {
             //Build IDS Multipart Message
-            var body = buildMultipartWithInternalHeaders(buildLogMessage(),
-                                                         serializer.serialize(messageToLog),
-                                                         MediaType.parse("application/json"));
+            var body = buildMultipartWithInternalHeaders(
+                    MessageBuilder.buildLogMessage(configContainer, dapsTokenProvider, clearingHouseUrl),
+                    serializer.serialize(messageToLog),
+                    MediaType.parse("application/json"));
 
             //set some random id for message
             return httpService.send(body, new URI(clearingHouseUrl + pid));
@@ -97,7 +91,8 @@ public class ClearingHouseClientImpl implements ClearingHouseClient {
         try {
             //Build IDS Multipart Message
             var body = buildMultipartWithInternalHeaders(
-                    buildQueryMessage(queryLanguage, queryScope, queryTarget),
+                    MessageBuilder.buildQueryMessage(queryLanguage, queryScope, queryTarget, configContainer,
+                                                     dapsTokenProvider, clearingHouseUrl),
                     query,
                     MediaType.parse("text/plain")
             );
@@ -121,49 +116,6 @@ public class ClearingHouseClientImpl implements ClearingHouseClient {
         } catch( IOException e ) {
             return throwClearingHouseException(e, "Error while serializing LogMessage header or sending the request!");
         }
-    }
-
-    /**
-     * @return a LogMessage to be used as Header
-     *
-     * @throws DapsTokenManagerException when {@link DapsTokenProvider} cannot get a Token
-     * @throws URISyntaxException        when clearinghouse.url cannot be parsed as URI
-     */
-    private LogMessage buildLogMessage() throws DapsTokenManagerException, URISyntaxException {
-        var connector = configContainer.getConnector();
-        return new LogMessageBuilder()
-                ._issued_(getGregorianNow())
-                ._modelVersion_(connector.getOutboundModelVersion())
-                ._issuerConnector_(connector.getId())
-                ._senderAgent_(connector.getId())
-                ._securityToken_(dapsTokenProvider.getDAT())
-                ._recipientConnector_(Util.asList(new URI(clearingHouseUrl)))
-                .build();
-    }
-
-    /**
-     * @param queryLanguage Language of the Query
-     * @param queryScope    Scope of the Query
-     * @param queryTarget   Target of the Query
-     *
-     * @return built QueryMessage
-     *
-     * @throws DapsTokenManagerException when {@link DapsTokenProvider} cannot get a Token
-     */
-    private QueryMessage buildQueryMessage( final QueryLanguage queryLanguage,
-                                            final QueryScope queryScope,
-                                            final QueryTarget queryTarget ) throws DapsTokenManagerException {
-        var connector = configContainer.getConnector();
-        return new QueryMessageBuilder()
-                ._securityToken_(dapsTokenProvider.getDAT())
-                ._issued_(getGregorianNow())
-                ._modelVersion_(connector.getOutboundModelVersion())
-                ._issuerConnector_(connector.getId())
-                ._senderAgent_(connector.getId())
-                ._queryLanguage_(queryLanguage)
-                ._queryScope_(queryScope)
-                ._recipientScope_(queryTarget)
-                .build();
     }
 
     /**

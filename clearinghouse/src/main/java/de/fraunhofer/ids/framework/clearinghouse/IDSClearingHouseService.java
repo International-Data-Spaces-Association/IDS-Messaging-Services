@@ -6,7 +6,7 @@ import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import okhttp3.Response;
 
-public interface ClearingHouseClient {
+public interface IDSClearingHouseService {
 
     /**
      * Send a LogMessage with some random pid to ClearingHouse
