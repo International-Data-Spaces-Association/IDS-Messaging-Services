@@ -83,6 +83,14 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
+    public Response send( Request request ) throws IOException {
+        return sendRequest(request, getClientWithSettings());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Response send( final RequestBody requestBody, final URI target ) throws IOException {
         log.debug(String.format("building request to %s", target.toString()));
         var request = buildRequest(requestBody, target);
@@ -253,6 +261,21 @@ public class IdsHttpService implements HttpService {
 
         try {
             response = send(body, target);
+        } catch( IOException e ) {
+            log.warn("Message could not be sent!");
+            throw e;
+        }
+
+        return checkDatFromResponse(response);
+    }
+
+    @Override
+    public Map<String, String> sendAndCheckDat( Request request )
+            throws IOException, FileUploadException, ClaimsException {
+        Response response;
+
+        try {
+            response = send(request);
         } catch( IOException e ) {
             log.warn("Message could not be sent!");
             throw e;

@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
+import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.framework.daps.ClaimsException;
 import de.fraunhofer.ids.framework.messaging.protocol.http.IdsHttpService;
-import okhttp3.RequestBody;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MultipartRequestBuilder;
+import okhttp3.Request;
 import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ public class MessageService {
     /**
      * Send messages in IDS to other actors with choice of the protocol used.
      *
-     * @param body         The RequestBody of the message
+     * @param message      ids:message
      * @param target       The target of the message
      * @param protocolType The selected protocol which should be used for sending (see ProtocolType enum)
      *
@@ -42,26 +44,24 @@ public class MessageService {
      * @throws ClaimsException     something went wrong with the DAT
      * @throws IOException         DAPS or taget could not be reached
      */
-    public Map<String, String> sendIdsMessage( final RequestBody body,
-                                               final URI target,
-                                               final ProtocolType protocolType )
+    public Map<String, String> sendIdsMessage( Message message, URI target, String payload, ProtocolType protocolType )
             throws FileUploadException, ClaimsException, IOException {
-
         switch( protocolType ) {
             case MULTIPART:
-                return httpService.sendAndCheckDat(body, target);
+                MultipartRequestBuilder mrb = new MultipartRequestBuilder();
+                Request request = mrb.build(message, target);
+                return httpService.sendAndCheckDat(request);
             case REST:
                 return null;
-            default:
-                return httpService.sendAndCheckDat(body, target);
         }
+        return null;
     }
 
     /**
      * Send messages in IDS to other actors without choosing a specific protocol, will use Multipart as default.
      *
-     * @param body   The RequestBody of the message
-     * @param target The target of the message
+     * @param message ids:Message
+     * @param target  The target of the message
      *
      * @return returns the response
      *
@@ -69,8 +69,8 @@ public class MessageService {
      * @throws ClaimsException     something went wrong with the DAT
      * @throws IOException         DAPS or taget could not be reached
      */
-    public Map<String, String> sendIdsMessage( final RequestBody body, final URI target )
+    public Map<String, String> sendIdsMessage( Message message, URI target, String payload )
             throws FileUploadException, ClaimsException, IOException {
-        return sendIdsMessage(body, target, ProtocolType.MULTIPART);
+        return sendIdsMessage(message, target, payload, ProtocolType.MULTIPART);
     }
 }
