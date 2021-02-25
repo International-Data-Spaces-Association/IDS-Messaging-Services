@@ -1,20 +1,25 @@
 package de.fraunhofer.ids.framework.daps;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The DefaultVerifier contains some default DAPS verification rules.
  */
+@Slf4j
 public class DapsVerifier {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DapsVerifier.class);
+
+    /**
+     * Utility classes (only static methods and fields) do not have a public constructor.
+     * Instantiating them does not make sense, prevent instantiating.
+     */
+    protected DapsVerifier() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Check notbefore and expiration of the DAT Token Claims
@@ -27,15 +32,14 @@ public class DapsVerifier {
      *
      * @throws ClaimsException when the claims of the DAT cannot be verified
      */
-    public static boolean verify( Jws<Claims> toVerify ) throws ClaimsException {
+    public static boolean verify( final Jws<Claims> toVerify ) throws ClaimsException {
         try {
             Claims body = toVerify.getBody();
             var valid = body.getNotBefore().before(Date.from(Instant.now()));
             valid &= body.getExpiration().after(Date.from(Instant.now()));
-            //TODO more DAT checks
             return valid;
-        }catch (Exception e){
-            LOGGER.warn("Could not verify Claims of the DAT Token!");
+        } catch( Exception e ) {
+            log.warn("Could not verify Claims of the DAT Token!");
             throw new ClaimsException(e.getMessage());
         }
     }

@@ -9,13 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.RejectionMessageBuilder;
+import de.fraunhofer.iais.eis.RejectionReason;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.framework.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
-import de.fraunhofer.ids.framework.messaging.util.MultipartDatapart;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,16 +83,23 @@ public class MessageController {
             log.debug("hand the incoming message to the message dispatcher!");
             final var response = this.messageDispatcher.process(requestHeader, payloadPart.getInputStream());
 
-            //get Response as MultiValueMap
-            final var responseAsMap = createMultiValueMap(response.createMultipartMap(serializer));
+            if( response != null ) {
+                //get Response as MultiValueMap
+                final var responseAsMap = createMultiValueMap(response.createMultipartMap(serializer));
 
-            // return the ResponseEntity as Multipart content with created MultiValueMap
-            log.debug("sending response with status OK (200)");
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .body(responseAsMap);
-
+                // return the ResponseEntity as Multipart content with created MultiValueMap
+                log.debug("sending response with status OK (200)");
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .body(responseAsMap);
+            } else {
+                //if no response-body specified by the implemented handler of the connector (e.g. for received RequestInProcessMessage)
+                log.warn("Implemented Message-Handler didn't return a response!");
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .build();
+            }
         } catch( PreDispatchingFilterException e ) {
             log.error("Error during pre-processing with a PreDispatchingFilter!", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -119,12 +130,14 @@ public class MessageController {
      *
      * @return a MultiValueMap used as ResponseEntity for Spring
      */
-    private MultiValueMap<String, Object> createMultiValueMap( Map<String, Object> map ) {
+    private MultiValueMap<String, Object> createMultiValueMap( final Map<String, Object> map ) {
         log.debug("Creating MultiValueMap for the response");
         var multiMap = new LinkedMultiValueMap<String, Object>();
+
         for( var entry : map.entrySet() ) {
             multiMap.put(entry.getKey(), List.of(entry.getValue()));
         }
+
         return multiMap;
     }
 
@@ -136,13 +149,15 @@ public class MessageController {
      *
      * @return MultiValueMap with given error information that can be used for a multipart response
      */
-    private MultiValueMap<String, Object> createDefaultErrorMessage( RejectionReason rejectionReason,
-                                                                     String errorMessage ) {
+    private MultiValueMap<String, Object> createDefaultErrorMessage( final RejectionReason rejectionReason,
+                                                                     final String errorMessage ) {
         try {
             var rejectionMessage = new RejectionMessageBuilder()
                     ._securityToken_(
-                            new DynamicAttributeTokenBuilder()._tokenFormat_(TokenFormat.JWT)._tokenValue_("rejected!")
-                                                              .build())
+                            new DynamicAttributeTokenBuilder()
+                                    ._tokenFormat_(TokenFormat.JWT)
+                                    ._tokenValue_("rejected!")
+                                    .build())
                     ._correlationMessage_(URI.create("https://INVALID"))
                     ._senderAgent_(configContainer.getConnector().getId())
                     ._modelVersion_(configContainer.getConnector().getOutboundModelVersion())
@@ -150,9 +165,11 @@ public class MessageController {
                     ._issuerConnector_(configContainer.getConnector().getId())
                     ._issued_(IdsMessageUtils.getGregorianNow())
                     .build();
+
             var multiMap = new LinkedMultiValueMap<String, Object>();
             multiMap.put(MultipartDatapart.HEADER.name(), List.of(serializer.serialize(rejectionMessage)));
             multiMap.put(MultipartDatapart.PAYLOAD.name(), List.of(errorMessage));
+
             return multiMap;
         } catch( IOException e ) {
             log.info(e.getMessage(), e);

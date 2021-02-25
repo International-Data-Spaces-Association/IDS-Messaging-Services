@@ -1,6 +1,5 @@
 package de.fraunhofer.ids.framework.config.ssl.truststore;
 
-import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import java.security.KeyStore;
@@ -10,7 +9,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 /**
- *  The IDSTrustStore contains the trusted certificates
+ * The IDSTrustStore contains the trusted certificates
  */
 public class TrustStoreManager {
     /**
@@ -23,7 +22,7 @@ public class TrustStoreManager {
      * @throws NoSuchAlgorithmException if default Truststore cannot be loaded
      * @throws KeyStoreException        if default Truststore cannot be loaded
      */
-    public X509TrustManager configureTrustStore( X509TrustManager myTrustManager )
+    public X509TrustManager configureTrustStore( final X509TrustManager myTrustManager )
             throws NoSuchAlgorithmException, KeyStoreException {
         X509TrustManager jreTrustManager = findDefaultTrustManager();
         return createMergedTrustManager(jreTrustManager, myTrustManager);
@@ -41,7 +40,7 @@ public class TrustStoreManager {
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         KeyStore blank = null;
         tmf.init(blank); // If keyStore is null, tmf will be initialized with the default jvm trust store
-        for( TrustManager tm : tmf.getTrustManagers() ) {
+        for( var tm : tmf.getTrustManagers() ) {
             if( tm instanceof X509TrustManager ) {
                 return (X509TrustManager) tm;
             }
@@ -57,8 +56,8 @@ public class TrustStoreManager {
      *
      * @return a new truststore which will check the IDS Truststore and the default java truststore for certificates
      */
-    private X509TrustManager createMergedTrustManager( X509TrustManager jreTrustManager,
-                                                       X509TrustManager customTrustManager ) {
+    private X509TrustManager createMergedTrustManager( final X509TrustManager jreTrustManager,
+                                                       final X509TrustManager customTrustManager ) {
         return new X509TrustManager() {
 
             @Override
@@ -69,7 +68,8 @@ public class TrustStoreManager {
             }
 
             @Override
-            public void checkServerTrusted( X509Certificate[] chain, String authType ) throws CertificateException {
+            public void checkServerTrusted( final X509Certificate[] chain, final String authType )
+                    throws CertificateException {
                 //if custom trustmanager does not work, just use jre trustmanager
                 try {
                     customTrustManager.checkServerTrusted(chain, authType);
@@ -80,7 +80,8 @@ public class TrustStoreManager {
             }
 
             @Override
-            public void checkClientTrusted( X509Certificate[] chain, String authType ) throws CertificateException {
+            public void checkClientTrusted( final X509Certificate[] chain, final String authType )
+                    throws CertificateException {
                 // If you're planning to use client-cert auth,
                 // do the same as checking the server.
                 jreTrustManager.checkClientTrusted(chain, authType);

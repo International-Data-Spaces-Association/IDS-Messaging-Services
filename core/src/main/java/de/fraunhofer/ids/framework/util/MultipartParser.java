@@ -6,15 +6,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.fileupload.*;
+import lombok.Getter;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.UploadContext;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 
 /**
  * Utility Class for parsing Multipart Maps from String responses
  */
 public class MultipartParser implements UploadContext {
-    private String              postBody;
-    private String              boundary;
+    private String postBody;
+    private String boundary;
+
+    @Getter
     private Map<String, String> parameters = new HashMap<>();
 
     /**
@@ -24,15 +30,14 @@ public class MultipartParser implements UploadContext {
      *
      * @throws FileUploadException if there are problems reading/parsing the postBody.
      */
-    private MultipartParser( String postBody ) throws FileUploadException {
+    private MultipartParser( final String postBody ) throws FileUploadException {
         this.postBody = postBody;
         this.boundary = postBody.substring(2, postBody.indexOf('\n')).trim();
 
-        final FileItemFactory factory = new DiskFileItemFactory();
-        FileUpload upload = new FileUpload(factory);
+        FileUpload upload = new FileUpload(new DiskFileItemFactory());
         List<FileItem> fileItems = upload.parseRequest(this);
 
-        for( FileItem fileItem : fileItems ) {
+        for( var fileItem : fileItems ) {
             if( fileItem.isFormField() ) {
                 //put the parameters into the map as "name, content"
                 parameters.put(fileItem.getFieldName(), fileItem.getString());
@@ -49,17 +54,8 @@ public class MultipartParser implements UploadContext {
      *
      * @throws FileUploadException if there are problems reading/parsing the postBody.
      */
-    public static Map<String, String> stringToMultipart( String postBody ) throws FileUploadException {
+    public static Map<String, String> stringToMultipart( final String postBody ) throws FileUploadException {
         return new MultipartParser(postBody).getParameters();
-    }
-
-    /**
-     * Getter for the parsed Map
-     *
-     * @return the parsed multipart Map
-     */
-    private Map<String, String> getParameters() {
-        return parameters;
     }
 
     //these methods must be implemented because of the UploadContext interface
@@ -79,9 +75,13 @@ public class MultipartParser implements UploadContext {
     }
 
     @Override
-    public int getContentLength() { return -1; }
+    public int getContentLength() {
+        return -1;
+    }
 
     @Override
-    public InputStream getInputStream() { return new ByteArrayInputStream(postBody.getBytes()); }
+    public InputStream getInputStream() {
+        return new ByteArrayInputStream(postBody.getBytes());
+    }
 
 }

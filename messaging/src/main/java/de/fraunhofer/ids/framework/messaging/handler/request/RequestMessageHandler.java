@@ -20,5 +20,5 @@ public interface RequestMessageHandler {
      *
      * @return a MessageHandler for the given messageType or Optional.Empty if no Handler exists
      */
-    <R extends Message> Optional<MessageHandler<R>> resolveHandler( final Class<R> messageType );
+    <R extends Message> Optional<MessageHandler<R>> resolveHandler( Class<R> messageType );
 }

@@ -4,22 +4,39 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
-import java.security.*;
-import java.util.*;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Objects;
+import java.util.Properties;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Methods to hash and sign. Necessary for IDS-Messages.
  */
+@Slf4j
 public class IdsMessageUtils {
-    private static final Logger         LOGGER    = LoggerFactory.getLogger(IdsMessageUtils.class);
-    private static final Base64.Encoder encoder64 = Base64.getEncoder();
-    private static final Serializer     ser       = new Serializer();
+    private static final Base64.Encoder ENCODER_64 = Base64.getEncoder();
+    private static final Serializer     SERIALIZER = new Serializer();
+
+    /**
+     * Utility classes (only static methods and fields) do not have a public constructor.
+     * Instantiating them does not make sense, prevent instantiating.
+     */
+    protected IdsMessageUtils() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Hash a value with a given MessageDigest
@@ -29,9 +46,9 @@ public class IdsMessageUtils {
      *
      * @return Hash value of the input String
      */
-    public static String hash( MessageDigest digest, String value ) {
+    public static String hash( final MessageDigest digest, final String value ) {
         digest.update(value.getBytes());
-        return encoder64.encodeToString(digest.digest());
+        return ENCODER_64.encodeToString(digest.digest());
     }
 
     /**
@@ -46,11 +63,11 @@ public class IdsMessageUtils {
      * @throws InvalidKeyException if the private key is invalid.
      * @throws SignatureException  if the signature cannot properly be initialized.
      */
-    public static String sign( Signature privateSignature, String value, PrivateKey privateKey )
+    public static String sign( final Signature privateSignature, final String value, final PrivateKey privateKey )
             throws InvalidKeyException, SignatureException {
         privateSignature.initSign(privateKey);
         privateSignature.update(value.getBytes());
-        return encoder64.encodeToString(privateSignature.sign());
+        return ENCODER_64.encodeToString(privateSignature.sign());
     }
 
     /**
@@ -62,7 +79,7 @@ public class IdsMessageUtils {
      * @return elements as {@code ArrayList<T>}
      */
     @SafeVarargs
-    public static <T> ArrayList<T> asList( T... elements ) {
+    public static <T> ArrayList<T> asList( final T... elements ) {
         return new ArrayList<>(Arrays.asList(elements));
     }
 
@@ -74,16 +91,17 @@ public class IdsMessageUtils {
      *
      * @return the pom value
      */
-    public static String getProjectProperty( String property ) {
+    public static String getProjectProperty( final String property ) {
 
         //read /main/resources/project/properties
-        LOGGER.debug(String.format("Trying to read Property %s from pom.xml properties", property));
-        Properties properties = new Properties();
+        log.debug(String.format("Trying to read Property %s from pom.xml properties", property));
+        var properties = new Properties();
         try {
             properties.load(
-                    Objects.requireNonNull(IdsMessageUtils.class.getClassLoader().getResourceAsStream("project.properties")));
+                    Objects.requireNonNull(
+                            IdsMessageUtils.class.getClassLoader().getResourceAsStream("project.properties")));
         } catch( IOException e ) {
-            LOGGER.info(e.getMessage());
+            log.info(e.getMessage());
         }
 
         //get property (might be null if not correct)
@@ -96,12 +114,12 @@ public class IdsMessageUtils {
      * @return XMLGregorianCalendar containing the current time stamp as {@link XMLGregorianCalendar}.
      */
     public static XMLGregorianCalendar getGregorianNow() {
-        GregorianCalendar c = new GregorianCalendar();
-        c.setTime(new Date());
+        var calendar = new GregorianCalendar();
+        calendar.setTime(new Date());
         try {
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+            return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
         } catch( DatatypeConfigurationException e ) {
-            LOGGER.info(e.getMessage());
+            log.info(e.getMessage());
         }
         return null;
     }
@@ -115,8 +133,8 @@ public class IdsMessageUtils {
      *
      * @throws IOException when the connector cannot be serialized
      */
-    public static String buildSelfDeclaration( ConfigurationModel model ) throws IOException {
-        return ser.serialize(model.getConnectorDescription());
+    public static String buildSelfDeclaration( final ConfigurationModel model ) throws IOException {
+        return SERIALIZER.serialize(model.getConnectorDescription());
     }
 
     /**
@@ -129,6 +147,6 @@ public class IdsMessageUtils {
      * @throws IOException when the connector cannot be serialized
      */
     public static String buildSelfDeclaration( Connector model ) throws IOException {
-        return ser.serialize(model);
+        return SERIALIZER.serialize(model);
     }
 }

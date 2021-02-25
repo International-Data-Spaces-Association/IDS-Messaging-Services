@@ -5,30 +5,29 @@ import java.security.Key;
 import java.util.Map;
 
 import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.RejectionMessageImpl;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import de.fraunhofer.ids.framework.util.MultipartParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileUploadException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
  * The DapsValidator checks the DAPS Token of a RequestMessage using a public signingKey
  */
+@Slf4j
 @Service
 public class DapsValidator {
-
     private DapsPublicKeyProvider keyProvider;
     private Serializer            serializer = new Serializer();
 
-    public DapsValidator( DapsPublicKeyProvider keyProvider ) {
+    public DapsValidator( final DapsPublicKeyProvider keyProvider ) {
         this.keyProvider = keyProvider;
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DapsValidator.class);
 
     /**
      * Extract the Claims from the Dat token of a message, given the Message and a signingKey
@@ -40,14 +39,14 @@ public class DapsValidator {
      *
      * @throws ClaimsException if Token cannot be signed with the given key
      */
-    public static Jws<Claims> getClaims( Message message, Key signingKey ) throws ClaimsException {
-        String tokenValue = message.getSecurityToken().getTokenValue();
+    public static Jws<Claims> getClaims( final Message message, final Key signingKey ) throws ClaimsException {
+        var tokenValue = message.getSecurityToken().getTokenValue();
         try {
             return Jwts.parser()
                        .setSigningKey(signingKey)
                        .parseClaimsJws(tokenValue);
         } catch( Exception e ) {
-            LOGGER.warn("Could not parse incoming JWT/DAT!");
+            log.warn("Could not parse incoming JWT/DAT!");
             throw new ClaimsException(e.getMessage());
         }
     }
@@ -59,18 +58,24 @@ public class DapsValidator {
      *
      * @return true if DAT of Message is valid
      */
-    public boolean checkDat( Message message ) {
+    public boolean checkDat( final Message message ) {
+        //Don't check DAT of RejectionMessages
+        if( message instanceof RejectionMessageImpl ) {
+            log.warn("RejectionMessage, skipping DAT check!");
+            return true;
+        }
+
         Jws<Claims> claims;
         try {
             claims = getClaims(message, keyProvider.providePublicKey());
         } catch( ClaimsException e ) {
-            LOGGER.warn("Daps token of response could not be pased!");
+            log.warn("Daps token of response could not be pased!");
             return false;
         }
         try {
             return DapsVerifier.verify(claims);
         } catch( ClaimsException e ) {
-            LOGGER.warn("Claims could not be verified!");
+            log.warn("Claims could not be verified!");
             return false;
         }
     }
@@ -82,19 +87,19 @@ public class DapsValidator {
      *
      * @return true if DAT of response is valid
      */
-    public boolean checkDat( String responseBody ) {
+    public boolean checkDat( final String responseBody ) {
         Map<String, String> responseMap;
         Message responseHeader;
         try {
             responseMap = MultipartParser.stringToMultipart(responseBody);
         } catch( FileUploadException e ) {
-            LOGGER.warn("Response cannot be parsed to multipart!");
+            log.warn("Response cannot be parsed to multipart!");
             return false;
         }
         try {
-            responseHeader = serializer.deserialize(responseMap.get("header"), Message.class);
+            responseHeader = serializer.deserialize(responseMap.get(MultipartDatapart.HEADER.name()), Message.class);
         } catch( IOException e ) {
-            LOGGER.warn("Response header cannot be deserialized to IDS Message!");
+            log.warn("Response header cannot be deserialized to IDS Message!");
             return false;
         }
         return checkDat(responseHeader);

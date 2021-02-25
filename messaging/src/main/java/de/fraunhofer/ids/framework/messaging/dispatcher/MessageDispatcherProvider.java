@@ -18,10 +18,10 @@ public class MessageDispatcherProvider {
      * Make use of autowiring to get the parameters for the MessageDispatchers constructor and
      * create an Instance of MessageDispatcher with them.
      *
-     * @param objectMapper           for parsing objects from json
-     * @param provider               providing DAPS public key for checking DAT Tokens
+     * @param objectMapper    for parsing objects from json
+     * @param provider        providing DAPS public key for checking DAT Tokens
      * @param configContainer container for current configuration
-     * @param resolver               resolver for finding the right handler for infomodel {@link de.fraunhofer.iais.eis.Message}
+     * @param resolver        resolver for finding the right handler for infomodel {@link de.fraunhofer.iais.eis.Message}
      *
      * @return MessageDispatcher as Spring Bean
      */

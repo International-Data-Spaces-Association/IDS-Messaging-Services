@@ -1,4 +1,4 @@
-package de.fraunhofer.ids.framework.messaging.util;
+package de.fraunhofer.ids.framework.util;
 
 public enum MultipartDatapart {
     HEADER("header"),
@@ -6,10 +6,14 @@ public enum MultipartDatapart {
 
     private final String name;
 
-    MultipartDatapart( String name ) {
+    MultipartDatapart( final String name ) {
         this.name = name;
     }
 
+    /**
+     * One way to get the Name of the enum-item
+     * @return name of tje enum item
+     */
     public String toString() {
         return this.name;
     }

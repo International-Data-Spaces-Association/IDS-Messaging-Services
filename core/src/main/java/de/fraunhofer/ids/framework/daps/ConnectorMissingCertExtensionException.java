@@ -10,7 +10,7 @@ public class ConnectorMissingCertExtensionException extends DapsTokenManagerExce
      *
      * @param message the error message to be included with the exception
      */
-    public ConnectorMissingCertExtensionException( String message) {
+    public ConnectorMissingCertExtensionException( final String message ) {
         super(message);
     }
 
