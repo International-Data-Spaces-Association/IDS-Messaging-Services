@@ -12,6 +12,7 @@
     <modules>
         <module>core</module>
         <module>messaging</module>
+        <module>clearinghouse</module>
         <module>broker</module>
     </modules>
 
@@ -58,7 +59,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.9.0</version>
+            <version>4.9.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
