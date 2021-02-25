@@ -8,7 +8,7 @@ import java.util.UUID;
  * Utility for generating Resource IDs for infomodel builders
  */
 public final class ResourceIDGenerator {
-    private static final String URIBase = "https://w3id.org/idsa/autogen";
+    private static final String URI_BASE = "https://w3id.org/idsa/autogen";
 
     private ResourceIDGenerator() { }
 
@@ -19,9 +19,9 @@ public final class ResourceIDGenerator {
      *
      * @return a random URI ID
      */
-    public static URI randomURI( Class<?> callerClazz ) {
+    public static URI randomURI( final Class<?> callerClazz ) {
         try {
-            return new URI(String.format("%s/%s/%s", URIBase, callerClazz.getSimpleName(), UUID.randomUUID()));
+            return new URI(String.format("%s/%s/%s", URI_BASE, callerClazz.getSimpleName(), UUID.randomUUID()));
         } catch( URISyntaxException e ) {
             throw new RuntimeException(e);
         }

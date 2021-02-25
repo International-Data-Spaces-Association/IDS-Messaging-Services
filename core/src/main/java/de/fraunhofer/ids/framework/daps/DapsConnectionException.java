@@ -9,7 +9,7 @@ public class DapsConnectionException extends DapsTokenManagerException {
      *
      * @param message the error message to be included with the exception
      */
-    public DapsConnectionException( String message ) {
+    public DapsConnectionException( final String message ) {
         super(message);
     }
 }

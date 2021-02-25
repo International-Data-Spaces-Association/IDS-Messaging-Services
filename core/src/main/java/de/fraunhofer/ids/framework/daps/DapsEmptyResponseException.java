@@ -10,7 +10,7 @@ public class DapsEmptyResponseException extends DapsTokenManagerException {
      *
      * @param message the error message to be included with the exception
      */
-    public DapsEmptyResponseException( String message) {
+    public DapsEmptyResponseException( final String message ) {
         super(message);
     }
 

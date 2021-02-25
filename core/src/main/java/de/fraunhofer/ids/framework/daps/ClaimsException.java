@@ -10,5 +10,7 @@ public class ClaimsException extends Exception {
      *
      * @param message the error message to be included with the exception
      */
-    public ClaimsException( String message ) {super(message);}
+    public ClaimsException( final String message ) {
+        super(message);
+    }
 }

@@ -11,7 +11,7 @@ public class KeyStoreManagerInitializationException extends Exception {
      * @param message error message of the exception
      * @param cause   cause for the exception
      */
-    public KeyStoreManagerInitializationException( String message, Throwable cause ) {
+    public KeyStoreManagerInitializationException( final String message, final Throwable cause ) {
         super(message, cause);
     }
 }
