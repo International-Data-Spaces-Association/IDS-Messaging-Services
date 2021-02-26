@@ -56,8 +56,8 @@ public class BodyResponse<T extends Message> implements MessageResponse {
     @Override
     public Map<String, Object> createMultipartMap( final Serializer serializer ) throws IOException {
         var multiMap = new LinkedHashMap<String, Object>();
-        multiMap.put(MultipartDatapart.HEADER.name(), serializer.serialize(header));
-        multiMap.put(MultipartDatapart.PAYLOAD.name(), payload);
+        multiMap.put(MultipartDatapart.HEADER.toString(), serializer.serialize(header));
+        multiMap.put(MultipartDatapart.PAYLOAD.toString(), payload);
         return multiMap;
     }
 }
