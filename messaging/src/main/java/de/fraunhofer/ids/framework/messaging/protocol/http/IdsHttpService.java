@@ -15,13 +15,7 @@ import de.fraunhofer.ids.framework.util.MultipartParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.stereotype.Service;
 
@@ -37,15 +31,10 @@ public class IdsHttpService implements HttpService {
     private ConfigContainer configContainer;
 
     /**
-     * Constructor of IdsHttpService
-     *
-     * @param provider        the {@link ClientProvider} used to generate HttpClients with the current connector configuration
-     * @param configContainer The Configuration of the Connector
-     * @param dapsValidator   The DAPS DAT Validator
+     * @param provider the {@link ClientProvider} used to generate HttpClients with the current connector configuration
      */
-    public IdsHttpService( final ClientProvider provider,
-                           final DapsValidator dapsValidator,
-                           final ConfigContainer configContainer ) {
+    public IdsHttpService( ClientProvider provider, DapsValidator dapsValidator,
+                           ConfigContainer configContainer ) {
         this.provider = provider;
         this.dapsValidator = dapsValidator;
         this.configContainer = configContainer;
@@ -55,8 +44,8 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public void setTimeouts( final Duration connectTimeout, final Duration readTimeout, final Duration writeTimeout,
-                             final Duration callTimeout ) {
+    public void setTimeouts( Duration connectTimeout, Duration readTimeout, Duration writeTimeout,
+                             Duration callTimeout ) {
         this.timeoutSettings = new TimeoutSettings(connectTimeout, readTimeout, writeTimeout, callTimeout);
     }
 
@@ -72,7 +61,7 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response send( final String message, final URI target ) throws IOException {
+    public Response send( String message, URI target ) throws IOException {
         log.debug("Creating requestBody");
         var body = RequestBody.create(message, MediaType.parse("application/json"));
 
@@ -83,15 +72,7 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response send( Request request ) throws IOException {
-        return sendRequest(request, getClientWithSettings());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Response send( final RequestBody requestBody, final URI target ) throws IOException {
+    public Response send( RequestBody requestBody, URI target ) throws IOException {
         log.debug(String.format("building request to %s", target.toString()));
         var request = buildRequest(requestBody, target);
 
@@ -103,9 +84,7 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response sendWithHeaders( final RequestBody requestBody,
-                                     final URI target,
-                                     final Map<String, String> headers )
+    public Response sendWithHeaders( RequestBody requestBody, URI target, Map<String, String> headers )
             throws IOException {
         log.debug(String.format("building request to %s", target.toString()));
         var request = buildWithHeaders(requestBody, target, headers);
@@ -118,7 +97,7 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response get( final URI target ) throws IOException {
+    public Response get( URI target ) throws IOException {
         var request = new Request.Builder().url(target.toString()).get().build();
         return sendRequest(request, getClientWithSettings());
     }
@@ -127,7 +106,7 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response getWithHeaders( final URI target, final Map<String, String> headers ) throws IOException {
+    public Response getWithHeaders( URI target, Map<String, String> headers ) throws IOException {
         var builder = new Request.Builder().url(target.toString()).get();
 
         headers.keySet().forEach(key -> {
@@ -144,11 +123,10 @@ public class IdsHttpService implements HttpService {
      * Build a {@link Request} from given {@link RequestBody} and target {@link URI}
      *
      * @param requestBody {@link RequestBody} object to be sent
-     * @param target      The target-URI of the request
      *
      * @return the built http {@link Request}
      */
-    private Request buildRequest( final RequestBody requestBody, final URI target ) {
+    private Request buildRequest( RequestBody requestBody, URI target ) {
         var targetURL = target.toString();
         log.info("URL is valid: " + HttpUrl.parse(targetURL));
 
@@ -163,14 +141,11 @@ public class IdsHttpService implements HttpService {
      * add extra header fields provided in headers map-.
      *
      * @param requestBody {@link RequestBody} object to be sent
-     * @param target      The target-URI of the request
      * @param headers     a Map of http headers for the header of the built request
      *
      * @return the build http {@link Request}
      */
-    private Request buildWithHeaders( final RequestBody requestBody,
-                                      final URI target,
-                                      final Map<String, String> headers ) {
+    private Request buildWithHeaders( RequestBody requestBody, URI target, Map<String, String> headers ) {
         var targetURL = target.toString();
         log.info("URL is valid: " + HttpUrl.parse(targetURL));
 
@@ -200,7 +175,7 @@ public class IdsHttpService implements HttpService {
      *
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
-    private Response sendRequest( final Request request, final OkHttpClient client ) throws IOException {
+    private Response sendRequest( Request request, OkHttpClient client ) throws IOException {
         log.info("Request is HTTPS: " + request.isHttps());
 
         var response = client.newCall(request).execute();
@@ -221,7 +196,7 @@ public class IdsHttpService implements HttpService {
      * @param client   {@link OkHttpClient} for sending Request
      * @param callback {@link Callback} for response handling
      */
-    private void sendAsyncRequest( final Request request, final OkHttpClient client, final Callback callback ) {
+    private void sendAsyncRequest( Request request, OkHttpClient client, Callback callback ) {
         log.info("Request is HTTPS: " + request.isHttps());
 
         client.newCall(request).enqueue(callback);
@@ -255,7 +230,7 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, String> sendAndCheckDat( final RequestBody body, final URI target )
+    public Map<String, String> sendAndCheckDat( RequestBody body, URI target )
             throws IOException, FileUploadException, ClaimsException {
         Response response;
 
@@ -269,28 +244,11 @@ public class IdsHttpService implements HttpService {
         return checkDatFromResponse(response);
     }
 
-    @Override
-    public Map<String, String> sendAndCheckDat( Request request )
-            throws IOException, FileUploadException, ClaimsException {
-        Response response;
-
-        try {
-            response = send(request);
-        } catch( IOException e ) {
-            log.warn("Message could not be sent!");
-            throw e;
-        }
-
-        return checkDatFromResponse(response);
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public Map<String, String> sendWithHeadersAndCheckDat( final RequestBody body,
-                                                           final URI target,
-                                                           final Map<String, String> headers )
+    public Map<String, String> sendWithHeadersAndCheckDat( RequestBody body, URI target, Map<String, String> headers )
             throws IOException, FileUploadException, ClaimsException {
         Response response;
 
@@ -313,7 +271,7 @@ public class IdsHttpService implements HttpService {
      * @throws FileUploadException if response cannot be parsed to multipart map
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
-    private Map<String, String> checkDatFromResponse( final Response response )
+    private Map<String, String> checkDatFromResponse( Response response )
             throws IOException, ClaimsException, FileUploadException {
         //if connector is set to test deployment: ignore DAT Tokens
         var ignoreDAT =

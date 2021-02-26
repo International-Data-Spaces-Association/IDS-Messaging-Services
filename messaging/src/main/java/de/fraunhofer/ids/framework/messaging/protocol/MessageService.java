@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
-import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.framework.daps.ClaimsException;
 import de.fraunhofer.ids.framework.messaging.protocol.http.IdsHttpService;
-import de.fraunhofer.ids.framework.messaging.protocol.multipart.MultipartRequestBuilder;
-import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,23 +32,19 @@ public class MessageService {
     /**
      * Send messages in IDS to other actors with choice of the protocol used.
      *
-     * @param message      ids:message
-     * @param target       The target of the message
+     * @param body The RequestBody of the message
+     * @param target The target of the message
      * @param protocolType The selected protocol which should be used for sending (see ProtocolType enum)
-     *
      * @return returns the response
-     *
      * @throws FileUploadException something went wrong with the file attached (if there was one)
-     * @throws ClaimsException     something went wrong with the DAT
-     * @throws IOException         DAPS or taget could not be reached
+     * @throws ClaimsException something went wrong with the DAT
+     * @throws IOException DAPS or taget could not be reached
      */
-    public Map<String, String> sendIdsMessage( Message message, URI target, String payload, ProtocolType protocolType )
+    public Map<String, String> sendIdsMessage( RequestBody body, URI target, ProtocolType protocolType )
             throws FileUploadException, ClaimsException, IOException {
         switch( protocolType ) {
             case MULTIPART:
-                MultipartRequestBuilder mrb = new MultipartRequestBuilder();
-                Request request = mrb.build(message, target);
-                return httpService.sendAndCheckDat(request);
+                return httpService.sendAndCheckDat(body, target);
             case REST:
                 return null;
         }
@@ -59,18 +53,15 @@ public class MessageService {
 
     /**
      * Send messages in IDS to other actors without choosing a specific protocol, will use Multipart as default.
-     *
-     * @param message ids:Message
-     * @param target  The target of the message
-     *
+     * @param body The RequestBody of the message
+     * @param target The target of the message
      * @return returns the response
-     *
      * @throws FileUploadException something went wrong with the file attached (if there was one)
-     * @throws ClaimsException     something went wrong with the DAT
-     * @throws IOException         DAPS or taget could not be reached
+     * @throws ClaimsException something went wrong with the DAT
+     * @throws IOException DAPS or taget could not be reached
      */
-    public Map<String, String> sendIdsMessage( Message message, URI target, String payload )
+    public Map<String, String> sendIdsMessage( RequestBody body, URI target )
             throws FileUploadException, ClaimsException, IOException {
-        return sendIdsMessage(message, target, payload, ProtocolType.MULTIPART);
+        return sendIdsMessage(body, target, ProtocolType.MULTIPART);
     }
 }

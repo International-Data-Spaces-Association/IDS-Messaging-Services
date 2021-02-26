@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.util.Map;
 
 import de.fraunhofer.ids.framework.daps.ClaimsException;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.apache.commons.fileupload.FileUploadException;
@@ -38,17 +37,6 @@ public interface HttpService {
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
     Response send( String message, URI target ) throws IOException;
-
-    /**
-     * Sends http(s) request.
-     *
-     * @param request @link okhttp3.{@link okhttp3.Request}
-     *
-     * @return the HttpResponse that comes back for the sent Message
-     *
-     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
-     */
-    Response send( Request request ) throws IOException;
 
     /**
      * Sends a given requestBody as http(s) request to the defined in address.
@@ -111,18 +99,6 @@ public interface HttpService {
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendAndCheckDat( RequestBody body, URI target )
-            throws IOException, FileUploadException, ClaimsException;
-
-    /**
-     * @param request requestBody to be sent
-     *
-     * @return Multipart Map with header and payload part of response
-     *
-     * @throws IOException         if request cannot be sent
-     * @throws FileUploadException if response cannot be parsed to multipart map
-     * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
-     */
-    Map<String, String> sendAndCheckDat( Request request )
             throws IOException, FileUploadException, ClaimsException;
 
     /**
