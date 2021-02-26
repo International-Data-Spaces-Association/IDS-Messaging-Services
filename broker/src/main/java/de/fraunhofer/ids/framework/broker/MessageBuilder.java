@@ -186,8 +186,8 @@ public class MessageBuilder {
     public static MultipartBody buildRequestBody( final String header, final String payload ) {
         var builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart(MultipartDatapart.HEADER.name(), header);
-        builder.addFormDataPart(MultipartDatapart.PAYLOAD.name(), payload);
+        builder.addFormDataPart(MultipartDatapart.HEADER.toString(), header);
+        builder.addFormDataPart(MultipartDatapart.PAYLOAD.toString(), payload);
         return builder.build();
     }
 

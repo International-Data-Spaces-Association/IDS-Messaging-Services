@@ -97,7 +97,7 @@ public class DapsValidator {
             return false;
         }
         try {
-            responseHeader = serializer.deserialize(responseMap.get(MultipartDatapart.HEADER.name()), Message.class);
+            responseHeader = serializer.deserialize(responseMap.get(MultipartDatapart.HEADER.toString()), Message.class);
         } catch( IOException e ) {
             log.warn("Response header cannot be deserialized to IDS Message!");
             return false;

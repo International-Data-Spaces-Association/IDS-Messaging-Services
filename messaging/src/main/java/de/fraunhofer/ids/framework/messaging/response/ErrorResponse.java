@@ -94,8 +94,8 @@ public class ErrorResponse implements MessageResponse {
     @Override
     public Map<String, Object> createMultipartMap( final Serializer serializer ) throws IOException {
         var multiMap = new LinkedHashMap<String, Object>();
-        multiMap.put(MultipartDatapart.HEADER.name(), serializer.serialize(rejectionMessage));
-        multiMap.put(MultipartDatapart.PAYLOAD.name(), errorMessage);
+        multiMap.put(MultipartDatapart.HEADER.toString(), serializer.serialize(rejectionMessage));
+        multiMap.put(MultipartDatapart.PAYLOAD.toString(), errorMessage);
         return multiMap;
     }
 }

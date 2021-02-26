@@ -29,7 +29,7 @@ public class InfomodelMessageBuilder {
     private InfomodelMessageBuilder( Message header ) throws IOException {
         this.builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart(MultipartDatapart.HEADER.name(), SERIALIZER.serialize(header));
+        builder.addFormDataPart(MultipartDatapart.HEADER.toString(), SERIALIZER.serialize(header));
     }
 
     /**
@@ -72,7 +72,7 @@ public class InfomodelMessageBuilder {
      * @param payload the (String) payload that is added to the MultipartMessages Payload
      */
     private void addPayload( final String payload ) {
-        builder.addFormDataPart(MultipartDatapart.PAYLOAD.name(), payload);
+        builder.addFormDataPart(MultipartDatapart.PAYLOAD.toString(), payload);
     }
 
     /**
@@ -82,7 +82,7 @@ public class InfomodelMessageBuilder {
      * @param fileType the MediaType of the file
      */
     private void addPayload( final File file, final MediaType fileType ) {
-        builder.addFormDataPart(MultipartDatapart.PAYLOAD.name(), file.getName(), RequestBody.create(file, fileType));
+        builder.addFormDataPart(MultipartDatapart.PAYLOAD.toString(), file.getName(), RequestBody.create(file, fileType));
     }
 
     /**

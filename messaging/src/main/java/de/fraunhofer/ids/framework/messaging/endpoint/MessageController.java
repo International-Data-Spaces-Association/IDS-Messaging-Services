@@ -61,8 +61,8 @@ public class MessageController {
     @Transactional
     public ResponseEntity<MultiValueMap<String, Object>> handleIDSMessage( final HttpServletRequest request ) {
         try {
-            final var headerPart = request.getPart(MultipartDatapart.HEADER.name());
-            final var payloadPart = request.getPart(MultipartDatapart.PAYLOAD.name());
+            final var headerPart = request.getPart(MultipartDatapart.HEADER.toString());
+            final var payloadPart = request.getPart(MultipartDatapart.PAYLOAD.toString());
 
             if( headerPart == null || payloadPart == null ) {
                 log.debug("header or payload of incoming message were empty!");
@@ -167,8 +167,8 @@ public class MessageController {
                     .build();
 
             var multiMap = new LinkedMultiValueMap<String, Object>();
-            multiMap.put(MultipartDatapart.HEADER.name(), List.of(serializer.serialize(rejectionMessage)));
-            multiMap.put(MultipartDatapart.PAYLOAD.name(), List.of(errorMessage));
+            multiMap.put(MultipartDatapart.HEADER.toString(), List.of(serializer.serialize(rejectionMessage)));
+            multiMap.put(MultipartDatapart.PAYLOAD.toString(), List.of(errorMessage));
 
             return multiMap;
         } catch( IOException e ) {
