@@ -26,8 +26,7 @@ public class RequestUtils {
             copy.body().writeTo(buffer);
             return ( buffer.readUtf8() );
         } catch( final IOException e ) {
-            log.error(e);
-            ;
+            log.error(e.getClass().toString()+": printing failed.");
         }
         return "";
     }

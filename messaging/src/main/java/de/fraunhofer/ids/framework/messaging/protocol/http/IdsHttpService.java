@@ -72,6 +72,14 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
+    public Response send( Request request ) throws IOException {
+        return sendRequest(request, getClientWithSettings());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Response send( RequestBody requestBody, URI target ) throws IOException {
         log.debug(String.format("building request to %s", target.toString()));
         var request = buildRequest(requestBody, target);
