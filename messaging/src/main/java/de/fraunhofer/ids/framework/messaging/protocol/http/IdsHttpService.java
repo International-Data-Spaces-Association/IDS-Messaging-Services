@@ -7,10 +7,14 @@ import java.util.Map;
 import java.util.Objects;
 
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.RejectionMessage;
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.daps.ClaimsException;
 import de.fraunhofer.ids.framework.daps.DapsValidator;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import de.fraunhofer.ids.framework.util.MultipartParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,15 +33,17 @@ public class IdsHttpService implements HttpService {
     private TimeoutSettings timeoutSettings;
     private DapsValidator   dapsValidator;
     private ConfigContainer configContainer;
+    private Serializer serializer;
 
     /**
      * @param provider the {@link ClientProvider} used to generate HttpClients with the current connector configuration
      */
     public IdsHttpService( ClientProvider provider, DapsValidator dapsValidator,
-                           ConfigContainer configContainer ) {
+                           ConfigContainer configContainer, Serializer serializer ) {
         this.provider = provider;
         this.dapsValidator = dapsValidator;
         this.configContainer = configContainer;
+        this.serializer = serializer;
     }
 
     /**
@@ -285,8 +291,13 @@ public class IdsHttpService implements HttpService {
         var ignoreDAT =
                 configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
         var responseString = Objects.requireNonNull(response.body()).string();
-        var valid = ignoreDAT || dapsValidator.checkDat(responseString);
-
+        var multipartResponse = MultipartParser.stringToMultipart(responseString);
+        var messageJson = multipartResponse.get(MultipartDatapart.HEADER.toString());
+        var message = serializer.deserialize(messageJson, Message.class);
+        var valid = true;
+        if(!ignoreDAT && !(message instanceof RejectionMessage)){
+            valid = dapsValidator.checkDat(message.getSecurityToken());
+        }
         if( !valid ) {
             log.warn("DAT of incoming response is not valid!");
             throw new ClaimsException("DAT of incoming response is not valid!");
