@@ -24,6 +24,8 @@ import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.swing.plaf.multi.MultiOptionPaneUI;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -130,6 +132,8 @@ public class ClearingHouseService implements IDSClearingHouseService {
     private MultipartBody buildMultipartWithInternalHeaders( final Message headerMessage,
                                                              final String payloadContent,
                                                              final MediaType payloadType ) throws IOException {
+
+        var bodyBuilder = new MultipartBody.Builder();
         //OkHttp does not support setting Content Type on Multipart Parts directly on creation, workaround
         //Create Header for header Part of IDS Multipart Message
         var headerHeader = new Headers.Builder()
@@ -137,23 +141,26 @@ public class ClearingHouseService implements IDSClearingHouseService {
                 .build();
 
         //Create RequestBody for header Part of IDS Multipart Message (with json content-type)
-        var headerBody = RequestBody.create(serializer.serialize(headerMessage), MediaType.parse("application/json"));
+        var headerBody = RequestBody.create(serializer.serialize(headerMessage), MediaType.parse("application/json+ld"));
 
         //Create header Part of Multipart Message
         var header = MultipartBody.Part.create(headerHeader, headerBody);
+        bodyBuilder.addPart(header);
 
-        //Create Header for payload Part of IDS Multipart Message
-        var payloadHeader = new Headers.Builder()
-                .add("Content-Disposition: form-data; name=\"payload\"")
-                .build();
+        if(payloadContent != null && !payloadContent.isBlank()) {
+            //Create Header for payload Part of IDS Multipart Message
+            var payloadHeader = new Headers.Builder()
+                    .add("Content-Disposition: form-data; name=\"payload\"")
+                    .build();
 
-        //Create RequestBody for payload Part of IDS Multipart Message (with json content-type)
-        var payloadBody = RequestBody.create(payloadContent, payloadType);
+            //Create RequestBody for payload Part of IDS Multipart Message (with json content-type)
+            var payloadBody = RequestBody.create(payloadContent, payloadType);
 
-        //Create payload Part of Multipart Message
-        var payload = MultipartBody.Part.create(payloadHeader, payloadBody);
-
+            //Create payload Part of Multipart Message
+            var payload = MultipartBody.Part.create(payloadHeader, payloadBody);
+            bodyBuilder.addPart(payload);
+        }
         //Build IDS Multipart Message
-        return new MultipartBody.Builder().addPart(header).addPart(payload).build();
+        return bodyBuilder.setType(MediaType.parse("multipart/form-data")).build();
     }
 }
