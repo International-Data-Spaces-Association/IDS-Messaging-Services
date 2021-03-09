@@ -12,6 +12,7 @@ Documentation started on: 2021-01-20.
 - Initial IDS-Broker support
 - Initial IDS-ClearingHouse support
 - Code refactoring
+- MessageController now accepts messages with empty payloads (as required by AppStore, IDS-Framework implementation)
 
 ## Version 1.5-SNAPSHOT
 ### Removed

@@ -64,11 +64,11 @@ public class MessageController {
             final var headerPart = request.getPart(MultipartDatapart.HEADER.toString());
             final var payloadPart = request.getPart(MultipartDatapart.PAYLOAD.toString());
 
-            if( headerPart == null || payloadPart == null ) {
-                log.debug("header or payload of incoming message were empty!");
+            if( headerPart == null ) {
+                log.debug("header of incoming message were empty!");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                      .body(createDefaultErrorMessage(RejectionReason.MALFORMED_MESSAGE,
-                                                                     "Header or Payload was missing!"));
+                                                                     "Header was missing!"));
             }
 
             String input;
@@ -81,7 +81,8 @@ public class MessageController {
             final var requestHeader = serializer.deserialize(input, Message.class);
 
             log.debug("hand the incoming message to the message dispatcher!");
-            final var response = this.messageDispatcher.process(requestHeader, payloadPart.getInputStream());
+            final var response = this.messageDispatcher.process(requestHeader,
+                                                                payloadPart == null ? null : payloadPart.getInputStream()); //pass null if payloadPart is null, else pass it as inputStream
 
             if( response != null ) {
                 //get Response as MultiValueMap
