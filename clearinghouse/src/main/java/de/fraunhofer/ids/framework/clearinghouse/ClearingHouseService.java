@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
+import java.util.Objects;
 
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.QueryLanguage;
@@ -23,8 +24,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.swing.plaf.multi.MultiOptionPaneUI;
 
 @Slf4j
 @Component
@@ -141,13 +140,15 @@ public class ClearingHouseService implements IDSClearingHouseService {
                 .build();
 
         //Create RequestBody for header Part of IDS Multipart Message (with json content-type)
-        var headerBody = RequestBody.create(serializer.serialize(headerMessage), MediaType.parse("application/json+ld"));
+        var headerBody = RequestBody.create(
+                serializer.serialize(headerMessage),
+                MediaType.parse("application/json+ld"));
 
         //Create header Part of Multipart Message
         var header = MultipartBody.Part.create(headerHeader, headerBody);
         bodyBuilder.addPart(header);
 
-        if(payloadContent != null && !payloadContent.isBlank()) {
+        if( payloadContent != null && !payloadContent.isBlank() ) {
             //Create Header for payload Part of IDS Multipart Message
             var payloadHeader = new Headers.Builder()
                     .add("Content-Disposition: form-data; name=\"payload\"")
@@ -161,6 +162,9 @@ public class ClearingHouseService implements IDSClearingHouseService {
             bodyBuilder.addPart(payload);
         }
         //Build IDS Multipart Message
-        return bodyBuilder.setType(MediaType.parse("multipart/form-data")).build();
+        return bodyBuilder.setType(
+                Objects.requireNonNull(
+                        MediaType.parse("multipart/form-data")
+                )).build();
     }
 }
