@@ -1,6 +1,5 @@
 package de.fraunhofer.ids.framework.daps;
 
-import java.time.Instant;
 import java.util.Date;
 
 import io.jsonwebtoken.Claims;
@@ -35,10 +34,20 @@ public class DapsVerifier {
     public static boolean verify( final Jws<Claims> toVerify ) throws ClaimsException {
         try {
             Claims body = toVerify.getBody();
-            var valid = body.getNotBefore().before(Date.from(Instant.now()));
-            valid &= body.getExpiration().after(Date.from(Instant.now()));
-            return valid;
-        } catch( Exception e ) {
+            if( body.getExpiration().before(new Date()) ) {
+                throw new ClaimsException("The token is outdated.");
+            }
+            if( body.getExpiration().before(body.getIssuedAt()) || new Date().before(body.getIssuedAt()) ) {
+
+                throw new ClaimsException("The token's issued time (iat) is invalid");
+            }
+            if( new Date().before(body.getNotBefore()) ) {
+                throw new ClaimsException("The token's not before time is invalid");
+            }
+            log.info("Claims verified successfully");
+            return true;
+
+        } catch( NullPointerException e ) {
             log.warn("Could not verify Claims of the DAT Token!");
             throw new ClaimsException(e.getMessage());
         }
