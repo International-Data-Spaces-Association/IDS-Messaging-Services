@@ -25,7 +25,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -306,12 +305,15 @@ public class IdsHttpService implements HttpService {
         var messageJson = multipartResponse.get(MultipartDatapart.HEADER.toString());
         var message = serializer.deserialize(messageJson, Message.class);
         var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
+
         try {
-            Connector connector = serializer.deserialize(payloadString, Connector.class);
+            var connector = serializer.deserialize(payloadString, Connector.class);
             if( message.getIssuerConnector().equals(connector.getId()) ) {
                 extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
             }
-        } catch( IOException ignored ) {
+        } catch( IOException ioException ) {
+            log.warn("Could not deserialize Playload " + ioException.getMessage());
+            log.warn("Skipping Connector-SecurityProfile Attribute!");
         }
 
         var valid = true;
