@@ -286,7 +286,7 @@ public class IdsHttpService implements HttpService {
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     private Map<String, String> checkDatFromResponse( Response response )
-            throws IOException, ClaimsException, FileUploadException {
+            throws IOException, ClaimsException {
         //if connector is set to test deployment: ignore DAT Tokens
         var ignoreDAT =
                 configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
@@ -304,7 +304,7 @@ public class IdsHttpService implements HttpService {
         }
         try {
             return MultipartParser.stringToMultipart(responseString);
-        } catch( FileUploadException e ) {
+        } catch( IOException e ) {
             log.warn("Could not parse incoming response to multipart map!");
             throw e;
         }
