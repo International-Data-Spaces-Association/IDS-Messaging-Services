@@ -1,6 +1,7 @@
 package de.fraunhofer.ids.framework.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -52,10 +53,17 @@ public class MultipartParser implements UploadContext {
      *
      * @return a Map from partname on content
      *
-     * @throws FileUploadException if there are problems reading/parsing the postBody.
+     * @throws IOException if there are problems reading/parsing the postBody.
      */
-    public static Map<String, String> stringToMultipart( final String postBody ) throws FileUploadException {
-        return new MultipartParser(postBody).getParameters();
+    public static Map<String, String> stringToMultipart( final String postBody ) throws
+            IOException {
+        Map<String, String> result = new HashMap<>();
+        try {
+            result = new MultipartParser(postBody).getParameters();
+        } catch( FileUploadException e) {
+            throw new IOException(e);
+        }
+        return result;
     }
 
     //these methods must be implemented because of the UploadContext interface
