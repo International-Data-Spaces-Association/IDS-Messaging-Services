@@ -14,6 +14,7 @@ import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.daps.ClaimsException;
 import de.fraunhofer.ids.framework.daps.DapsValidator;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
+import de.fraunhofer.ids.framework.util.MultipartParseException;
 import de.fraunhofer.ids.framework.util.MultipartParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -253,7 +254,7 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Map<String, String> sendAndCheckDat( final RequestBody body, final URI target )
-            throws IOException, ClaimsException {
+            throws IOException, ClaimsException, MultipartParseException {
         Response response;
 
         try {
@@ -273,7 +274,7 @@ public class IdsHttpService implements HttpService {
     public Map<String, String> sendWithHeadersAndCheckDat( final RequestBody body,
                                                            final URI target,
                                                            final Map<String, String> headers )
-            throws IOException, ClaimsException {
+            throws IOException, ClaimsException, MultipartParseException {
         Response response;
 
         try {
@@ -295,7 +296,7 @@ public class IdsHttpService implements HttpService {
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     public Map<String, String> checkDatFromResponse( final Response response )
-            throws IOException, ClaimsException {
+            throws MultipartParseException, IOException, ClaimsException {
         //if connector is set to test deployment: ignore DAT Tokens
         var ignoreDAT =
                 configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;

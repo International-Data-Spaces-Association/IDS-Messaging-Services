@@ -20,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.security.KeyPairGenerator;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,17 +64,12 @@ class DapsValidatorTest {
                 .setNotBefore(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(600)))
                 .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
-        //create an Infomodel message with the generated jwt to pass to the dapsValidator
-        var messageWithToken = new ResponseMessageBuilder()
-                ._securityToken_(
-                        new DynamicAttributeTokenBuilder()
-                                ._tokenFormat_(TokenFormat.JWT)
-                                ._tokenValue_(jwt.compact())
-                                .build()
-                )
+        var datToken = new DynamicAttributeTokenBuilder()
+                ._tokenFormat_(TokenFormat.JWT)
+                ._tokenValue_(jwt.compact())
                 .build();
         //token should be accepted
-        assertTrue(dapsValidator.checkDat(messageWithToken));
+        assertTrue(dapsValidator.checkDat(datToken, Map.of()));
 
         //create a new token, already expired on creation
         jwt = Jwts.builder()
@@ -81,29 +77,20 @@ class DapsValidatorTest {
                 .setNotBefore(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().minusSeconds(600)))
                 .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
-        //create an infomodel message with the generated jwt to pass to the dapsValidator
-        messageWithToken = new ResponseMessageBuilder()
-                ._securityToken_(
-                        new DynamicAttributeTokenBuilder()
-                                ._tokenFormat_(TokenFormat.JWT)
-                                ._tokenValue_(jwt.compact())
-                                .build()
-                )
+        datToken = new DynamicAttributeTokenBuilder()
+                ._tokenFormat_(TokenFormat.JWT)
+                ._tokenValue_(jwt.compact())
                 .build();
         //token should be rejected
-        assertFalse(dapsValidator.checkDat(messageWithToken));
+        assertFalse(dapsValidator.checkDat(datToken, Map.of()));
 
         //create an infomodel message with some random String as token
-        messageWithToken = new ResponseMessageBuilder()
-                ._securityToken_(
-                        new DynamicAttributeTokenBuilder()
-                                ._tokenFormat_(TokenFormat.JWT)
-                                ._tokenValue_(RandomStringUtils.randomAlphabetic(12))
-                                .build()
-                )
+        datToken = new DynamicAttributeTokenBuilder()
+                ._tokenFormat_(TokenFormat.JWT)
+                ._tokenValue_(RandomStringUtils.randomAlphabetic(12))
                 .build();
         //token should be rejected
-        assertFalse(dapsValidator.checkDat(messageWithToken));
+        assertFalse(dapsValidator.checkDat(datToken, Map.of()));
     }
 
 }
