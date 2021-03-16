@@ -1,8 +1,5 @@
 package de.fraunhofer.ids.framework.config;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.ids.framework.config.ssl.keystore.KeyStoreManager;
@@ -10,6 +7,9 @@ import de.fraunhofer.ids.framework.config.ssl.keystore.KeyStoreManagerInitializa
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * The ConfigurationContainer wraps the current configuration with the respective key- and truststore,

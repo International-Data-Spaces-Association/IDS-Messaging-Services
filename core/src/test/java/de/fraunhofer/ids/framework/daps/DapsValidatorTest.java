@@ -1,7 +1,6 @@
 package de.fraunhofer.ids.framework.daps;
 
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
-import de.fraunhofer.iais.eis.ResponseMessage;
 import de.fraunhofer.iais.eis.ResponseMessageBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import io.jsonwebtoken.Jwts;
@@ -9,10 +8,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -20,12 +17,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.Instant;
-import java.time.temporal.TemporalAmount;
 
 import static org.junit.jupiter.api.Assertions.*;
 

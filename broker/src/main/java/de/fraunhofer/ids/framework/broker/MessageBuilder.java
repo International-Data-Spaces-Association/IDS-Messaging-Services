@@ -1,27 +1,13 @@
 package de.fraunhofer.ids.framework.broker;
 
-import java.io.IOException;
-import java.net.URI;
-
-import de.fraunhofer.iais.eis.ConnectorUnavailableMessage;
-import de.fraunhofer.iais.eis.ConnectorUnavailableMessageBuilder;
-import de.fraunhofer.iais.eis.ConnectorUpdateMessage;
-import de.fraunhofer.iais.eis.ConnectorUpdateMessageBuilder;
-import de.fraunhofer.iais.eis.DynamicAttributeToken;
-import de.fraunhofer.iais.eis.QueryLanguage;
-import de.fraunhofer.iais.eis.QueryMessage;
-import de.fraunhofer.iais.eis.QueryMessageBuilder;
-import de.fraunhofer.iais.eis.QueryScope;
-import de.fraunhofer.iais.eis.QueryTarget;
-import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.iais.eis.ResourceUnavailableMessage;
-import de.fraunhofer.iais.eis.ResourceUnavailableMessageBuilder;
-import de.fraunhofer.iais.eis.ResourceUpdateMessage;
-import de.fraunhofer.iais.eis.ResourceUpdateMessageBuilder;
+import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import okhttp3.MultipartBody;
+
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * The MessageUtils class contains utility methods for building Infomodel Messages (used by the {@link BrokerService} class)
