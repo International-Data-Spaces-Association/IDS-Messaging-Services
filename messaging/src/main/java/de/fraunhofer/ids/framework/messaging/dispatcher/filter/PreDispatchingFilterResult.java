@@ -1,8 +1,8 @@
 package de.fraunhofer.ids.framework.messaging.dispatcher.filter;
 
-import java.util.Objects;
-
 import lombok.Getter;
+
+import java.util.Objects;
 
 /**
  * Result that is returned by a PreDispatchingFilter (with information about why a message was accepted or rejected)

@@ -1,33 +1,20 @@
 package de.fraunhofer.ids.framework.broker;
 
+import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.framework.config.ClientProvider;
+import de.fraunhofer.ids.framework.config.ConfigContainer;
+import de.fraunhofer.ids.framework.daps.*;
+import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.fraunhofer.iais.eis.DynamicAttributeToken;
-import de.fraunhofer.iais.eis.QueryLanguage;
-import de.fraunhofer.iais.eis.QueryScope;
-import de.fraunhofer.iais.eis.QueryTarget;
-import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.framework.config.ClientProvider;
-import de.fraunhofer.ids.framework.config.ConfigContainer;
-import de.fraunhofer.ids.framework.daps.ConnectorMissingCertExtensionException;
-import de.fraunhofer.ids.framework.daps.DapsConnectionException;
-import de.fraunhofer.ids.framework.daps.DapsEmptyResponseException;
-import de.fraunhofer.ids.framework.daps.DapsTokenManagerException;
-import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
-import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
-import lombok.extern.slf4j.Slf4j;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MultipartBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
 
 /**
  * Broker Communication Controller. Generates appropriate ids multipart messages and sends them to the broker

@@ -1,8 +1,5 @@
 package de.fraunhofer.ids.framework.messaging.handler.request;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.framework.messaging.handler.message.MessageHandler;
 import de.fraunhofer.ids.framework.messaging.handler.message.SupportedMessageType;
@@ -11,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Resolver that uses the Spring dependency injection mechanism to find the matching message handler

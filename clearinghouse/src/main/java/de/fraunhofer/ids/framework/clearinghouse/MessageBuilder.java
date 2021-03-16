@@ -1,19 +1,13 @@
 package de.fraunhofer.ids.framework.clearinghouse;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import de.fraunhofer.iais.eis.LogMessage;
-import de.fraunhofer.iais.eis.LogMessageBuilder;
-import de.fraunhofer.iais.eis.QueryLanguage;
-import de.fraunhofer.iais.eis.QueryMessage;
-import de.fraunhofer.iais.eis.QueryMessageBuilder;
-import de.fraunhofer.iais.eis.QueryScope;
-import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import static de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils.getGregorianNow;
 

@@ -1,0 +1,38 @@
+{
+  "@context" : {
+    "ids" : "https://w3id.org/idsa/core/",
+    "idsc" : "https://w3id.org/idsa/code/"
+  },
+  "@type" : "ids:ConfigurationModel",
+  "@id" : "https://w3id.org/idsa/autogen/configurationModel/a0b8bcea-6ba0-4e26-ba80-44e43ee058ac",
+  "ids:configurationModelLogLevel" : {
+    "@id" : "idsc:MINIMAL_LOGGING"
+  },
+  "ids:connectorDeployMode" : {
+    "@id" : "idsc:TEST_DEPLOYMENT"
+  },
+  "ids:connectorDescription" : {
+    "@type" : "ids:BaseConnector",
+    "@id" : "https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9",
+    "ids:outboundModelVersion" : "4.0.0",
+    "ids:inboundModelVersion" : [ "4.0.0" ],
+    "ids:securityProfile" : {
+      "@id" : "idsc:BASE_SECURITY_PROFILE"
+    },
+    "ids:maintainer" : {
+      "@id" : "https://example.com"
+    },
+    "ids:curator" : {
+      "@id" : "https://example.com"
+    }
+  },
+  "ids:connectorStatus" : {
+    "@id" : "idsc:CONNECTOR_OFFLINE"
+  },
+  "ids:trustStore" : {
+    "@id" : "file:///server-truststore.p12"
+  },
+  "ids:keyStore" : {
+    "@id" : "file:///isst_ids_framework_demo_connector.p12"
+  }
+}

@@ -1,14 +1,14 @@
 package de.fraunhofer.ids.framework.broker;
 
-import java.io.IOException;
-import java.util.List;
-
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.framework.daps.DapsTokenManagerException;
 import okhttp3.Response;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Interface for Communication with IDS Brokers, implemented by {@link BrokerService}

@@ -1,9 +1,9 @@
 package de.fraunhofer.ids.framework.messaging.response;
 
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+
 import java.io.IOException;
 import java.util.Map;
-
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 
 /**
  * A MessageResponse is returned by the MessageHandlers, for easy building of Responses
