@@ -2,6 +2,7 @@ package de.fraunhofer.ids.framework.messaging.protocol.http;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.daps.DapsValidator;
@@ -42,7 +43,7 @@ class IdsHttpServiceTest {
 
         @Bean
         public IdsHttpService getIdsHttpService(){
-            return new IdsHttpService(clientProvider, dapsValidator, configContainer);
+            return new IdsHttpService(clientProvider, dapsValidator, configContainer, new Serializer());
         }
     }
 

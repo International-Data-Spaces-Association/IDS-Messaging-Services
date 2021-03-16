@@ -23,7 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.net.URL;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
@@ -82,16 +82,15 @@ class MessageDispatcherTest {
         Mockito.when(configurationModel.getConnectorDeployMode()).thenReturn(ConnectorDeployMode.TEST_DEPLOYMENT);
         Mockito.when(provider.provideDapsToken()).thenReturn("Mocked Token.");
         Mockito.when(publicKeyProvider.providePublicKey()).thenReturn(null);
-        Mockito.when(dapsValidator.checkDat(Mockito.anyString())).thenReturn(true);
-        Mockito.when(dapsValidator.checkDat(Mockito.any(Message.class))).thenReturn(true);
+        Mockito.when(dapsValidator.checkDat(Mockito.any(DynamicAttributeToken.class), Mockito.anyMap())).thenReturn(true);
 
         var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, publicKeyProvider, configurationContainer);
         var reqMsg = new RequestMessageBuilder().build();
         var notMsg = new NotificationMessageBuilder().build();
         ErrorResponse requestResponse = (ErrorResponse) dispatcher.process(reqMsg, null);
-        assertTrue(requestResponse.getErrorMessage().equals("request")); //use error message to check which handler got the message
+        assertEquals("request", requestResponse.getErrorMessage()); //use error message to check which handler got the message
         ErrorResponse notificationResponse = (ErrorResponse) dispatcher.process(notMsg, null);
-        assertTrue(notificationResponse.getErrorMessage().equals("notification")); //use error message to check which handler got the message
+        assertEquals("notification", notificationResponse.getErrorMessage()); //use error message to check which handler got the message
     }
 
 }
