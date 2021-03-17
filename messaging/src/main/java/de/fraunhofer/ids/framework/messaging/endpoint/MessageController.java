@@ -1,19 +1,6 @@
 package de.fraunhofer.ids.framework.messaging.endpoint;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-
-import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.iais.eis.RejectionMessageBuilder;
-import de.fraunhofer.iais.eis.RejectionReason;
-import de.fraunhofer.iais.eis.TokenFormat;
+import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.messaging.dispatcher.MessageDispatcher;
@@ -29,6 +16,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  * REST controller for handling all incoming IDS multipart Messages

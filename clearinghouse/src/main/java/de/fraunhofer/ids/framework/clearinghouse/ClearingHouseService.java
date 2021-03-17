@@ -1,11 +1,5 @@
 package de.fraunhofer.ids.framework.clearinghouse;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.SecureRandom;
-import java.util.Objects;
-
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
@@ -17,13 +11,15 @@ import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
 import de.fraunhofer.ids.framework.messaging.protocol.http.HttpService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.SecureRandom;
+import java.util.Objects;
 
 @Slf4j
 @Component

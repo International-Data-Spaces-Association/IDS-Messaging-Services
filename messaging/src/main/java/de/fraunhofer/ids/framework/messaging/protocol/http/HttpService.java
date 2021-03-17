@@ -1,15 +1,15 @@
 package de.fraunhofer.ids.framework.messaging.protocol.http;
 
+import de.fraunhofer.ids.framework.daps.ClaimsException;
+import de.fraunhofer.ids.framework.util.MultipartParseException;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.Request;
+
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
-
-import de.fraunhofer.ids.framework.daps.ClaimsException;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import org.apache.commons.fileupload.FileUploadException;
 
 public interface HttpService {
     /**
@@ -106,11 +106,12 @@ public interface HttpService {
      *
      * @return Multipart Map with header and payload part of response
      *
-     * @throws IOException         if request cannot be sent or parsed to multipart map // change Exception if can't be send
+     * @throws IOException         if request cannot be sent
+     * @throws MultipartParseException if response cannot be parsed to multipart map
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendAndCheckDat( RequestBody body, URI target )
-            throws IOException, ClaimsException;
+            throws IOException, MultipartParseException, ClaimsException;
 
     /**
      * @param body    requestBody to be sent
@@ -119,9 +120,10 @@ public interface HttpService {
      *
      * @return Multipart Map with header and payload part of response
      *
-     * @throws IOException         if request cannot be sent or parsed to multipart map
+     * @throws IOException         if request cannot be sent
+     * @throws MultipartParseException if response cannot be parsed to multipart map
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendWithHeadersAndCheckDat( RequestBody body, URI target, Map<String, String> headers )
-            throws IOException, FileUploadException, ClaimsException;
+            throws IOException, MultipartParseException, ClaimsException;
 }

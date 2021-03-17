@@ -3,14 +3,18 @@ package de.fraunhofer.ids.framework.messaging.protocol.http;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.daps.ClaimsException;
 import de.fraunhofer.ids.framework.daps.DapsValidator;
+import de.fraunhofer.ids.framework.util.MultipartDatapart;
+import de.fraunhofer.ids.framework.util.MultipartParseException;
 import de.fraunhofer.ids.framework.util.MultipartParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +26,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,6 +38,7 @@ public class IdsHttpService implements HttpService {
     private TimeoutSettings timeoutSettings;
     private DapsValidator   dapsValidator;
     private ConfigContainer configContainer;
+    private Serializer serializer;
 
     /**
      * Constructor of IdsHttpService
@@ -45,10 +49,12 @@ public class IdsHttpService implements HttpService {
      */
     public IdsHttpService( final ClientProvider provider,
                            final DapsValidator dapsValidator,
-                           final ConfigContainer configContainer ) {
+                           final ConfigContainer configContainer,
+                           final Serializer serializer) {
         this.provider = provider;
         this.dapsValidator = dapsValidator;
         this.configContainer = configContainer;
+        this.serializer = serializer;
     }
 
     /**
@@ -256,7 +262,7 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Map<String, String> sendAndCheckDat( final RequestBody body, final URI target )
-            throws IOException, FileUploadException, ClaimsException {
+            throws IOException, ClaimsException, MultipartParseException {
         Response response;
 
         try {
@@ -276,7 +282,7 @@ public class IdsHttpService implements HttpService {
     public Map<String, String> sendWithHeadersAndCheckDat( final RequestBody body,
                                                            final URI target,
                                                            final Map<String, String> headers )
-            throws IOException, FileUploadException, ClaimsException {
+            throws IOException, ClaimsException, MultipartParseException {
         Response response;
 
         try {
@@ -295,27 +301,40 @@ public class IdsHttpService implements HttpService {
      * @return Multipart Map with header and payload part of response
      *
      * @throws IOException         if request cannot be sent
-     * @throws FileUploadException if response cannot be parsed to multipart map
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
-    private Map<String, String> checkDatFromResponse( final Response response )
-            throws IOException, ClaimsException, FileUploadException {
+    public Map<String, String> checkDatFromResponse( final Response response )
+            throws MultipartParseException, IOException, ClaimsException {
         //if connector is set to test deployment: ignore DAT Tokens
         var ignoreDAT =
                 configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
+        Map <String, Object> extraAttributes = new HashMap<>();
         var responseString = Objects.requireNonNull(response.body()).string();
-        var valid = ignoreDAT || dapsValidator.checkDat(responseString);
+        var multipartResponse = MultipartParser.stringToMultipart(responseString);
+        var messageJson = multipartResponse.get(MultipartDatapart.HEADER.toString());
+        var message = serializer.deserialize(messageJson, Message.class);
+        var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
+
+        try {
+            var connector = serializer.deserialize(payloadString, Connector.class);
+            if( message.getIssuerConnector().equals(connector.getId()) ) {
+                extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
+            }
+        } catch( IOException ioException ) {
+            log.warn("Could not deserialize Playload " + ioException.getMessage());
+            log.warn("Skipping Connector-SecurityProfile Attribute!");
+        }
+
+        var valid = true;
+        if(!ignoreDAT && !(message instanceof RejectionMessage )){
+            valid = dapsValidator.checkDat(message.getSecurityToken(), extraAttributes);
+        }
 
         if( !valid ) {
             log.warn("DAT of incoming response is not valid!");
             throw new ClaimsException("DAT of incoming response is not valid!");
         }
-        try {
-            return MultipartParser.stringToMultipart(responseString);
-        } catch( FileUploadException e ) {
-            log.warn("Could not parse incoming response to multipart map!");
-            throw e;
-        }
+        return multipartResponse;
     }
 
     /**

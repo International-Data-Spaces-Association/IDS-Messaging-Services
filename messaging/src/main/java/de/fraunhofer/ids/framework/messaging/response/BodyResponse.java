@@ -1,9 +1,5 @@
 package de.fraunhofer.ids.framework.messaging.response;
 
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RequestMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
@@ -11,6 +7,10 @@ import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @param <T> a subtype of ResponseMessage or NotificationMessage (will throw IllegalStateException if used with ResponseMessage)

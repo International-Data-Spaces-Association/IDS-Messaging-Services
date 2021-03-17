@@ -1,26 +1,16 @@
 package de.fraunhofer.ids.framework.messaging.util;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Objects;
-import java.util.Properties;
-
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.IOException;
+import java.security.*;
+import java.util.*;
 
 /**
  * Methods to hash and sign. Necessary for IDS-Messages.

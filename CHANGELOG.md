@@ -13,6 +13,8 @@ Documentation started on: 2021-01-20.
 - Initial IDS-ClearingHouse support
 - Code refactoring
 - MessageController now accepts messages with empty payloads (as required by AppStore, IDS-Framework implementation)
+- MultipartParser now throws MultipartParseException instead of FileUploadException
+- DapsValidator now accepts DAT Token instead of full Message
 
 ## Version 1.5-SNAPSHOT
 ### Removed

@@ -1,11 +1,5 @@
 package de.fraunhofer.ids.framework.messaging.response;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Base64;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RequestMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
@@ -15,6 +9,12 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Utility class for returning files using Base64 encoding
@@ -37,6 +37,7 @@ public class Base64EncodedFileBodyResponse<T extends Message> implements Message
      *
      * @throws IOException if header cannot be serialized to json, or file cannot be parsed to base64 encoded string
      */
+    @SuppressWarnings(value = {"rawtypes", "unchecked"})
     public Base64EncodedFileBodyResponse( final T header, final File file, final MediaType mediaType )
             throws IOException {
 

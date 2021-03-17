@@ -1,10 +1,10 @@
 package de.fraunhofer.ids.framework.messaging.handler.request;
 
-import java.util.Optional;
-
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RequestMessage;
 import de.fraunhofer.ids.framework.messaging.handler.message.MessageHandler;
+
+import java.util.Optional;
 
 /**
  * An instance of RequestHandler must find a {@link MessageHandler} for a given type of {@link RequestMessage},

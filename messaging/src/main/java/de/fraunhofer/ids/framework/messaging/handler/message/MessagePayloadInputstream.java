@@ -1,11 +1,11 @@
 package de.fraunhofer.ids.framework.messaging.handler.message;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Implementation of {@link MessagePayload} interface. Can parse payload from JSON and return the resulting inputstream.
