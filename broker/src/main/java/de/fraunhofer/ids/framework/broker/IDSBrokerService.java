@@ -50,7 +50,7 @@ public interface IDSBrokerService {
      * @throws IOException if the message could not be serialized
      */
     Response unregisterAtBroker( String brokerURI )
-            throws IOException, DapsTokenManagerException, ClaimsException, FileUploadException;
+            throws IOException, DapsTokenManagerException, ClaimsException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.

@@ -55,10 +55,9 @@ public class BrokerService implements IDSBrokerService {
     /**
      * Creates the IDSBrokerCommunication controller.
      *
-     * @param container      Configuration container
-     * @param provider       providing underlying OkHttpClient
-     * @param tokenProvider  providing DAT Token for RequestMessage
-     * @param idsHttpService providing sending capabilities
+     * @param container     Configuration container
+     * @param provider      providing underlying OkHttpClient
+     * @param tokenProvider providing DAT Token for RequestMessage
      */
     public BrokerService( final ConfigContainer container,
                           final ClientProvider provider,
@@ -156,7 +155,7 @@ public class BrokerService implements IDSBrokerService {
     @Override
     public List<Response> updateSelfDescriptionAtBrokers( List<String> brokerURIs ) throws
             DapsTokenManagerException {
-        ArrayList<Response> responses = new ArrayList<Response>();
+        ArrayList<Response> responses = new ArrayList<>();
         for( var uri : brokerURIs ) {
             try {
                 Response response = updateSelfDescriptionAtBroker(uri);

@@ -256,6 +256,23 @@ public class IdsHttpService implements HttpService {
 
         return provider.getClient();
     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> sendAndCheckDat( final Request request, final URI target )
+            throws IOException, ClaimsException, MultipartParseException {
+        Response response;
+
+        try {
+            response = send(request);
+        } catch( IOException e ) {
+            log.warn("Message could not be sent!");
+            throw e;
+        }
+
+        return checkDatFromResponse(response);
+    }
 
     /**
      * {@inheritDoc}
@@ -303,7 +320,7 @@ public class IdsHttpService implements HttpService {
      * @throws IOException         if request cannot be sent
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
-    public Map<String, String> checkDatFromResponse( final Response response )
+    private Map<String, String> checkDatFromResponse( final Response response )
             throws MultipartParseException, IOException, ClaimsException {
         //if connector is set to test deployment: ignore DAT Tokens
         var ignoreDAT =
@@ -315,14 +332,16 @@ public class IdsHttpService implements HttpService {
         var message = serializer.deserialize(messageJson, Message.class);
         var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
-        try {
-            var connector = serializer.deserialize(payloadString, Connector.class);
-            if( message.getIssuerConnector().equals(connector.getId()) ) {
-                extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
+        if( payloadString != null ) {
+            try {
+                var connector = serializer.deserialize(payloadString, Connector.class);
+                if( message.getIssuerConnector().equals(connector.getId()) ) {
+                    extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
+                }
+            } catch( IOException ioException ) {
+                log.warn("Could not deserialize Playload " + ioException.getMessage());
+                log.warn("Skipping Connector-SecurityProfile Attribute!");
             }
-        } catch( IOException ioException ) {
-            log.warn("Could not deserialize Playload " + ioException.getMessage());
-            log.warn("Skipping Connector-SecurityProfile Attribute!");
         }
 
         var valid = true;

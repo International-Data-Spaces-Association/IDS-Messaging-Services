@@ -57,11 +57,10 @@ public class DapsValidator {
     }
 
     /**
-     * Check the DAT of a Message
-     *
-     * @param token a {@link DynamicAttributeToken} from a Infomodel Message
-     *
-     * @return true if DAT of Message is valid
+     * Check a given DAT considering additional attributes from the message payload
+     * @param token {@link DynamicAttributeToken} of an incoming Message
+     * @param extraAttributes additional Attributes from the Message Payload
+     * @return true if DAT is valid
      */
     public boolean checkDat( final DynamicAttributeToken token, Map<String, Object> extraAttributes ) {
         Jws<Claims> claims;
@@ -86,6 +85,15 @@ public class DapsValidator {
             log.warn("Claims could not be verified!");
             return false;
         }
+    }
+
+    /**
+     * Check a given DAT
+     * @param token a {@link DynamicAttributeToken} from a Infomodel Message
+     * @return true if DAT is valid
+     */
+    public boolean checkDat( final DynamicAttributeToken token ) {
+        return checkDat(token, null);
     }
 
     /**

@@ -101,6 +101,17 @@ public interface HttpService {
     Response getWithHeaders( URI target, Map<String, String> headers ) throws IOException;
 
     /**
+     *
+     * @param request to be sent
+     * @param target targetURI of the request
+     * @return Multipart Map with header and payload part of response
+     * @throws IOException if request cannot be sent
+     * @throws ClaimsException if response cannot be parsed to multipart map
+     * @throws MultipartParseException if DAT of response is invalid or cannot be parsed
+     */
+    Map<String, String> sendAndCheckDat( Request request, URI target )
+            throws IOException, ClaimsException, MultipartParseException;
+    /**
      * @param body   requestBody to be sent
      * @param target targetURI of the request
      *

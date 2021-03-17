@@ -11,6 +11,7 @@ import java.util.Objects;
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
+import de.fraunhofer.ids.framework.util.MultipartParseException;
 import de.fraunhofer.ids.framework.util.MultipartParser;
 import okhttp3.Response;
 import org.apache.commons.fileupload.FileUploadException;
@@ -26,9 +27,10 @@ public class MultipartResponseConverter {
      *
      * @param response to a multipart request
      * @return MessageAndPayload containing the corresponding Message and the payload parsed in Infomodel classes
-     * @throws IOException if message cannot be parsed
+     * @throws  MultipartParseException if response cannot be parsed
+     * @throws IOException if message or payload cannot be parsed
      */
-    public MessageAndPayload<?,?> convertResponse( Response response ) throws IOException {
+    public MessageAndPayload<?,?> convertResponse( Response response ) throws IOException, MultipartParseException {
         var responseMap = MultipartParser.stringToMultipart(Objects.requireNonNull(response.body()).string());
         var messageString = responseMap.get(MultipartDatapart.HEADER.toString());
         var payloadString = responseMap.getOrDefault(MultipartDatapart.PAYLOAD.toString(),"");
