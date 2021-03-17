@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.Map;
 
 import de.fraunhofer.ids.framework.daps.ClaimsException;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.apache.commons.fileupload.FileUploadException;
@@ -37,6 +38,17 @@ public interface HttpService {
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
     Response send( String message, URI target ) throws IOException;
+
+    /**
+     * Sends plaintext message as http(s) request to the defined target.
+     *
+     * @param request  the {@link Request} to be send
+     *
+     * @return the HttpResponse that comes back for the sent Message
+     *
+     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
+     */
+    Response send( Request request ) throws IOException;
 
     /**
      * Sends a given requestBody as http(s) request to the defined in address.

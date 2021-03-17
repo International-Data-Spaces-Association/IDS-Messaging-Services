@@ -83,6 +83,14 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
+    public Response send( Request request ) throws IOException {
+        return sendRequest(request, getClientWithSettings());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Response send( final RequestBody requestBody, final URI target ) throws IOException {
         log.debug(String.format("building request to %s", target.toString()));
         var request = buildRequest(requestBody, target);
@@ -248,7 +256,7 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Map<String, String> sendAndCheckDat( final RequestBody body, final URI target )
-            throws IOException,  ClaimsException {
+            throws IOException, FileUploadException, ClaimsException {
         Response response;
 
         try {
@@ -268,7 +276,7 @@ public class IdsHttpService implements HttpService {
     public Map<String, String> sendWithHeadersAndCheckDat( final RequestBody body,
                                                            final URI target,
                                                            final Map<String, String> headers )
-            throws IOException, ClaimsException {
+            throws IOException, FileUploadException, ClaimsException {
         Response response;
 
         try {
@@ -287,11 +295,11 @@ public class IdsHttpService implements HttpService {
      * @return Multipart Map with header and payload part of response
      *
      * @throws IOException         if request cannot be sent
-     * @throws IOException if response cannot be parsed to multipart map
+     * @throws FileUploadException if response cannot be parsed to multipart map
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     private Map<String, String> checkDatFromResponse( final Response response )
-            throws  ClaimsException, IOException {
+            throws IOException, ClaimsException, FileUploadException {
         //if connector is set to test deployment: ignore DAT Tokens
         var ignoreDAT =
                 configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
@@ -304,7 +312,7 @@ public class IdsHttpService implements HttpService {
         }
         try {
             return MultipartParser.stringToMultipart(responseString);
-        } catch( IOException e ) {
+        } catch( FileUploadException e ) {
             log.warn("Could not parse incoming response to multipart map!");
             throw e;
         }
