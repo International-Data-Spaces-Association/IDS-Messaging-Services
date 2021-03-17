@@ -94,12 +94,11 @@ public interface HttpService {
      *
      * @return Multipart Map with header and payload part of response
      *
-     * @throws IOException         if request cannot be sent
-     * @throws FileUploadException if response cannot be parsed to multipart map
+     * @throws IOException         if request cannot be sent or parsed to multipart map // change Exception if can't be send
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendAndCheckDat( RequestBody body, URI target )
-            throws IOException, FileUploadException, ClaimsException;
+            throws IOException, ClaimsException;
 
     /**
      * @param body    requestBody to be sent
@@ -108,8 +107,7 @@ public interface HttpService {
      *
      * @return Multipart Map with header and payload part of response
      *
-     * @throws IOException         if request cannot be sent
-     * @throws FileUploadException if response cannot be parsed to multipart map
+     * @throws IOException         if request cannot be sent or parsed to multipart map
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendWithHeadersAndCheckDat( RequestBody body, URI target, Map<String, String> headers )

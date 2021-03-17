@@ -92,7 +92,7 @@ public class DapsValidator {
         Message responseHeader;
         try {
             responseMap = MultipartParser.stringToMultipart(responseBody);
-        } catch( FileUploadException e ) {
+        } catch( IOException e ) {
             log.warn("Response cannot be parsed to multipart!");
             return false;
         }
