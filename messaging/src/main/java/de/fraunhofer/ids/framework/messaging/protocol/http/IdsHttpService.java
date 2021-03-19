@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
@@ -19,13 +21,7 @@ import de.fraunhofer.ids.framework.util.MultipartParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,11 +30,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class IdsHttpService implements HttpService {
-    private ClientProvider  provider;
-    private TimeoutSettings timeoutSettings;
-    private DapsValidator   dapsValidator;
-    private ConfigContainer configContainer;
-    private Serializer serializer;
+    private final ClientProvider  provider;
+    private       TimeoutSettings timeoutSettings;
+    private final DapsValidator   dapsValidator;
+    private final ConfigContainer configContainer;
+    private final Serializer      serializer;
 
     /**
      * Constructor of IdsHttpService
@@ -50,7 +46,7 @@ public class IdsHttpService implements HttpService {
     public IdsHttpService( final ClientProvider provider,
                            final DapsValidator dapsValidator,
                            final ConfigContainer configContainer,
-                           final Serializer serializer) {
+                           final Serializer serializer ) {
         this.provider = provider;
         this.dapsValidator = dapsValidator;
         this.configContainer = configContainer;
@@ -256,11 +252,12 @@ public class IdsHttpService implements HttpService {
 
         return provider.getClient();
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public Map<String, String> sendAndCheckDat( final Request request, final URI target )
+    public Map<String, String> sendAndCheckDat( final Request request )
             throws IOException, ClaimsException, MultipartParseException {
         Response response;
 
@@ -317,35 +314,36 @@ public class IdsHttpService implements HttpService {
      *
      * @return Multipart Map with header and payload part of response
      *
-     * @throws IOException         if request cannot be sent
-     * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
+     * @throws IOException     if request cannot be sent
+     * @throws ClaimsException if DAT of response is invalid or cannot be parsed
      */
     private Map<String, String> checkDatFromResponse( final Response response )
             throws MultipartParseException, IOException, ClaimsException {
         //if connector is set to test deployment: ignore DAT Tokens
         var ignoreDAT =
                 configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
-        Map <String, Object> extraAttributes = new HashMap<>();
+        Map<String, Object> extraAttributes = new HashMap<>();
         var responseString = Objects.requireNonNull(response.body()).string();
         var multipartResponse = MultipartParser.stringToMultipart(responseString);
         var messageJson = multipartResponse.get(MultipartDatapart.HEADER.toString());
         var message = serializer.deserialize(messageJson, Message.class);
         var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
-        if( payloadString != null ) {
+/*        if( payloadString != null ) {
             try {
                 var connector = serializer.deserialize(payloadString, Connector.class);
                 if( message.getIssuerConnector().equals(connector.getId()) ) {
                     extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
                 }
-            } catch( IOException ioException ) {
-                log.warn("Could not deserialize Playload " + ioException.getMessage());
+            } catch( IOException e) {
+                log.warn("Could not deserialize Playload " + e.getMessage());
                 log.warn("Skipping Connector-SecurityProfile Attribute!");
             }
-        }
+        }*/
+        //TODO check for unchecked Exception
 
         var valid = true;
-        if(!ignoreDAT && !(message instanceof RejectionMessage )){
+        if( !ignoreDAT && !( message instanceof RejectionMessage ) ) {
             valid = dapsValidator.checkDat(message.getSecurityToken(), extraAttributes);
         }
 

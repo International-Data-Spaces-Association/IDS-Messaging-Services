@@ -1,6 +1,8 @@
-package de.fraunhofer.ids.framework.messaging.protocol.multipart;
+package de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping;
 
 import de.fraunhofer.iais.eis.ParticipantRequestMessage;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
 
 import java.util.Optional;
 

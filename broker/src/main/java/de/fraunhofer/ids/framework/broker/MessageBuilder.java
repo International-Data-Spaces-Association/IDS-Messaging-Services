@@ -1,20 +1,15 @@
 package de.fraunhofer.ids.framework.broker;
 
+import java.net.URI;
+
 import de.fraunhofer.iais.eis.*;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.ConstraintViolationException;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
-import de.fraunhofer.ids.framework.util.MultipartDatapart;
-import okhttp3.MultipartBody;
-
-import java.io.IOException;
-import java.net.URI;
 
 /**
  * The MessageUtils class contains utility methods for building Infomodel Messages (used by the {@link BrokerService} class)
  */
 public class MessageBuilder {
-    private static final Serializer SERIALIZER = new Serializer();
 
     /**
      * Utility classes (only static methods and fields) do not have a public constructor.
@@ -155,23 +150,6 @@ public class MessageBuilder {
                 ._queryScope_(queryScope)
                 ._recipientScope_(queryTarget)
                 .build();
-    }
-
-    /**
-     * Generates a two part multipart message. First part includes the message type (register, update, unavailable) and
-     * second part contains the connector self declaration.
-     *
-     * @param header  String representation of the message header
-     * @param payload String representation of the message payload
-     *
-     * @return Two part multipart message containing the message header and payload as body
-     */
-    public static MultipartBody buildRequestBody( final String header, final String payload ) {
-        var builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart(MultipartDatapart.HEADER.toString(), header);
-        builder.addFormDataPart(MultipartDatapart.PAYLOAD.toString(), payload);
-        return builder.build();
     }
 
 }

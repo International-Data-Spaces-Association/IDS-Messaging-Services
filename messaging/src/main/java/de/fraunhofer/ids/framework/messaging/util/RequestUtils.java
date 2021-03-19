@@ -1,6 +1,7 @@
 package de.fraunhofer.ids.framework.messaging.util;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
@@ -23,9 +24,9 @@ public class RequestUtils {
         try {
             final Request copy = request.newBuilder().build();
             final Buffer buffer = new Buffer();
-            copy.body().writeTo(buffer);
+            Objects.requireNonNull(copy.body()).writeTo(buffer);
             return ( buffer.readUtf8() );
-        } catch( final IOException e ) {
+        } catch( final IOException | NullPointerException e ) {
             log.error(e.getClass().toString()+": printing failed.");
         }
         return "";
@@ -34,7 +35,7 @@ public class RequestUtils {
     /**
      * Prints the request as info in the log.
      *
-     * @param request
+     * @param request {@link Request} to be logged
      */
     public static void logRequest( Request request ) {
         log.info(printRequest(request));

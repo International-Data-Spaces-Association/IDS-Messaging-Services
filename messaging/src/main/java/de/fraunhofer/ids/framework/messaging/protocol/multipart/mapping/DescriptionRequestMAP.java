@@ -1,20 +1,22 @@
-package de.fraunhofer.ids.framework.messaging.protocol.multipart;
+package de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping;
 
 import java.util.Optional;
 
 import de.fraunhofer.iais.eis.DescriptionRequestMessage;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
 
 public class DescriptionRequestMAP implements MessageAndPayload<DescriptionRequestMessage, Void> {
 
-    private DescriptionRequestMessage descriptionRequest;
+    private DescriptionRequestMessage message;
 
     public DescriptionRequestMAP(DescriptionRequestMessage selfDescriptionRequest) {
-        this.descriptionRequest = selfDescriptionRequest;
+        this.message = selfDescriptionRequest;
     }
 
     @Override
     public DescriptionRequestMessage getMessage() {
-        return descriptionRequest;
+        return message;
     }
 
     @Override

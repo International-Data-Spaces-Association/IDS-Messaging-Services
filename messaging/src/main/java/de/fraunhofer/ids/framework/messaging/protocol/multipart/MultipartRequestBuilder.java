@@ -3,6 +3,7 @@ package de.fraunhofer.ids.framework.messaging.protocol.multipart;
 import java.io.IOException;
 import java.net.URI;
 
+import de.fraunhofer.iais.eis.InfrastructureComponent;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.messaging.protocol.RequestBuilder;
@@ -16,37 +17,46 @@ public class MultipartRequestBuilder implements RequestBuilder {
     private static final Serializer serializer = new Serializer();
 
 
-    @Override
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Request build( Message message, URI target ) throws IOException {
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(MultipartDatapart.HEADER.toString(), serializer.serialize(message))
                 .build();
-        Request request = new Request.Builder()
+        return new Request.Builder()
                 .url(target.toURL())
                 .post(body)
                 .build();
-        return request;
     }
 
-    @Override
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Request build( Message message, URI target, String payload ) throws IOException {
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(MultipartDatapart.HEADER.toString(), serializer.serialize(message))
                 .addFormDataPart(MultipartDatapart.PAYLOAD.toString(), payload)
                 .build();
-        Request request = new Request.Builder()
+        return new Request.Builder()
                 .url(target.toURL())
                 .post(body)
                 .build();
-        return request;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Request build  ( Message message, URI target, Object object ) throws IOException {
+        return build(message, target, serializer.serialize(object));
     }
 
 }

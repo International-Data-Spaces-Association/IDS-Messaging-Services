@@ -1,8 +1,10 @@
-package de.fraunhofer.ids.framework.messaging.protocol.multipart;
+package de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping;
 
 import java.util.Optional;
 
 import de.fraunhofer.iais.eis.ContractRejectionMessage;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
 
 public class ContractRejectionMAP implements MessageAndPayload<ContractRejectionMessage, Void> {
 

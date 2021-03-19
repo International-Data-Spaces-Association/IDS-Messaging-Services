@@ -1,13 +1,15 @@
-package de.fraunhofer.ids.framework.messaging.protocol.multipart;
+package de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping;
 
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.Resource;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
 
 import java.util.Optional;
 
 public class ResourceMAP implements MessageAndPayload<Message, Resource> {
-    private Message message;
-    private Resource resource;
+    private final Message  message;
+    private       Resource resource;
     public ResourceMAP(Message m)
     {
         this.message = m;

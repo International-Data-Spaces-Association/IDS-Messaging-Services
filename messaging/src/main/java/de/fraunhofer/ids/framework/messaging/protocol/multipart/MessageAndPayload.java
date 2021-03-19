@@ -1,15 +1,17 @@
 package de.fraunhofer.ids.framework.messaging.protocol.multipart;
 
-import java.util.Optional;
 
 import de.fraunhofer.iais.eis.Message;
-import lombok.Getter;
 
-public interface MessageAndPayload<MessageType extends Message, PayloadType> {
+import java.io.IOException;
+import java.util.Optional;
 
+public interface MessageAndPayload<MessageType extends Message, T> {
 
     MessageType getMessage();
-    Optional<PayloadType> getPayload();
-    SerializedPayload serializePayload();
+    Optional<T> getPayload();
+    SerializedPayload serializePayload() throws IOException;
+
+
 }
 

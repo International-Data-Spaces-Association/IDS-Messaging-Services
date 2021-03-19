@@ -1,23 +1,26 @@
-package de.fraunhofer.ids.framework.messaging.protocol.multipart;
+package de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping;
 
 
 import java.util.Optional;
 
 import de.fraunhofer.iais.eis.InfrastructureComponent;
 import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class InfrastructureComponentMAP implements MessageAndPayload<Message, InfrastructureComponent> {
+@RequiredArgsConstructor
+public class InfrastructurePayloadMAP implements MessageAndPayload<Message, InfrastructureComponent> {
 
     @Getter
+    @NotNull
     private final Message                 message;
-    private       InfrastructureComponent connectorSelfDescription;
 
-    public InfrastructureComponentMAP(Message message) {
-        this.message = message;
-    }
+    private       InfrastructureComponent connectorSelfDescription;
 
 
     @Override

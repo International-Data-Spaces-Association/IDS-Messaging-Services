@@ -1,23 +1,23 @@
-package de.fraunhofer.ids.framework.messaging.protocol.multipart;
+package de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping;
 
 import de.fraunhofer.iais.eis.Contract;
 import de.fraunhofer.iais.eis.ContractAgreement;
 import de.fraunhofer.iais.eis.ContractAgreementMessage;
+import lombok.AllArgsConstructor;
 
 import java.util.Optional;
 
+
 public class ContractAgreementMAP extends ContractMAP<ContractAgreementMessage, ContractAgreement> {
 
-
-
     public ContractAgreementMAP(ContractAgreementMessage contractAgreementMessage, ContractAgreement payload) {
-        this.contractMessage = contractAgreementMessage;
+        this.message = contractAgreementMessage;
         this.payload = payload;
     }
 
     @Override
     public ContractAgreementMessage getMessage() {
-        return contractMessage;
+        return message;
     }
 
     @Override

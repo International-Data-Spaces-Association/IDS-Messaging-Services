@@ -1,23 +1,32 @@
 package de.fraunhofer.ids.framework.messaging.protocol;
 
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.daps.ClaimsException;
 import de.fraunhofer.ids.framework.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MultipartRequestBuilder;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.framework.util.MultipartParseException;
-import okhttp3.RequestBody;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
+
+import static de.fraunhofer.ids.framework.messaging.util.RequestUtils.logRequest;
 
 /**
  * Option for the connector developer to choose the protocol for sending the message in the IDS dynamically per message.
  * Additionally a default if no protocol is specified.
  */
 @Service
+@Slf4j
 public class MessageService {
     private final IdsHttpService httpService;
+    private final MultipartRequestBuilder multipartRequestBuilder = new MultipartRequestBuilder();
+    private final MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
 
     /**
      * Constructor of MessageService class
@@ -32,7 +41,7 @@ public class MessageService {
     /**
      * Send messages in IDS to other actors with choice of the protocol used.
      *
-     * @param body         The RequestBody of the message
+     * @param messageAndPayload The IDS Infomodel Message containing the Metadata, and the Payload to be sent
      * @param target       The target of the message
      * @param protocolType The selected protocol which should be used for sending (see ProtocolType enum)
      *
@@ -40,37 +49,48 @@ public class MessageService {
      *
      * @throws MultipartParseException something went wrong with the file attached (if there was one)
      * @throws ClaimsException     something went wrong with the DAT
-     * @throws IOException         DAPS or taget could not be reached
+     * @throws IOException         DAPS or target could not be reached
      */
-    public Map<String, String> sendIdsMessage( final RequestBody body,
-                                               final URI target,
-                                               final ProtocolType protocolType )
+    public MessageAndPayload<?, ?> sendIdsMessage( final MessageAndPayload<?,?> messageAndPayload,
+                                                    final URI target,
+                                                    final ProtocolType protocolType )
             throws MultipartParseException, ClaimsException, IOException {
+        var payloadOptional = messageAndPayload.getPayload();
+        Object payload = new Object();
 
         switch( protocolType ) {
-            case MULTIPART:
-                return httpService.sendAndCheckDat(body, target);
             case REST:
                 return null;
+            case MULTIPART:
+                if ( payloadOptional.isPresent() ){
+                    payload=payloadOptional.get();
+                }
+                Request request = multipartRequestBuilder.build(messageAndPayload.getMessage(), target, payload);
+                logRequest(request);
+                var responseMap =  httpService.sendAndCheckDat(request);
+                return multipartResponseConverter.convertResponse(responseMap);
             default:
-                return httpService.sendAndCheckDat(body, target);
+                log.warn("Unknown protocol using default multipart");
+                return sendIdsMessage(messageAndPayload, target, ProtocolType.MULTIPART);
+
         }
     }
 
     /**
      * Send messages in IDS to other actors without choosing a specific protocol, will use Multipart as default.
      *
-     * @param body   The RequestBody of the message
+     * @param messageAndPayload The IDS Infomodel Message containing the Metadata, and the Payload to be sent
      * @param target The target of the message
      *
      * @return returns the response
      *
      * @throws MultipartParseException something went wrong with the file attached (if there was one)
      * @throws ClaimsException     something went wrong with the DAT
-     * @throws IOException         DAPS or taget could not be reached
+     * @throws IOException         DAPS or target could not be reached
      */
-    public Map<String, String> sendIdsMessage( final RequestBody body, final URI target )
+    public MessageAndPayload<?, ?> sendIdsMessage( final MessageAndPayload <?,?> messageAndPayload, final URI target )
             throws MultipartParseException, ClaimsException, IOException {
-        return sendIdsMessage(body, target, ProtocolType.MULTIPART);
+        return sendIdsMessage(messageAndPayload, target, ProtocolType.MULTIPART);
     }
+
 }

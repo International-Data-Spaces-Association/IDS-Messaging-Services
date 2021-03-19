@@ -2,20 +2,14 @@ package de.fraunhofer.ids.framework.messaging.protocol.multipart;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.*;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import de.fraunhofer.ids.framework.util.MultipartParseException;
-import de.fraunhofer.ids.framework.util.MultipartParser;
 import okhttp3.Response;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.io.FileUtils;
 
 /**
  * Converts a {@link Response} into the corresponding {@link MessageAndPayload object}
@@ -25,16 +19,15 @@ public class MultipartResponseConverter {
 
     /**
      *
-     * @param response to a multipart request
+     * @param responseMap in a Map
      * @return MessageAndPayload containing the corresponding Message and the payload parsed in Infomodel classes
-     * @throws  MultipartParseException if response cannot be parsed
      * @throws IOException if message or payload cannot be parsed
      */
-    public MessageAndPayload<?,?> convertResponse( Response response ) throws IOException, MultipartParseException {
-        var responseMap = MultipartParser.stringToMultipart(Objects.requireNonNull(response.body()).string());
-        var messageString = responseMap.get(MultipartDatapart.HEADER.toString());
+    public MessageAndPayload<?,?> convertResponse( Map<String, String> responseMap ) throws IOException {
+        //var responseMap = MultipartParser.stringToMultipart(Objects.requireNonNull(response.body()).string());
+        //var messageString = responseMap.get(MultipartDatapart.HEADER.toString());
         var payloadString = responseMap.getOrDefault(MultipartDatapart.PAYLOAD.toString(),"");
-        var message = serializer.deserialize(messageString, Message.class);
+        var message = serializer.deserialize(responseMap.getOrDefault(MultipartDatapart.HEADER.toString(), ""), Message.class);
 
         // core message types
         if (message instanceof DescriptionRequestMessage) {
@@ -65,9 +58,9 @@ public class MultipartResponseConverter {
 
         // broker-related messages
         else if (message instanceof ConnectorUpdateMessage) {
-            return new InfrastructureComponentMAP(message, serializer.deserialize(payloadString, InfrastructureComponent.class));
+            return new InfrastructurePayloadMAP(message, serializer.deserialize(payloadString, InfrastructureComponent.class));
         } else if (message instanceof ConnectorUnavailableMessage) {
-            return new InfrastructureComponentMAP(message);
+            return new InfrastructurePayloadMAP(message);
         } else if (message instanceof QueryMessage) {
             return new QueryMAP((QueryMessage) message, payloadString);
         } else if (message instanceof ResourceUpdateMessage) {
