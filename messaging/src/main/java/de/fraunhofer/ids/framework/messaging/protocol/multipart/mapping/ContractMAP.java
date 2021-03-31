@@ -6,7 +6,6 @@ import de.fraunhofer.iais.eis.Contract;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 

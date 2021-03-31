@@ -8,7 +8,6 @@ import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.*;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
-import de.fraunhofer.ids.framework.util.MultipartParseException;
 import okhttp3.Response;
 
 /**

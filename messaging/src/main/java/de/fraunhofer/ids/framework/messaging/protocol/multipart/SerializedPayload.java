@@ -10,7 +10,8 @@ public class SerializedPayload {
     public static SerializedPayload EMPTY = new SerializedPayload();
     private       byte[]            serialization;
     @Setter( AccessLevel.NONE )
-    private       String            contentType, filename;
+    private       String            contentType;
+    private       String            filename;
 
     public SerializedPayload( byte[] serialization ) {
         this.serialization = serialization;

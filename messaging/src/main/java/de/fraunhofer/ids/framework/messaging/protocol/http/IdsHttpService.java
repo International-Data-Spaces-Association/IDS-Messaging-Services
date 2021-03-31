@@ -327,7 +327,7 @@ public class IdsHttpService implements HttpService {
         var multipartResponse = MultipartParser.stringToMultipart(responseString);
         var messageJson = multipartResponse.get(MultipartDatapart.HEADER.toString());
         var message = serializer.deserialize(messageJson, Message.class);
-        var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
+        //var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
 /*        if( payloadString != null ) {
             try {

@@ -3,7 +3,6 @@ package de.fraunhofer.ids.framework.messaging.protocol.multipart;
 import java.io.IOException;
 import java.net.URI;
 
-import de.fraunhofer.iais.eis.InfrastructureComponent;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.messaging.protocol.RequestBuilder;
@@ -48,15 +47,6 @@ public class MultipartRequestBuilder implements RequestBuilder {
                 .url(target.toURL())
                 .post(body)
                 .build();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Request build  ( Message message, URI target, Object object ) throws IOException {
-        return build(message, target, serializer.serialize(object));
     }
 
 }
