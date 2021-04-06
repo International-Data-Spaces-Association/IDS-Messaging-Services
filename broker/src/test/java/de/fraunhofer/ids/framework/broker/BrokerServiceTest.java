@@ -24,7 +24,9 @@ import de.fraunhofer.ids.framework.config.ssl.keystore.KeyStoreManagerInitializa
 import de.fraunhofer.ids.framework.daps.*;
 import de.fraunhofer.ids.framework.daps.aisec.AisecTokenManagerService;
 import de.fraunhofer.ids.framework.messaging.dispatcher.filter.PreDispatchingFilterResult;
+import de.fraunhofer.ids.framework.messaging.protocol.MessageService;
 import de.fraunhofer.ids.framework.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import junit.framework.TestCase;
 import okhttp3.Response;
 import okhttp3.mockwebserver.MockResponse;
@@ -47,6 +49,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -70,9 +73,6 @@ public class BrokerServiceTest {
     private ConfigContainer   configurationContainer;
 
     @Autowired
-    private ClientProvider    clientProvider;
-
-    @Autowired
     private DapsTokenProvider dapsTokenProvider;
 
     @Autowired
@@ -81,6 +81,8 @@ public class BrokerServiceTest {
     @Autowired
     private DapsValidator dapsValidator;
 
+    @Autowired
+    private MessageService messageService;
 
     private IdsHttpService    idsHttpService;
 
@@ -92,13 +94,15 @@ public class BrokerServiceTest {
 
     @Configuration
     static class TestContextConfiguration{
+
         @Bean
         public Serializer getSerializer(){
             return new Serializer();
         }
+
         @Bean
         public BrokerService getBrokerService() {
-            return new BrokerService(configurationContainer, clientProvider, dapsTokenProvider, idsHttpService);
+            return new BrokerService(configurationContainer, dapsTokenProvider, getMessageService());
         }
         @MockBean
         private KeyStoreManager keyStoreManager;
@@ -110,9 +114,6 @@ public class BrokerServiceTest {
         private ConfigContainer   configurationContainer;
 
         @MockBean
-        private ClientProvider    clientProvider;
-
-        @MockBean
         private DapsTokenProvider dapsTokenProvider;
 
         @MockBean
@@ -122,7 +123,13 @@ public class BrokerServiceTest {
         private DapsValidator dapsValidator;
 
         @MockBean
-        private IdsHttpService    idsHttpService;
+        private IdsHttpService  idsHttpService;
+
+        @Bean
+        public MessageService getMessageService(){
+            return new MessageService(idsHttpService);
+        }
+
 
         @MockBean
         private Connector connector;
@@ -266,9 +273,9 @@ public class BrokerServiceTest {
                                                                + "}\n"
                                                                + "--msgpart--");
         this.mockWebServer.enqueue(mockResponse);
-        Response response = this.brokerService.updateSelfDescriptionAtBroker(mockWebServer.url("/").toString());
-        System.out.println(response.body().string());
-        assertTrue(response.isSuccessful());
+        MessageProcessedNotificationMAP map = this.brokerService.updateSelfDescriptionAtBroker(URI.create(mockWebServer.url("/").toString()));
+        System.out.println(new Serializer().serialize(map.getMessage()));
+        assertNotNull(map.getMessage());
     }
 
     private DapsTokenProvider getDapsTokenProvider( ConfigContainer configContainer, ClientProvider clientProvider,
