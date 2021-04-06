@@ -6,7 +6,6 @@ import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.Key;
 import java.sql.Date;
@@ -35,19 +35,13 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private final ClientProvider      clientProvider;
     private final TokenManagerService tokenManagerService;
     private       String              currentJwt;
-    private       List<Key>                 publicKeys;
-
-    @Value( "${daps.key.url}" )
-    private String dapsKeyUrl;
+    private       List<Key>           publicKeys;
 
     @Value( "${daps.token.url}" )
     private String dapsTokenUrl;
 
-    @Value( "${daps.kid.url:default}" )
-    private String keyKid;
-
-    @Value("${daps.key.url.kid}")
-    private Map<String,String> users;
+    @Value("#{${daps.key.url.kid}}")
+    private Map<String,String> urlKidMap;
 
     /**
      * @param configContainer     the {@link ConfigContainer} managing the connector configuration
@@ -100,7 +94,6 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     @Override
     public List<Key> providePublicKeys() {
         if( publicKeys == null ) {
-            log.debug(String.format("Getting public key from %s!", dapsKeyUrl));
             getPublicKeys();
         }
         log.debug("Provide public key!");
@@ -110,11 +103,12 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * Pull the Public Key from the DAPS and save it in the publicKey variable
      */
+    @PostConstruct
     private void getPublicKeys() {
         this.publicKeys = new ArrayList<>();
         //request the JWK-Set
         var client = clientProvider.getClient();
-        for (var entry : users.entrySet()) {
+        for (var entry : urlKidMap.entrySet()) {
             try {
                 log.debug(String.format("Getting json web keyset from %s", entry.getKey()));
                 var request = new Request.Builder()
@@ -129,10 +123,10 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                 if (jsonWebKey != null) {
                     this.publicKeys.add(jsonWebKey.getKey());
                 } else {
-                    log.warn("Could not get JsonWebKey with kid " + keyKid + " from received KeySet! PublicKey is null!");
+                    log.warn("Could not get JsonWebKey with kid " + entry.getValue() + " from received KeySet! PublicKey is null!");
                 }
             } catch(IOException e ){
-                log.warn("Could not get key from " + dapsKeyUrl + "!");
+                log.warn("Could not get key from " + entry.getKey() + "!");
                 log.warn(e.getMessage(), e);
             } catch(JoseException e ){
                 log.warn("Could not create JsonWebKeySet from response!");
