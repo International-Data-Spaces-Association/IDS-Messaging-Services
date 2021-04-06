@@ -1,19 +1,15 @@
 package de.fraunhofer.ids.framework.broker;
 
-import de.fraunhofer.iais.eis.*;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
-import de.fraunhofer.ids.framework.util.MultipartDatapart;
-import okhttp3.MultipartBody;
-
-import java.io.IOException;
 import java.net.URI;
+
+import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.util.ConstraintViolationException;
+import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
 
 /**
  * The MessageUtils class contains utility methods for building Infomodel Messages (used by the {@link BrokerService} class)
  */
 public class MessageBuilder {
-    private static final Serializer SERIALIZER = new Serializer();
 
     /**
      * Utility classes (only static methods and fields) do not have a public constructor.
@@ -31,15 +27,16 @@ public class MessageBuilder {
      * @param connectorID      the ID of the connector
      * @param resource         the resource that is marked as unavailable at the broker
      *
-     * @return the {@link ResourceUnavailableMessage} as JSONLD
+     * @return the {@link ResourceUnavailableMessage}
      *
-     * @throws IOException when the message cannot be serialized properly
+     * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static String buildResourceUnavailableMessage( final DynamicAttributeToken securityToken,
+    public static ResourceUnavailableMessage buildResourceUnavailableMessage( final DynamicAttributeToken securityToken,
                                                           final String infoModelVersion,
                                                           final URI connectorID,
-                                                          final Resource resource ) throws IOException {
-        var msg = new ResourceUnavailableMessageBuilder()
+                                                          final Resource resource ) throws
+            ConstraintViolationException {
+        return new ResourceUnavailableMessageBuilder()
                 ._affectedResource_(resource.getId())
                 ._securityToken_(securityToken)
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -47,7 +44,6 @@ public class MessageBuilder {
                 ._issuerConnector_(connectorID)
                 ._modelVersion_(infoModelVersion)
                 .build();
-        return SERIALIZER.serialize(msg);
     }
 
     /**
@@ -60,13 +56,13 @@ public class MessageBuilder {
      *
      * @return the {@link ResourceUpdateMessage} as JSONLD
      *
-     * @throws IOException when the message cannot be serialized properly
+     * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static String buildResourceUpdateMessage( final DynamicAttributeToken securityToken,
+    public static ResourceUpdateMessage buildResourceUpdateMessage( final DynamicAttributeToken securityToken,
                                                      final String infoModelVersion,
                                                      final URI connectorID,
-                                                     final Resource resource ) throws IOException {
-        var msg = new ResourceUpdateMessageBuilder()
+                                                     final Resource resource ) throws ConstraintViolationException {
+        return new ResourceUpdateMessageBuilder()
                 ._affectedResource_(resource.getId())
                 ._securityToken_(securityToken)
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -74,7 +70,6 @@ public class MessageBuilder {
                 ._issuerConnector_(connectorID)
                 ._modelVersion_(infoModelVersion)
                 .build();
-        return SERIALIZER.serialize(msg);
     }
 
     /**
@@ -84,14 +79,14 @@ public class MessageBuilder {
      * @param infoModelVersion the Infomodel Version of the connector
      * @param connectorID      the ID of the connector
      *
-     * @return the {@link ConnectorUnavailableMessage} as JSONLD
+     * @return the {@link ConnectorUnavailableMessage}
      *
-     * @throws IOException when the message cannot be serialized properly
+     * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static String buildUnavailableMessage( final DynamicAttributeToken securityToken,
+    public static ConnectorUnavailableMessage buildUnavailableMessage( final DynamicAttributeToken securityToken,
                                                   final String infoModelVersion,
-                                                  final URI connectorID ) throws IOException {
-        var msg = new ConnectorUnavailableMessageBuilder()
+                                                  final URI connectorID ) throws ConstraintViolationException {
+        return new ConnectorUnavailableMessageBuilder()
                 ._securityToken_(securityToken)
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(infoModelVersion)
@@ -99,7 +94,6 @@ public class MessageBuilder {
                 ._senderAgent_(connectorID)
                 ._affectedConnector_(connectorID)
                 .build();
-        return SERIALIZER.serialize(msg);
     }
 
     /**
@@ -109,14 +103,14 @@ public class MessageBuilder {
      * @param infoModelVersion the Infomodel Version of the connector
      * @param connectorID      the ID of the connector
      *
-     * @return the {@link ConnectorUpdateMessage} as JSONLD
+     * @return the {@link ConnectorUpdateMessage}
      *
-     * @throws IOException when the message cannot be serialized properly
+     * @throws ConstraintViolationException when the message cannot be serialized properly
      */
-    public static String buildUpdateMessage( final DynamicAttributeToken securityToken,
+    public static ConnectorUpdateMessage buildUpdateMessage( final DynamicAttributeToken securityToken,
                                              final String infoModelVersion,
-                                             final URI connectorID ) throws IOException {
-        var msg = new ConnectorUpdateMessageBuilder()
+                                             final URI connectorID ) throws ConstraintViolationException {
+        return new ConnectorUpdateMessageBuilder()
                 ._securityToken_(securityToken)
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(infoModelVersion)
@@ -124,7 +118,6 @@ public class MessageBuilder {
                 ._senderAgent_(connectorID)
                 ._affectedConnector_(connectorID)
                 .build();
-        return SERIALIZER.serialize(msg);
     }
 
     /**
@@ -137,17 +130,17 @@ public class MessageBuilder {
      * @param queryScope       the Scope of the Query (ALL connectors, ACTIVE connectors, INACTIVE connectors) {@link QueryScope}
      * @param queryTarget      the type of IDS Components that are queried {@link QueryTarget}
      *
-     * @return the {@link QueryMessage} as JSONLD
+     * @return the {@link QueryMessage}
      *
-     * @throws IOException when the message cannot be serialized properly
+     * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static String buildQueryMessage( final DynamicAttributeToken securityToken,
+    public static QueryMessage buildQueryMessage( final DynamicAttributeToken securityToken,
                                             final String infoModelVersion,
                                             final URI connectorID,
                                             final QueryLanguage queryLanguage,
                                             final QueryScope queryScope,
-                                            final QueryTarget queryTarget ) throws IOException {
-        var msg = new QueryMessageBuilder()
+                                            final QueryTarget queryTarget ) throws ConstraintViolationException {
+        return new QueryMessageBuilder()
                 ._securityToken_(securityToken)
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(infoModelVersion)
@@ -157,24 +150,6 @@ public class MessageBuilder {
                 ._queryScope_(queryScope)
                 ._recipientScope_(queryTarget)
                 .build();
-        return SERIALIZER.serialize(msg);
-    }
-
-    /**
-     * Generates a two part multipart message. First part includes the message type (register, update, unavailable) and
-     * second part contains the connector self declaration.
-     *
-     * @param header  String representation of the message header
-     * @param payload String representation of the message payload
-     *
-     * @return Two part multipart message containing the message header and payload as body
-     */
-    public static MultipartBody buildRequestBody( final String header, final String payload ) {
-        var builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart(MultipartDatapart.HEADER.toString(), header);
-        builder.addFormDataPart(MultipartDatapart.PAYLOAD.toString(), payload);
-        return builder.build();
     }
 
 }
