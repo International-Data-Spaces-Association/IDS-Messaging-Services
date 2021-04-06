@@ -1,6 +1,7 @@
 package de.fraunhofer.ids.framework.daps;
 
 import java.security.Key;
+import java.util.List;
 
 /**
  * an Implementation of this has to provide the Public Key from the DAPS Service
@@ -12,5 +13,5 @@ public interface DapsPublicKeyProvider {
      *
      * @return the public Key of a DAPS Service
      */
-    Key providePublicKey();
+    List<Key> providePublicKeys();
 }

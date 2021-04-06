@@ -74,7 +74,7 @@ public class MessageDispatcher {
                         .successResult("ConnectorDeployMode is Test. Skipping Token verification!");
             }
             try {
-                var verified = DapsVerifier.verify(DapsValidator.getClaims(in.getSecurityToken(), provider.providePublicKey()));
+                var verified = DapsVerifier.verify(DapsValidator.getClaims(in.getSecurityToken(), provider.providePublicKeys()));
                 return PreDispatchingFilterResult.builder()
                                                  .withSuccess(verified)
                                                  .withMessage(
