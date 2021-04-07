@@ -9,8 +9,10 @@ import de.fraunhofer.ids.framework.messaging.response.BodyResponse;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
 import de.fraunhofer.ids.framework.messaging.util.ResourceIDGenerator;
 import de.fraunhofer.ids.framework.util.MultipartParser;
+import org.apache.commons.collections.ArrayStack;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,6 +31,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,6 +72,9 @@ public class MessageControllerTest {
     private Connector connector;
 
     @MockBean
+    private ConfigurationModel configurationModel;
+
+    @MockBean
     private DapsTokenProvider provider;
 
     @Test
@@ -81,9 +88,13 @@ public class MessageControllerTest {
                 .build();
         requestMappingHandlerMapping.registerMapping(requestMappingInfo, idsController, MessageController.class.getDeclaredMethod("handleIDSMessage", HttpServletRequest.class));
 
+        Mockito.when(configurationContainer.getConfigurationModel()).thenReturn(configurationModel);
+        Mockito.when(configurationModel.getConnectorDescription()).thenReturn(connector);
         Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
         Mockito.when(connector.getId()).thenReturn(new URL("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5").toURI());
         Mockito.when(connector.getOutboundModelVersion()).thenReturn("1.0.3");
+
+        Mockito.doReturn(new ArrayList<>(List.of("*.*.*"))).when(connector).getInboundModelVersion();
         Mockito.when(provider.provideDapsToken()).thenReturn("Mocked Token.");
 
         // Create the message header that shall be send and tested

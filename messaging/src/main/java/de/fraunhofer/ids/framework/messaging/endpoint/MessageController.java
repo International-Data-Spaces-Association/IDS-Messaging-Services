@@ -204,11 +204,12 @@ public class MessageController {
     private boolean checkInboundVersion(String input) throws IOException {
         JsonNode jsonInput = new ObjectMapper().readTree(input);
         if (jsonInput.has("ids:modelVersion")){
+            var inputVersion = jsonInput.get("ids:modelVersion").textValue();
             var inboundList = configContainer.getConfigurationModel()
                     .getConnectorDescription()
                     .getInboundModelVersion();
                     return inboundList.stream()
-                            .map(version -> checkInfomodelContainment(input, version))
+                            .map(supportedVersion -> checkInfomodelContainment(inputVersion, supportedVersion))
                             .reduce(Boolean::logicalOr)
                             .orElse(false);
         }else {
@@ -227,8 +228,8 @@ public class MessageController {
         var inputSplit = input.split("\\.");
         if(inputSplit.length != acceptedSplit.length) return false;
         for(int i=0; i< inputSplit.length; i++){
-           if(inputSplit[i].equals(acceptedSplit[i]) || acceptedSplit[i].equals("*")) return true;
+           if(!inputSplit[i].equals(acceptedSplit[i]) && !acceptedSplit[i].equals("*")) return false;
         }
-        return false;
+        return true;
     }
 }
