@@ -5,7 +5,7 @@ import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -14,10 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.Key;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -31,16 +35,13 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private final ClientProvider      clientProvider;
     private final TokenManagerService tokenManagerService;
     private       String              currentJwt;
-    private       Key                 publicKey;
-
-    @Value( "${daps.key.url}" )
-    private String dapsKeyUrl;
+    private       List<Key>           publicKeys;
 
     @Value( "${daps.token.url}" )
     private String dapsTokenUrl;
 
-    @Value( "${daps.kid.url:default}" )
-    private String keyKid;
+    @Value("#{${daps.key.url.kid}}")
+    private Map<String,String> urlKidMap;
 
     /**
      * @param configContainer     the {@link ConfigContainer} managing the connector configuration
@@ -91,44 +92,46 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * @return the Public Key from the DAPS (used for validating Tokens of incoming Messages)
      */
     @Override
-    public Key providePublicKey() {
-        if( publicKey == null ) {
-            log.debug(String.format("Getting public key from %s!", dapsKeyUrl));
-            getPublicKey();
+    public List<Key> providePublicKeys() {
+        if( publicKeys == null ) {
+            getPublicKeys();
         }
         log.debug("Provide public key!");
-        return publicKey;
+        return publicKeys;
     }
 
     /**
      * Pull the Public Key from the DAPS and save it in the publicKey variable
      */
-    private void getPublicKey() {
-        try {
-            //request the JWK-Set
-            log.debug(String.format("Getting json web keyset from %s", dapsKeyUrl));
-            var client = clientProvider.getClient();
-            var request = new Request.Builder()
-                    .url(dapsKeyUrl)
-                    .build();
-            var response = client.newCall(request).execute();
+    @PostConstruct
+    private void getPublicKeys() {
+        this.publicKeys = new ArrayList<>();
+        //request the JWK-Set
+        var client = clientProvider.getClient();
+        for (var entry : urlKidMap.entrySet()) {
+            try {
+                log.debug(String.format("Getting json web keyset from %s", entry.getKey()));
+                var request = new Request.Builder()
+                        .url(entry.getKey())
+                        .build();
+                var response = client.newCall(request).execute();
 
-            var keySetJSON = Objects.requireNonNull(response.body()).string();
-            var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
-            var jsonWebKey = jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(keyKid)).findAny()
-                                          .orElse(null);
-
-            if( jsonWebKey != null ) {
-                this.publicKey = jsonWebKey.getKey();
-            } else {
-                log.warn("Could not get JsonWebKey with kid " + keyKid + " from received KeySet! PublicKey is null!");
+                var keySetJSON = Objects.requireNonNull(response.body()).string();
+                var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
+                var jsonWebKey = jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(entry.getValue())).findAny()
+                        .orElse(null);
+                if (jsonWebKey != null) {
+                    this.publicKeys.add(jsonWebKey.getKey());
+                } else {
+                    log.warn("Could not get JsonWebKey with kid " + entry.getValue() + " from received KeySet! PublicKey is null!");
+                }
+            } catch(IOException e ){
+                log.warn("Could not get key from " + entry.getKey() + "!");
+                log.warn(e.getMessage(), e);
+            } catch(JoseException e ){
+                log.warn("Could not create JsonWebKeySet from response!");
+                log.warn(e.getMessage(), e);
             }
-        } catch( IOException e ) {
-            log.warn("Could not get key from " + dapsKeyUrl + "!");
-            log.warn(e.getMessage(), e);
-        } catch( JoseException e ) {
-            log.warn("Could not create JsonWebKeySet from response!");
-            log.warn(e.getMessage(), e);
         }
     }
 
@@ -138,14 +141,14 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * @return true if jwt expired
      */
     private boolean isExpired( final String jwt ) {
-        if( publicKey == null ) {
-            getPublicKey();
+        var token = new DynamicAttributeTokenBuilder()._tokenFormat_(TokenFormat.JWT)._tokenValue_(jwt).build();
+        Claims claims;
+        try {
+            claims = DapsValidator.getClaims(token, this.publicKeys).getBody();
+        } catch (ClaimsException e) {
+            log.warn("Could not parse jwt!");
+            return true;
         }
-        var claims = Jwts.parser()
-                         .setSigningKey(publicKey)
-                         .parseClaimsJws(jwt)
-                         .getBody();
-        log.debug("Current DAT will expire: " + claims.getExpiration().toString());
         return claims.getExpiration().before(Date.from(Instant.now()));
     }
 }

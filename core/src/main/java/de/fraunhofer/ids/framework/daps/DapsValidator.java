@@ -2,6 +2,7 @@ package de.fraunhofer.ids.framework.daps;
 
 import java.security.Key;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
@@ -37,23 +38,26 @@ public class DapsValidator {
      * Extract the Claims from the Dat token of a message, given the Message and a signingKey
      *
      * @param token      {@link DynamicAttributeToken} of an incoming RequestMessage
-     * @param signingKey a public Key
+     * @param signingKeys a  List of public Keys
      *
      * @return the Claims of the messages DAT Token, when it can be signed with the given key
      *
      * @throws ClaimsException if Token cannot be signed with the given key
      */
-    public static Jws<Claims> getClaims( final DynamicAttributeToken token, final Key signingKey )
+    public static Jws<Claims> getClaims( final DynamicAttributeToken token, final List<Key> signingKeys )
             throws ClaimsException {
         var tokenValue = token.getTokenValue();
-        try {
-            return Jwts.parser()
-                       .setSigningKey(signingKey)
-                       .parseClaimsJws(tokenValue);
-        } catch( Exception e ) {
-            log.warn("Could not parse incoming JWT/DAT!");
-            throw new ClaimsException(e.getMessage());//NOPMD
+        if (signingKeys == null || signingKeys.isEmpty()){
+            throw new ClaimsException("No signing keys were given!");
         }
+        for(var signingKey : signingKeys) {
+            try {
+                return Jwts.parser()
+                        .setSigningKey(signingKey)
+                        .parseClaimsJws(tokenValue);
+            } catch (Exception e) {}
+        }
+        throw new ClaimsException("No given signing Key could validate JWT!");
     }
 
     /**
@@ -64,27 +68,30 @@ public class DapsValidator {
      */
     public boolean checkDat( final DynamicAttributeToken token, Map<String, Object> extraAttributes ) {
         Jws<Claims> claims;
-        try {
-            claims = getClaims(token, keyProvider.providePublicKey());
-        } catch( ClaimsException e ) {
-            log.warn("Daps token of response could not be parsed!");
-            return false;
-        }
-        if( extraAttributes != null && extraAttributes.containsKey("securityProfile") ) {
+        var keys = keyProvider.providePublicKeys();
             try {
-                verifySecurityProfile(claims.getBody().get("securityProfile", String.class),
-                                      extraAttributes.get("securityProfile").toString());
+                claims = getClaims(token, keys);
             } catch( ClaimsException e ) {
-                log.warn("Security profile does not match Selfdescription");
                 return false;
             }
-        }
-        try {
-            return DapsVerifier.verify(claims);
-        } catch( ClaimsException e ) {
-            log.warn("Claims could not be verified!");
-            return false;
-        }
+            if(claims == null){
+                return false;
+            }
+            if( extraAttributes != null && extraAttributes.containsKey("securityProfile") ) {
+                try {
+                    verifySecurityProfile(claims.getBody().get("securityProfile", String.class),
+                            extraAttributes.get("securityProfile").toString());
+                } catch( ClaimsException e ) {
+                    log.warn("Security profile does not match Selfdescription");
+                    return false;
+                }
+            }
+            try {
+                return DapsVerifier.verify(claims);
+            } catch( ClaimsException e ) {
+                log.warn("Claims could not be verified!");
+                return false;
+            }
     }
 
     /**

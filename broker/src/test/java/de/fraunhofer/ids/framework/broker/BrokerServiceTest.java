@@ -147,7 +147,7 @@ public class BrokerServiceTest {
         Mockito.when(configurationContainer.getConfigurationModel()).thenReturn(configurationModel);
         Mockito.when(configurationModel.getConnectorDeployMode()).thenReturn(ConnectorDeployMode.TEST_DEPLOYMENT);
         Mockito.when(dapsTokenProvider.provideDapsToken()).thenReturn("Mocked Token.");
-        Mockito.when(dapsPublicKeyProvider.providePublicKey()).thenReturn(null);
+        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(null);
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsTokenProvider.getDAT()).thenReturn(fakeToken);

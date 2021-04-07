@@ -20,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.security.KeyPairGenerator;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,7 +58,7 @@ class DapsValidatorTest {
         keyGen.initialize(512);
         var pair = keyGen.generateKeyPair();
         //when PublicKeyProvider is called, return generated Public Key
-        Mockito.when(dapsPublicKeyProvider.providePublicKey()).thenReturn(pair.getPublic());
+        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
         //create JWT and sign it with generated private Key
         var jwt = Jwts.builder()
                 .setIssuedAt(Date.from(Instant.now()))
