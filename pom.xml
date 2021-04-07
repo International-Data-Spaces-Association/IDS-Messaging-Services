@@ -17,7 +17,7 @@
     </modules>
 
     <properties>
-        <revision>1.7-SNAPSHOT</revision>
+        <revision>1.6-SNAPSHOT</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>

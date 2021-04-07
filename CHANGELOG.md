@@ -11,10 +11,12 @@ Documentation started on: 2021-01-20.
 - Asynchronous Message-Flow Support (support RequestInProcessMessage-Handling)
 - Initial IDS-Broker support
 - Initial IDS-ClearingHouse support
+- Initial IDS-Rest support
 - Code refactoring
 - MessageController now accepts messages with empty payloads (as required by AppStore, IDS-Framework implementation)
 - MultipartParser now throws MultipartParseException instead of FileUploadException
 - DapsValidator now accepts DAT Token instead of full Message
+- DAT now checked against list of trusted issuers given in application.properties
 
 ## Version 1.5-SNAPSHOT
 ### Removed
