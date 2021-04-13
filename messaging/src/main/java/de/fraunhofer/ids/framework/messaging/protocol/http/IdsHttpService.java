@@ -7,9 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RejectionMessage;
+import de.fraunhofer.iais.eis.ids.component.interaction.validation.ShaclValidator;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
@@ -22,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,7 +37,63 @@ public class IdsHttpService implements HttpService {
     private       TimeoutSettings timeoutSettings;
     private final DapsValidator   dapsValidator;
     private final ConfigContainer configContainer;
-    private final Serializer      serializer;
+
+    private final Serializer serializer;
+    @Value( "#{new Boolean('${shacl.validation}')}" )
+    private Boolean shaclValidation;
+
+
+    /**
+     * @param response {@link Response} from an IDS Http request
+     *
+     * @return Multipart Map with header and payload part of response
+     *
+     * @throws IOException     if request cannot be sent
+     * @throws ClaimsException if DAT of response is invalid or cannot be parsed
+     */
+    private Map<String, String> checkDatFromResponse( final Response response )
+            throws MultipartParseException, IOException, ClaimsException {
+        //if connector is set to test deployment: ignore DAT Tokens
+        final var responseString = Objects.requireNonNull(response.body()).string();
+        final var multipartResponse = MultipartParser.stringToMultipart(responseString);
+        final var messageString = multipartResponse.get(MultipartDatapart.HEADER.toString());
+
+        if( shaclValidation ) {
+            log.info(messageString);
+            if( !ShaclValidator.validateRdf(messageString).conforms() ) {
+                throw new IOException("received message headers does not conform to IDS infomodel");
+            }
+            log.info("received response passed Shacl Validation .");
+        }
+
+        final Map<String, Object> extraAttributes = new HashMap<>();
+        final var message = serializer.deserialize(messageString, Message.class);
+        final var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
+        if( payloadString != null ) {
+            try {
+                final var connector = serializer.deserialize(payloadString, Connector.class);
+                if( message.getIssuerConnector().equals(connector.getId()) ) {
+                    extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
+                }
+            } catch( IOException e ) {
+                log.warn("Could not deserialize Playload " + e.getMessage());
+                log.warn("Skipping Connector-SecurityProfile Attribute!");
+            }
+        }
+
+        final var ignoreDAT =
+                configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
+        var valid = true;
+        if( !ignoreDAT && !( message instanceof RejectionMessage ) ) {
+            valid = dapsValidator.checkDat(message.getSecurityToken(), extraAttributes);
+        }
+
+        if( !valid ) {
+            log.warn("DAT of incoming response is not valid!");
+            throw new ClaimsException("DAT of incoming response is not valid!");
+        }
+        return multipartResponse;
+    }
 
     /**
      * Constructor of IdsHttpService
@@ -76,7 +135,7 @@ public class IdsHttpService implements HttpService {
     @Override
     public Response send( final String message, final URI target ) throws IOException {
         log.debug("Creating requestBody");
-        var body = RequestBody.create(message, MediaType.parse("application/json"));
+        final var body = RequestBody.create(message, MediaType.parse("application/json"));
 
         return send(body, target);
     }
@@ -85,7 +144,7 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response send( Request request ) throws IOException {
+    public Response send( final Request request ) throws IOException {
         return sendRequest(request, getClientWithSettings());
     }
 
@@ -95,7 +154,7 @@ public class IdsHttpService implements HttpService {
     @Override
     public Response send( final RequestBody requestBody, final URI target ) throws IOException {
         log.debug(String.format("building request to %s", target.toString()));
-        var request = buildRequest(requestBody, target);
+        final var request = buildRequest(requestBody, target);
 
         log.debug(String.format("sending request to %s", target.toString()));
         return sendRequest(request, getClientWithSettings());
@@ -110,7 +169,7 @@ public class IdsHttpService implements HttpService {
                                      final Map<String, String> headers )
             throws IOException {
         log.debug(String.format("building request to %s", target.toString()));
-        var request = buildWithHeaders(requestBody, target, headers);
+        final var request = buildWithHeaders(requestBody, target, headers);
 
         log.debug(String.format("sending request to %s", target.toString()));
         return sendRequest(request, getClientWithSettings());
@@ -121,7 +180,7 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Response get( final URI target ) throws IOException {
-        var request = new Request.Builder().url(target.toString()).get().build();
+        final var request = new Request.Builder().url(target.toString()).get().build();
         return sendRequest(request, getClientWithSettings());
     }
 
@@ -130,14 +189,14 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Response getWithHeaders( final URI target, final Map<String, String> headers ) throws IOException {
-        var builder = new Request.Builder().url(target.toString()).get();
+        final var builder = new Request.Builder().url(target.toString()).get();
 
         headers.keySet().forEach(key -> {
             log.debug(String.format("adding header part (%s,%s)", key, headers.get(key)));
             builder.addHeader(key, headers.get(key));
         });
 
-        var request = builder.build();
+        final var request = builder.build();
 
         return sendRequest(request, getClientWithSettings());
     }
@@ -151,7 +210,7 @@ public class IdsHttpService implements HttpService {
      * @return the built http {@link Request}
      */
     private Request buildRequest( final RequestBody requestBody, final URI target ) {
-        var targetURL = target.toString();
+        final var targetURL = target.toString();
         log.info("URL is valid: " + HttpUrl.parse(targetURL));
 
         return new Request.Builder()
@@ -173,12 +232,12 @@ public class IdsHttpService implements HttpService {
     private Request buildWithHeaders( final RequestBody requestBody,
                                       final URI target,
                                       final Map<String, String> headers ) {
-        var targetURL = target.toString();
+        final var targetURL = target.toString();
         log.info("URL is valid: " + HttpUrl.parse(targetURL));
 
         //!!! DO NOT PRINT RESPONSE BECAUSE RESPONSE BODY IS JUST ONE TIME READABLE
         // --> Message could not be parsed java.io.IOException: closed
-        Request.Builder builder = new Request.Builder()
+        final Request.Builder builder = new Request.Builder()
                 .url(targetURL)
                 .post(requestBody);
 
@@ -205,7 +264,7 @@ public class IdsHttpService implements HttpService {
     private Response sendRequest( final Request request, final OkHttpClient client ) throws IOException {
         log.info("Request is HTTPS: " + request.isHttps());
 
-        var response = client.newCall(request).execute();
+        final var response = client.newCall(request).execute();
 
         if( !response.isSuccessful() ) {
             log.error("Error while sending the request!");
@@ -237,20 +296,21 @@ public class IdsHttpService implements HttpService {
      * @return client with set timeouts
      */
     private OkHttpClient getClientWithSettings() {
-        if( timeoutSettings != null ) {
+        OkHttpClient client;
+        if( timeoutSettings == null ) {
+            log.debug("No timeout settings specified, using default client.");
+            client = provider.getClient();
+        }else{
             log.debug("Generating a Client with specified timeout settings.");
 
-            return provider.getClientWithTimeouts(
+            client = provider.getClientWithTimeouts(
                     timeoutSettings.getConnectTimeout(),
                     timeoutSettings.getReadTimeout(),
                     timeoutSettings.getWriteTimeout(),
                     timeoutSettings.getCallTimeout()
             );
         }
-
-        log.debug("No timeout settings specified, using default client.");
-
-        return provider.getClient();
+        return client;
     }
 
     /**
@@ -307,51 +367,6 @@ public class IdsHttpService implements HttpService {
         }
 
         return checkDatFromResponse(response);
-    }
-
-    /**
-     * @param response {@link Response} from an IDS Http request
-     *
-     * @return Multipart Map with header and payload part of response
-     *
-     * @throws IOException     if request cannot be sent
-     * @throws ClaimsException if DAT of response is invalid or cannot be parsed
-     */
-    private Map<String, String> checkDatFromResponse( final Response response )
-            throws MultipartParseException, IOException, ClaimsException {
-        //if connector is set to test deployment: ignore DAT Tokens
-        var ignoreDAT =
-                configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
-        Map<String, Object> extraAttributes = new HashMap<>();
-        var responseString = Objects.requireNonNull(response.body()).string();
-        var multipartResponse = MultipartParser.stringToMultipart(responseString);
-        var messageJson = multipartResponse.get(MultipartDatapart.HEADER.toString());
-        var message = serializer.deserialize(messageJson, Message.class);
-        //var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
-
-/*        if( payloadString != null ) {
-            try {
-                var connector = serializer.deserialize(payloadString, Connector.class);
-                if( message.getIssuerConnector().equals(connector.getId()) ) {
-                    extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
-                }
-            } catch( IOException e) {
-                log.warn("Could not deserialize Playload " + e.getMessage());
-                log.warn("Skipping Connector-SecurityProfile Attribute!");
-            }
-        }*/
-        //TODO check for unchecked Exception
-
-        var valid = true;
-        if( !ignoreDAT && !( message instanceof RejectionMessage ) ) {
-            valid = dapsValidator.checkDat(message.getSecurityToken(), extraAttributes);
-        }
-
-        if( !valid ) {
-            log.warn("DAT of incoming response is not valid!");
-            throw new ClaimsException("DAT of incoming response is not valid!");
-        }
-        return multipartResponse;
     }
 
     /**
