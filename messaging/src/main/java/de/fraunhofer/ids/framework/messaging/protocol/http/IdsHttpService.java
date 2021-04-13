@@ -61,7 +61,7 @@ public class IdsHttpService implements HttpService {
         if( shaclValidation ) {
             log.info(messageString);
             if( !ShaclValidator.validateRdf(messageString).conforms() ) {
-                throw new IOException("received message headers does not conform to IDS infomodel");
+                throw new IOException("received message headers do not conform to IDS infomodel");
             }
             log.info("received response passed Shacl Validation .");
         }
@@ -76,7 +76,7 @@ public class IdsHttpService implements HttpService {
                     extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
                 }
             } catch( IOException e ) {
-                log.warn("Could not deserialize Playload " + e.getMessage());
+                log.warn("Could not deserialize Payload " + e.getMessage());
                 log.warn("Skipping Connector-SecurityProfile Attribute!");
             }
         }
