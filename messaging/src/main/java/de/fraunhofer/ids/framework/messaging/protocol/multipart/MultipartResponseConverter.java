@@ -66,26 +66,32 @@ public class MultipartResponseConverter {
             return new ResourceMAP(message, serializer.deserialize(payloadString, Resource.class));
         } else if (message instanceof ResourceUnavailableMessage) {
             return new ResourceMAP(message);
+        } else if( message instanceof ResultMessage ) {
+            return new ResultMAP((ResultMessage) message, payloadString);
         }
 
         // participant-related messages
-        else if (message instanceof ParticipantUpdateMessage) {
+        else if( message instanceof ParticipantUpdateMessage ) {
             return new ParticipantNotificationMAP(message, serializer.deserialize(payloadString, Participant.class));
-        } else if (message instanceof ParticipantUnavailableMessage) {
+        } else if( message instanceof ParticipantUnavailableMessage ) {
             return new ParticipantNotificationMAP(message);
-        } else if (message instanceof ParticipantRequestMessage) {
+        } else if( message instanceof ParticipantRequestMessage ) {
             return new ParticipantRequestMAP((ParticipantRequestMessage) message);
         }
 
         // contract-related messages
-        else if (message instanceof ContractOfferMessage) {
-            return new ContractOfferMAP((ContractOfferMessage) message, serializer.deserialize(payloadString, ContractOffer.class));
-        } else if (message instanceof ContractRequestMessage) {
-            return new ContractRequestMAP((ContractRequestMessage) message, serializer.deserialize(payloadString, ContractRequest.class));
-        } else if (message instanceof ContractAgreementMessage) {
-            return new ContractAgreementMAP((ContractAgreementMessage) message, serializer.deserialize(payloadString, ContractAgreement.class));
-        } else if (message instanceof ContractResponseMessage) {
-            return new ContractResponseMAP((ContractResponseMessage) message, serializer.deserialize(payloadString, ContractOffer.class));
+        else if( message instanceof ContractOfferMessage ) {
+            return new ContractOfferMAP((ContractOfferMessage) message,
+                                        serializer.deserialize(payloadString, ContractOffer.class));
+        } else if( message instanceof ContractRequestMessage ) {
+            return new ContractRequestMAP((ContractRequestMessage) message,
+                                          serializer.deserialize(payloadString, ContractRequest.class));
+        } else if( message instanceof ContractAgreementMessage ) {
+            return new ContractAgreementMAP((ContractAgreementMessage) message,
+                                            serializer.deserialize(payloadString, ContractAgreement.class));
+        } else if( message instanceof ContractResponseMessage ) {
+            return new ContractResponseMAP((ContractResponseMessage) message,
+                                           serializer.deserialize(payloadString, ContractOffer.class));
         }
         throw new IOException("Could not convert input header to suitable message and payload type. Header: " + message.toRdf());
     }

@@ -28,10 +28,26 @@ import org.springframework.stereotype.Service;
 public class BrokerService implements IDSBrokerService {
     private static final String                  INFO_MODEL_VERSION        = "4.0.0";
 
+    private static final String FULL_TEXT_QUERY = "PREFIX ids: <https://w3id.org/idsa/core/>\n"
+                                                  + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                                                  + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n"
+                                                  + "SELECT DISTINCT ?resultUri ?res { \n"
+                                                  + "  GRAPH ?g { \n"
+                                                  + "    { ?resultUri a ids:Resource } \n"
+                                                  + "    UNION \n"
+                                                  + "    { ?resultUri a ids:BaseConnector }\n"
+                                                  + "    ?resultUri ?predicate ?res .\n"
+                                                  + "    FILTER ( DATATYPE(?res) = xsd:string ) .\n"
+                                                  + "    FILTER(REGEX(?res, \"%s\", \"i\"))\n"
+                                                  + "  }\n"
+                                                  + "} LIMIT 5 OFFSET 0\n";
+
+
 
     private final ConfigContainer   container;
     private final DapsTokenProvider tokenProvider;
     private final MessageService    messageService;
+
 
     /**
      * Creates the IDSBrokerCommunication controller.
@@ -193,6 +209,24 @@ public class BrokerService implements IDSBrokerService {
         GenericMessageAndPayload messageAndPayload = new GenericMessageAndPayload(header);
 
         var response =  messageService.sendIdsMessage(messageAndPayload, brokerURI);
+        return expectResultMAP(response);
+    }
+
+    @Override
+    public ResultMAP ftSearchBroker( URI brokerURI, String searchTerm, QueryScope queryScope,
+                                     QueryTarget queryTarget )
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException,
+            IOException, MultipartParseException, ClaimsException {
+        var securityToken = getDat();
+        var connectorID = getConnectorId();
+        var header = MessageBuilder
+                .buildQueryMessage(securityToken, INFO_MODEL_VERSION, connectorID, QueryLanguage.SPARQL, queryScope,queryTarget);
+        var payload = String.format(FULL_TEXT_QUERY, searchTerm);
+        GenericMessageAndPayload messageAndPayload = new GenericMessageAndPayload(header, payload);
+        var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
         return expectResultMAP(response);
     }
 

@@ -8,8 +8,7 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.ids.framework.daps.ClaimsException;
-import de.fraunhofer.ids.framework.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.framework.daps.*;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.framework.util.MultipartParseException;
@@ -91,4 +90,24 @@ public interface IDSBrokerService {
      */
     ResultMAP queryBroker( URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException;
+
+    /**
+     * Builds and sends a SPARQL {@link de.fraunhofer.iais.eis.QueryMessage} from a SearchTerm and sends it to broker.
+     *
+     * @param brokerURI     the URI of the broker the message is sent to
+     * @param searchTerm         the query as payload for the QueryMessage
+     * @param queryScope the Scope of the Query (ALL connectors, ACTIVE connectors, INACTIVE connectors). See {@link QueryScope}
+     * @param queryTarget the type of IDS Components that are queried. See {@link QueryTarget}
+     * @return the brokers response to the query request
+     * @throws IOException if the built message could not be serialized
+     */
+    ResultMAP ftSearchBroker(URI brokerURI,  String searchTerm, QueryScope queryScope, QueryTarget queryTarget)
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException,
+            IOException, MultipartParseException, ClaimsException;
 }
+
+
+
