@@ -116,6 +116,9 @@ public class DapsValidator {
         //Replace full URIs (if present) by prefixed values. This simplifies the potential number of values these strings can have
         String adjustedRegistered = registered;
         String adjustedGiven = given;
+        if(registered == null){
+            throw new ClaimsException("Security profile violation. No security profile given in DAT!");
+        }
         if( registered.startsWith("https://w3id.org/idsa/code/") ) {
             adjustedRegistered = registered.replace("https://w3id.org/idsa/code/", "idsc:");
         }

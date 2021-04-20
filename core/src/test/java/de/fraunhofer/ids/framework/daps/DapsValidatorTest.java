@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
@@ -92,6 +93,59 @@ class DapsValidatorTest {
                 .build();
         //token should be rejected
         assertFalse(dapsValidator.checkDat(datToken, Map.of()));
+    }
+
+    @Test
+    public void testExtraAttributes() throws Exception {
+        assertNotNull(dapsValidator);
+        //Create an RSA KeyPair
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(512);
+        var pair = keyGen.generateKeyPair();
+        //when PublicKeyProvider is called, return generated Public Key
+        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
+        //create JWT with BASE_CONNECTOR_SECURITY_PROFILE
+        var jwt = Jwts.builder()
+                .setIssuedAt(Date.from(Instant.now()))
+                .setNotBefore(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusSeconds(600)))
+                .claim("securityProfile", "idsc:BASE_CONNECTOR_SECURITY_PROFILE")
+                .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
+        var datToken = new DynamicAttributeTokenBuilder()
+                ._tokenFormat_(TokenFormat.JWT)
+                ._tokenValue_(jwt.compact())
+                .build();
+        //token with correct security profile should be accepted
+        assertTrue(dapsValidator.checkDat(datToken, Map.of("securityProfile", "idsc:BASE_CONNECTOR_SECURITY_PROFILE")));
+        assertTrue(dapsValidator.checkDat(datToken, Map.of("securityProfile", "idsc:BASE_SECURITY_PROFILE")));
+        //other security profiles in extraAttributes should lead to rejection
+        assertFalse(dapsValidator.checkDat(datToken, Map.of("securityProfile", "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE")));
+        assertFalse(dapsValidator.checkDat(datToken, Map.of("securityProfile", "aiosdhiuaghduiwh")));
+        //create JWT with some random securityprofile string
+        jwt = Jwts.builder()
+                .setIssuedAt(Date.from(Instant.now()))
+                .setNotBefore(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusSeconds(600)))
+                .claim("securityProfile", "sjondfasdhfiou")
+                .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
+        datToken = new DynamicAttributeTokenBuilder()
+                ._tokenFormat_(TokenFormat.JWT)
+                ._tokenValue_(jwt.compact())
+                .build();
+        //token with random string in securityProfile claim should be rejected
+        assertFalse(dapsValidator.checkDat(datToken, Map.of("securityProfile", "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE")));
+        //create JWT without securityprofile
+        jwt = Jwts.builder()
+                .setIssuedAt(Date.from(Instant.now()))
+                .setNotBefore(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusSeconds(600)))
+                .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
+        datToken = new DynamicAttributeTokenBuilder()
+                ._tokenFormat_(TokenFormat.JWT)
+                ._tokenValue_(jwt.compact())
+                .build();
+        //token without security profile should be rejected
+        assertFalse(dapsValidator.checkDat(datToken, Map.of("securityProfile", "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE")));
     }
 
 }
