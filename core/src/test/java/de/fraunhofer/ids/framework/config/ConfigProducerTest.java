@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(classes = TestSpringApp.class)
 @TestPropertySource(locations = "classpath:application.properties")
 class ConfigProducerTest {
+    //TODO check through .p12 files in test resources, replace everything there with localhost certificates just for testing
 
     @Autowired
     private ConfigContainer configContainer;
