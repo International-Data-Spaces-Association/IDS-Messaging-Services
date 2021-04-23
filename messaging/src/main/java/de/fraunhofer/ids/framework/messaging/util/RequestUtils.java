@@ -3,6 +3,7 @@ package de.fraunhofer.ids.framework.messaging.util;
 import java.io.IOException;
 import java.util.Objects;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import okio.Buffer;
@@ -12,22 +13,26 @@ import okio.Buffer;
  */
 
 @Slf4j
+@UtilityClass
 public class RequestUtils {
     /**
      * A util class that prints okhttp Requests.
      *
      * @param request a okhttp Request
-     *
      * @return the request as string or an empty string
      */
-    public static String printRequest( Request request ) {
+    public static String printRequest(final Request request) {
         try {
             final Request copy = request.newBuilder().build();
             final Buffer buffer = new Buffer();
+
             Objects.requireNonNull(copy.body()).writeTo(buffer);
-            return ( buffer.readUtf8() );
-        } catch( final IOException | NullPointerException e ) {
-            log.error(e.getClass().toString()+": printing failed.");
+
+            return buffer.readUtf8();
+        } catch ( IOException | NullPointerException e) {
+            if (log.isErrorEnabled()) {
+                log.error(e.getClass().toString() + ": printing failed.");
+            }
         }
         return "";
     }
@@ -37,7 +42,9 @@ public class RequestUtils {
      *
      * @param request {@link Request} to be logged
      */
-    public static void logRequest( Request request ) {
-        log.info(printRequest(request));
+    public static void logRequest(final Request request) {
+        if (log.isInfoEnabled()) {
+            log.info(printRequest(request));
+        }
     }
 }

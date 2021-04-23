@@ -1,5 +1,8 @@
 package de.fraunhofer.ids.framework.messaging.util;
 
+import java.io.File;
+import java.io.IOException;
+
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
@@ -7,26 +10,23 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-import java.io.File;
-import java.io.IOException;
-
 
 /**
- * This Builder is a utility class for building OkHTTP
+ * This Builder is a utility class for building OkHTTP.
  * Multipart RequestBodies with RequestMessage header and String or File payload Part
  */
 public class InfomodelMessageBuilder {
-    private static final Serializer            SERIALIZER = new Serializer();
-    private final        MultipartBody.Builder builder;
+    private static final Serializer SERIALIZER = new Serializer();
+
+    private final MultipartBody.Builder builder;
 
     /**
-     * Internal builder used by the static methods
+     * Internal builder used by the static methods.
      *
      * @param header the header Part of the MultipartMessage (an implementation of {@link Message})
-     *
      * @throws IOException if the given header cannot be serialized by the given serializer
      */
-    private InfomodelMessageBuilder( Message header ) throws IOException {
+    private InfomodelMessageBuilder(final Message header) throws IOException {
         this.builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
         builder.addFormDataPart(MultipartDatapart.HEADER.toString(), SERIALIZER.serialize(header));
@@ -38,14 +38,12 @@ public class InfomodelMessageBuilder {
      * @param header   the header Part of the MultipartMessage (an implementation of {@link Message})
      * @param payload  the File that is added to the MultipartMessages payload
      * @param fileType the MediaType of the file
-     *
      * @return the built Message as OkHttp MultipartBody
-     *
      * @throws IOException if the given header cannot be serialized by the given serializer
      */
-    public static MultipartBody messageWithFile( final Message header, final File payload, final MediaType fileType )
+    public static MultipartBody messageWithFile(final Message header, final File payload, final MediaType fileType)
             throws IOException {
-        var imb = new InfomodelMessageBuilder(header);
+        final var imb = new InfomodelMessageBuilder(header);
         imb.addPayload(payload, fileType);
         return imb.getRequestBody();
     }
@@ -55,13 +53,11 @@ public class InfomodelMessageBuilder {
      *
      * @param header  the header Part of the MultipartMessage (an implementation of {@link Message})
      * @param payload the (String) payload that is added to the MultipartMessages Payload
-     *
      * @return the built Message as OkHttp MultipartBody
-     *
      * @throws IOException if the given header cannot be serialized by the given serializer
      */
-    public static MultipartBody messageWithString( final Message header, final String payload ) throws IOException {
-        var imb = new InfomodelMessageBuilder(header);
+    public static MultipartBody messageWithString(final Message header, final String payload) throws IOException {
+        final var imb = new InfomodelMessageBuilder(header);
         imb.addPayload(payload);
         return imb.getRequestBody();
     }
@@ -71,7 +67,7 @@ public class InfomodelMessageBuilder {
      *
      * @param payload the (String) payload that is added to the MultipartMessages Payload
      */
-    private void addPayload( final String payload ) {
+    private void addPayload(final String payload) {
         builder.addFormDataPart(MultipartDatapart.PAYLOAD.toString(), payload);
     }
 
@@ -81,12 +77,13 @@ public class InfomodelMessageBuilder {
      * @param file     the File that is added to the MultipartMessages payload
      * @param fileType the MediaType of the file
      */
-    private void addPayload( final File file, final MediaType fileType ) {
-        builder.addFormDataPart(MultipartDatapart.PAYLOAD.toString(), file.getName(), RequestBody.create(file, fileType));
+    private void addPayload(final File file, final MediaType fileType) {
+        builder.addFormDataPart(MultipartDatapart.PAYLOAD.toString(), file.getName(),
+                                RequestBody.create(file, fileType));
     }
 
     /**
-     * Getter for the built multipart message as OkHttp {@link MultipartBody}
+     * Getter for the built multipart message as OkHttp {@link MultipartBody}.
      *
      * @return the built Message as OkHttp {@link MultipartBody}
      */

@@ -8,7 +8,7 @@ import java.io.InputStream;
  */
 public interface MessagePayload {
     /**
-     * Getter for the InputStream of the incoming message
+     * Getter for the InputStream of the incoming message.
      *
      * @return get the InputSteam of the incoming message
      */
@@ -17,10 +17,8 @@ public interface MessagePayload {
     /**
      * @param targetType type that should be parsed from the message
      * @param <T>        type of the parsed object
-     *
      * @return underlying input stream parsed as targetType
-     *
      * @throws IOException if underlying input stream cannot be parsed
      */
-    <T> T readFromJSON( Class<? extends T> targetType ) throws IOException;
+    <T> T readFromJSON(Class<? extends T> targetType) throws IOException;
 }

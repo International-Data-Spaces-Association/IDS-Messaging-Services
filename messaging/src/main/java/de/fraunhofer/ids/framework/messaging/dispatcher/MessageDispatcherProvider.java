@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
- * Providing a MessageDispatcher as a bean, for autowiring
+ * Providing a MessageDispatcher as a bean, for autowiring.
  */
-@Component
 @Slf4j
+@Component
 public class MessageDispatcherProvider {
     /**
      * Make use of autowiring to get the parameters for the MessageDispatchers constructor and
@@ -26,10 +26,10 @@ public class MessageDispatcherProvider {
      * @return MessageDispatcher as Spring Bean
      */
     @Bean
-    public MessageDispatcher provideMessageDispatcher( final ObjectMapper objectMapper,
-                                                       final RequestMessageHandler resolver,
-                                                       final DapsPublicKeyProvider provider,
-                                                       final ConfigContainer configContainer ) {
+    public MessageDispatcher provideMessageDispatcher(final ObjectMapper objectMapper,
+                                                      final RequestMessageHandler resolver,
+                                                      final DapsPublicKeyProvider provider,
+                                                      final ConfigContainer configContainer) {
 
         return new MessageDispatcher(objectMapper, resolver, provider, configContainer);
     }

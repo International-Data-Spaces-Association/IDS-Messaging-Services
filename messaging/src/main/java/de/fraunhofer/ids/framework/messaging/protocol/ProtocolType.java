@@ -1,7 +1,7 @@
 package de.fraunhofer.ids.framework.messaging.protocol;
 
 /**
- * Supported Protocols for sending IDS messages
+ * Supported Protocols for sending IDS messages.
  */
 public enum ProtocolType {
     REST,
