@@ -6,12 +6,13 @@ public enum MultipartDatapart {
 
     private final String name;
 
-    MultipartDatapart( final String name ) {
+    MultipartDatapart(final String name) {
         this.name = name;
     }
 
     /**
-     * One way to get the Name of the enum-item
+     * One way to get the Name of the enum-item.
+     *
      * @return name of tje enum item
      */
     public String toString() {

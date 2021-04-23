@@ -4,6 +4,7 @@ package de.fraunhofer.ids.framework.daps;
  * Exception that gets thrown, if errors occur while validating a DAT token
  */
 public class ClaimsException extends Exception {
+    private static final long serialVersionUID = 42L;
 
     /**
      * For Throwing a ClaimsException with a custom error message

@@ -8,14 +8,14 @@ import de.fraunhofer.iais.eis.DynamicAttributeToken;
  */
 public interface DapsTokenProvider {
     /**
-     * Get the DAPS JWT Token from a DAPS and return its compact String representation
+     * Get the DAPS JWT Token from a DAPS and return its compact String representation.
      *
      * @return the Daps Token of the Connector
      */
     String provideDapsToken() throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException;
 
     /**
-     * Return the DAPS JWT Token in infomodel {@link DynamicAttributeToken} representation
+     * Return the DAPS JWT Token in infomodel {@link DynamicAttributeToken} representation.
      *
      * @return DynamicAttributeToken from the DAPS JWT
      */

@@ -13,120 +13,135 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * The DapsValidator checks the DAPS Token of a RequestMessage using a public signingKey
+ * The DapsValidator checks the DAPS Token of a RequestMessage using a public signingKey.
  */
 @Slf4j
 @Service
 public class DapsValidator {
     private final DapsPublicKeyProvider keyProvider;
+    private final String[] baseSecProfVals = {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE"};
+    private final String[] trustSecProfVals =
+            {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
+                    "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE"};
+    private final String[] plusTrustSecProfVals =
+            {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
+                    "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE", "idsc:TRUST_PLUS_SECURITY_PROFILE",
+                    "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE"};
 
-    public DapsValidator( final DapsPublicKeyProvider keyProvider ) {
+    public DapsValidator(final DapsPublicKeyProvider keyProvider) {
         this.keyProvider = keyProvider;
     }
 
-    private final String[] baseSecProfVals      =
-            { "idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE" };
-    private final String[] trustSecProfVals     =
-            { "idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
-                    "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE" };
-    private final String[] plusTrustSecProfVals =
-            { "idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
-                    "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE", "idsc:TRUST_PLUS_SECURITY_PROFILE",
-                    "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE" };
-
     /**
-     * Extract the Claims from the Dat token of a message, given the Message and a signingKey
+     * Extract the Claims from the Dat token of a message, given the Message and a signingKey.
      *
-     * @param token      {@link DynamicAttributeToken} of an incoming RequestMessage
+     * @param token       {@link DynamicAttributeToken} of an incoming RequestMessage
      * @param signingKeys a  List of public Keys
-     *
      * @return the Claims of the messages DAT Token, when it can be signed with the given key
-     *
      * @throws ClaimsException if Token cannot be signed with the given key
      */
-    public static Jws<Claims> getClaims( final DynamicAttributeToken token, final List<Key> signingKeys )
+    public static Jws<Claims> getClaims(final DynamicAttributeToken token, final List<Key> signingKeys)
             throws ClaimsException {
-        var tokenValue = token.getTokenValue();
-        if (signingKeys == null || signingKeys.isEmpty()){
+
+        final var tokenValue = token.getTokenValue();
+
+        if (signingKeys == null || signingKeys.isEmpty()) {
             throw new ClaimsException("No signing keys were given!");
         }
-        for(var signingKey : signingKeys) {
+
+        for (final var signingKey : signingKeys) {
             try {
                 return Jwts.parser()
-                        .setSigningKey(signingKey)
-                        .parseClaimsJws(tokenValue);
-            } catch (Exception e) {}
+                           .setSigningKey(signingKey)
+                           .parseClaimsJws(tokenValue);
+            } catch (Exception e) {
+                if (log.isErrorEnabled()) {
+                    log.error(e.getMessage(), e);
+                }
+            }
         }
+
         throw new ClaimsException("No given signing Key could validate JWT!");
     }
 
     /**
-     * Check a given DAT considering additional attributes from the message payload
-     * @param token {@link DynamicAttributeToken} of an incoming Message
+     * Check a given DAT considering additional attributes from the message payload.
+     *
+     * @param token           {@link DynamicAttributeToken} of an incoming Message
      * @param extraAttributes additional Attributes from the Message Payload
      * @return true if DAT is valid
      */
-    public boolean checkDat( final DynamicAttributeToken token, Map<String, Object> extraAttributes ) {
+    public boolean checkDat(final DynamicAttributeToken token, final Map<String, Object> extraAttributes) {
         Jws<Claims> claims;
-        var keys = keyProvider.providePublicKeys();
+        final var keys = keyProvider.providePublicKeys();
+
+        try {
+            claims = getClaims(token, keys);
+        } catch (ClaimsException e) {
+            return false;
+        }
+
+        if (claims == null) {
+            return false;
+        }
+
+        if (extraAttributes != null && extraAttributes.containsKey("securityProfile")) {
             try {
-                claims = getClaims(token, keys);
-            } catch( ClaimsException e ) {
-                return false;
-            }
-            if(claims == null){
-                return false;
-            }
-            if( extraAttributes != null && extraAttributes.containsKey("securityProfile") ) {
-                try {
-                    verifySecurityProfile(claims.getBody().get("securityProfile", String.class),
-                            extraAttributes.get("securityProfile").toString());
-                } catch( ClaimsException e ) {
+                verifySecurityProfile(claims.getBody().get("securityProfile", String.class),
+                                      extraAttributes.get("securityProfile").toString());
+            } catch (ClaimsException e) {
+                if (log.isWarnEnabled()) {
                     log.warn("Security profile does not match Selfdescription");
-                    return false;
                 }
-            }
-            try {
-                return DapsVerifier.verify(claims);
-            } catch( ClaimsException e ) {
-                log.warn("Claims could not be verified!");
                 return false;
             }
+        }
+        try {
+            return DapsVerifier.verify(claims);
+        } catch (ClaimsException e) {
+            if (log.isWarnEnabled()) {
+                log.warn("Claims could not be verified!");
+            }
+            return false;
+        }
     }
 
     /**
-     * Check a given DAT
+     * Check a given DAT.
+     *
      * @param token a {@link DynamicAttributeToken} from a Infomodel Message
      * @return true if DAT is valid
      */
-    public boolean checkDat( final DynamicAttributeToken token ) {
+    public boolean checkDat(final DynamicAttributeToken token) {
         return checkDat(token, null);
     }
 
     /**
-     * Vertifies that the {@link de.fraunhofer.iais.eis.SecurityProfile} in the token is  same as in the Selfdescription
+     * Verifies that the {@link de.fraunhofer.iais.eis.SecurityProfile} in the token is  same as in the Selfdescription.
      *
      * @param registered the SecurityProfile ID  in token
      * @param given      the SecurityProfile ID in Selfdescription
-     *
      * @throws ClaimsException if SecurityProfiles do not match
      */
-    private void verifySecurityProfile( String registered, String given ) throws ClaimsException {
-
+    private void verifySecurityProfile(final String registered, final String given) throws ClaimsException {
         //Replace full URIs (if present) by prefixed values. This simplifies the potential number of values these strings can have
-        String adjustedRegistered = registered;
-        String adjustedGiven = given;
-        if(registered == null){
+        var adjustedRegistered = registered;
+        var adjustedGiven = given;
+
+        if (registered == null) {
             throw new ClaimsException("Security profile violation. No security profile given in DAT!");
         }
-        if( registered.startsWith("https://w3id.org/idsa/code/") ) {
+
+        if (registered.startsWith("https://w3id.org/idsa/code/")) {
             adjustedRegistered = registered.replace("https://w3id.org/idsa/code/", "idsc:");
         }
-        if( given.startsWith("https://w3id.org/idsa/code/") ) {
+
+        if (given.startsWith("https://w3id.org/idsa/code/")) {
             adjustedGiven = given.replace("https://w3id.org/idsa/code/", "idsc:");
         }
+
         String[] includedProfiles;
-        switch( adjustedRegistered ) {
+        switch (adjustedRegistered) {
             case "idsc:BASE_CONNECTOR_SECURITY_PROFILE":
             case "idsc:BASE_SECURITY_PROFILE":
                 includedProfiles = baseSecProfVals;
@@ -142,11 +157,11 @@ public class DapsValidator {
             default:
                 includedProfiles = new String[0];
         }
-        if( !Arrays.asList(includedProfiles).contains(adjustedGiven) ) {
+
+        if (!Arrays.asList(includedProfiles).contains(adjustedGiven)) {
             throw new ClaimsException(
                     "Security profile violation. Registered security profile at DAPS is:  " + registered
                     + ", but the given security profile is: " + given);
         }
     }
-
 }
