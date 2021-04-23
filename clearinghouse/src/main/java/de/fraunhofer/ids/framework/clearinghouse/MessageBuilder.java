@@ -1,38 +1,40 @@
 package de.fraunhofer.ids.framework.clearinghouse;
 
-import de.fraunhofer.iais.eis.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import de.fraunhofer.iais.eis.LogMessage;
+import de.fraunhofer.iais.eis.LogMessageBuilder;
+import de.fraunhofer.iais.eis.QueryLanguage;
+import de.fraunhofer.iais.eis.QueryMessage;
+import de.fraunhofer.iais.eis.QueryMessageBuilder;
+import de.fraunhofer.iais.eis.QueryScope;
+import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
+import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
+import lombok.experimental.UtilityClass;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import static de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils.getGregorianNow;
-
+@UtilityClass
 public class MessageBuilder {
     /**
-     * Utility classes (only static methods and fields) do not have a public constructor.
-     * Instantiating them does not make sense, prevent instantiating.
-     */
-    protected MessageBuilder() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
+     * @param configContainer the container holding the current configuration
+     * @param clearingHouseUrl url of the clearing house
+     * @param dapsTokenProvider the DAPS token provider
      * @return a LogMessage to be used as Header
-     *
      * @throws DapsTokenManagerException when {@link DapsTokenProvider} cannot get a Token
      * @throws URISyntaxException        when clearinghouse.url cannot be parsed as URI
      */
-    public static LogMessage buildLogMessage( final ConfigContainer configContainer,
-                                              final DapsTokenProvider dapsTokenProvider,
-                                              final String clearingHouseUrl )
+    public static LogMessage buildLogMessage(final ConfigContainer configContainer,
+                                             final DapsTokenProvider dapsTokenProvider,
+                                             final String clearingHouseUrl)
             throws DapsTokenManagerException, URISyntaxException {
-        var connector = configContainer.getConnector();
+        final var connector = configContainer.getConnector();
+
         return new LogMessageBuilder()
-                ._issued_(getGregorianNow())
+                ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(connector.getOutboundModelVersion())
                 ._issuerConnector_(connector.getId())
                 ._senderAgent_(connector.getId())
@@ -45,21 +47,22 @@ public class MessageBuilder {
      * @param queryLanguage Language of the Query
      * @param queryScope    Scope of the Query
      * @param queryTarget   Target of the Query
-     *
+     * @param configContainer the container holding the current configuration
+     * @param dapsTokenProvider the DAPS token provider
      * @return built QueryMessage
-     *
      * @throws DapsTokenManagerException when {@link DapsTokenProvider} cannot get a Token
      */
-    public static QueryMessage buildQueryMessage( final QueryLanguage queryLanguage,
-                                                  final QueryScope queryScope,
-                                                  final QueryTarget queryTarget,
-                                                  final ConfigContainer configContainer,
-                                                  final DapsTokenProvider dapsTokenProvider,
-                                                  final String clearingHouseUrl ) throws DapsTokenManagerException {
-        var connector = configContainer.getConnector();
+    public static QueryMessage buildQueryMessage(final QueryLanguage queryLanguage,
+                                                 final QueryScope queryScope,
+                                                 final QueryTarget queryTarget,
+                                                 final ConfigContainer configContainer,
+                                                 final DapsTokenProvider dapsTokenProvider)
+            throws DapsTokenManagerException {
+        final var connector = configContainer.getConnector();
+
         return new QueryMessageBuilder()
                 ._securityToken_(dapsTokenProvider.getDAT())
-                ._issued_(getGregorianNow())
+                ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(connector.getOutboundModelVersion())
                 ._issuerConnector_(connector.getId())
                 ._senderAgent_(connector.getId())
