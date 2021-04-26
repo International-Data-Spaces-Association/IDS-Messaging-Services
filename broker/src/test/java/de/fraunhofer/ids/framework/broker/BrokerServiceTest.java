@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
-public class BrokerServiceTest {
+class BrokerServiceTest {
 
     //NotificationMessage to be returned by Mockwebserver
     private static final String MESSAGE_BODY = "--msgpart\r\n"
@@ -190,7 +190,7 @@ public class BrokerServiceTest {
     }
 
     @Test
-    public void testUpdateSelfDescriptionAtBrokers ()throws Exception {
+    void testUpdateSelfDescriptionAtBrokers ()throws Exception {
         //Configure Mockito
         DynamicAttributeToken fakeToken = new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)

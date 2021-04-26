@@ -51,7 +51,7 @@ class DapsValidatorTest {
     DapsPublicKeyProvider dapsPublicKeyProvider;
 
     @Test
-    public void testTokenValidation() throws Exception {
+    void testTokenValidation() throws Exception {
         //DapsValidator should exist
         assertNotNull(dapsValidator);
         //Create an RSA KeyPair
@@ -96,7 +96,7 @@ class DapsValidatorTest {
     }
 
     @Test
-    public void testExtraAttributes() throws Exception {
+    void testExtraAttributes() throws Exception {
         assertNotNull(dapsValidator);
         //Create an RSA KeyPair
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");

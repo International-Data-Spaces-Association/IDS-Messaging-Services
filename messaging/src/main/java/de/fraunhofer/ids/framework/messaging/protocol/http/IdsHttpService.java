@@ -83,7 +83,7 @@ public class IdsHttpService implements HttpService {
         final var multipartResponse = MultipartParser.stringToMultipart(responseString);
         final var messageString = multipartResponse.get(MultipartDatapart.HEADER.toString());
 
-        if (shaclValidation) {
+        if (Boolean.TRUE.equals(shaclValidation)) {
             if (log.isInfoEnabled()) {
                 log.info(messageString);
             }
@@ -284,7 +284,7 @@ public class IdsHttpService implements HttpService {
 
         //!!! DO NOT PRINT RESPONSE BECAUSE RESPONSE BODY IS JUST ONE TIME READABLE
         // --> Message could not be parsed java.io.IOException: closed
-        final Request.Builder builder = new Request.Builder()
+        final var builder = new Request.Builder()
                 .url(targetURL)
                 .post(requestBody);
 
@@ -326,25 +326,6 @@ public class IdsHttpService implements HttpService {
         }
 
         return response;
-    }
-
-    /**
-     * Sends asynchronously a generated request http message to the defined address.
-     *
-     * @param request  POST Request with the message as body
-     * @param client   {@link OkHttpClient} for sending Request
-     * @param callback {@link Callback} for response handling
-     */
-    private void sendAsyncRequest(final Request request, final OkHttpClient client, final Callback callback) {
-        if (log.isInfoEnabled()) {
-            log.info("Request is HTTPS: " + request.isHttps());
-        }
-
-        client.newCall(request).enqueue(callback);
-
-        if (log.isInfoEnabled()) {
-            log.info("Callback for async request has been enqueued.");
-        }
     }
 
     /**

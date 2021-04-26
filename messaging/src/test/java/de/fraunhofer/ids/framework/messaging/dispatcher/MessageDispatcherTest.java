@@ -80,7 +80,7 @@ class MessageDispatcherTest {
     private ConfigurationModel configurationModel;
 
     @Test
-    public void testMessageDispatcher() throws Exception{
+    void testMessageDispatcher() throws Exception{
         Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
         Mockito.when(connector.getId()).thenReturn(new URL("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5").toURI());
         Mockito.when(connector.getOutboundModelVersion()).thenReturn("1.0.3");

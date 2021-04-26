@@ -219,7 +219,7 @@ public class ClientProvider {
         final var sslContext = SSLContext.getInstance("SSL");
 
         sslContext.init(null, trustmanager, new SecureRandom());
-        final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+        final var sslSocketFactory = sslContext.getSocketFactory();
 
         okHttpBuilder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustmanager[0]);
         okHttpBuilder.hostnameVerifier((hostname, session) -> true);

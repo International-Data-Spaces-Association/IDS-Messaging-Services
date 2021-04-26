@@ -101,7 +101,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         final var responseData = responseCert.getJSONArray("data");
         var bytes = new byte[responseData.length()];
 
-        for (int i = 0; i < responseData.length(); i++) {
+        for (var i = 0; i < responseData.length(); i++) {
             bytes[i] = (byte) (((int) responseData.get(i)) & 0xFF);
         }
 

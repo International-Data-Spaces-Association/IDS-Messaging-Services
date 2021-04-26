@@ -22,19 +22,22 @@ public class RequestUtils {
      * @return the request as string or an empty string
      */
     public static String printRequest(final Request request) {
+        var bufferText = "";
         try {
-            final Request copy = request.newBuilder().build();
-            final Buffer buffer = new Buffer();
+            final var copy = request.newBuilder().build();
+            final var buffer = new Buffer();
 
             Objects.requireNonNull(copy.body()).writeTo(buffer);
 
-            return buffer.readUtf8();
+            bufferText = buffer.readUtf8();
+            buffer.close();
         } catch ( IOException | NullPointerException e) {
             if (log.isErrorEnabled()) {
                 log.error(e.getClass().toString() + ": printing failed.");
             }
         }
-        return "";
+
+        return bufferText;
     }
 
     /**

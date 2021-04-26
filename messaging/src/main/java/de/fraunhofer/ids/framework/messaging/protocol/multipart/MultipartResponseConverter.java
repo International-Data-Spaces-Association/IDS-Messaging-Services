@@ -14,7 +14,7 @@ import okhttp3.Response;
  * Converts a {@link Response} into the corresponding {@link MessageAndPayload object}
  */
 public class MultipartResponseConverter {
-    final private Serializer serializer = new Serializer();
+    private final Serializer serializer = new Serializer();
 
     /**
      *
@@ -50,7 +50,7 @@ public class MultipartResponseConverter {
             //ToDo: Write Artifact to temp file
             //File artifactTmp = Files.createTempFile("tmp", payloadString.getFilename()).toFile();
             //FileUtils.writeByteArrayToFile(artifactTmp, payload.getSerialization());
-            File artifactTmp = new File("tmp");
+            var artifactTmp = new File("tmp");
 
             return new ArtifactResponseMAP((ArtifactResponseMessage) message, artifactTmp);
         }

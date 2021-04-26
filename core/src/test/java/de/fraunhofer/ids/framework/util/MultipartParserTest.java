@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class MultipartParserTest {
 
     @Test
-    public void testParseMultipart() throws Exception {
+    void testParseMultipart() throws Exception {
         //create a MultipartString for parsing
         var multipart = new MultipartBody.Builder().addFormDataPart("header", "value1").addFormDataPart("payload", "value2").build();
         final Buffer buffer = new Buffer();
@@ -21,8 +21,8 @@ class MultipartParserTest {
         log.info(multipartString);
         //parse the string and check if header and payload were parsed correctly
         var map = MultipartParser.stringToMultipart(multipartString);
-        assertEquals(map.get("header"), "value1");
-        assertEquals(map.get("payload"), "value2");
+        assertEquals("value1", map.get("header"));
+        assertEquals("value2", map.get("payload"));
         //parse a string which is not multipart, should throw exception
         assertThrows(MultipartParseException.class, () -> MultipartParser.stringToMultipart("This is not Multipart."));
         //should find a boundary, but no multipart parts, should throw exception, too

@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
 @ContextConfiguration(classes = {MessageController.class, MessageControllerTest.TestContextConfiguration.class})
-public class MessageControllerTest {
+class MessageControllerTest {
 
     @Configuration
     static class TestContextConfiguration{
@@ -71,7 +71,7 @@ public class MessageControllerTest {
     private DapsTokenProvider provider;
 
     @Test
-    public void testGetValidMultipartReturn() throws Exception {
+    void testGetValidMultipartReturn() throws Exception {
 
         RequestMappingInfo requestMappingInfo = RequestMappingInfo
                 .paths("/api/ids/data")

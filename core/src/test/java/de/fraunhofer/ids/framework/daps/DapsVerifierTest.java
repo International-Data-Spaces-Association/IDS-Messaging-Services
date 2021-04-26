@@ -1,25 +1,18 @@
 package de.fraunhofer.ids.framework.daps;
 
-import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
-import de.fraunhofer.iais.eis.TokenFormat;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import java.security.KeyPairGenerator;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DapsVerifierTest {
 
     @Test
-    public void testDapsVerifier() throws Exception {
+    void testDapsVerifier() throws Exception {
         //verifying null should throw a ClaimsException
         Claims nullClaims = null;
         assertThrows(ClaimsException.class, () -> DapsVerifier.verify(nullClaims));
