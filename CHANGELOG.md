@@ -4,4 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Version 4.1.0.0 (UNRELEASED)
-Feature List TODO
+
+### Basis of the functionalities
+- Initial functionality based on the IDS-Connector-Framework. Further additional functionalities of the Interaction-Library and dynamic feature requests.
+
+### Added / Changed functionalities
+- Modular project structure along the connectable infrastructure components.
+- Include the ID of the rejected message in automatically send RejectionMessages.
+- Extension of TEST_DEPLOYMENT-Mode: use an all-trusting trustmanager, accepting all SSL Certificates. This allows the use of selfsigned certificates in a TEST-environment.
+- New exception structure for throwing exceptions for the TokenManagerService: If no token can be retrieved from the DAPS by these functionalities, an exception is returned to the connector developer.
+- TokenProviderService will only acquire a new token, if the current one expired.
+- Support for multiple DAPS modes via application.properties (daps.mode = aisec/orbiter)
+- DAT is now checked against a list of trusted issuers given in application.properties.
+- DapsValidator now accepts the DAT Token instead of the full Message.
+- MultipartParser now throws MultipartParseException instead of FileUploadException.
+- MessageController now accepts messages with empty payloads (as required by AppStore).
+- Initial IDS-ClearingHouse support.
+- Basic asynchronous message-flow support (support RequestInProcessMessage-Handling).
+- Received RejectionMessages are now passed to the connector-developer, regardless of the status of the DAT within the received RejectionMessage
+- Implemented Shacl Validation.
+- Extended DAT Validation.
+ 
+ ### Removed
+ - Remove implementation of MQTT-support, as there was no demand for further support at the time of the evaluation. But can be added again in the future.
