@@ -34,7 +34,10 @@ public class ArtifactResponseMAP implements MessageAndPayload<ArtifactResponseMe
         try {
             return new SerializedPayload(Files.readAllBytes(payload.toPath()), "application/octet-stream", payload.getName());
         } catch (IOException e) {
-            log.error("Could not serialize file", e);
+            if (log.isErrorEnabled()) {
+                log.error("Could not serialize file", e);
+            }
+
             return SerializedPayload.EMPTY;
         }
     }

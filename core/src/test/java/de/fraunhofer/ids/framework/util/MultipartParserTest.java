@@ -16,11 +16,17 @@ class MultipartParserTest {
         //create a MultipartString for parsing
         final var multipart = new MultipartBody.Builder().addFormDataPart("header", "value1").addFormDataPart("payload", "value2").build();
         final Buffer buffer = new Buffer();
+
         multipart.writeTo(buffer);
         final var multipartString = buffer.readUtf8();
-        log.info(multipartString);
+
+        if (log.isInfoEnabled()) {
+            log.info(multipartString);
+        }
+
         //parse the string and check if header and payload were parsed correctly
         final var map = MultipartParser.stringToMultipart(multipartString);
+
         assertEquals("value1", map.get("header"));
         assertEquals("value2", map.get("payload"));
         //parse a string which is not multipart, should throw exception
