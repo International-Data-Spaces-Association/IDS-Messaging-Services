@@ -45,7 +45,7 @@ public class IdsHttpService implements HttpService {
 
     private TimeoutSettings timeoutSettings;
 
-    @Value("#{new Boolean('${shacl.validation}')}")
+    @Value("#{new Boolean('${shacl.validation:false}')}")
     private Boolean shaclValidation;
 
 
