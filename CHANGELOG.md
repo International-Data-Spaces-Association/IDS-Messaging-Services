@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Version 4.1.0.0 (UNRELEASED)
+- First stable non-snapshot version 
 
 ### Basis of the functionalities
 - Initial functionality based on the IDS-Connector-Framework. Further additional functionalities of the Interaction-Library and dynamic feature requests.
