@@ -15,7 +15,10 @@ import de.fraunhofer.ids.framework.config.ConfigContainer;
 import de.fraunhofer.ids.framework.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
 import de.fraunhofer.ids.framework.messaging.protocol.http.HttpService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -28,15 +31,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ClearingHouseService implements IDSClearingHouseService {
 
-    private final Serializer   serializer   = new Serializer();
-    private final SecureRandom secureRandom = new SecureRandom();
+    Serializer   serializer   = new Serializer();
+    SecureRandom secureRandom = new SecureRandom();
 
-    private final ConfigContainer   configContainer;
-    private final DapsTokenProvider dapsTokenProvider;
-    private final HttpService       httpService;
+    ConfigContainer   configContainer;
+    DapsTokenProvider dapsTokenProvider;
+    HttpService       httpService;
 
+    @NonFinal
     @Value("${clearinghouse.url}")
     private String clearingHouseUrl;
 

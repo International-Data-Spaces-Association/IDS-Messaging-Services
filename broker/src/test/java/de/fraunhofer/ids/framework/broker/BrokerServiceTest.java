@@ -10,7 +10,8 @@ import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
 import de.fraunhofer.ids.framework.daps.DapsValidator;
 import de.fraunhofer.ids.framework.messaging.protocol.MessageService;
 import de.fraunhofer.ids.framework.messaging.protocol.http.IdsHttpService;
-import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -32,13 +33,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
 class BrokerServiceTest {
 
     //NotificationMessage to be returned by Mockwebserver
-    private static final String MESSAGE_BODY = "--msgpart\r\n"
+    static final String MESSAGE_BODY = "--msgpart\r\n"
             + "Content-Disposition: form-data; name=\"header\"\r\n"
             + "Content-Length: 2355\r\n"
             + "\r\n"
@@ -100,61 +102,62 @@ class BrokerServiceTest {
             + "}\r\n"
             + "--msgpart--\r\n";
     @Autowired
-    private Connector connector;
+    Connector connector;
 
     @Autowired
-    private KeyStoreManager keyStoreManager;
+    KeyStoreManager keyStoreManager;
 
     @Autowired
-    private ConfigurationModel configurationModel;
+    ConfigurationModel configurationModel;
 
     @Autowired
-    private ConfigContainer   configurationContainer;
+    ConfigContainer   configurationContainer;
 
     @Autowired
-    private DapsTokenProvider dapsTokenProvider;
+    DapsTokenProvider dapsTokenProvider;
 
     @Autowired
-    private DapsPublicKeyProvider dapsPublicKeyProvider;
+    DapsPublicKeyProvider dapsPublicKeyProvider;
 
     @Autowired
-    private DapsValidator dapsValidator;
+    DapsValidator dapsValidator;
 
     @Autowired
-    private MessageService messageService;
+    MessageService messageService;
 
-    private IdsHttpService    idsHttpService;
+    IdsHttpService    idsHttpService;
 
-    private MockWebServer     mockWebServer;
-
-    @Autowired
-    private BrokerService     brokerService;
+    MockWebServer     mockWebServer;
 
     @Autowired
-    private ClientProvider clientProvider;
+    BrokerService     brokerService;
+
+    @Autowired
+    ClientProvider clientProvider;
 
     @Configuration
+    @FieldDefaults(level = AccessLevel.PRIVATE)
     static class TestContextConfiguration{
         @MockBean
-        private KeyStoreManager keyStoreManager;
+        KeyStoreManager keyStoreManager;
 
         @MockBean
-        private ConfigurationModel configurationModel;
+        ConfigurationModel configurationModel;
 
         @MockBean
-        private ConfigContainer   configurationContainer;
+        ConfigContainer   configurationContainer;
 
         @MockBean
-        private DapsTokenProvider dapsTokenProvider;
+        DapsTokenProvider dapsTokenProvider;
 
         @MockBean
-        private DapsPublicKeyProvider dapsPublicKeyProvider;
+        DapsPublicKeyProvider dapsPublicKeyProvider;
 
         @MockBean
-        private DapsValidator dapsValidator;
+        DapsValidator dapsValidator;
 
         @MockBean
-        private ClientProvider clientProvider;
+        ClientProvider clientProvider;
 
         @Bean
         public Serializer getSerializer(){

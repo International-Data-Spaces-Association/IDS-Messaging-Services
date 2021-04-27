@@ -22,6 +22,8 @@ import de.fraunhofer.ids.framework.messaging.handler.message.MessagePayloadInput
 import de.fraunhofer.ids.framework.messaging.handler.request.RequestMessageHandler;
 import de.fraunhofer.ids.framework.messaging.response.ErrorResponse;
 import de.fraunhofer.ids.framework.messaging.response.MessageResponse;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,11 +32,12 @@ import lombok.extern.slf4j.Slf4j;
  * the results returned by the MessageHandlers.
  */
 @Slf4j
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessageDispatcher {
-    private final ObjectMapper               objectMapper;
-    private final List<PreDispatchingFilter> preDispatchingFilters;
-    private final RequestMessageHandler      requestMessageHandler;
-    private final ConfigContainer            configContainer;
+    ObjectMapper               objectMapper;
+    List<PreDispatchingFilter> preDispatchingFilters;
+    RequestMessageHandler      requestMessageHandler;
+    ConfigContainer            configContainer;
 
     /**
      * Create a MessageDispatcher.

@@ -20,6 +20,8 @@ import de.fraunhofer.ids.framework.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.framework.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,11 +36,12 @@ import org.springframework.util.MultiValueMap;
  */
 @Slf4j
 @Controller
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessageController {
 
-    private final MessageDispatcher messageDispatcher;
-    private final ConfigContainer   configContainer;
-    private final Serializer        serializer;
+    MessageDispatcher messageDispatcher;
+    ConfigContainer   configContainer;
+    Serializer        serializer;
 
     @Autowired
     public MessageController(final MessageDispatcher messageDispatcher,

@@ -9,6 +9,8 @@ import de.fraunhofer.ids.framework.messaging.response.BodyResponse;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
 import de.fraunhofer.ids.framework.messaging.util.ResourceIDGenerator;
 import de.fraunhofer.ids.framework.util.MultipartParser;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -35,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @ContextConfiguration(classes = {MessageController.class, MessageControllerTest.TestContextConfiguration.class})
 class MessageControllerTest {
 
@@ -47,32 +50,31 @@ class MessageControllerTest {
     }
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Autowired
-    private MessageController idsController;
+    MessageController idsController;
 
     @Autowired
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+    RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Autowired
-    private Serializer serializer;
+    Serializer serializer;
 
     @MockBean
-    private MessageDispatcher messageDispatcher;
+    MessageDispatcher messageDispatcher;
 
     @MockBean
-    private ConfigContainer configurationContainer;
+    ConfigContainer configurationContainer;
 
     @MockBean
-    private Connector connector;
+    Connector connector;
 
     @MockBean
-    private DapsTokenProvider provider;
+    DapsTokenProvider provider;
 
     @Test
     void testGetValidMultipartReturn() throws Exception {
-
         final var requestMappingInfo = RequestMappingInfo
                 .paths("/api/ids/data")
                 .methods(RequestMethod.POST)

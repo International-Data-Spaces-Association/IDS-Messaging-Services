@@ -15,6 +15,8 @@ import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import io.jsonwebtoken.Claims;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -29,17 +31,19 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
-    private final ClientProvider      clientProvider;
-    private final TokenManagerService tokenManagerService;
-    private       String              currentJwt;
-    private       List<Key>           publicKeys;
+    final ClientProvider      clientProvider;
+    final TokenManagerService tokenManagerService;
+
+    String      currentJwt;
+    List<Key>   publicKeys;
 
     @Value("${daps.token.url}")
-    private String dapsTokenUrl;
+    String dapsTokenUrl;
 
     @Value("#{${daps.key.url.kid}}")
-    private Map<String, String> urlKidMap;
+    Map<String, String> urlKidMap;
 
     /**
      * @param clientProvider      the {@link ClientProvider} providing HttpClients using the current connector configuration

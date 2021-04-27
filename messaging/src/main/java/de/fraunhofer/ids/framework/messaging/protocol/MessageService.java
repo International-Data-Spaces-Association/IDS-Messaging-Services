@@ -11,6 +11,8 @@ import de.fraunhofer.ids.framework.messaging.protocol.multipart.MultipartRequest
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.framework.messaging.util.RequestUtils;
 import de.fraunhofer.ids.framework.util.MultipartParseException;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,13 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessageService {
-    private final IdsHttpService             httpService;
-    private final MultipartRequestBuilder    multipartRequestBuilder    = new MultipartRequestBuilder();
-    private final MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
-    private final Serializer                 serializer                 = new Serializer();
+
+    IdsHttpService             httpService;
+    MultipartRequestBuilder    multipartRequestBuilder    = new MultipartRequestBuilder();
+    MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
+    Serializer                 serializer                 = new Serializer();
 
     /**
      * Constructor of MessageService class.

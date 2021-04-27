@@ -20,8 +20,12 @@ import de.fraunhofer.ids.framework.daps.DapsValidator;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import de.fraunhofer.ids.framework.util.MultipartParseException;
 import de.fraunhofer.ids.framework.util.MultipartParser;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -37,35 +41,20 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class IdsHttpService implements HttpService {
-    private final ClientProvider provider;
-    private final DapsValidator dapsValidator;
-    private final ConfigContainer configContainer;
-    private final Serializer serializer;
+    ClientProvider provider;
+    DapsValidator dapsValidator;
+    ConfigContainer configContainer;
+    Serializer serializer;
 
+    @NonFinal
     private TimeoutSettings timeoutSettings;
 
+    @NonFinal
     @Value("#{new Boolean('${shacl.validation:false}')}")
     private Boolean shaclValidation;
-
-
-    /**
-     * Constructor of IdsHttpService.
-     *
-     * @param provider        the {@link ClientProvider} used to generate HttpClients with the current connector configuration
-     * @param configContainer The Configuration of the Connector
-     * @param serializer      The infomodel serializer used
-     * @param dapsValidator   The DAPS DAT Validator
-     */
-    public IdsHttpService(final ClientProvider provider,
-                          final DapsValidator dapsValidator,
-                          final ConfigContainer configContainer,
-                          final Serializer serializer) {
-        this.provider = provider;
-        this.dapsValidator = dapsValidator;
-        this.configContainer = configContainer;
-        this.serializer = serializer;
-    }
 
     /**
      * @param response {@link Response} from an IDS Http request

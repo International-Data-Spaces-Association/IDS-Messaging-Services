@@ -4,16 +4,19 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Optional;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResourceMAP implements MessageAndPayload<Message, Resource> {
 
-    private final Message  message;
-    private       Resource resource;
+    final Message  message;
 
-    public ResourceMAP(final Message m)
-    {
+    Resource resource;
+
+    public ResourceMAP(final Message m) {
         this.message = m;
     }
 

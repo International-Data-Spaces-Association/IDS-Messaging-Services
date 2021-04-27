@@ -1,13 +1,14 @@
 package de.fraunhofer.ids.framework.daps;
 
+import java.time.Instant;
+import java.util.Date;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DapsVerifierTest {
 

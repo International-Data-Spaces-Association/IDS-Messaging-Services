@@ -4,12 +4,16 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.Participant;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Optional;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ParticipantNotificationMAP implements MessageAndPayload<Message, Participant> {
-    private final Message message;
-    private Participant participantSelfDescription;
+    final Message message;
+    Participant participantSelfDescription;
+
     public ParticipantNotificationMAP(final Message message) {
         this.message = message;
     }

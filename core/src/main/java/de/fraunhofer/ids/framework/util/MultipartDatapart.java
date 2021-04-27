@@ -1,14 +1,16 @@
 package de.fraunhofer.ids.framework.util;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public enum MultipartDatapart {
     HEADER("header"),
     PAYLOAD("payload");
 
-    private final String name;
-
-    MultipartDatapart(final String name) {
-        this.name = name;
-    }
+    String name;
 
     /**
      * One way to get the Name of the enum-item.

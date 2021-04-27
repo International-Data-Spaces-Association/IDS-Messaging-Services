@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public class ContractOfferMAP extends AbstractContractMAP<ContractOfferMessage, ContractOffer> {
 
-
     public ContractOfferMAP(final ContractOfferMessage contractOfferMessage,
                             final ContractOffer payload) {
         this.message = contractOfferMessage;

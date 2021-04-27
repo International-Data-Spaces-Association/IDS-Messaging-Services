@@ -1,10 +1,14 @@
 package de.fraunhofer.ids.framework.config.ssl.keystore;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 /**
  * Exception which is thrown, when the {@link KeyStoreManager} cannot be initialized.
  */
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class KeyStoreManagerInitializationException extends Exception {
-    private static final long serialVersionUID = 42L;
+    static long serialVersionUID = 42L;
 
     /**
      * Create a KeyStoreManagerInitializationException with a given Message and Cause.

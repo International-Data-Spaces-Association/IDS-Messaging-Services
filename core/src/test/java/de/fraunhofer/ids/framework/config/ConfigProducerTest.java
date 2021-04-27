@@ -1,6 +1,10 @@
 package de.fraunhofer.ids.framework.config;
 
+import java.net.URI;
+
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,22 +12,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.net.URI;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @SpringBootTest(classes = TestSpringApp.class)
 @TestPropertySource(locations = "classpath:application.properties")
 class ConfigProducerTest {
     //TODO check through .p12 files in test resources, replace everything there with localhost certificates just for testing
 
     @Autowired
-    private ConfigContainer configContainer;
+    ConfigContainer configContainer;
 
     @Autowired
-    private ClientProvider clientProvider;
+    ClientProvider clientProvider;
 
     /**
      * SpringBootTest will initialize all Components in Core using the test/resources/application.properties file

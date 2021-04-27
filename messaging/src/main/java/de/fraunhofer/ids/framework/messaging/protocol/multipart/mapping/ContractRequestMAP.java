@@ -9,7 +9,6 @@ import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayloa
 
 public class ContractRequestMAP extends AbstractContractMAP<ContractRequestMessage, ContractRequest> {
 
-
     public ContractRequestMAP(final ContractRequestMessage contractRequestMessage,
                               final ContractRequest payload) {
         this.message = contractRequestMessage;

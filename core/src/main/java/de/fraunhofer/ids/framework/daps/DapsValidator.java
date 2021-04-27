@@ -9,6 +9,8 @@ import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +19,14 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DapsValidator {
-    private final DapsPublicKeyProvider keyProvider;
-    private final String[] baseSecProfVals = {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE"};
-    private final String[] trustSecProfVals =
+    DapsPublicKeyProvider keyProvider;
+    String[] baseSecProfVals = {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE"};
+    String[] trustSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
                     "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE"};
-    private final String[] plusTrustSecProfVals =
+    String[] plusTrustSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
                     "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE", "idsc:TRUST_PLUS_SECURITY_PROFILE",
                     "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE"};

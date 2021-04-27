@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public class ParticipantRequestMAP implements MessageAndPayload<ParticipantRequestMessage, Void> {
     private ParticipantRequestMessage message;
+
     public ParticipantRequestMAP(final ParticipantRequestMessage message) {
         this.message = message;
     }

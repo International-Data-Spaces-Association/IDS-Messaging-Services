@@ -8,8 +8,10 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RequestMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,12 +19,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @Slf4j
+@Getter
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BodyResponse<T extends Message> implements MessageResponse {
-    @Getter
-    private final T header;
 
-    @Getter
-    private final Object payload;
+    T header;
+    Object payload;
 
     /**
      * @param header  ResponseMessage or NotificationMessage for the header

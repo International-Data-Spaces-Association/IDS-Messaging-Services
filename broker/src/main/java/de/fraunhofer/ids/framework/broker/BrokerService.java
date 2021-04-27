@@ -25,6 +25,9 @@ import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.MessageP
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.framework.util.MultipartParseException;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -34,28 +37,14 @@ import org.springframework.stereotype.Service;
  **/
 @Slf4j
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BrokerService implements IDSBrokerService {
-    private static final String INFO_MODEL_VERSION = "4.0.0";
+    static String INFO_MODEL_VERSION = "4.0.0";
 
-    private final ConfigContainer   container;
-    private final DapsTokenProvider tokenProvider;
-    private final MessageService    messageService;
-
-    /**
-     * Creates the IDSBrokerCommunication controller.
-     *
-     * @param container      Configuration container
-     * @param tokenProvider  providing DAT Token for RequestMessage
-     * @param messageService providing Messaging functionality
-     */
-    public BrokerService(final ConfigContainer container,
-                         final DapsTokenProvider tokenProvider,
-                         final MessageService messageService) {
-        this.container = container;
-        this.tokenProvider = tokenProvider;
-        this.messageService = messageService;
-
-    }
+    ConfigContainer   container;
+    DapsTokenProvider tokenProvider;
+    MessageService    messageService;
 
     /**
      * {@inheritDoc}
@@ -242,7 +231,7 @@ public class BrokerService implements IDSBrokerService {
     }
 
     /**
-     * Get a new DAT from the DAPS
+     * Get a new DAT from the DAPS.
      *
      * @return DAT, returned by the DAPS for the Connector
      * @throws ConnectorMissingCertExtensionException Something went wrong with the Certificate of the Connector

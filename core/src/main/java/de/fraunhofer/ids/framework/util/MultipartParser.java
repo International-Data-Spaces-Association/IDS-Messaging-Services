@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.UploadContext;
@@ -14,12 +16,13 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 /**
  * Utility Class for parsing Multipart Maps from String responses.
  */
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class MultipartParser implements UploadContext {
-    private String postBody;
-    private String boundary;
+    String postBody;
+    String boundary;
 
     @Getter
-    private Map<String, String> parameters = new ConcurrentHashMap<>();
+    Map<String, String> parameters = new ConcurrentHashMap<>();
 
     /**
      * Constructor for the MultipartStringParser used internally to parse a multipart response to a Map<Partname, MessagePart>.

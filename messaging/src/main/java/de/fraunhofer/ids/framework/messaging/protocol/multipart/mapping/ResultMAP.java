@@ -3,19 +3,19 @@ package de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping;
 import de.fraunhofer.iais.eis.ResultMessage;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ResultMAP implements MessageAndPayload<ResultMessage, String> {
 
-    private final ResultMessage resultMessage;
-    private final String        queryResult;
-
-    public ResultMAP(final ResultMessage resultMessage, final String queryResult) {
-        this.resultMessage = resultMessage;
-        this.queryResult = queryResult;
-    }
+    ResultMessage resultMessage;
+    String        queryResult;
 
     @Override
     public ResultMessage getMessage() {

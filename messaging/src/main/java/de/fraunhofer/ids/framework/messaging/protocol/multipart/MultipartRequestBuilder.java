@@ -11,10 +11,7 @@ import okhttp3.MultipartBody;
 import okhttp3.Request;
 
 public class MultipartRequestBuilder implements RequestBuilder {
-
     private static final Serializer SERIALIZER = new Serializer();
-
-
 
     /**
      * {@inheritDoc}

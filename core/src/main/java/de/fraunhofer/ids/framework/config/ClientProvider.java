@@ -19,7 +19,9 @@ import java.util.List;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.ids.framework.config.ssl.keystore.KeyStoreManager;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
@@ -31,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * The ClientProvider uses the {@link ConfigContainer} to rebuild clients, when a new configurationContainer is created.
  */
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClientProvider {
     private final ConfigContainer configContainer;
 

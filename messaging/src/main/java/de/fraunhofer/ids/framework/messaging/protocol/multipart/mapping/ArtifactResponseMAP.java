@@ -5,8 +5,10 @@ import java.io.File;
 import de.fraunhofer.iais.eis.ArtifactResponseMessage;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -15,13 +17,13 @@ import java.util.Optional;
 
 @Slf4j
 @AllArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ArtifactResponseMAP implements MessageAndPayload<ArtifactResponseMessage, File> {
 
-
     @Getter
-    private final ArtifactResponseMessage message;
+    ArtifactResponseMessage message;
 
-    private final File                    payload;
+    File payload;
 
 
     @Override

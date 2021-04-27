@@ -1,5 +1,11 @@
 package de.fraunhofer.ids.framework.daps;
 
+import java.security.KeyPairGenerator;
+import java.sql.Date;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import io.jsonwebtoken.Jwts;
@@ -16,17 +22,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.security.KeyPairGenerator;
-import java.sql.Date;
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DapsValidatorTest.TestContextConfiguration.class})
-@AutoConfigureMockMvc
 class DapsValidatorTest {
     @Autowired
     DapsValidator dapsValidator;

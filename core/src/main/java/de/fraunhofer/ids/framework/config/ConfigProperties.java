@@ -1,6 +1,8 @@
 package de.fraunhofer.ids.framework.config;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -8,23 +10,24 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Properties should be added to the application.properties file
  */
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @ConfigurationProperties(prefix = "configuration")
 public class ConfigProperties {
 
     /**
      * Path to a configuration File (JsonLD representation of a {@link de.fraunhofer.iais.eis.ConfigurationModel}.
      */
-    private String path;
+    String path;
     /**
      * Password for the IDSKeystore configured in the {@link de.fraunhofer.iais.eis.ConfigurationModel} keyStore field.
      */
-    private String keyStorePassword;
+    String keyStorePassword;
     /**
      * Alias of the connectors private key (used for signing DAT Requests).
      */
-    private String keyAlias;
+    String keyAlias;
     /**
      * Password for the IDSTruststore configured in the {@link de.fraunhofer.iais.eis.ConfigurationModel} trustStore field.
      */
-    private String trustStorePassword;
+    String trustStorePassword;
 }

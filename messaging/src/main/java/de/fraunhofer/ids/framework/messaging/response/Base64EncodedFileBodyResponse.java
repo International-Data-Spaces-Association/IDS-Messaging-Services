@@ -10,7 +10,9 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RequestMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,12 +23,12 @@ import org.springframework.http.MediaType;
  *
  * @param <T> a subclass of ResponseMessage or NotificationMessage
  */
+@Getter
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Base64EncodedFileBodyResponse<T extends Message> implements MessageResponse {
-    @Getter
-    private final T header;
 
-    @Getter
-    private final HttpEntity<byte[]> payload;
+    T header;
+    HttpEntity<byte[]> payload;
 
     /**
      * Create a MessageResponse with a Payload containing a Base64 encoded File.

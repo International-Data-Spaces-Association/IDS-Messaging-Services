@@ -5,18 +5,19 @@ import java.util.Optional;
 import de.fraunhofer.iais.eis.QueryMessage;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayload;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class QueryMAP implements MessageAndPayload<QueryMessage, String> {
 
     @Getter
-    private final QueryMessage message;
-    private final String queryString;
+    QueryMessage message;
 
-    public QueryMAP(final QueryMessage brokerQueryMessage, final String queryString) {
-        this.message = brokerQueryMessage;
-        this.queryString = queryString;
-    }
+    String queryString;
 
     @Override
     public Optional<String> getPayload() {
