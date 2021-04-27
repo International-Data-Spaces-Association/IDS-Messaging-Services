@@ -8,15 +8,16 @@ import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayloa
 import java.util.Optional;
 
 public class ResourceMAP implements MessageAndPayload<Message, Resource> {
+
     private final Message  message;
     private       Resource resource;
-    public ResourceMAP(Message m)
+
+    public ResourceMAP(final Message m)
     {
         this.message = m;
     }
 
-    public ResourceMAP(Message m, Resource r)
-    {
+    public ResourceMAP(final Message m, final Resource r) {
         this.message = m;
         resource = r;
     }
@@ -28,19 +29,20 @@ public class ResourceMAP implements MessageAndPayload<Message, Resource> {
 
     @Override
     public Optional<Resource> getPayload() {
-        if(resource == null)
-        {
+        if (resource == null) {
             return Optional.empty();
+        } else {
+            return Optional.of(resource);
         }
-        return Optional.of(resource);
     }
 
     @Override
     public SerializedPayload serializePayload() {
         if (resource != null) {
             return new SerializedPayload(resource.toRdf().getBytes(), "application/ld+json");
+        } else {
+            return SerializedPayload.EMPTY;
         }
-        else return SerializedPayload.EMPTY;
     }
 
 }

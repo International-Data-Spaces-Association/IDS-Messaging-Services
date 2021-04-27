@@ -58,7 +58,7 @@ public class MessageDispatcher {
 
 
     /**
-     * Incoming messages are checked for a valid DAT token
+     * Incoming messages are checked for a valid DAT token.
      *
      * @param provider               DAPS Public Key Provider
      * @param configurationContainer Configuration

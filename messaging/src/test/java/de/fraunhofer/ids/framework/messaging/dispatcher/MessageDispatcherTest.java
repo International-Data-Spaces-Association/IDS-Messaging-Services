@@ -35,23 +35,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = {RequestMessageHandlerService.class, MessageDispatcherProvider.class, MessageDispatcherTest.TestContextConfiguration.class})
 @TestPropertySource(properties = { "shacl.validation=false" })
 class MessageDispatcherTest {
-
-    static class TestContextConfiguration {
-        @Bean
-        public Serializer getSerializer(){
-            return new Serializer();
-        }
-
-        @Bean
-        public ObjectMapper getMapper() { return new ObjectMapper(); }
-
-        @Bean
-        public MessageHandler<RequestMessageImpl> getRequestHandler() {return new RequestMessageHandler();}
-
-        @Bean
-        public MessageHandler<NotificationMessageImpl> getNotificationHandler() {return new NotificationMessageHandler();}
-    }
-
     @Autowired
     private MessageDispatcherProvider messageDispatcherProvider;
 
@@ -79,6 +62,22 @@ class MessageDispatcherTest {
     @MockBean
     private ConfigurationModel configurationModel;
 
+    static class TestContextConfiguration {
+        @Bean
+        public Serializer getSerializer(){
+            return new Serializer();
+        }
+
+        @Bean
+        public ObjectMapper getMapper() { return new ObjectMapper(); }
+
+        @Bean
+        public MessageHandler<RequestMessageImpl> getRequestHandler() {return new RequestMessageHandler();}
+
+        @Bean
+        public MessageHandler<NotificationMessageImpl> getNotificationHandler() {return new NotificationMessageHandler();}
+    }
+
     @Test
     void testMessageDispatcher() throws Exception{
         Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
@@ -90,17 +89,19 @@ class MessageDispatcherTest {
         Mockito.when(publicKeyProvider.providePublicKeys()).thenReturn(null);
         Mockito.when(dapsValidator.checkDat(Mockito.any(DynamicAttributeToken.class), Mockito.anyMap())).thenReturn(true);
 
-        var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, publicKeyProvider, configurationContainer);
-        var reqMsg = buildRequestMessage();
-        var notMsg = buildNotificationMessage();
-        ErrorResponse requestResponse = (ErrorResponse) dispatcher.process(reqMsg, null);
+        final var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, publicKeyProvider, configurationContainer);
+        final var reqMsg = buildRequestMessage();
+        final var notMsg = buildNotificationMessage();
+
+        final var requestResponse = (ErrorResponse) dispatcher.process(reqMsg, null);
         assertEquals("request", requestResponse.getErrorMessage()); //use error message to check which handler got the message
-        ErrorResponse notificationResponse = (ErrorResponse) dispatcher.process(notMsg, null);
+
+        final var notificationResponse = (ErrorResponse) dispatcher.process(notMsg, null);
         assertEquals("notification", notificationResponse.getErrorMessage()); //use error message to check which handler got the message
     }
 
     private NotificationMessage buildNotificationMessage() {
-        var now = IdsMessageUtils.getGregorianNow();
+        final var now = IdsMessageUtils.getGregorianNow();
         return new NotificationMessageBuilder()
                 ._issuerConnector_(URI.create("http://example.org#connector"))
                 ._issued_(now)
@@ -116,7 +117,7 @@ class MessageDispatcherTest {
     }
 
     private RequestMessage buildRequestMessage() {
-        var now = IdsMessageUtils.getGregorianNow();
+        final var now = IdsMessageUtils.getGregorianNow();
         return new RequestMessageBuilder()
                 ._issuerConnector_(URI.create("http://example.org#connector"))
                 ._issued_(now)

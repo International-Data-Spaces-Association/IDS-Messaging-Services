@@ -13,7 +13,7 @@ public class QueryMAP implements MessageAndPayload<QueryMessage, String> {
     private final QueryMessage message;
     private final String queryString;
 
-    public QueryMAP(QueryMessage brokerQueryMessage, String queryString) {
+    public QueryMAP(final QueryMessage brokerQueryMessage, final String queryString) {
         this.message = brokerQueryMessage;
         this.queryString = queryString;
     }

@@ -6,10 +6,11 @@ import de.fraunhofer.iais.eis.ContractOfferMessage;
 
 import java.util.Optional;
 
-public class ContractOfferMAP extends ContractMAP<ContractOfferMessage, ContractOffer> {
+public class ContractOfferMAP extends AbstractContractMAP<ContractOfferMessage, ContractOffer> {
 
 
-    public ContractOfferMAP(ContractOfferMessage contractOfferMessage, ContractOffer payload) {
+    public ContractOfferMAP(final ContractOfferMessage contractOfferMessage,
+                            final ContractOffer payload) {
         this.message = contractOfferMessage;
         this.payload = payload;
     }

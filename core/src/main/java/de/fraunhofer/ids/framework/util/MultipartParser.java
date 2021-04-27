@@ -14,7 +14,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 /**
  * Utility Class for parsing Multipart Maps from String responses.
  */
-public class MultipartParser implements UploadContext {
+public final class MultipartParser implements UploadContext {
     private String postBody;
     private String boundary;
 

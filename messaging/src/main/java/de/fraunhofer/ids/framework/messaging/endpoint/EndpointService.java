@@ -3,7 +3,6 @@ package de.fraunhofer.ids.framework.messaging.endpoint;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -77,7 +76,6 @@ public class EndpointService {
         requestMappingHandlerMapping.unregisterMapping(requestMappingInfo);
     }
 
-    @NotNull
     private RequestMappingInfo getRequestMappingInfo(final String url) {
         return RequestMappingInfo
                 .paths(url)

@@ -42,7 +42,6 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -127,7 +126,6 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         return clientResponse;
     }
 
-    @NotNull
     private Request getCertificateRequestMessage(final String csrString) {
         final var clientToCreate = new JSONObject();
         clientToCreate.put("grants", List.of("client_assertion_type"));
@@ -243,7 +241,6 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         return jwtString;
     }
 
-    @NotNull
     private Request getRequestMessage(final String dapsUrl, final RequestBody formBody) {
         return new Request.Builder()
                 .url(dapsUrl)
@@ -251,7 +248,6 @@ public class OrbiterTokenManagerService implements TokenManagerService {
                 .build();
     }
 
-    @NotNull
     private RequestBody getRequestBody(final String token) {
         return new FormBody.Builder()
                 .add("grant_type", "client_assertion_type")

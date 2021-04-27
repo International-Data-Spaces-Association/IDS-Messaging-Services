@@ -17,21 +17,21 @@ class DapsVerifierTest {
         Claims nullClaims = null;
         assertThrows(ClaimsException.class, () -> DapsVerifier.verify(nullClaims));
         //create valid claims
-        var claims = Jwts.claims();
+        final var claims = Jwts.claims();
         claims.setIssuedAt(Date.from(Instant.now()));
         claims.setNotBefore(Date.from(Instant.now()));
         claims.setExpiration(Date.from(Instant.now().plusSeconds(100)));
         //verifying valid claims should return true
         assertTrue(DapsVerifier.verify(claims));
         //create expired claims
-        var expiredClaims = Jwts.claims();
+        final var expiredClaims = Jwts.claims();
         expiredClaims.setIssuedAt(Date.from(Instant.now().minusSeconds(100)));
         expiredClaims.setNotBefore(Date.from(Instant.now().minusSeconds(100)));
         expiredClaims.setExpiration(Date.from(Instant.now()));
         //expired claims should not be accepted
         assertThrows(ClaimsException.class, () -> DapsVerifier.verify(expiredClaims));
         //create invalid claims (current time before notbefore)
-        var invalidClaims = Jwts.claims();
+        final var invalidClaims = Jwts.claims();
         invalidClaims.setIssuedAt(Date.from(Instant.now()));
         invalidClaims.setNotBefore(Date.from(Instant.now().plusSeconds(100)));
         invalidClaims.setExpiration(Date.from(Instant.now().plusSeconds(200)));

@@ -9,13 +9,12 @@ import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayloa
 import lombok.Getter;
 
 
-public abstract class ContractMAP<M extends Message, C extends Contract> implements MessageAndPayload<Message, Contract> {
+public abstract class AbstractContractMAP<M extends Message, C extends Contract> implements MessageAndPayload<Message, Contract> {
 
     @Getter
     M message;
 
     C payload;
-
 
     @Override
     public Optional<Contract> getPayload() {

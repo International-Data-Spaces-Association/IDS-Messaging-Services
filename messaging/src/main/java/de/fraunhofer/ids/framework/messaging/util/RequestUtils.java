@@ -21,7 +21,7 @@ public class RequestUtils {
      * @param request a okhttp Request
      * @return the request as string or an empty string
      */
-    public static String printRequest(final Request request) {
+    public String printRequest(final Request request) {
         var bufferText = "";
         try {
             final var copy = request.newBuilder().build();
@@ -31,7 +31,7 @@ public class RequestUtils {
 
             bufferText = buffer.readUtf8();
             buffer.close();
-        } catch ( IOException | NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
             if (log.isErrorEnabled()) {
                 log.error(e.getClass().toString() + ": printing failed.");
             }
@@ -45,7 +45,7 @@ public class RequestUtils {
      *
      * @param request {@link Request} to be logged
      */
-    public static void logRequest(final Request request) {
+    public void logRequest(final Request request) {
         if (log.isInfoEnabled()) {
             log.info(printRequest(request));
         }

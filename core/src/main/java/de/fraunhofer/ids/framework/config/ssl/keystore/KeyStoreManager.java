@@ -114,18 +114,18 @@ public class KeyStoreManager {
         getPrivateKeyFromKeyStore(keyAlias);
     }
 
-    private void initTrustManager(final char[] trustStorePw)
+    private void initTrustManager(final char... trustStorePw)
             throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
         final var myManager = loadTrustManager(trustStorePw);
         trustManager = trustStoreManager.configureTrustStore(myManager);
     }
 
-    private void createTrustStore(final ConfigurationModel configurationModel, final char[] trustStorePw)
+    private void createTrustStore(final ConfigurationModel configurationModel, final char... trustStorePw)
             throws CertificateException, NoSuchAlgorithmException, IOException {
         trustStore = loadKeyStore(trustStorePw, configurationModel.getTrustStore());
     }
 
-    private void createKeyStore(final ConfigurationModel configurationModel, final char[] keystorePw)
+    private void createKeyStore(final ConfigurationModel configurationModel, final char... keystorePw)
             throws CertificateException, NoSuchAlgorithmException, IOException {
         keyStore = loadKeyStore(keystorePw, configurationModel.getKeyStore());
     }
@@ -226,7 +226,7 @@ public class KeyStoreManager {
      * @throws UnrecoverableKeyException if the key cannot be recovered (e.g. the given password is wrong)
      * @throws KeyStoreException         if initialization of the trustmanager fails
      */
-    private X509TrustManager loadTrustManager(final char[] password)
+    private X509TrustManager loadTrustManager(final char... password)
             throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
         if (log.isDebugEnabled()) {
             log.debug("Loading trustmanager");

@@ -9,10 +9,8 @@ import de.fraunhofer.ids.framework.daps.DapsValidator;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.apache.maven.model.ConfigurationContainer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,32 +21,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(classes = {IdsHttpServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = { "shacl.validation=false" })
 class IdsHttpServiceTest {
-
-    @Configuration
-    static class TestContextConfiguration {
-
-        @MockBean
-        DapsValidator dapsValidator;
-
-        @MockBean
-        ConfigContainer configContainer;
-
-        @MockBean
-        ClientProvider clientProvider;
-
-        @Bean
-        public IdsHttpService getIdsHttpService(){
-            return new IdsHttpService(clientProvider, dapsValidator, configContainer, new Serializer());
-        }
-    }
-
     @Autowired
     IdsHttpService idsHttpService;
 
@@ -68,6 +47,24 @@ class IdsHttpServiceTest {
     ConfigurationModel configurationModel;
 
     private MockWebServer mockWebServer = new MockWebServer();
+
+    @Configuration
+    static class TestContextConfiguration {
+
+        @MockBean
+        DapsValidator dapsValidator;
+
+        @MockBean
+        ConfigContainer configContainer;
+
+        @MockBean
+        ClientProvider clientProvider;
+
+        @Bean
+        public IdsHttpService getIdsHttpService(){
+            return new IdsHttpService(clientProvider, dapsValidator, configContainer, new Serializer());
+        }
+    }
 
     @Test
     @SuppressWarnings("all")

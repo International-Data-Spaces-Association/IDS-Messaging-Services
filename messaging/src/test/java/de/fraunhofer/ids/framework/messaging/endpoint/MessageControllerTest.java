@@ -73,7 +73,7 @@ class MessageControllerTest {
     @Test
     void testGetValidMultipartReturn() throws Exception {
 
-        RequestMappingInfo requestMappingInfo = RequestMappingInfo
+        final var requestMappingInfo = RequestMappingInfo
                 .paths("/api/ids/data")
                 .methods(RequestMethod.POST)
                 .consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -88,7 +88,7 @@ class MessageControllerTest {
 
         // Create the message header that shall be send and tested
         //final var queryHeader = new RequestMessageBuilder()._modelVersion_("1.0.3")._issued_(Util.getGregorianNow()).build();
-        DynamicAttributeToken token = new DynamicAttributeTokenBuilder()
+        final var token = new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)
                 ._tokenValue_("Token")
                 .build();
@@ -110,7 +110,7 @@ class MessageControllerTest {
 
         // Define mocking behaviour of the messageDispatcher.process() as well as the connector.getSelfDeclarationURL()
         final var mockResponseBody = "mock response";
-        var responseMessage = new ResponseMessageBuilder()
+        final var responseMessage = new ResponseMessageBuilder()
                 ._correlationMessage_(msgHeader.getId())
                 ._issuerConnector_(configurationContainer.getConnector().getId())
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -120,9 +120,8 @@ class MessageControllerTest {
 
         Mockito.when(messageDispatcher.process(Mockito.any(), Mockito.any())).thenReturn(BodyResponse.create(responseMessage, mockResponseBody));
 
-        String header = serializer.serialize(msgHeader);
-
-        String header2 = serializer.serialize(notificationHeader);
+        final var header = serializer.serialize(msgHeader);
+        final var header2 = serializer.serialize(notificationHeader);
 
         // Create the message payload that shall be send and tested
         final var queryPayload = "Some Payload";
@@ -155,7 +154,7 @@ class MessageControllerTest {
 
         final var response = result.getResponse();
         final var multiPartResp = MultipartParser.stringToMultipart(response.getContentAsString());
-        String respHead = multiPartResp.get("header");//.replaceAll("UTC","+0000");
+        final var respHead = multiPartResp.get("header");//.replaceAll("UTC","+0000");
 
         final var responseHeader = serializer.deserialize(respHead, ResponseMessage.class);
 

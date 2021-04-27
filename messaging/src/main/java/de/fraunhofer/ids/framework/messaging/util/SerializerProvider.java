@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class SerializerProvider {
 
     /**
-     * Infomodel Serializer as Bean, so it can be autowired
+     * Infomodel Serializer as Bean, so it can be autowired.
      *
      * @return a new {@link Serializer} object as bean for autowiring
      */

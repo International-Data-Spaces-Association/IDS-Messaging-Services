@@ -29,8 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @UtilityClass
 public class IdsMessageUtils {
-    private static final Base64.Encoder ENCODER_64 = Base64.getEncoder();
-    private static final Serializer     SERIALIZER = new Serializer();
+    private final Base64.Encoder ENCODER_64 = Base64.getEncoder();
+    private final Serializer     SERIALIZER = new Serializer();
 
     /**
      * Hash a value with a given MessageDigest.
@@ -40,7 +40,7 @@ public class IdsMessageUtils {
      *
      * @return Hash value of the input String
      */
-    public static String hash(final MessageDigest digest, final String value) {
+    public String hash(final MessageDigest digest, final String value) {
         digest.update(value.getBytes());
         return ENCODER_64.encodeToString(digest.digest());
     }
@@ -55,7 +55,7 @@ public class IdsMessageUtils {
      * @throws InvalidKeyException if the private key is invalid.
      * @throws SignatureException  if the signature cannot properly be initialized.
      */
-    public static String sign(final Signature privateSignature, final String value, final PrivateKey privateKey)
+    public String sign(final Signature privateSignature, final String value, final PrivateKey privateKey)
             throws InvalidKeyException, SignatureException {
 
         privateSignature.initSign(privateKey);
@@ -72,7 +72,7 @@ public class IdsMessageUtils {
      * @return elements as {@code ArrayList<T>}
      */
     @SafeVarargs
-    public static <T> ArrayList<T> asList(final T... elements) {
+    public <T> ArrayList<T> asList(final T... elements) {
         return new ArrayList<>(Arrays.asList(elements));
     }
 
@@ -83,7 +83,7 @@ public class IdsMessageUtils {
      * @param property like version, artifactID etc
      * @return the pom value
      */
-    public static String getProjectProperty(final String property) {
+    public String getProjectProperty(final String property) {
 
         //read /main/resources/project/properties
         if (log.isDebugEnabled()) {
@@ -110,7 +110,7 @@ public class IdsMessageUtils {
      *
      * @return XMLGregorianCalendar containing the current time stamp as {@link XMLGregorianCalendar}.
      */
-    public static XMLGregorianCalendar getGregorianNow() {
+    public XMLGregorianCalendar getGregorianNow() {
         final var calendar = new GregorianCalendar();
         calendar.setTime(new Date());
 
@@ -131,7 +131,7 @@ public class IdsMessageUtils {
      * @return the SelfDeclaration of the configured connector
      * @throws IOException when the connector cannot be serialized
      */
-    public static String buildSelfDeclaration(final ConfigurationModel model) throws IOException {
+    public String buildSelfDeclaration(final ConfigurationModel model) throws IOException {
         return SERIALIZER.serialize(model.getConnectorDescription());
     }
 
@@ -142,7 +142,7 @@ public class IdsMessageUtils {
      * @return the SelfDeclaration of the configured connector
      * @throws IOException when the connector cannot be serialized
      */
-    public static String buildSelfDeclaration(final Connector model) throws IOException {
+    public String buildSelfDeclaration(final Connector model) throws IOException {
         return SERIALIZER.serialize(model);
     }
 }

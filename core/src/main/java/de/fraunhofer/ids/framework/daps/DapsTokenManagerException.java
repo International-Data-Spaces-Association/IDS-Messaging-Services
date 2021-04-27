@@ -11,7 +11,7 @@ public class DapsTokenManagerException extends Exception {
      *
      * @param message the error message to be included with the exception
      */
-    public DapsTokenManagerException( final String message ) {
+    public DapsTokenManagerException(final String message) {
         super(message);
     }
 }

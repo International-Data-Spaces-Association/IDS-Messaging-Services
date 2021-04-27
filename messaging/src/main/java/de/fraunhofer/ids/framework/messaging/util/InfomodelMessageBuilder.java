@@ -15,7 +15,7 @@ import okhttp3.RequestBody;
  * This Builder is a utility class for building OkHTTP.
  * Multipart RequestBodies with RequestMessage header and String or File payload Part
  */
-public class InfomodelMessageBuilder {
+public final class InfomodelMessageBuilder {
     private static final Serializer SERIALIZER = new Serializer();
 
     private final MultipartBody.Builder builder;

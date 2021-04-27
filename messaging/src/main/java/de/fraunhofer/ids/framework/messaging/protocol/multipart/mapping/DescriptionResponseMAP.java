@@ -11,7 +11,8 @@ public class DescriptionResponseMAP implements MessageAndPayload<DescriptionResp
     private DescriptionResponseMessage message;
     private String payload;
 
-    public DescriptionResponseMAP(DescriptionResponseMessage response, String payload) {
+    public DescriptionResponseMAP(final DescriptionResponseMessage response,
+                                  final String payload) {
         this.message = response;
         this.payload = payload;
     }
@@ -30,5 +31,4 @@ public class DescriptionResponseMAP implements MessageAndPayload<DescriptionResp
     public SerializedPayload serializePayload() {
         return new SerializedPayload(payload.getBytes(), "application/ld+json");
     }
-
 }

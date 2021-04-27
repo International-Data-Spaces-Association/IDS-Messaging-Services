@@ -1,7 +1,6 @@
 package de.fraunhofer.ids.framework.daps;
 
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
-import de.fraunhofer.iais.eis.ResponseMessageBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,7 +17,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
@@ -30,6 +28,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {DapsValidatorTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
 class DapsValidatorTest {
+    @Autowired
+    DapsValidator dapsValidator;
+
+    @Autowired
+    DapsPublicKeyProvider dapsPublicKeyProvider;
 
     @Configuration
     static class TestContextConfiguration{
@@ -44,20 +47,14 @@ class DapsValidatorTest {
 
     }
 
-    @Autowired
-    DapsValidator dapsValidator;
-
-    @Autowired
-    DapsPublicKeyProvider dapsPublicKeyProvider;
-
     @Test
     void testTokenValidation() throws Exception {
         //DapsValidator should exist
         assertNotNull(dapsValidator);
         //Create an RSA KeyPair
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        var keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(512);
-        var pair = keyGen.generateKeyPair();
+        final var pair = keyGen.generateKeyPair();
         //when PublicKeyProvider is called, return generated Public Key
         Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
         //create JWT and sign it with generated private Key
@@ -99,9 +96,9 @@ class DapsValidatorTest {
     void testExtraAttributes() throws Exception {
         assertNotNull(dapsValidator);
         //Create an RSA KeyPair
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        var keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(512);
-        var pair = keyGen.generateKeyPair();
+        final var pair = keyGen.generateKeyPair();
         //when PublicKeyProvider is called, return generated Public Key
         Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
         //create JWT with BASE_CONNECTOR_SECURITY_PROFILE

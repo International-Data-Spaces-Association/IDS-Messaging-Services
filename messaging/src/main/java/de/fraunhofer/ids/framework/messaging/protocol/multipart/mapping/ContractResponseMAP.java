@@ -7,9 +7,10 @@ import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayloa
 
 import java.util.Optional;
 
-public class ContractResponseMAP extends ContractMAP<ContractResponseMessage, ContractOffer> {
+public class ContractResponseMAP extends AbstractContractMAP<ContractResponseMessage, ContractOffer> {
 
-    public ContractResponseMAP(ContractResponseMessage contractResponseMessage, ContractOffer payload) {
+    public ContractResponseMAP(final ContractResponseMessage contractResponseMessage,
+                               final ContractOffer payload) {
         this.message = contractResponseMessage;
         this.payload = payload;
     }

@@ -10,7 +10,7 @@ public class ContractRejectionMAP implements MessageAndPayload<ContractRejection
 
     private final ContractRejectionMessage contractRejectionMessage;
 
-    public ContractRejectionMAP(ContractRejectionMessage contractRejectionMessage) {
+    public ContractRejectionMAP(final ContractRejectionMessage contractRejectionMessage) {
         this.contractRejectionMessage = contractRejectionMessage;
     }
 

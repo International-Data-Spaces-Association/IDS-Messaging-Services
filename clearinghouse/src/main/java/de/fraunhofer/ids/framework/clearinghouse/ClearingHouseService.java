@@ -102,11 +102,9 @@ public class ClearingHouseService implements IDSClearingHouseService {
             //build targetURI of QueryMessage (if pid and messageid are given)
             final var targetURI = (pid == null) ?
                     new URI(clearingHouseUrl) :
-                    (messageid == null ?
+                        messageid == null ?
                             new URI(String.format("%s%s", clearingHouseUrl, pid)) :
-                            new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageid)
-                            )
-                    );
+                            new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageid));
 
             return httpService.send(body, targetURI);
         } catch (DapsTokenManagerException e) {

@@ -10,15 +10,15 @@ import java.util.Optional;
 public class ParticipantNotificationMAP implements MessageAndPayload<Message, Participant> {
     private final Message message;
     private Participant participantSelfDescription;
-    public ParticipantNotificationMAP(Message message) {
+    public ParticipantNotificationMAP(final Message message) {
         this.message = message;
     }
 
-    public ParticipantNotificationMAP(Message message, Participant participantSelfDescription)
-    {
+    public ParticipantNotificationMAP(final Message message, final Participant participantSelfDescription) {
         this.message = message;
         this.participantSelfDescription = participantSelfDescription;
     }
+
     @Override
     public Message getMessage() {
         return message;
@@ -33,7 +33,8 @@ public class ParticipantNotificationMAP implements MessageAndPayload<Message, Pa
     public SerializedPayload serializePayload() {
         if (participantSelfDescription != null) {
             return new SerializedPayload(participantSelfDescription.toRdf().getBytes(), "application/ld+json");
+        } else {
+            return SerializedPayload.EMPTY;
         }
-        else return SerializedPayload.EMPTY;
     }
 }

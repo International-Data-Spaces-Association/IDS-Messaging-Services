@@ -21,7 +21,7 @@ public class DapsVerifier {
      * @return true if message is valid
      * @throws ClaimsException when the claims of the DAT cannot be verified
      */
-    public static boolean verify(final Jws<Claims> toVerify) throws ClaimsException {
+    public boolean verify(final Jws<Claims> toVerify) throws ClaimsException {
         if (toVerify != null) {
             return verify(toVerify.getBody());
         }
@@ -37,7 +37,7 @@ public class DapsVerifier {
      * @return true if message is valid
      * @throws ClaimsException when the claims of the DAT cannot be verified
      */
-    public static boolean verify(final Claims toVerify) throws ClaimsException {
+    public boolean verify(final Claims toVerify) throws ClaimsException {
         try {
             if (toVerify.getExpiration().before(new Date())) {
                 throw new ClaimsException("The token is outdated.");

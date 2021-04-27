@@ -36,10 +36,10 @@ public class MessageBuilder {
      * @return the {@link ResourceUnavailableMessage}
      * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static ResourceUnavailableMessage buildResourceUnavailableMessage(final DynamicAttributeToken securityToken,
-                                                                             final String infoModelVersion,
-                                                                             final URI connectorID,
-                                                                             final Resource resource)
+    public ResourceUnavailableMessage buildResourceUnavailableMessage(final DynamicAttributeToken securityToken,
+                                                                      final String infoModelVersion,
+                                                                      final URI connectorID,
+                                                                      final Resource resource)
             throws ConstraintViolationException {
         return new ResourceUnavailableMessageBuilder()
                 ._affectedResource_(resource.getId())
@@ -61,10 +61,10 @@ public class MessageBuilder {
      * @return the {@link ResourceUpdateMessage} as JSONLD
      * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static ResourceUpdateMessage buildResourceUpdateMessage(final DynamicAttributeToken securityToken,
-                                                                   final String infoModelVersion,
-                                                                   final URI connectorID,
-                                                                   final Resource resource)
+    public ResourceUpdateMessage buildResourceUpdateMessage(final DynamicAttributeToken securityToken,
+                                                            final String infoModelVersion,
+                                                            final URI connectorID,
+                                                            final Resource resource)
             throws ConstraintViolationException {
         return new ResourceUpdateMessageBuilder()
                 ._affectedResource_(resource.getId())
@@ -85,9 +85,9 @@ public class MessageBuilder {
      * @return the {@link ConnectorUnavailableMessage}
      * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static ConnectorUnavailableMessage buildUnavailableMessage(final DynamicAttributeToken securityToken,
-                                                                      final String infoModelVersion,
-                                                                      final URI connectorID)
+    public ConnectorUnavailableMessage buildUnavailableMessage(final DynamicAttributeToken securityToken,
+                                                               final String infoModelVersion,
+                                                               final URI connectorID)
             throws ConstraintViolationException {
         return new ConnectorUnavailableMessageBuilder()
                 ._securityToken_(securityToken)
@@ -108,9 +108,9 @@ public class MessageBuilder {
      * @return the {@link ConnectorUpdateMessage}
      * @throws ConstraintViolationException when the message cannot be serialized properly
      */
-    public static ConnectorUpdateMessage buildUpdateMessage(final DynamicAttributeToken securityToken,
-                                                            final String infoModelVersion,
-                                                            final URI connectorID)
+    public ConnectorUpdateMessage buildUpdateMessage(final DynamicAttributeToken securityToken,
+                                                     final String infoModelVersion,
+                                                     final URI connectorID)
             throws ConstraintViolationException {
         return new ConnectorUpdateMessageBuilder()
                 ._securityToken_(securityToken)
@@ -134,12 +134,12 @@ public class MessageBuilder {
      * @return the {@link QueryMessage}
      * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static QueryMessage buildQueryMessage(final DynamicAttributeToken securityToken,
-                                                 final String infoModelVersion,
-                                                 final URI connectorID,
-                                                 final QueryLanguage queryLanguage,
-                                                 final QueryScope queryScope,
-                                                 final QueryTarget queryTarget)
+    public QueryMessage buildQueryMessage(final DynamicAttributeToken securityToken,
+                                          final String infoModelVersion,
+                                          final URI connectorID,
+                                          final QueryLanguage queryLanguage,
+                                          final QueryScope queryScope,
+                                          final QueryTarget queryTarget)
             throws ConstraintViolationException {
         return new QueryMessageBuilder()
                 ._securityToken_(securityToken)

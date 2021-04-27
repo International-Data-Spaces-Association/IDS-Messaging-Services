@@ -6,10 +6,9 @@ import de.fraunhofer.ids.framework.messaging.protocol.multipart.SerializedPayloa
 
 import java.util.Optional;
 
-@Deprecated
 public class ParticipantRequestMAP implements MessageAndPayload<ParticipantRequestMessage, Void> {
     private ParticipantRequestMessage message;
-    public ParticipantRequestMAP(ParticipantRequestMessage message) {
+    public ParticipantRequestMAP(final ParticipantRequestMessage message) {
         this.message = message;
     }
 

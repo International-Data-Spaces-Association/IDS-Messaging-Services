@@ -18,9 +18,9 @@ public class InfrastructurePayloadMAP implements MessageAndPayload<Message, Infr
 
     @Getter
     @NotNull
-    private final Message                 message;
+    private Message                 message;
 
-    private       InfrastructureComponent connectorSelfDescription;
+    private  InfrastructureComponent connectorSelfDescription;
 
 
     @Override
@@ -32,7 +32,8 @@ public class InfrastructurePayloadMAP implements MessageAndPayload<Message, Infr
     public SerializedPayload serializePayload() {
         if (connectorSelfDescription != null) {
             return new SerializedPayload(connectorSelfDescription.toRdf().getBytes(), "application/ld+json");
+        } else {
+            return SerializedPayload.EMPTY;
         }
-        else return SerializedPayload.EMPTY;
     }
 }

@@ -19,9 +19,9 @@ public class GenericMessageAndPayload implements MessageAndPayload<Message, Obje
 
     @Getter
     @NotNull
-    private final Message message;
+    private Message message;
 
-    private       Object payload;
+    private Object payload;
 
 
     @Override
@@ -32,9 +32,9 @@ public class GenericMessageAndPayload implements MessageAndPayload<Message, Obje
     @Override
     public SerializedPayload serializePayload() throws IOException {
         SerializedPayload serializedPayload;
-        if ( Objects.nonNull(payload)) {
+        if (Objects.nonNull(payload)) {
             serializedPayload = new SerializedPayload(new Serializer().serialize(payload).getBytes(), "application/ld+json");
-        }else{
+        } else {
             serializedPayload =  SerializedPayload.EMPTY;
         }
         return serializedPayload;

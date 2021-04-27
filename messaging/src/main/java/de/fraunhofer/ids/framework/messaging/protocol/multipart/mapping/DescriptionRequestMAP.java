@@ -10,7 +10,7 @@ public class DescriptionRequestMAP implements MessageAndPayload<DescriptionReque
 
     private DescriptionRequestMessage message;
 
-    public DescriptionRequestMAP(DescriptionRequestMessage selfDescriptionRequest) {
+    public DescriptionRequestMAP(final DescriptionRequestMessage selfDescriptionRequest) {
         this.message = selfDescriptionRequest;
     }
 

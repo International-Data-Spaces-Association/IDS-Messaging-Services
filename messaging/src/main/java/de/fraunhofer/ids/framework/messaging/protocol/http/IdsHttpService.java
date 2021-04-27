@@ -23,7 +23,6 @@ import de.fraunhofer.ids.framework.util.MultipartParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -120,7 +119,7 @@ public class IdsHttpService implements HttpService {
         final var ignoreDAT = configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
         var valid = true;
 
-        if (!ignoreDAT && !( message instanceof RejectionMessage)) {
+        if (!ignoreDAT && !(message instanceof RejectionMessage)) {
             valid = dapsValidator.checkDat(message.getSecurityToken(), extraAttributes);
         }
 

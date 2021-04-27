@@ -21,7 +21,7 @@ public class MessageProcessedNotificationMAP implements MessageAndPayload<Messag
             .build();
     }*/
 
-    public MessageProcessedNotificationMAP( MessageProcessedNotificationMessage message ) {
+    public MessageProcessedNotificationMAP(final MessageProcessedNotificationMessage message) {
         this.message = message;
     }
 

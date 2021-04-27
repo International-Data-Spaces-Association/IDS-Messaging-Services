@@ -6,9 +6,9 @@ import de.fraunhofer.iais.eis.Message;
 import java.io.IOException;
 import java.util.Optional;
 
-public interface MessageAndPayload<MessageType extends Message, T> {
+public interface MessageAndPayload<M extends Message, T> {
 
-    MessageType getMessage();
+    M getMessage();
     Optional<T> getPayload();
     SerializedPayload serializePayload() throws IOException;
 

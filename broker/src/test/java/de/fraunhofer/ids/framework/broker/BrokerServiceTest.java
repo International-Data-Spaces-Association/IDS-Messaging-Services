@@ -135,17 +135,6 @@ class BrokerServiceTest {
 
     @Configuration
     static class TestContextConfiguration{
-
-        @Bean
-        public Serializer getSerializer(){
-            return new Serializer();
-        }
-
-        @Bean
-        public BrokerService getBrokerService() {
-            return new BrokerService(configurationContainer, dapsTokenProvider, getMessageService());
-        }
-
         @MockBean
         private KeyStoreManager keyStoreManager;
 
@@ -166,6 +155,16 @@ class BrokerServiceTest {
 
         @MockBean
         private ClientProvider clientProvider;
+
+        @Bean
+        public Serializer getSerializer(){
+            return new Serializer();
+        }
+
+        @Bean
+        public BrokerService getBrokerService() {
+            return new BrokerService(configurationContainer, dapsTokenProvider, getMessageService());
+        }
 
         @Bean
         IdsHttpService getHttpService(){
@@ -192,7 +191,7 @@ class BrokerServiceTest {
     @Test
     void testUpdateSelfDescriptionAtBrokers ()throws Exception {
         //Configure Mockito
-        DynamicAttributeToken fakeToken = new DynamicAttributeTokenBuilder()
+        final var fakeToken = new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)
                 ._tokenValue_("fake Token")
                 .build();
@@ -207,10 +206,10 @@ class BrokerServiceTest {
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         //Create MockWebServer returning MESSAGE_BODY NotificationMessage
         this.mockWebServer = new MockWebServer();
-        MockResponse mockResponse = new MockResponse().setBody(MESSAGE_BODY);
+        final var mockResponse = new MockResponse().setBody(MESSAGE_BODY);
         this.mockWebServer.enqueue(mockResponse);
         //send message and check the response
-        MessageProcessedNotificationMAP map = this.brokerService.updateSelfDescriptionAtBroker(URI.create(mockWebServer.url("/").toString()));
+        final var map = this.brokerService.updateSelfDescriptionAtBroker(URI.create(mockWebServer.url("/").toString()));
         System.out.println(new Serializer().serialize(map.getMessage()));
         assertNotNull(map.getMessage());
     }

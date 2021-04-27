@@ -26,7 +26,6 @@ import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.Rejectio
 import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.framework.util.MultipartParseException;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 /**
@@ -213,7 +212,7 @@ public class BrokerService implements IDSBrokerService {
                 queryLanguage,
                 queryScope,
                 queryTarget);
-        final var messageAndPayload = new GenericMessageAndPayload(header);
+        final var messageAndPayload = new GenericMessageAndPayload(header, null);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
         return expectResultMAP(response);
@@ -238,7 +237,6 @@ public class BrokerService implements IDSBrokerService {
      *
      * @return Connector-ID URI
      */
-    @NotNull
     private URI getConnectorId() {
         return container.getConnector().getId();
     }

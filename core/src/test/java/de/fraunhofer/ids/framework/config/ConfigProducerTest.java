@@ -31,7 +31,7 @@ class ConfigProducerTest {
      */
     @Test
     void testLoadInitialConfiguration(){
-        var configModel = configContainer.getConfigurationModel();
+        final var configModel = configContainer.getConfigurationModel();
         assertEquals(URI.create("https://w3id.org/idsa/autogen/configurationModel/a0b8bcea-6ba0-4e26-ba80-44e43ee058ac"), configModel.getId());
         assertEquals(ConnectorDeployMode.TEST_DEPLOYMENT, configModel.getConnectorDeployMode());
         assertEquals(URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"),configModel.getConnectorDescription().getId());

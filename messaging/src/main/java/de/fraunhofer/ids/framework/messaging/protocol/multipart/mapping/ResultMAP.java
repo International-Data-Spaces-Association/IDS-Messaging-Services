@@ -12,7 +12,7 @@ public class ResultMAP implements MessageAndPayload<ResultMessage, String> {
     private final ResultMessage resultMessage;
     private final String        queryResult;
 
-    public ResultMAP( ResultMessage resultMessage, String queryResult ) {
+    public ResultMAP(final ResultMessage resultMessage, final String queryResult) {
         this.resultMessage = resultMessage;
         this.queryResult = queryResult;
     }

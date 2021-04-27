@@ -1,6 +1,10 @@
 package de.fraunhofer.ids.framework.messaging.protocol.multipart;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -15,7 +19,7 @@ public class SerializedPayload {
     private       String            contentType;
     private       String            filename;
 
-    public SerializedPayload(byte[] serialization) {
+    public SerializedPayload(final byte... serialization) {
         this.serialization = serialization;
     }
 

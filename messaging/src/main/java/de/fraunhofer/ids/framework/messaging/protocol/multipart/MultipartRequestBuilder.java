@@ -9,11 +9,10 @@ import de.fraunhofer.ids.framework.messaging.protocol.RequestBuilder;
 import de.fraunhofer.ids.framework.util.MultipartDatapart;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 
 public class MultipartRequestBuilder implements RequestBuilder {
 
-    private static final Serializer serializer = new Serializer();
+    private static final Serializer SERIALIZER = new Serializer();
 
 
 
@@ -21,11 +20,12 @@ public class MultipartRequestBuilder implements RequestBuilder {
      * {@inheritDoc}
      */
     @Override
-    public Request build( Message message, URI target ) throws IOException {
-        RequestBody body = new MultipartBody.Builder()
+    public Request build(final Message message, final URI target) throws IOException {
+        final var body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart(MultipartDatapart.HEADER.toString(), serializer.serialize(message))
+                .addFormDataPart(MultipartDatapart.HEADER.toString(), SERIALIZER.serialize(message))
                 .build();
+
         return new Request.Builder()
                 .url(target.toURL())
                 .post(body)
@@ -37,12 +37,13 @@ public class MultipartRequestBuilder implements RequestBuilder {
      * {@inheritDoc}
      */
     @Override
-    public Request build( Message message, URI target, String payload ) throws IOException {
-        RequestBody body = new MultipartBody.Builder()
+    public Request build(final Message message, final URI target, final String payload) throws IOException {
+        final var body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart(MultipartDatapart.HEADER.toString(), serializer.serialize(message))
+                .addFormDataPart(MultipartDatapart.HEADER.toString(), SERIALIZER.serialize(message))
                 .addFormDataPart(MultipartDatapart.PAYLOAD.toString(), payload)
                 .build();
+
         return new Request.Builder()
                 .url(target.toURL())
                 .post(body)

@@ -7,9 +7,10 @@ import de.fraunhofer.iais.eis.ContractAgreement;
 import de.fraunhofer.iais.eis.ContractAgreementMessage;
 
 
-public class ContractAgreementMAP extends ContractMAP<ContractAgreementMessage, ContractAgreement> {
+public class ContractAgreementMAP extends AbstractContractMAP<ContractAgreementMessage, ContractAgreement> {
 
-    public ContractAgreementMAP(ContractAgreementMessage contractAgreementMessage, ContractAgreement payload) {
+    public ContractAgreementMAP(final ContractAgreementMessage contractAgreementMessage,
+                                final ContractAgreement payload) {
         this.message = contractAgreementMessage;
         this.payload = payload;
     }
@@ -23,5 +24,4 @@ public class ContractAgreementMAP extends ContractMAP<ContractAgreementMessage, 
     public Optional<Contract> getPayload() {
         return Optional.of(payload);
     }
-
 }

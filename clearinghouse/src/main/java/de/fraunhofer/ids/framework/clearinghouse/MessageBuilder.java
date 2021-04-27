@@ -27,9 +27,9 @@ public class MessageBuilder {
      * @throws DapsTokenManagerException when {@link DapsTokenProvider} cannot get a Token
      * @throws URISyntaxException        when clearinghouse.url cannot be parsed as URI
      */
-    public static LogMessage buildLogMessage(final ConfigContainer configContainer,
-                                             final DapsTokenProvider dapsTokenProvider,
-                                             final String clearingHouseUrl)
+    public LogMessage buildLogMessage(final ConfigContainer configContainer,
+                                      final DapsTokenProvider dapsTokenProvider,
+                                      final String clearingHouseUrl)
             throws DapsTokenManagerException, URISyntaxException {
         final var connector = configContainer.getConnector();
 
@@ -52,11 +52,11 @@ public class MessageBuilder {
      * @return built QueryMessage
      * @throws DapsTokenManagerException when {@link DapsTokenProvider} cannot get a Token
      */
-    public static QueryMessage buildQueryMessage(final QueryLanguage queryLanguage,
-                                                 final QueryScope queryScope,
-                                                 final QueryTarget queryTarget,
-                                                 final ConfigContainer configContainer,
-                                                 final DapsTokenProvider dapsTokenProvider)
+    public QueryMessage buildQueryMessage(final QueryLanguage queryLanguage,
+                                          final QueryScope queryScope,
+                                          final QueryTarget queryTarget,
+                                          final ConfigContainer configContainer,
+                                          final DapsTokenProvider dapsTokenProvider)
             throws DapsTokenManagerException {
         final var connector = configContainer.getConnector();
 
