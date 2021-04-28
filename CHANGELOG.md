@@ -17,6 +17,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Basis of the functionalities
 - Initial functionality based on the IDS-Connector-Framework. Further additional functionalities of the Interaction-Library and dynamic feature requests.
 
+### Infomodel
+- Used Dependency Version: 4.0.5
+- Used Artifacts: java, infomodel-serializer, interaction
+- Changes that may be necessary: ids:hasDefaultEndpoint is now a required entry in the connector properties
+
 ### Added / Changed functionalities
 - Modular project structure along the connectable infrastructure components.
 - Include the ID of the rejected message in automatically send RejectionMessages.
