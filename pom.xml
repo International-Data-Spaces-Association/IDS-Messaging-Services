@@ -165,18 +165,19 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
             <artifactId>java</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.5</version>
         </dependency>
 
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>infomodel-serializer</artifactId>
-            <version>4.0.2</version>
+            <version>4.0.5</version>
         </dependency>
+
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>interaction</artifactId>
-            <version>4.0.2-SNAPSHOT</version>
+            <version>4.0.5</version>
         </dependency>
     </dependencies>
 
