@@ -8,8 +8,8 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>de.fraunhofer.ids.framework</groupId>
-        <artifactId>framework</artifactId>
+        <groupId>de.fraunhofer.ids.messaging</groupId>
+        <artifactId>messaging-services</artifactId>
         <version>${revision}</version>
     </parent>
 

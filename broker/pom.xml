@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>framework</artifactId>
-        <groupId>de.fraunhofer.ids.framework</groupId>
+        <groupId>de.fraunhofer.ids.messaging</groupId>
+        <artifactId>messaging-services</artifactId>
         <version>${revision}</version>
     </parent>
 
@@ -25,7 +25,7 @@
     <dependencies>
         <!-- IDS-Framework Messaging-Module Dependency -->
         <dependency>
-            <groupId>de.fraunhofer.ids.framework</groupId>
+            <groupId>de.fraunhofer.ids.messaging</groupId>
             <artifactId>messaging</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
