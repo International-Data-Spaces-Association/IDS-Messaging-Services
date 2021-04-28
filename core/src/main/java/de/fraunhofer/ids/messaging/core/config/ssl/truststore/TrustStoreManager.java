@@ -1,0 +1,89 @@
+package de.fraunhofer.ids.messaging.core.config.ssl.truststore;
+
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+/**
+ * The IDSTrustStore contains the trusted certificates.
+ */
+public class TrustStoreManager {
+    /**
+     * Create a merged trustmanager (trust anchors are TrustStore + java Truststore combined).
+     *
+     * @param myTrustManager the IDS truststore
+     * @return a new truststore merging the IDS and Java Truststores
+     * @throws NoSuchAlgorithmException if default Truststore cannot be loaded
+     * @throws KeyStoreException        if default Truststore cannot be loaded
+     */
+    public X509TrustManager configureTrustStore(final X509TrustManager myTrustManager)
+            throws NoSuchAlgorithmException, KeyStoreException {
+        final var jreTrustManager = findDefaultTrustManager();
+        return createMergedTrustManager(jreTrustManager, myTrustManager);
+    }
+
+    /**
+     * Find the default system trustmanager.
+     *
+     * @return the default java truststore
+     * @throws NoSuchAlgorithmException if default Truststore cannot be loaded
+     * @throws KeyStoreException        if default Truststore cannot be loaded
+     */
+    private X509TrustManager findDefaultTrustManager() throws NoSuchAlgorithmException, KeyStoreException {
+        final var tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        final KeyStore blank = null;
+
+        tmf.init(blank); // If keyStore is null, tmf will be initialized with the default jvm trust store
+
+        for (final var tm : tmf.getTrustManagers()) {
+            if (tm instanceof X509TrustManager) {
+                return (X509TrustManager) tm;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Create a merged trustmanager from 2 given trustmanagers.
+     *
+     * @param jreTrustManager    the jre truststore
+     * @param customTrustManager the custom ids truststore
+     * @return a new truststore which will check the IDS Truststore and the default java truststore for certificates
+     */
+    private X509TrustManager createMergedTrustManager(final X509TrustManager jreTrustManager,
+                                                      final X509TrustManager customTrustManager) {
+        return new X509TrustManager() {
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                // If you're planning to use client-cert auth,
+                // merge results from "defaultTm" and "myTm".
+                return jreTrustManager.getAcceptedIssuers();
+            }
+
+            @Override
+            public void checkServerTrusted(final X509Certificate[] chain, final String authType)
+                    throws CertificateException {
+                //if custom trustmanager does not work, just use jre trustmanager
+                try {
+                    customTrustManager.checkServerTrusted(chain, authType);
+                } catch (CertificateException e) {
+                    // This will throw another CertificateException if this fails too.
+                    jreTrustManager.checkServerTrusted(chain, authType);
+                }
+            }
+
+            @Override
+            public void checkClientTrusted(final X509Certificate[] chain, final String authType)
+                    throws CertificateException {
+                // If you're planning to use client-cert auth,
+                // do the same as checking the server.
+                jreTrustManager.checkClientTrusted(chain, authType);
+            }
+        };
+    }
+}
