@@ -8,6 +8,7 @@ import de.fraunhofer.iais.eis.BaseConnectorBuilder;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.SecurityProfile;
 import de.fraunhofer.iais.eis.TokenFormat;
@@ -104,7 +105,14 @@ class BrokerServiceTest {
             + "    \"@id\" : \"idsc:BASE_SECURITY_PROFILE\"\r\n"
             + "  },\r\n"
             + "  \"ids:outboundModelVersion\" : \"4.0.0\",\r\n"
-            + "  \"ids:inboundModelVersion\" : [ \"4.0.0\" ]\r\n"
+            + "  \"ids:inboundModelVersion\" : [ \"4.0.0\" ],\r\n"
+            + "  \"ids:hasDefaultEndpoint\" : {\r\n"
+            + "  \"@type\": \"ids:ConnectorEndpoint\",\r\n"
+            + "  \"@id\": \"https://example.com\",\r\n"
+            + "  \"ids:accessURL\": {\r\n"
+            + "  \"@id\": \"https://localhost:8080/api/ids/data\"\r\n"
+            + "  }\r\n"
+            + "}\r\n"
             + "}\r\n"
             + "--msgpart--\r\n";
     @Autowired
@@ -187,12 +195,17 @@ class BrokerServiceTest {
 
         @Bean
         Connector getConnector() {
+            final var connectorEndpointBuilder = new ConnectorEndpointBuilder();
+            connectorEndpointBuilder
+                    ._accessURL_(URI.create("https://localhost:8080/api/ids/data"));
+
             return new BaseConnectorBuilder()
                     ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
                     ._inboundModelVersion_(new ArrayList<>(List.of("1.2.3")))
                     ._outboundModelVersion_("1.0.3")
                     ._maintainer_(URI.create("https://maintainer"))
                     ._curator_(URI.create("https://curator"))
+                    ._hasDefaultEndpoint_(connectorEndpointBuilder.build())
                     .build();
         }
     }
