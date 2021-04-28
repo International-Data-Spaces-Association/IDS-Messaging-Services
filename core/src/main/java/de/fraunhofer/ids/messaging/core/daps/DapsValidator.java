@@ -7,6 +7,7 @@ import java.util.Map;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.AccessLevel;
@@ -80,7 +81,7 @@ public class DapsValidator {
 
         try {
             claims = getClaims(token, keys);
-        } catch (ClaimsException e) {
+        } catch (ClaimsException | ExpiredJwtException e) {
             return false;
         }
 
