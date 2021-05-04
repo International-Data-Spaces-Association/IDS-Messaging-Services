@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class BrokerService implements IDSBrokerService {
-    private static final String                  INFO_MODEL_VERSION        = "4.0.0";
 
 
     private final ConfigContainer   container;
@@ -36,9 +35,9 @@ public class BrokerService implements IDSBrokerService {
     /**
      * Creates the IDSBrokerCommunication controller.
      *
-     * @param container     Configuration container
-     * @param tokenProvider providing DAT Token for RequestMessage
-     * @param messageService providing Messaging functionality
+     * @param container         Configuration container
+     * @param tokenProvider     providing DAT Token for RequestMessage
+     * @param messageService    providing Messaging functionality
      */
     public BrokerService( final ConfigContainer container,
                           final DapsTokenProvider tokenProvider,
@@ -58,10 +57,9 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         var securityToken = getDat();
-        var connectorID = getConnectorId();
 
         var header = MessageBuilder
-                .buildResourceUnavailableMessage(securityToken, INFO_MODEL_VERSION, connectorID, resource);
+                .buildResourceUnavailableMessage(securityToken,container.getConnector(), resource);
 
         GenericMessageAndPayload messageAndPayload = new GenericMessageAndPayload(header, resource);
 
@@ -86,7 +84,6 @@ public class BrokerService implements IDSBrokerService {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public MessageProcessedNotificationMAP updateResourceAtBroker( final URI brokerURI, final Resource resource ) throws
@@ -95,10 +92,9 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         var securityToken = getDat();
-        var connectorID = getConnectorId();
 
         var header = MessageBuilder
-                .buildResourceUpdateMessage(securityToken, INFO_MODEL_VERSION, connectorID, resource);
+                .buildResourceUpdateMessage(securityToken, container.getConnector(), resource);
         GenericMessageAndPayload messageAndPayload = new GenericMessageAndPayload(header, resource);
 
         var response =  messageService.sendIdsMessage(messageAndPayload, brokerURI);
@@ -107,7 +103,6 @@ public class BrokerService implements IDSBrokerService {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public MessageProcessedNotificationMAP unregisterAtBroker( final URI brokerURI )
@@ -115,9 +110,8 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         var securityToken = getDat();
-        var connectorID = getConnectorId();
 
-        var header = MessageBuilder.buildUnavailableMessage(securityToken, INFO_MODEL_VERSION, connectorID);
+        var header = MessageBuilder.buildUnavailableMessage(securityToken, container.getConnector());
         var payload = container.getConnector();
 
         GenericMessageAndPayload messageAndPayload = new GenericMessageAndPayload(header, payload);
@@ -128,7 +122,6 @@ public class BrokerService implements IDSBrokerService {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public MessageProcessedNotificationMAP updateSelfDescriptionAtBroker( final URI brokerURI ) throws
@@ -136,9 +129,8 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         var securityToken = getDat();
-        var connectorID = getConnectorId();
 
-        var header = MessageBuilder.buildUpdateMessage(securityToken, INFO_MODEL_VERSION, connectorID);
+        var header = MessageBuilder.buildUpdateMessage(securityToken, container.getConnector());
         var payload = container.getConnector();
 
         GenericMessageAndPayload messageAndPayload = new GenericMessageAndPayload(header, payload);
@@ -150,7 +142,6 @@ public class BrokerService implements IDSBrokerService {
 
     /**
      * {@inheritDoc}
-     * @param brokerURIs
      */
     @Override
     public List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers( List<URI> brokerURIs ){
@@ -182,12 +173,11 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         var securityToken = getDat();
-        var connectorID = getConnectorId();
 
 
 
         var header = MessageBuilder
-                .buildQueryMessage(securityToken, INFO_MODEL_VERSION, connectorID, queryLanguage, queryScope,
+                .buildQueryMessage(securityToken, container.getConnector(), queryLanguage, queryScope,
                                    queryTarget);
 
         GenericMessageAndPayload messageAndPayload = new GenericMessageAndPayload(header);
@@ -210,15 +200,6 @@ public class BrokerService implements IDSBrokerService {
         }
 
 
-    /**
-     * Get the ID of the connector
-     *
-     * @return Connector-ID URI
-     */
-    @NotNull
-    private URI getConnectorId() {
-        return container.getConnector().getId();
-    }
     /*
      * Get a new DAT from the DAPS
      *
