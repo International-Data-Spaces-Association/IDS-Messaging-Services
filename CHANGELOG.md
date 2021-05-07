@@ -1,56 +1,46 @@
+```
+  __  __                           _                   ___                 _              
+ |  \/  | ___  ___ ___ __ _  __ _ (_) _ _   __ _  ___ / __| ___  _ _ __ __(_) __  ___  ___
+ | |\/| |/ -_)(_-<(_-</ _` |/ _` || || ' \ / _` ||___|\__ \/ -_)| '_|\ V /| |/ _|/ -_)(_-<
+ |_|  |_|\___|/__//__/\__,_|\__, ||_||_||_|\__, |     |___/\___||_|   \_/ |_|\__|\___|/__/
+                            |___/          |___/                                          
+```
+
 # Changelog
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-Documentation started on: 2021-01-20.
+## Version 4.1.0.0 (UNRELEASED)
+- First stable non-snapshot version 
 
-## Version 1.6-SNAPSHOT (UNRELEASED)
-### Changed
-- Received RejectionMessages are now passed to the connector-developer, regardless of the status of the DAT within the received RejectionMessage
-- Asynchronous Message-Flow Support (support RequestInProcessMessage-Handling)
-- Initial IDS-Broker support
-- Initial IDS-ClearingHouse support
-- Initial IDS-Rest support
-- Code refactoring
-- MessageController now accepts messages with empty payloads (as required by AppStore, IDS-Framework implementation)
-- MultipartParser now throws MultipartParseException instead of FileUploadException
-- DapsValidator now accepts DAT Token instead of full Message
-- DAT now checked against list of trusted issuers given in application.properties
+### Basis of the functionalities
+- Initial functionality based on the IDS-Connector-Framework. Further additional functionalities of the Interaction-Library and dynamic feature requests.
 
-## Version 1.5-SNAPSHOT
-### Removed
-- Remove initial untested implementation of MQTT-support
-### Added
+### Infomodel
+- Used Dependency Version: 4.0.5
+- Used Artifacts: java, infomodel-serializer, interaction
+- Changes that may be necessary: ids:hasDefaultEndpoint is now a required entry in the connector properties
+
+### Dependency Maintenance
+- Dependabot: Dependabot will now automatically suggest pull requests for updates to dependencies.
+
+### Added / Changed functionalities
+- Modular project structure along the connectable infrastructure components.
+- Include the ID of the rejected message in automatically send RejectionMessages.
+- Extension of TEST_DEPLOYMENT-Mode: use an all-trusting trustmanager, accepting all SSL Certificates. This allows the use of selfsigned certificates in a TEST-environment.
+- New exception structure for throwing exceptions for the TokenManagerService: If no token can be retrieved from the DAPS by these functionalities, an exception is returned to the connector developer.
+- TokenProviderService will only acquire a new token, if the current one expired.
 - Support for multiple DAPS modes via application.properties (daps.mode = aisec/orbiter)
-### Changed
-- TokenProviderService will only get a new token, if the current one expired
-
-## Version 1.4-SNAPSHOT
-### Added
-- New Exception structure for throwing exceptions for TokenManagerService
-### Changed
-- Extension of TEST_DEPLOYMENT-Mode: use an all-trusting trustmanager, accepting all SSL Certificates. This allows the use of selfsigned certificates in a TEST-environment
-
-## Version 1.3-SNAPSHOT
-### Changed
-- The connector developer can now specify a protocol with which he wants to transmit his message
-- Include ID of rejected message in RejectionMessage
-- Update referenced dependencies
-- Code refactoring
-
-## Version 1.2-SNAPSHOT
-### Added
-- Bugfix for KeyStoreManager & ClientProvider
-- Support for DemoConnector
-- Update used infomodel-serializer to version 4.0.2-SNAPSHOT (as requested)
-
-## Version 1.1-SNAPSHOT
-### Added
-- Initial functionality for messaging and DAPS DAT based on the functionalities of the IDS-Framework mapped to the new architecture
-- First refactorings of the code base in the core and messaging module
-
-## Version 1.0-SNAPSHOT
-### Added
-- Project Setup: Basic architecture
-- basic Changelog
+- DAT is now checked against a list of trusted issuers given in application.properties.
+- DapsValidator now accepts the DAT Token instead of the full Message.
+- MultipartParser now throws MultipartParseException instead of FileUploadException.
+- MessageController now accepts messages with empty payloads (as required by AppStore).
+- Initial IDS-ClearingHouse support.
+- Basic asynchronous message-flow support (support RequestInProcessMessage-Handling).
+- Received RejectionMessages are now passed to the connector-developer, regardless of the status of the DAT within the received RejectionMessage
+- Implemented Shacl Validation.
+- Extended DAT Validation.
+ 
+ ### Removed
+ - Remove implementation of MQTT-support, as there was no demand for further support at the time of the evaluation. But can be added again in the future.

@@ -24,6 +24,13 @@
     },
     "ids:curator" : {
       "@id" : "https://example.com"
+    },
+    "ids:hasDefaultEndpoint" : {
+      "@type": "ids:ConnectorEndpoint",
+      "@id": "https://example.com",
+      "ids:accessURL": {
+        "@id": "https://localhost:8080/api/ids/data"
+      }
     }
   },
   "ids:connectorStatus" : {
