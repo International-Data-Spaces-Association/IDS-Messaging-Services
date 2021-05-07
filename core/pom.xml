@@ -8,8 +8,8 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>de.fraunhofer.ids.framework</groupId>
-        <artifactId>framework</artifactId>
+        <groupId>de.fraunhofer.ids.messaging</groupId>
+        <artifactId>messaging-services</artifactId>
         <version>${revision}</version>
     </parent>
 
@@ -22,14 +22,6 @@
     </licenses>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <!-- License: The MIT License -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.30</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
         <!-- License: Apache License, Version 2.0 -->
         <dependency>
@@ -59,7 +51,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20201115</version>
+            <version>20210307</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
@@ -75,7 +67,44 @@
         <dependency>
             <groupId>org.bitbucket.b_c</groupId>
             <artifactId>jose4j</artifactId>
-            <version>0.7.6</version>
+            <version>0.7.7</version>
         </dependency>
     </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- latest version (2.20.1) does not work well with JUnit5 -->
+                <version>2.22.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>1.0.3</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>5.3.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>server-truststore.p12</include>
+                    <include>server-truststore.p12</include>
+                    <include>application.properties</include>
+                    <include>configmodel.json</include>
+                    <include>keystore.p12</include>
+                    <include>isst_ids_framework_demo_connector.p12</include>
+                </includes>
+            </testResource>
+        </testResources>
+    </build>
 </project>
