@@ -1,15 +1,19 @@
-package de.fraunhofer.ids.framework.messaging.endpoint;
+package de.fraunhofer.ids.messaging.endpoint;
 
-import de.fraunhofer.iais.eis.*;
+import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.fraunhofer.iais.eis.ConfigurationModel;
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.NotificationMessageBuilder;
+import de.fraunhofer.iais.eis.RequestMessageBuilder;
+import de.fraunhofer.iais.eis.ResponseMessage;
+import de.fraunhofer.iais.eis.ResponseMessageBuilder;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.framework.config.ConfigContainer;
-import de.fraunhofer.ids.framework.daps.DapsTokenProvider;
-import de.fraunhofer.ids.framework.messaging.dispatcher.MessageDispatcher;
-import de.fraunhofer.ids.framework.messaging.response.BodyResponse;
-import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
-import de.fraunhofer.ids.framework.messaging.util.ResourceIDGenerator;
-import de.fraunhofer.ids.framework.util.MultipartParser;
-import org.apache.commons.collections.ArrayStack;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.util.MultipartParser;
@@ -21,7 +25,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,17 +41,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
 @WebMvcTest
+@ExtendWith(SpringExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ContextConfiguration(classes = {MessageController.class, MessageControllerTest.TestContextConfiguration.class})
 class MessageControllerTest {

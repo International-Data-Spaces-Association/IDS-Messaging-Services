@@ -1,9 +1,5 @@
-package de.fraunhofer.ids.framework.messaging.endpoint;
+package de.fraunhofer.ids.messaging.endpoint;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.iais.eis.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -13,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RejectionMessageBuilder;
@@ -32,18 +29,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 
 /**
  * REST controller for handling all incoming IDS multipart Messages.
@@ -99,7 +86,7 @@ public class MessageController {
                 input = scanner.useDelimiter("\\A").next();
             }
 
-            if(!checkInboundVersion(input)){
+            if (!checkInboundVersion(input)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(createDefaultErrorMessage(RejectionReason.VERSION_NOT_SUPPORTED, "Infomodel Version of incoming Message not supported"));
             }
@@ -231,10 +218,11 @@ public class MessageController {
      * @param message incoming infomodel message
      * @return true if infomodel version is supported
      */
-    private boolean checkInboundVersion(Message message){
-        var inboundList = configContainer.getConfigurationModel()
+    private boolean checkInboundVersion(final Message message) {
+        final var inboundList = configContainer.getConfigurationModel()
                 .getConnectorDescription()
                 .getInboundModelVersion();
+
         return inboundList.stream()
                 .map(version -> checkInfomodelContainment(message.getModelVersion(), version))
                 .reduce(Boolean::logicalOr)
@@ -246,18 +234,19 @@ public class MessageController {
      * @return true if infomodel version is supported
      * @throws IOException if no infomodel version is found in input
      */
-    private boolean checkInboundVersion(String input) throws IOException {
-        JsonNode jsonInput = new ObjectMapper().readTree(input);
-        if (jsonInput.has("ids:modelVersion")){
-            var inputVersion = jsonInput.get("ids:modelVersion").textValue();
-            var inboundList = configContainer.getConfigurationModel()
+    private boolean checkInboundVersion(final String input) throws IOException {
+        final var jsonInput = new ObjectMapper().readTree(input);
+
+        if (jsonInput.has("ids:modelVersion")) {
+            final var inputVersion = jsonInput.get("ids:modelVersion").textValue();
+            final var inboundList = configContainer.getConfigurationModel()
                     .getConnectorDescription()
                     .getInboundModelVersion();
                     return inboundList.stream()
                             .map(supportedVersion -> checkInfomodelContainment(inputVersion, supportedVersion))
                             .reduce(Boolean::logicalOr)
                             .orElse(false);
-        }else {
+        } else {
             throw new IOException("No ModelVersion in incoming header!");
         }
     }
@@ -267,13 +256,22 @@ public class MessageController {
      * @param accepted accepted infomodel version (eg 4.0.2, supports wildcards eg 4.*.*)
      * @return true if infomodel input is covered by accepted input
      */
-    private boolean checkInfomodelContainment(String input, String accepted){
-        if(input.equals(accepted)) return true;
-        var acceptedSplit = accepted.split("\\.");
-        var inputSplit = input.split("\\.");
-        if(inputSplit.length != acceptedSplit.length) return false;
-        for(int i=0; i< inputSplit.length; i++){
-           if(!inputSplit[i].equals(acceptedSplit[i]) && !acceptedSplit[i].equals("*")) return false;
+    private boolean checkInfomodelContainment(final String input, final String accepted) {
+        if (input.equals(accepted))  {
+            return true;
+        }
+
+        final var acceptedSplit = accepted.split("\\.");
+        final var inputSplit = input.split("\\.");
+
+        if (inputSplit.length != acceptedSplit.length) {
+            return false;
+        }
+
+        for (var i = 0; i < inputSplit.length; i++){
+           if (!inputSplit[i].equals(acceptedSplit[i]) && !"*".equals(acceptedSplit[i])) {
+               return false;
+           }
         }
         return true;
     }
