@@ -10,17 +10,6 @@ public class MessageProcessedNotificationMAP implements MessageAndPayload<Messag
 
     private final MessageProcessedNotificationMessage message;
 
-/*    public DefaultSuccessMAP( URI issuerConnector, String messageModelVersion, URI originalMessage, DynamicAttributeToken securityToken, URI senderAgent) {
-    message = new MessageProcessedNotificationMessageBuilder()
-            ._issuerConnector_(issuerConnector)
-            ._issued_(CalendarUtil.now())
-            ._modelVersion_(messageModelVersion)
-            ._correlationMessage_(originalMessage)
-            ._securityToken_(securityToken)
-            ._senderAgent_(senderAgent)
-            .build();
-    }*/
-
     public MessageProcessedNotificationMAP( MessageProcessedNotificationMessage message ) {
         this.message = message;
     }

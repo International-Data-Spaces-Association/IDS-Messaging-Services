@@ -7,7 +7,7 @@ import de.fraunhofer.iais.eis.util.ConstraintViolationException;
 import de.fraunhofer.ids.framework.messaging.util.IdsMessageUtils;
 
 /**
- * The MessageUtils class contains utility methods for building Infomodel Messages (used by the {@link BrokerService} class)
+ * The MessageBuilder class contains utility methods for building Infomodel Messages (used by the {@link BrokerService} class)
  */
 public class MessageBuilder {
 
