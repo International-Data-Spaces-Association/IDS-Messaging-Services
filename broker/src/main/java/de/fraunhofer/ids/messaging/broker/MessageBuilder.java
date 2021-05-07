@@ -1,7 +1,6 @@
 package de.fraunhofer.ids.messaging.broker;
 
-import java.net.URI;
-
+import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ConnectorUnavailableMessage;
 import de.fraunhofer.iais.eis.ConnectorUnavailableMessageBuilder;
 import de.fraunhofer.iais.eis.ConnectorUpdateMessage;
@@ -37,9 +36,9 @@ public class MessageBuilder {
      *
      * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static ResourceUnavailableMessage buildResourceUnavailableMessage( final DynamicAttributeToken securityToken,
-                                                          final Connector connector,
-                                                          final Resource resource ) throws
+    public static ResourceUnavailableMessage buildResourceUnavailableMessage(final DynamicAttributeToken securityToken,
+                                                                             final Connector connector,
+                                                                             final Resource resource) throws
             ConstraintViolationException {
         return new ResourceUnavailableMessageBuilder()
                 ._affectedResource_(resource.getId())
@@ -62,9 +61,9 @@ public class MessageBuilder {
      *
      * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static ResourceUpdateMessage buildResourceUpdateMessage( final DynamicAttributeToken securityToken,
-                                                     final Connector connector,
-                                                     final Resource resource ) throws ConstraintViolationException {
+    public static ResourceUpdateMessage buildResourceUpdateMessage(final DynamicAttributeToken securityToken,
+                                                                   final Connector connector,
+                                                                   final Resource resource) throws ConstraintViolationException {
         return new ResourceUpdateMessageBuilder()
                 ._affectedResource_(resource.getId())
                 ._securityToken_(securityToken)
@@ -85,8 +84,8 @@ public class MessageBuilder {
      *
      * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static ConnectorUnavailableMessage buildUnavailableMessage( final DynamicAttributeToken securityToken,
-                                                  final Connector connector ) throws ConstraintViolationException {
+    public static ConnectorUnavailableMessage buildUnavailableMessage(final DynamicAttributeToken securityToken,
+                                                                      final Connector connector) throws ConstraintViolationException {
         return new ConnectorUnavailableMessageBuilder()
                 ._securityToken_(securityToken)
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -98,7 +97,7 @@ public class MessageBuilder {
     }
 
     /**
-     * Create a ConnectorUpdateMessage used for registering the connector at a broker
+     * Create a ConnectorUpdateMessage used for registering the connector at a broker.
      *
      * @param securityToken the DAT Token used for this request
      * @param connector     the connector from which the message is sent
@@ -107,8 +106,8 @@ public class MessageBuilder {
      *
      * @throws ConstraintViolationException when the message cannot be serialized properly
      */
-    public static ConnectorUpdateMessage buildUpdateMessage( final DynamicAttributeToken securityToken,
-                                             final Connector connector ) throws ConstraintViolationException {
+    public static ConnectorUpdateMessage buildUpdateMessage(final DynamicAttributeToken securityToken,
+                                                            final Connector connector) throws ConstraintViolationException {
         return new ConnectorUpdateMessageBuilder()
                 ._securityToken_(securityToken)
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -132,11 +131,11 @@ public class MessageBuilder {
      *
      * @throws ConstraintViolationException when the message cannot be built properly
      */
-    public static QueryMessage buildQueryMessage( final DynamicAttributeToken securityToken,
-                                            final Connector connector,
-                                            final QueryLanguage queryLanguage,
-                                            final QueryScope queryScope,
-                                            final QueryTarget queryTarget ) throws ConstraintViolationException {
+    public static QueryMessage buildQueryMessage(final DynamicAttributeToken securityToken,
+                                                 final Connector connector,
+                                                 final QueryLanguage queryLanguage,
+                                                 final QueryScope queryScope,
+                                                 final QueryTarget queryTarget) throws ConstraintViolationException {
         return new QueryMessageBuilder()
                 ._securityToken_(securityToken)
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -148,5 +147,4 @@ public class MessageBuilder {
                 ._recipientScope_(queryTarget)
                 .build();
     }
-
 }

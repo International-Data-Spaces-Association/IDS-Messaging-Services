@@ -40,8 +40,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BrokerService implements IDSBrokerService {
-    static String INFO_MODEL_VERSION = "4.0.0";
-
     ConfigContainer   container;
     DapsTokenProvider tokenProvider;
     MessageService    messageService;
@@ -56,11 +54,9 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         final var securityToken = getDat();
-        final var connectorID = getConnectorId();
         final var header = MessageBuilder.buildResourceUnavailableMessage(
                 securityToken,
-                INFO_MODEL_VERSION,
-                connectorID,
+                container.getConnector(),
                 resource);
 
         final var messageAndPayload = new GenericMessageAndPayload(header, resource);
@@ -97,12 +93,10 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         final var securityToken = getDat();
-        final var connectorID = getConnectorId();
 
         final var header = MessageBuilder.buildResourceUpdateMessage(
                 securityToken,
-                INFO_MODEL_VERSION,
-                connectorID,
+                container.getConnector(),
                 resource);
 
         final var messageAndPayload = new GenericMessageAndPayload(header, resource);
@@ -122,8 +116,7 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         final var securityToken = getDat();
-        final var connectorID = getConnectorId();
-        final var header = MessageBuilder.buildUnavailableMessage(securityToken, INFO_MODEL_VERSION, connectorID);
+        final var header = MessageBuilder.buildUnavailableMessage(securityToken, container.getConnector());
         final var payload = container.getConnector();
         final var messageAndPayload = new GenericMessageAndPayload(header, payload);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
@@ -142,8 +135,7 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         final var securityToken = getDat();
-        final var connectorID = getConnectorId();
-        final var header = MessageBuilder.buildUpdateMessage(securityToken, INFO_MODEL_VERSION, connectorID);
+        final var header = MessageBuilder.buildUpdateMessage(securityToken, container.getConnector());
         final var payload = container.getConnector();
         final var messageAndPayload = new GenericMessageAndPayload(header, payload);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
@@ -193,11 +185,9 @@ public class BrokerService implements IDSBrokerService {
         logBuildingHeader();
 
         final var securityToken = getDat();
-        final var connectorID = getConnectorId();
         final var header = MessageBuilder.buildQueryMessage(
                 securityToken,
-                INFO_MODEL_VERSION,
-                connectorID,
+                container.getConnector(),
                 queryLanguage,
                 queryScope,
                 queryTarget);
@@ -220,15 +210,6 @@ public class BrokerService implements IDSBrokerService {
         throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
-
-    /**
-     * Get the ID of the connector.
-     *
-     * @return Connector-ID URI
-     */
-    private URI getConnectorId() {
-        return container.getConnector().getId();
-    }
 
     /**
      * Get a new DAT from the DAPS.
