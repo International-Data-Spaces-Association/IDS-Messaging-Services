@@ -41,6 +41,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Received RejectionMessages are now passed to the connector-developer, regardless of the status of the DAT within the received RejectionMessage
 - Implemented Shacl Validation.
 - Extended DAT Validation.
+- No more static infomodel versioning in code.
+- Compare supported inbound info-model-version to version of incoming message.
  
  ### Removed
  - Remove implementation of MQTT-support, as there was no demand for further support at the time of the evaluation. But can be added again in the future.
