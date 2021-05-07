@@ -2,7 +2,10 @@ package de.fraunhofer.ids.messaging.endpoint;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.NotificationMessageBuilder;
@@ -41,8 +44,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
 @WebMvcTest
+@ExtendWith(SpringExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ContextConfiguration(classes = {MessageController.class, MessageControllerTest.TestContextConfiguration.class})
 class MessageControllerTest {
@@ -68,6 +71,9 @@ class MessageControllerTest {
     Connector connector;
 
     @MockBean
+    private ConfigurationModel configurationModel;
+
+    @MockBean
     DapsTokenProvider provider;
 
     @Configuration
@@ -88,9 +94,13 @@ class MessageControllerTest {
                 .build();
         requestMappingHandlerMapping.registerMapping(requestMappingInfo, idsController, MessageController.class.getDeclaredMethod("handleIDSMessage", HttpServletRequest.class));
 
+        Mockito.when(configurationContainer.getConfigurationModel()).thenReturn(configurationModel);
+        Mockito.when(configurationModel.getConnectorDescription()).thenReturn(connector);
         Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
         Mockito.when(connector.getId()).thenReturn(new URL("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5").toURI());
         Mockito.when(connector.getOutboundModelVersion()).thenReturn("1.0.3");
+
+        Mockito.doReturn(new ArrayList<>(List.of("*.*.*"))).when(connector).getInboundModelVersion();
         Mockito.when(provider.provideDapsToken()).thenReturn("Mocked Token.");
 
         // Create the message header that shall be send and tested

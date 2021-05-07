@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RejectionMessageBuilder;
@@ -83,6 +84,11 @@ public class MessageController {
 
             try (var scanner = new Scanner(headerPart.getInputStream(), StandardCharsets.UTF_8.name())) {
                 input = scanner.useDelimiter("\\A").next();
+            }
+
+            if (!checkInboundVersion(input)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(createDefaultErrorMessage(RejectionReason.VERSION_NOT_SUPPORTED, "Infomodel Version of incoming Message not supported"));
             }
 
             // Deserialize JSON-LD headerPart to its RequestMessage.class
@@ -206,5 +212,67 @@ public class MessageController {
             }
             return null;
         }
+    }
+
+    /**
+     * @param message incoming infomodel message
+     * @return true if infomodel version is supported
+     */
+    private boolean checkInboundVersion(final Message message) {
+        final var inboundList = configContainer.getConfigurationModel()
+                .getConnectorDescription()
+                .getInboundModelVersion();
+
+        return inboundList.stream()
+                .map(version -> checkInfomodelContainment(message.getModelVersion(), version))
+                .reduce(Boolean::logicalOr)
+                .orElse(false);
+    }
+
+    /**
+     * @param input controllers header input as string
+     * @return true if infomodel version is supported
+     * @throws IOException if no infomodel version is found in input
+     */
+    private boolean checkInboundVersion(final String input) throws IOException {
+        final var jsonInput = new ObjectMapper().readTree(input);
+
+        if (jsonInput.has("ids:modelVersion")) {
+            final var inputVersion = jsonInput.get("ids:modelVersion").textValue();
+            final var inboundList = configContainer.getConfigurationModel()
+                    .getConnectorDescription()
+                    .getInboundModelVersion();
+                    return inboundList.stream()
+                            .map(supportedVersion -> checkInfomodelContainment(inputVersion, supportedVersion))
+                            .reduce(Boolean::logicalOr)
+                            .orElse(false);
+        } else {
+            throw new IOException("No ModelVersion in incoming header!");
+        }
+    }
+
+    /**
+     * @param input input infomodel version (eg 4.0.1)
+     * @param accepted accepted infomodel version (eg 4.0.2, supports wildcards eg 4.*.*)
+     * @return true if infomodel input is covered by accepted input
+     */
+    private boolean checkInfomodelContainment(final String input, final String accepted) {
+        if (input.equals(accepted))  {
+            return true;
+        }
+
+        final var acceptedSplit = accepted.split("\\.");
+        final var inputSplit = input.split("\\.");
+
+        if (inputSplit.length != acceptedSplit.length) {
+            return false;
+        }
+
+        for (var i = 0; i < inputSplit.length; i++){
+           if (!inputSplit[i].equals(acceptedSplit[i]) && !"*".equals(acceptedSplit[i])) {
+               return false;
+           }
+        }
+        return true;
     }
 }
