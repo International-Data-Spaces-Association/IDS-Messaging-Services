@@ -22,6 +22,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Used Artifacts: java, infomodel-serializer, interaction
 - Changes that may be necessary: ids:hasDefaultEndpoint is now a required entry in the connector properties
 
+### Dependency Maintenance
+- Dependabot: Dependabot will now automatically suggest pull requests for updates to dependencies.
+
 ### Added / Changed functionalities
 - Modular project structure along the connectable infrastructure components.
 - Include the ID of the rejected message in automatically send RejectionMessages.
