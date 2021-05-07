@@ -80,7 +80,7 @@ public class ConfigProducer {
                 log.error("Configuration cannot be parsed!");
                 log.error(e.getMessage(), e);
             }
-        } catch ( KeyStoreManagerInitializationException e) {
+        } catch (KeyStoreManagerInitializationException e) {
             if (log.isErrorEnabled()) {
                 log.error("KeyStoreManager could not be initialized!");
                 log.error(e.getMessage(), e);

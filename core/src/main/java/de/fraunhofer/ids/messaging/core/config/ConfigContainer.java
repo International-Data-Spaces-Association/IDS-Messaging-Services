@@ -77,7 +77,7 @@ public class ConfigContainer {
                     log.debug("ClientProvider updated!");
                 }
             }
-        } catch ( KeyStoreManagerInitializationException e) {
+        } catch (KeyStoreManagerInitializationException e) {
             if (log.isErrorEnabled()) {
                 log.error("Configuration could not be updated! Keeping old configuration!");
             }

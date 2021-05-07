@@ -52,9 +52,9 @@ public class MessageService {
      * @throws ClaimsException         something went wrong with the DAT
      * @throws IOException             DAPS or target could not be reached
      */
-    public MessageAndPayload<?, ?> sendIdsMessage( final MessageAndPayload<?, ?> messageAndPayload,
-                                                   final URI target,
-                                                   final ProtocolType protocolType)
+    public MessageAndPayload<?, ?> sendIdsMessage(final MessageAndPayload<?, ?> messageAndPayload,
+                                                  final URI target,
+                                                  final ProtocolType protocolType)
             throws MultipartParseException, ClaimsException, IOException {
 
         final var payloadOptional = messageAndPayload.getPayload();

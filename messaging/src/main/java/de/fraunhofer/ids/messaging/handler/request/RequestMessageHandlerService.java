@@ -38,7 +38,7 @@ public class RequestMessageHandlerService implements RequestMessageHandler {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <R extends Message> Optional<MessageHandler<R>> resolveHandler( final Class<R> messageType) {
+    public <R extends Message> Optional<MessageHandler<R>> resolveHandler(final Class<R> messageType) {
         return Arrays.stream(appContext.getBeanNamesForAnnotation(SupportedMessageType.class))
                      .flatMap(s -> Optional.ofNullable(appContext.findAnnotationOnBean(s, SupportedMessageType.class))
                                            .stream().map(msg -> new Tuple<>(s, msg)))
