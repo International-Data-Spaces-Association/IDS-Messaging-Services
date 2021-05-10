@@ -69,7 +69,7 @@ Currently being worked on advanced functionality for:
 
 ## Other: Project-Wiki
 
-..
+This project has a <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki">GitHub-Wiki</a> where more details about the individual java-modules and their functionalities are documented.
 
 ## Other: Contributing
 
