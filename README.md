@@ -42,8 +42,18 @@ The following transmission options for IDS-Messages are currently supported:
 Currently being worked on:
 - IDS-LDP / REST
 
-Present on the further future roadmap:
-- IDSCPv2
+## Overview: IDS-Infrastructure-Components
+
+Supported simple out-of-the-box connectivity to the following IDS-Infrastructure-Components with advanced functionality:
+- Other IDS-Connectors
+- IDS-DAPS
+- IDS-Broker
+- IDS-ClearingHouse
+
+Currently being worked on advanced functionality for:
+- IDS-AppStore
+- IDS-ParIS
+- IDS-VoCol
 
 ## Quick Start: Technical requirements
 
