@@ -1,14 +1,15 @@
 package de.fraunhofer.ids.framework.messaging.protocol.http;
 
+import de.fraunhofer.ids.framework.daps.ClaimsException;
+import de.fraunhofer.ids.framework.util.MultipartParseException;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.Request;
+
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
-
-import de.fraunhofer.ids.framework.daps.ClaimsException;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import org.apache.commons.fileupload.FileUploadException;
 
 public interface HttpService {
     /**
@@ -37,6 +38,17 @@ public interface HttpService {
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
     Response send( String message, URI target ) throws IOException;
+
+    /**
+     * Sends plaintext message as http(s) request to the defined target.
+     *
+     * @param request  the {@link Request} to be send
+     *
+     * @return the HttpResponse that comes back for the sent Message
+     *
+     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
+     */
+    Response send( Request request ) throws IOException;
 
     /**
      * Sends a given requestBody as http(s) request to the defined in address.
@@ -89,17 +101,26 @@ public interface HttpService {
     Response getWithHeaders( URI target, Map<String, String> headers ) throws IOException;
 
     /**
+     *
+     * @param request to be sent
+     * @return Multipart Map with header and payload part of response
+     * @throws IOException if request cannot be sent
+     * @throws ClaimsException if response cannot be parsed to multipart map
+     * @throws MultipartParseException if DAT of response is invalid or cannot be parsed
+     */
+    Map<String, String> sendAndCheckDat( Request request)
+            throws IOException, ClaimsException, MultipartParseException;
+    /**
      * @param body   requestBody to be sent
-     * @param target targetURI of the request
      *
      * @return Multipart Map with header and payload part of response
      *
      * @throws IOException         if request cannot be sent
-     * @throws FileUploadException if response cannot be parsed to multipart map
+     * @throws MultipartParseException if response cannot be parsed to multipart map
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendAndCheckDat( RequestBody body, URI target )
-            throws IOException, FileUploadException, ClaimsException;
+            throws IOException, MultipartParseException, ClaimsException;
 
     /**
      * @param body    requestBody to be sent
@@ -109,9 +130,9 @@ public interface HttpService {
      * @return Multipart Map with header and payload part of response
      *
      * @throws IOException         if request cannot be sent
-     * @throws FileUploadException if response cannot be parsed to multipart map
+     * @throws MultipartParseException if response cannot be parsed to multipart map
      * @throws ClaimsException     if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendWithHeadersAndCheckDat( RequestBody body, URI target, Map<String, String> headers )
-            throws IOException, FileUploadException, ClaimsException;
+            throws IOException, MultipartParseException, ClaimsException;
 }

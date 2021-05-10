@@ -1,9 +1,5 @@
 package de.fraunhofer.ids.framework.messaging.dispatcher;
 
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.Message;
@@ -24,6 +20,10 @@ import de.fraunhofer.ids.framework.messaging.response.ErrorResponse;
 import de.fraunhofer.ids.framework.messaging.response.MessageResponse;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The MessageDispatcher takes all incoming Messages, applies all defined PreDispatchingFilters onto them,
@@ -74,7 +74,7 @@ public class MessageDispatcher {
                         .successResult("ConnectorDeployMode is Test. Skipping Token verification!");
             }
             try {
-                var verified = DapsVerifier.verify(DapsValidator.getClaims(in, provider.providePublicKey()));
+                var verified = DapsVerifier.verify(DapsValidator.getClaims(in.getSecurityToken(), provider.providePublicKeys()));
                 return PreDispatchingFilterResult.builder()
                                                  .withSuccess(verified)
                                                  .withMessage(

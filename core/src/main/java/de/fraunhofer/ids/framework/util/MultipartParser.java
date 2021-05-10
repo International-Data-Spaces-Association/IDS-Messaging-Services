@@ -1,17 +1,17 @@
 package de.fraunhofer.ids.framework.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import lombok.Getter;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.UploadContext;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility Class for parsing Multipart Maps from String responses
@@ -30,8 +30,9 @@ public class MultipartParser implements UploadContext {
      *
      * @throws FileUploadException if there are problems reading/parsing the postBody.
      */
-    private MultipartParser( final String postBody ) throws FileUploadException {
+    private MultipartParser( final String postBody ) throws FileUploadException, MultipartParseException {
         this.postBody = postBody;
+        if(postBody.length() <=2 || postBody.indexOf('\n') <= 2) throw new MultipartParseException("String could not be parsed, could not find a boundary!");
         this.boundary = postBody.substring(2, postBody.indexOf('\n')).trim();
 
         FileUpload upload = new FileUpload(new DiskFileItemFactory());
@@ -52,10 +53,16 @@ public class MultipartParser implements UploadContext {
      *
      * @return a Map from partname on content
      *
-     * @throws FileUploadException if there are problems reading/parsing the postBody.
+     * @throws MultipartParseException if there are problems reading/parsing the postBody.
      */
-    public static Map<String, String> stringToMultipart( final String postBody ) throws FileUploadException {
-        return new MultipartParser(postBody).getParameters();
+    public static Map<String, String> stringToMultipart( final String postBody ) throws MultipartParseException {
+        try {
+            var resultMap = new MultipartParser(postBody).getParameters();
+            if (resultMap.keySet().isEmpty()) throw new MultipartParseException("Could not parse Multipart! No parts found!");
+            return resultMap;
+        } catch (FileUploadException e) {
+            throw new MultipartParseException("Could not parse given String:\n" + postBody, e);
+        }
     }
 
     //these methods must be implemented because of the UploadContext interface

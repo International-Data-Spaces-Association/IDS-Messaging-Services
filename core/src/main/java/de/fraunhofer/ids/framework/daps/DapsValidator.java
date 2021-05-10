@@ -1,19 +1,15 @@
 package de.fraunhofer.ids.framework.daps;
 
-import java.io.IOException;
 import java.security.Key;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.iais.eis.RejectionMessageImpl;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.framework.util.MultipartDatapart;
-import de.fraunhofer.ids.framework.util.MultipartParser;
+import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,87 +18,132 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class DapsValidator {
-    private DapsPublicKeyProvider keyProvider;
-    private Serializer            serializer = new Serializer();
+    private final DapsPublicKeyProvider keyProvider;
 
     public DapsValidator( final DapsPublicKeyProvider keyProvider ) {
         this.keyProvider = keyProvider;
     }
 
+    private final String[] baseSecProfVals      =
+            { "idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE" };
+    private final String[] trustSecProfVals     =
+            { "idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
+                    "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE" };
+    private final String[] plusTrustSecProfVals =
+            { "idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
+                    "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE", "idsc:TRUST_PLUS_SECURITY_PROFILE",
+                    "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE" };
+
     /**
      * Extract the Claims from the Dat token of a message, given the Message and a signingKey
      *
-     * @param message    an incoming RequestMessage
-     * @param signingKey a public Key
+     * @param token      {@link DynamicAttributeToken} of an incoming RequestMessage
+     * @param signingKeys a  List of public Keys
      *
      * @return the Claims of the messages DAT Token, when it can be signed with the given key
      *
      * @throws ClaimsException if Token cannot be signed with the given key
      */
-    public static Jws<Claims> getClaims( final Message message, final Key signingKey ) throws ClaimsException {
-        var tokenValue = message.getSecurityToken().getTokenValue();
-        try {
-            return Jwts.parser()
-                       .setSigningKey(signingKey)
-                       .parseClaimsJws(tokenValue);
-        } catch( Exception e ) {
-            log.warn("Could not parse incoming JWT/DAT!");
-            throw new ClaimsException(e.getMessage());
+    public static Jws<Claims> getClaims( final DynamicAttributeToken token, final List<Key> signingKeys )
+            throws ClaimsException {
+        var tokenValue = token.getTokenValue();
+        if (signingKeys == null || signingKeys.isEmpty()){
+            throw new ClaimsException("No signing keys were given!");
         }
+        for(var signingKey : signingKeys) {
+            try {
+                return Jwts.parser()
+                        .setSigningKey(signingKey)
+                        .parseClaimsJws(tokenValue);
+            } catch (Exception e) {}
+        }
+        throw new ClaimsException("No given signing Key could validate JWT!");
     }
 
     /**
-     * Check the DAT of a Message
-     *
-     * @param message an Message from a response
-     *
-     * @return true if DAT of Message is valid
+     * Check a given DAT considering additional attributes from the message payload
+     * @param token {@link DynamicAttributeToken} of an incoming Message
+     * @param extraAttributes additional Attributes from the Message Payload
+     * @return true if DAT is valid
      */
-    public boolean checkDat( final Message message ) {
-        //Don't check DAT of RejectionMessages
-        if( message instanceof RejectionMessageImpl ) {
-            log.warn("RejectionMessage, skipping DAT check!");
-            return true;
-        }
-
+    public boolean checkDat( final DynamicAttributeToken token, Map<String, Object> extraAttributes ) {
         Jws<Claims> claims;
-        try {
-            claims = getClaims(message, keyProvider.providePublicKey());
-        } catch( ClaimsException e ) {
-            log.warn("Daps token of response could not be pased!");
-            return false;
-        }
-        try {
-            return DapsVerifier.verify(claims);
-        } catch( ClaimsException e ) {
-            log.warn("Claims could not be verified!");
-            return false;
-        }
+        var keys = keyProvider.providePublicKeys();
+            try {
+                claims = getClaims(token, keys);
+            } catch( ClaimsException e ) {
+                return false;
+            }
+            if(claims == null){
+                return false;
+            }
+            if( extraAttributes != null && extraAttributes.containsKey("securityProfile") ) {
+                try {
+                    verifySecurityProfile(claims.getBody().get("securityProfile", String.class),
+                            extraAttributes.get("securityProfile").toString());
+                } catch( ClaimsException e ) {
+                    log.warn("Security profile does not match Selfdescription");
+                    return false;
+                }
+            }
+            try {
+                return DapsVerifier.verify(claims);
+            } catch( ClaimsException e ) {
+                log.warn("Claims could not be verified!");
+                return false;
+            }
     }
 
     /**
-     * Check the DAT of an incoming Response body (as string)
-     *
-     * @param responseBody string of incoming response body
-     *
-     * @return true if DAT of response is valid
+     * Check a given DAT
+     * @param token a {@link DynamicAttributeToken} from a Infomodel Message
+     * @return true if DAT is valid
      */
-    public boolean checkDat( final String responseBody ) {
-        Map<String, String> responseMap;
-        Message responseHeader;
-        try {
-            responseMap = MultipartParser.stringToMultipart(responseBody);
-        } catch( FileUploadException e ) {
-            log.warn("Response cannot be parsed to multipart!");
-            return false;
+    public boolean checkDat( final DynamicAttributeToken token ) {
+        return checkDat(token, null);
+    }
+
+    /**
+     * Vertifies that the {@link de.fraunhofer.iais.eis.SecurityProfile} in the token is  same as in the Selfdescription
+     *
+     * @param registered the SecurityProfile ID  in token
+     * @param given      the SecurityProfile ID in Selfdescription
+     *
+     * @throws ClaimsException if SecurityProfiles do not match
+     */
+    private void verifySecurityProfile( String registered, String given ) throws ClaimsException {
+
+        //Replace full URIs (if present) by prefixed values. This simplifies the potential number of values these strings can have
+        String adjustedRegistered = registered;
+        String adjustedGiven = given;
+        if( registered.startsWith("https://w3id.org/idsa/code/") ) {
+            adjustedRegistered = registered.replace("https://w3id.org/idsa/code/", "idsc:");
         }
-        try {
-            responseHeader = serializer.deserialize(responseMap.get(MultipartDatapart.HEADER.toString()), Message.class);
-        } catch( IOException e ) {
-            log.warn("Response header cannot be deserialized to IDS Message!");
-            return false;
+        if( given.startsWith("https://w3id.org/idsa/code/") ) {
+            adjustedGiven = given.replace("https://w3id.org/idsa/code/", "idsc:");
         }
-        return checkDat(responseHeader);
+        String[] includedProfiles;
+        switch( adjustedRegistered ) {
+            case "idsc:BASE_CONNECTOR_SECURITY_PROFILE":
+            case "idsc:BASE_SECURITY_PROFILE":
+                includedProfiles = baseSecProfVals;
+                break;
+            case "idsc:TRUST_SECURITY_PROFILE:":
+            case "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE:":
+                includedProfiles = trustSecProfVals;
+                break;
+            case "idsc:TRUST_PLUS_SECURITY_PROFILE:":
+            case "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE:":
+                includedProfiles = plusTrustSecProfVals;
+                break;
+            default:
+                includedProfiles = new String[0];
+        }
+        if( !Arrays.asList(includedProfiles).contains(adjustedGiven) ) {
+            throw new ClaimsException(
+                    "Security profile violation. Registered security profile at DAPS is:  " + registered
+                    + ", but the given security profile is: " + given);
+        }
     }
 
 }

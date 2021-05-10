@@ -1,13 +1,5 @@
 package de.fraunhofer.ids.framework.daps.aisec;
 
-import java.io.IOException;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.stream.Collectors;
-
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.ids.framework.config.ClientProvider;
 import de.fraunhofer.ids.framework.config.ConfigContainer;
@@ -20,11 +12,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
@@ -33,6 +21,14 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.codec.binary.Hex.encodeHexString;
 

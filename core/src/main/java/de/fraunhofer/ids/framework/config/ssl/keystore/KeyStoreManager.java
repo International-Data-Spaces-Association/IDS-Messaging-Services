@@ -1,26 +1,5 @@
 package de.fraunhofer.ids.framework.config.ssl.keystore;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Paths;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.stream.IntStream;
-
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.framework.config.ssl.truststore.TrustStoreManager;
 import lombok.Getter;
@@ -28,6 +7,21 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.ClassPathResource;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Paths;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.stream.IntStream;
 
 /**
  * The KeyStoreManager loads the IDSKeyStore and provides the TrustManager
