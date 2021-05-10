@@ -24,9 +24,17 @@ For example, the scheme is explained by the following version number:
 
 **4.1.0.0** = Infomodel-Java-Artifacts Major Version 4 + IDS-Messaging-Services Semantic-Versioning 1.0.0
 
-## Overview: Used Infomodel-Artifacts and their versions
+## Overview: IDS-Infomodel-Artifacts
 
-..
+Following is a list of all the major IDS-Infomodel-Artifacts and their versions that are used as dependencies.
+
+| Group | Artifact | Version |
+| ------ | ------ | ------ | 
+| de.fraunhofer.iais.eis.ids.infomodel | java | 4.0.5 |
+| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.0.5 |
+| de.fraunhofer.iais.eis.ids | interaction | 4.0.5 |
+
+
 
 ## Overview: Supported IDS-Message protocols
 
