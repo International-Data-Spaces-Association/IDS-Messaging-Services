@@ -57,7 +57,8 @@ Currently being worked on advanced functionality for:
 
 ## Quick Start: Technical requirements
 
-..
+- The IDS-Messaging-Services use asymmetric encryption concepts and requires public and private key of the Connector-Instance.
+- The IDS-Messaging-Services utilize contents of the IDS-Configurationmodel which is part of the IDS-Informationmodel. Therefor a *configmodel.json*-file should exist to load the configuration of the IDS-Connector. For example, the configuration file should reference the key- and trust-store.
 
 ## Quick Start: Integration into a Maven-Java-Project
 
