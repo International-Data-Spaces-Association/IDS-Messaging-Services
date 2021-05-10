@@ -15,3 +15,39 @@
 # IDS-Messaging-Services
 
 The IDS-Messaging-Services is...
+
+# Overview: Versioning
+
+..
+
+# Overview: Used Infomodel-Artifacts and their versions
+
+..
+
+# Quick Start: Technical requirements
+
+..
+
+# Quick Start: Integration into a Maven-Java-Project
+
+..
+
+# Quick Start: First steps towards use
+
+..
+
+# Other: Project-Wiki
+
+..
+
+# Other: Contributing
+
+..
+
+# Other: Current contact persons
+
+..
+
+# Other: License
+
+..
