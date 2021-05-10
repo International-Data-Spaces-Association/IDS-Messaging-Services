@@ -18,7 +18,11 @@ Each participant in an IDS-Data-Ecosystem must be able to communicate with other
 
 ## Overview: Versioning
 
-..
+Due to the importance of the Infomodel-Java-Artifacts used in the IDS-Messaging-Services, the IDS-Messaging-Services follow an extended semantic versioning syntax for version numbering. The version number of the IDS-Messaging-Services artifacts is composed of 4 digits. The first digit of the version number is reserved for specifying the major version of the infomodel-Java-Artifacts used. The digits 2 to 4 of the version number correspond to the actual versioning of the IDS-Messaging-Service artifact and are based on the widely known best-practice versioning according to Semantic-Versioning.
+
+For example, the scheme is explained by the following version number:
+
+**4.1.0.0** = Infomodel-Java-Artifacts Major Version 4 + IDS-Messaging-Services Semantic-Versioning 1.0.0
 
 ## Overview: Used Infomodel-Artifacts and their versions
 
