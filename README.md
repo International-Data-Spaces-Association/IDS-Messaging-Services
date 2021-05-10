@@ -85,4 +85,4 @@ For any questions or suggestions that cannot be solved via <a href="https://gith
 
 ## Other: License
 
-..
+This project is licensed under the Apache License 2.0 - see the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/blob/main/LICENSE">LICENSE</a> for details.
