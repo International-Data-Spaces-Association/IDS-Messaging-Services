@@ -34,11 +34,16 @@ Following is a list of all the major IDS-Infomodel-Artifacts and their versions 
 | de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.0.5 |
 | de.fraunhofer.iais.eis.ids | interaction | 4.0.5 |
 
-
-
 ## Overview: Supported IDS-Message protocols
 
-..
+The following transmission options for IDS-Messages are currently supported:
+- HTTP Multipart
+
+Currently being worked on:
+- IDS-LDP / REST
+
+Present on the further future roadmap:
+- IDSCPv2
 
 ## Quick Start: Technical requirements
 
