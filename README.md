@@ -14,19 +14,19 @@
 
 # IDS-Messaging-Services
 
-Each participant in an IDS-Data-Ecosystem must be able to communicate with other participants in the Data-Ecosystem. Even though different participants may have different implementations of IDS-Connectors, they all have in common that IDS-Messages need to be sent and received. This commonality is addressed by the IDS-Messaging-Services, which provide a lightweight available implementation of IDS-Message-Handling. The IDS-Messaging-Services offer open-source functionality for sending IDS-Messages as well as interfaces for processing received IDS-Messages. The architecture relies on a modern modular architecture-approach so that the functionalities needed for communication in a Data-Ecosystem can be easily selected specific to the infrastructure components present in the Data-Ecosystem. In addition, advanced functionalities are implemented, such as checking the validity of the Dynamic-Attribute-Token of incoming messages.
+All participants of IDS-based data ecosystems must be able to communicate with each other. Even though different participants may have different implementations of IDS-Connectors, they all need to send and receive IDS-Messages. This commonality is addressed by the IDS-Messaging-Services, which provide a lightweight implementation for IDS-Message-Handling. The IDS-Messaging-Services offer open-source functionality for sending IDS-Messages as well as interfaces for processing received IDS-Messages. The architecture relies on a modern modular architecture-approach so that the functionalities needed for communication in a data ecosystems can be easily selected specific to the infrastructure components present in the data ecosystems. In addition, advanced functionalities are implemented, such as checking the validity of the Dynamic-Attribute-Token of incoming messages.
 
 ## Overview: Versioning
 
-Due to the importance of the Infomodel-Java-Artifacts used in the IDS-Messaging-Services, the IDS-Messaging-Services follow an extended semantic versioning syntax for version numbering. The version number of the IDS-Messaging-Services artifacts is composed of 4 digits. The first digit of the version number is reserved for specifying the major version of the Infomodel-Java-Artifacts used. The digits 2 to 4 of the version number correspond to the actual versioning of the IDS-Messaging-Service artifact and are based on the widely known best-practice versioning according to Semantic-Versioning.
+Due to the importance of the Infomodel-Java-Artifacts used in the IDS-Messaging-Services, the IDS-Messaging-Services follow an extended semantic versioning syntax for version numbering. The version number of the IDS-Messaging-Services artifacts is composed of 4 digits. The first digit of the version number is reserved for specifying the major version of the Infomodel-Java-Artifacts used. The digits 2 to 4 of the version number correspond to the actual versioning of the IDS-Messaging-Service artifact and follows the SemanticVersioning system.
 
-For example, the scheme is explained by the following version number:
+The scheme is explained using the following example:
 
 **4.1.0.0** = Infomodel-Java-Artifacts Major Version 4 + IDS-Messaging-Services Semantic-Versioning 1.0.0
 
 ## Overview: IDS-Infomodel-Artifacts
 
-Following is a list of all the major IDS-Infomodel-Artifacts and their versions that are used as dependencies.
+The following IDS-Infomodel-Artifacts are used as dependencies.
 
 | Group | Artifact | Version |
 | ------ | ------ | ------ | 
@@ -44,7 +44,7 @@ Currently being worked on:
 
 ## Overview: IDS-Infrastructure-Components
 
-Supported simple out-of-the-box connectivity to the following IDS-Infrastructure-Components with advanced functionality:
+Supported out-of-the-box connectivity to the following IDS-Infrastructure-Components with advanced functionality:
 - Other IDS-Connectors
 - IDS-DAPS
 - IDS-Broker
@@ -58,7 +58,8 @@ Currently being worked on advanced functionality for:
 ## Quick Start: Technical requirements
 
 - The IDS-Messaging-Services use asymmetric encryption concepts and requires public and private key of the Connector-Instance.
-- The IDS-Messaging-Services utilize contents of the IDS-Configurationmodel which is part of the IDS-Informationmodel. Therefor a *configmodel.json*-file should exist to load the configuration of the IDS-Connector. For example, the configuration file should reference the key- and trust-store.
+- The IDS-Messaging-Services utilize contents of the IDSConfiguration Model which is part of the IDS Information Model. Therefor a *configmodel.json*-file should exist to load the configuration of the IDS-Connector. For example, the configuration file should reference the key- and trust-store.
+- ApplicationPropeties
 - The IDS-Messaging-Services assume a SpringBoot project and therefore require various specific SpringBoot functionalities.
 
 ## Quick Start: Integration into a Maven-Java-Project
@@ -90,7 +91,7 @@ In general, the core-module artifact is the main module artifact with the config
 The individual module-artifacts of the IDS-Infrastructure-Components in turn require functionalities of the messaging-module artifact and have it therefore linked as a dependency in each module case. This simplified architecture means that it is sufficient, for example, to integrate the broker-module artifact into the project's pom, which automatically makes the functionalities of the messaging- and thus also the core-module artifact available.
 
 
-So, if an IDS-Connector should be implemented, in whose Data-Ecosystem an IDS-Broker occurs as IDS-Infrastructure-Component, the following entry in the project's pom is completely sufficient as dependcies to get all needed functionalities to exchange messages with the IDS-Broker with advanced functionalities:
+So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Broker occurs as IDS-Infrastructure-Component, the following entry in the project's pom is completely sufficient as dependcies to get all needed functionalities to exchange messages with the IDS-Broker with advanced functionalities:
 
 ```xml
 <dependency>
