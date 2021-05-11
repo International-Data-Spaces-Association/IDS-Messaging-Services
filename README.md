@@ -179,6 +179,8 @@ public class RequestMessageHandler implements MessageHandler<RequestMessageImpl>
 
 Sending IDS-Messages: Now that messages can be received, the functionality for sending IDS-messages is shown with an example.
 
+The following is an example without connection to an IDS-Infrastructure-Component. The idsHttpService can be accessed at any time to send a message to any recipient. For the messaging to the supported IDS-Infrastructure-Components, however, ready-made methods are already available in the respective modules, so that the specific message itself does not have to be created. The following is a minimal example, which assumes that only the messaging-module is present.
+
 Building the IDS-message for a specific message type:
 ```java
 Message message = new RequestMessageBuilder()
@@ -194,6 +196,8 @@ var response = idsHttpService.send(body, targetUri);
 ```
 
 The above is a standard example of HTTP-Multipart using the services' send()-method. In addition, there are other methods like the sendAndCheckDat() which will also check the DAT of the received response to the message.
+
+For extended instructions and info on the other modules, see the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki">GitHub-Wiki</a>.
 
 ## Other: Project-Wiki
 
