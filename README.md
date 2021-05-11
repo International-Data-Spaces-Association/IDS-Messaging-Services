@@ -3,13 +3,12 @@
 </p>
 
 <p align="center">
-<a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/blob/development/LICENSE"><img src="https://img.shields.io/github/license/International-Data-Spaces-Association/IDS-Messaging-Services"></a>
-<a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"></a>
-<img src="https://img.shields.io/github/workflow/status/International-Data-Spaces-Association/IDS-Messaging-Services/Development-Maven-Build">
-<img src="https://img.shields.io/github/v/release/International-Data-Spaces-Association/IDS-Messaging-Services">
-<img src="https://img.shields.io/github/languages/code-size/International-Data-Spaces-Association/IDS-Messaging-Services">
-<img src="https://img.shields.io/github/contributors/International-Data-Spaces-Association/IDS-Messaging-Services">
-<img src="https://img.shields.io/badge/Dependabot-Active-green">
+<a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/blob/development/LICENSE">License</a> •
+<a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues">Issues</a> •
+<a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/discussions">Discussions</a> •
+<a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki">Wiki</a> •
+<a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/blob/development/CONTRIBUTING.md">Contributing</a> •
+<a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/blob/development/CODE_OF_CONDUCT.md">Code of Conduct</a>
 </p>
 
 # IDS-Messaging-Services
