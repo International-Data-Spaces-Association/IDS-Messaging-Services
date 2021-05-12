@@ -58,8 +58,8 @@ Currently being worked on advanced functionality for:
 
 - The IDS-Messaging-Services use asymmetric encryption concepts and requires public and private key of the Connector-Instance.
 - The IDS-Messaging-Services utilize contents of the IDSConfiguration Model which is part of the IDS Information Model. Therefor a *configmodel.json*-file should exist to load the configuration of the IDS-Connector. For example, the configuration file should reference the key- and trust-store.
-- ApplicationPropeties
 - The IDS-Messaging-Services assume a SpringBoot project and therefore require various specific SpringBoot functionalities.
+- [Settings in the Application Properties](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki/6.-Settings:-Application-Properties)
 
 ## Quick Start: Integration into a Maven-Java-Project
 
