@@ -149,7 +149,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>5.3.6</version>
+            <version>5.3.7</version>
             <scope>test</scope>
         </dependency>
 
@@ -158,7 +158,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.3.6</version>
+            <version>5.3.7</version>
         </dependency>
 
         <!-- Java Mapping of the IDS Information Model Ontology -->
