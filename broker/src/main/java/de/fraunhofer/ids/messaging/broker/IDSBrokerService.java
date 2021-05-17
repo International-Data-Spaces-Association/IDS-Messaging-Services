@@ -11,6 +11,7 @@ import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 
@@ -18,6 +19,21 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
  * Interface for Communication with IDS Brokers, implemented by {@link BrokerService}.
  */
 public interface IDSBrokerService {
+
+    /**
+     *
+     * @param uri  the URI of the Infrastructure Component
+     * @return Response MAP with the SelfDescription in the payload as String
+     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
+     * @throws IOException  if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws ClaimsException  if DAT of incoming message could not be validated.
+     * @throws MultipartParseException  if response could not be parsed to header and payload.
+     */
+    DescriptionResponseMAP requestSelfDescription( URI uri) throws
+            DapsTokenManagerException,
+            ClaimsException,
+            MultipartParseException,
+            IOException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage} to the broker.
