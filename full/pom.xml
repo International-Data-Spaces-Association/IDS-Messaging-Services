@@ -11,7 +11,7 @@
     </parent>
 
 
-    <artifactId>broker</artifactId>
+    <artifactId>full</artifactId>
     <packaging>jar</packaging>
 
     <licenses>
@@ -23,10 +23,17 @@
     </licenses>
 
     <dependencies>
-        <!-- IDS-Messaging-Services Dependency -->
+        <!-- IDS-Messaging-Services Module Dependencies -->
         <dependency>
             <groupId>de.fraunhofer.ids.messaging</groupId>
-            <artifactId>messaging</artifactId>
+            <artifactId>broker</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.fraunhofer.ids.messaging</groupId>
+            <artifactId>clearinghouse</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>

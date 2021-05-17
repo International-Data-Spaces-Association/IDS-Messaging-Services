@@ -22,7 +22,7 @@
     </licenses>
 
     <dependencies>
-        <!-- IDS-Framework Core-Module Dependency -->
+        <!-- IDS-Messaging-Services Dependency -->
         <dependency>
             <groupId>de.fraunhofer.ids.messaging</groupId>
             <artifactId>core</artifactId>
