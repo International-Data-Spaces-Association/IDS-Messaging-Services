@@ -199,10 +199,12 @@ Message message = new RequestMessageBuilder()
             .build();
 
 MultipartBody body = this.buildRequestBody(InfomodelMessageBuilder.messageWithString(message, payload));
-var response = idsHttpService.send(body, targetUri);
+final var response = idsHttpService.sendAndCheckDat(body, targetUri);
 ```
 
-The above is a standard example of HTTP-Multipart using the services' send()-method. In addition, there are other methods like the sendAndCheckDat() which will also check the DAT of the received response to the message.
+The above is a standard example of HTTP-Multipart using the services' sendAndCheckDat()-method. In addition, there are other methods like a plain send()-Method which will not check the DAT of the received response to the message. 
+
+The sendAndCheckDat() returns a Map<String, String> where, for example, response.get("header") and response.get("payload") can be used to access the message-fields.
 
 For extended instructions and info on the other modules, see the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki">GitHub-Wiki</a>.
 
