@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>full</module>
         <module>core</module>
         <module>messaging</module>
         <module>clearinghouse</module>
