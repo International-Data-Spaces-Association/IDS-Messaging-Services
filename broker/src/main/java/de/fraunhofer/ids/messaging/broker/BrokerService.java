@@ -26,6 +26,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNo
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class BrokerService implements IDSBrokerService {
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP removeResourceFromBroker(final URI brokerURI, final Resource resource)
+    public MessageProcessedNotificationMAP removeResourceFromBroker( @NonNull final URI brokerURI, @NonNull final Resource resource)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
 
         logBuildingHeader();
@@ -59,14 +60,14 @@ public class BrokerService implements IDSBrokerService {
                 container.getConnector(),
                 resource);
 
-        final var messageAndPayload = new GenericMessageAndPayload(header, resource);
+        final var messageAndPayload = new GenericMessageAndPayload(header);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
         return expectMessageProcessedNotificationMAP(response);
 
     }
 
-    private MessageProcessedNotificationMAP expectMessageProcessedNotificationMAP(final MessageAndPayload<?, ?> response)
+    private MessageProcessedNotificationMAP expectMessageProcessedNotificationMAP(@NonNull final MessageAndPayload<?, ?> response)
             throws IOException {
 
         if (response instanceof MessageProcessedNotificationMAP) {
@@ -87,7 +88,7 @@ public class BrokerService implements IDSBrokerService {
      * @return
      */
     @Override
-    public MessageProcessedNotificationMAP updateResourceAtBroker(final URI brokerURI, final Resource resource) throws
+    public MessageProcessedNotificationMAP updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource) throws
             IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
 
         logBuildingHeader();
@@ -111,7 +112,7 @@ public class BrokerService implements IDSBrokerService {
      * @return
      */
     @Override
-    public MessageProcessedNotificationMAP unregisterAtBroker(final URI brokerURI)
+    public MessageProcessedNotificationMAP unregisterAtBroker(@NonNull final URI brokerURI)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
         logBuildingHeader();
 
@@ -130,7 +131,7 @@ public class BrokerService implements IDSBrokerService {
      * @return
      */
     @Override
-    public MessageProcessedNotificationMAP updateSelfDescriptionAtBroker(final URI brokerURI) throws
+    public MessageProcessedNotificationMAP updateSelfDescriptionAtBroker(@NonNull final URI brokerURI) throws
             IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
         logBuildingHeader();
 
@@ -150,7 +151,7 @@ public class BrokerService implements IDSBrokerService {
      * @param brokerURIs
      */
     @Override
-    public List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers(final List<URI> brokerURIs) {
+    public List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers(@NonNull final List<URI> brokerURIs) {
         final ArrayList<MessageProcessedNotificationMAP> responses = new ArrayList<>();
 
         for (final var uri : brokerURIs) {
@@ -176,11 +177,11 @@ public class BrokerService implements IDSBrokerService {
      * {@inheritDoc}
      */
     @Override
-    public ResultMAP queryBroker(final URI brokerURI,
-                                 final String query,
-                                 final QueryLanguage queryLanguage,
-                                 final QueryScope queryScope,
-                                 final QueryTarget queryTarget)
+    public ResultMAP queryBroker(@NonNull final URI brokerURI,
+                                 @NonNull final String query,
+                                 @NonNull final QueryLanguage queryLanguage,
+                                 @NonNull final QueryScope queryScope,
+                                 @NonNull final QueryTarget queryTarget)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
         logBuildingHeader();
 
