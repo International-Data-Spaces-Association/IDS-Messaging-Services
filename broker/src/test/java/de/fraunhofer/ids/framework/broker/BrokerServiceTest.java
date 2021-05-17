@@ -1,194 +1,260 @@
 package de.fraunhofer.ids.framework.broker;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.framework.config.ClientProvider;
-import de.fraunhofer.ids.framework.config.ConfigContainer;
-import de.fraunhofer.ids.framework.config.ConfigProducer;
-import de.fraunhofer.ids.framework.config.ConfigProperties;
-import de.fraunhofer.ids.framework.config.ssl.keystore.KeyStoreManager;
-import de.fraunhofer.ids.framework.config.ssl.keystore.KeyStoreManagerInitializationException;
-import de.fraunhofer.ids.framework.daps.*;
-import de.fraunhofer.ids.framework.daps.aisec.AisecTokenManagerService;
-import de.fraunhofer.ids.framework.messaging.dispatcher.filter.PreDispatchingFilterResult;
-import de.fraunhofer.ids.framework.messaging.protocol.http.IdsHttpService;
-import junit.framework.TestCase;
-import okhttp3.Response;
-import okhttp3.mockwebserver.MockResponse;
+import de.fraunhofer.iais.eis.util.Util;
+import de.fraunhofer.ids.messaging.broker.BrokerService;
+import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
+import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
+import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
+import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.mockwebserver.MockWebServer;
-import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import static java.lang.ClassLoader.getSystemResource;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest
-@EnableConfigurationProperties(value = ConfigProperties.class)
+//@SpringBootTest( webEnvironment= SpringBootTest.WebEnvironment.NONE )
+//@EnableConfigurationProperties(value = ConfigProperties.class)
+@ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
+@AutoConfigureMockMvc
 public class BrokerServiceTest {
-   @Autowired
-    private ConfigurationModel configModel;
 
     @Autowired
-    private Connector connector;
+    private  Connector connector;
 
     @Autowired
-    private KeyStoreManager keyStoreManager;
-
-    @MockBean
     private ConfigurationModel configurationModel;
 
-    private ConfigContainer   configurationContainer = mock(ConfigContainer.class);
+    @Autowired
+    private ConfigContainer configurationContainer;
 
-    @MockBean
-    private ClientProvider    clientProvider;
+    @Autowired
+    private DapsTokenProvider dapsTokenProvider;
 
-    private DapsTokenProvider dapsTokenProvider = mock(DapsTokenProvider.class);
-
-    @MockBean
+    @Autowired
     private DapsPublicKeyProvider dapsPublicKeyProvider;
 
-    @MockBean
+    @Autowired
     private DapsValidator dapsValidator;
 
-    @MockBean
-    private IdsHttpService    idsHttpService;
+    @Autowired
+    private MessageService messageService;
 
-    private MockWebServer     mockWebServer;
+    private MockWebServer mockWebServer;
 
-    private BrokerService     brokerService;
+    @Autowired
+    private BrokerService brokerService;
+
+    private DynamicAttributeToken fakeToken;
+
+    private MessageProcessedNotificationMessage message;
 
 
-    @Test
-    public void testUpdateSelfDescriptionAtBrokers ()throws Exception {
-        DynamicAttributeToken fakeToken = new DynamicAttributeTokenBuilder()
+    @Configuration
+    static class TestContextConfiguration {
+
+        @Bean
+        public Serializer getSerializer() {
+            return new Serializer();
+        }
+
+        @Bean
+        public BrokerService getBrokerService() {
+            return new BrokerService(configurationContainer, dapsTokenProvider, messageService);
+        }
+
+        @MockBean
+        private KeyStoreManager keyStoreManager;
+
+        @MockBean
+        private ConfigurationModel configurationModel;
+
+        @MockBean
+        private ConfigContainer configurationContainer;
+
+        @MockBean
+        private DapsTokenProvider dapsTokenProvider;
+
+        @MockBean
+        private DapsPublicKeyProvider dapsPublicKeyProvider;
+
+        @MockBean
+        private DapsValidator dapsValidator;
+
+        @MockBean
+        private IdsHttpService idsHttpService;
+
+        @MockBean
+        private MessageService messageService;
+
+        @MockBean
+        private Connector connector;
+    }
+
+
+    @BeforeEach
+    public void setUp() throws Exception{
+        this.fakeToken = new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)
                 ._tokenValue_("fake Token")
                 .build();
+        final var endpoint = new ConnectorEndpointBuilder()
+                ._accessURL_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                .build();
+        connector = new BaseConnectorBuilder()
+                ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
+                ._outboundModelVersion_("4.0.0")
+                ._inboundModelVersion_(Util.asList("4.0.0"))
+                ._curator_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._maintainer_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._hasDefaultEndpoint_(endpoint)
+                .build();
         Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
-        Mockito.when(connector.getId()).thenReturn(new URL("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5").toURI());
-        //Mockito.when(connector.getOutboundModelVersion()).thenReturn("1.0.3");
-        //Mockito.when(configurationContainer.getConfigurationModel()).thenReturn(configurationModel);
-        //Mockito.when(configurationModel.getConnectorDeployMode()).thenReturn(ConnectorDeployMode.TEST_DEPLOYMENT);
-        //Mockito.when(dapsTokenProvider.provideDapsToken()).thenReturn("Mocked Token.");
-        //Mockito.when(dapsPublicKeyProvider.providePublicKey()).thenReturn(null);
-        //Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
-        //Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
+        Mockito.when(configurationContainer.getConfigurationModel()).thenReturn(configurationModel);
+        Mockito.when(configurationModel.getConnectorDeployMode()).thenReturn(ConnectorDeployMode.TEST_DEPLOYMENT);
+        Mockito.when(dapsTokenProvider.provideDapsToken()).thenReturn("Mocked Token.");
+        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(null);
+        Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
+        Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsTokenProvider.getDAT()).thenReturn(fakeToken);
-        this.brokerService = new BrokerService(configurationContainer, clientProvider, dapsTokenProvider, idsHttpService);
-        this.mockWebServer = new MockWebServer();
-        MockResponse mockResponse = createMockResponse("MessageProcessedNotificationMessage");
-        this.mockWebServer.enqueue(mockResponse);
-        Response response = this.brokerService.updateSelfDescriptionAtBroker(mockWebServer.url("/").toString());
-        System.out.println(response.body().string());
-        assertTrue(response.isSuccessful());
+        this. message = new MessageProcessedNotificationMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._issuerConnector_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._senderAgent_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._securityToken_(this.fakeToken)
+                ._modelVersion_("4.0.0")
+                ._correlationMessage_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                .build();
     }
 
-    private DapsTokenProvider getDapsTokenProvider( ConfigContainer configContainer, ClientProvider clientProvider,
-                                                    TokenManagerService tokenManagerService ) {
-        return (DapsTokenProvider) getDapsPublicKeyProvider(configContainer, clientProvider, tokenManagerService);
-    }
+    @Test
+    public void testUpdateSelfDescriptionAtBroker() throws Exception {
 
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
 
-    @NotNull
-    private KeyStoreManager getKeyStoreManager( ConfigurationModel configurationModel, ConfigProperties properties )
-            throws KeyStoreManagerInitializationException {
-        return new KeyStoreManager(configurationModel, properties.getKeyStorePassword().toCharArray(),
-                                   properties.getTrustStorePassword().toCharArray(),
-                                   properties.getKeyAlias());
-    }
-
-    @NotNull
-    private DapsPublicKeyProvider getDapsPublicKeyProvider( ConfigContainer configContainer,
-                                                            ClientProvider clientProvider,
-                                                            TokenManagerService tokenManagerService ) {
-        DapsPublicKeyProvider dapsPublicKeyProvider =
-                new TokenProviderService(configContainer, clientProvider, tokenManagerService);
-        ReflectionTestUtils
-                .setField(dapsPublicKeyProvider, "dapsTokenUrl", "https://daps.aisec.fraunhofer.de/v2/token");
-        ReflectionTestUtils.setField(dapsPublicKeyProvider, "dapsKeyUrl",
-                                     "https://daps.aisec.fraunhofer.de/.well-known/jwks.json");
-        ReflectionTestUtils.setField(dapsPublicKeyProvider, "keyKid", "default");
-        return dapsPublicKeyProvider;
+        final var result = this.brokerService.updateSelfDescriptionAtBroker(URI.create("/"));
+        assertNotNull(result.getMessage(), "Method should return a message");
+        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
     }
 
 
-    public void testRemoveResourceFromBroker() {
+    @Test
+    public void testRemoveResourceFromBroker() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
+
+        final var result = this.brokerService.removeResourceFromBroker(URI.create("/"), new ResourceBuilder().build());
+        assertNotNull(result.getMessage(), "Method should return a message");
+        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
     }
 
-    public void testUpdateResourceAtBroker() {
+    @Test
+    public void testUpdateResourceAtBroker() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
+
+        final var  result = this.brokerService.updateResourceAtBroker(URI.create("/"), new ResourceBuilder().build());
+        assertNotNull(result.getMessage(), "Method should return a message");
+        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
     }
 
-    public void testUnregisterAtBroker() {
+    @Test
+    public void testUnregisterAtBroker() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
+
+        final var result = this.brokerService.unregisterAtBroker(URI.create("/"));
+        assertNotNull(result.getMessage(), "Method should return a message");
+        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
     }
 
-    public void testUpdateSelfDescriptionAtBroker() {
+    @Test
+    public void testUpdateSelfDescriptionAtBrokers() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
+        final var list = new ArrayList<URI>();
+        list.add(URI.create("/"));
+        list.add(URI.create("/"));
+
+
+        final var result = this.brokerService.updateSelfDescriptionAtBrokers(list);
+
+        assertNotNull(result.get(0).getMessage(),"Method should return a message");
+        assertEquals(MessageProcessedNotificationMAP.class, result.get(0).getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertFalse(result.get(0).getPayload().isPresent(),"Payload should be empty for MessageProcessedNotificationMAPs");
+        assertNotNull(result.get(1).getMessage(), "Method should return a message");
+        assertEquals(MessageProcessedNotificationMAP.class, result.get(1).getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertFalse(result.get(1).getPayload().isPresent(),"Payload should be empty for MessageProcessedNotificationMAPs");
     }
 
-    private MockResponse createMockResponse( String messageProcessedNotificationMessage )
-            throws DatatypeConfigurationException, IOException {
-        GregorianCalendar c = new GregorianCalendar();
-        c.setTime(new Date());
-        XMLGregorianCalendar now = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-        String body =
-                new String(Files.readAllBytes(Paths.get("src/test/resources/MessageProcessedNotificationMessage.txt")));
-        System.out.println(body);
-        MockResponse mockResponse = new MockResponse()
-                .setResponseCode(200)
-                .addHeader("Content-Type", "multipart/form-data; boundary=QMFJydbI0FinMhohvQew_lJ03_vzXZ;charset=UTF-8")
-                .addHeader("Transfer-Encoding", "chunked")
-                .addHeader("Date", now)
-                .addHeader("Keep-Alive", "timeout=60")
-                .addHeader("Connection", "keep-alive")
-                .setBody(body);
-        return mockResponse;
+    @Test
+    public void testEmptyList() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
+
+        final var result = this.brokerService.updateSelfDescriptionAtBrokers(
+                new ArrayList<>());
+
+
+        assertEquals(new ArrayList<MessageProcessedNotificationMAP>(), result, "Should return empty list when no URIs are passed");
     }
 
-    public void testQueryBroker() {
-    }*/
+    @Test
+    public void testQueryBroker() throws Exception{
+        final var resultMessage = new ResultMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._issuerConnector_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._senderAgent_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._securityToken_(this.fakeToken)
+                ._modelVersion_("4.0.0")
+                ._correlationMessage_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                .build();
+        final MessageAndPayload map = new ResultMAP(resultMessage, "This is the QueryResult");
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
 
-
-   public void setUp() throws Exception {
-        final Serializer serializer = new Serializer();
-        this.configContainer = new ConfigContainer(configModel, keyStoreManager);
-        this.clientProvider = new ClientProvider(configContainer);
-        configContainer.setClientProvider(clientProvider);
-        TokenManagerService tokenManagerService = new AisecTokenManagerService(clientProvider, configContainer);
-        this.dapsTokenProvider = getDapsTokenProvider(configContainer, clientProvider, tokenManagerService);
-        DapsPublicKeyProvider dapsPublicKeyProvider =
-                getDapsPublicKeyProvider(configContainer, clientProvider, tokenManagerService);
-        DapsValidator dapsValidator = new DapsValidator(dapsPublicKeyProvider);
-        this.idsHttpService = new IdsHttpService(clientProvider, dapsValidator, configContainer, serializer);
-
-        this.mockWebServer = new MockWebServer();
-        this.mockWebServer.start();
-        this.brokerService = new BrokerService(configContainer, clientProvider, dapsTokenProvider, idsHttpService);
-
+        final var result = this.brokerService.queryBroker(URI.create("/"), "",QueryLanguage.SPARQL,QueryScope.ALL,QueryTarget.BROKER);
+        assertNotNull(result.getMessage(), "Method should return a message");
+        assertEquals(ResultMAP.class, result.getClass(), "Method should return ResultMap");
+        assertTrue(result.getPayload().isPresent(),"ResultMAP should have payload");
+        assertNotNull(result.getPayload().get(),"ResultMAP should have payload");
     }
+
 }
