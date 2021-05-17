@@ -81,6 +81,6 @@ class IdsHttpServiceTest {
         //send a request using idsHttpService
         var response = idsHttpService.send("This is a Message.", mockWebServer.url("/").uri());
         //check if response body and MockWebServer response are equal
-        assertEquals("This is a response.", response.body().string());
+        assertEquals("This is a response.", response.get("payload"));
     }
 }

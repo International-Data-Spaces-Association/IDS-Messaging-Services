@@ -1,5 +1,7 @@
 package de.fraunhofer.ids.messaging.clearinghouse;
 
+import java.util.Map;
+
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
@@ -15,7 +17,7 @@ public interface IDSClearingHouseService {
      * @return Response from ClearingHouse
      * @throws ClearingHouseClientException when some error occurs while sending the message to the ClearingHouse
      */
-    Response sendLogToClearingHouse(Message messageToLog) throws ClearingHouseClientException;
+    Map<String, String> sendLogToClearingHouse(Message messageToLog) throws ClearingHouseClientException;
 
     /**
      * Send a LogMessage with given pid to ClearingHouse.
@@ -25,7 +27,7 @@ public interface IDSClearingHouseService {
      * @return Response from ClearingHouse
      * @throws ClearingHouseClientException when some error occurs while sending the message to the ClearingHouse
      */
-    Response sendLogToClearingHouse(Message messageToLog, String pid) throws ClearingHouseClientException;
+    Map<String, String> sendLogToClearingHouse( Message messageToLog, String pid) throws ClearingHouseClientException;
 
     /**
      * Query the Clearing House (Currently not working correctly @ ClearingHouse, HTTP 500).
@@ -39,7 +41,7 @@ public interface IDSClearingHouseService {
      * @return Response from ClearingHouse
      * @throws ClearingHouseClientException when some error occurs while sending the message to the ClearingHouse
      */
-    Response queryClearingHouse(String pid, String messageid, QueryLanguage queryLanguage, QueryScope queryScope,
+    Map<String, String> queryClearingHouse(String pid, String messageid, QueryLanguage queryLanguage, QueryScope queryScope,
                                 QueryTarget queryTarget, String query) throws ClearingHouseClientException;
 
 }

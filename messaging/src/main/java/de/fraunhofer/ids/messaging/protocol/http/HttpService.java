@@ -35,7 +35,8 @@ public interface HttpService {
      * @return true if the message was successfully sent, else false
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
-    Response send(String message, URI target) throws IOException;
+    Map<String, String> send(String message, URI target)
+            throws IOException, MultipartParseException;
 
     /**
      * Sends plaintext message as http(s) request to the defined target.
@@ -44,7 +45,8 @@ public interface HttpService {
      * @return the HttpResponse that comes back for the sent Message
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
-    Response send(Request request) throws IOException;
+    Map<String, String> send(Request request)
+            throws IOException, MultipartParseException;
 
     /**
      * Sends a given requestBody as http(s) request to the defined in address.
@@ -54,7 +56,8 @@ public interface HttpService {
      * @return the HttpResponse that comes back for the sent Message
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
-    Response send(RequestBody requestBody, URI target) throws IOException;
+    Map<String, String> send(RequestBody requestBody, URI target)
+            throws IOException, MultipartParseException;
 
     /**
      * Sends a given requestBody as http(s) request to the defined in address,
@@ -66,7 +69,8 @@ public interface HttpService {
      * @return the HttpResponse that comes back for the sent Message
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
-    Response sendWithHeaders(RequestBody requestBody, URI target, Map<String, String> headers) throws IOException;
+    Map<String, String> sendWithHeaders(RequestBody requestBody, URI target, Map<String, String> headers)
+            throws IOException, MultipartParseException;
 
     /**
      * Sends a http GET request to the target.
@@ -75,7 +79,8 @@ public interface HttpService {
      * @return the HttpResponse from the get request
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
-    Response get(URI target) throws IOException;
+    Map<String, String> get(URI target)
+            throws IOException, MultipartParseException;
 
     /**
      * Sends a http GET request to the target,
@@ -86,7 +91,8 @@ public interface HttpService {
      * @return the HttpResponse from the get request
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
-    Response getWithHeaders(URI target, Map<String, String> headers) throws IOException;
+    Map<String, String> getWithHeaders(URI target, Map<String, String> headers)
+            throws IOException, MultipartParseException;
 
     /**
      * @param request to be sent

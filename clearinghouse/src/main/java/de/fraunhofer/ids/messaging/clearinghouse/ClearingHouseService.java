@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
+import java.util.Map;
 import java.util.Objects;
 
 import de.fraunhofer.iais.eis.Message;
@@ -12,8 +13,10 @@ import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
+import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.http.HttpService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +52,7 @@ public class ClearingHouseService implements IDSClearingHouseService {
      * {@inheritDoc}
      */
     @Override
-    public Response sendLogToClearingHouse(final Message messageToLog) throws ClearingHouseClientException {
+    public Map<String, String> sendLogToClearingHouse(final Message messageToLog) throws ClearingHouseClientException {
         //log message under some random processId
         final var id = Math.abs(secureRandom.nextInt());
 
@@ -60,7 +63,7 @@ public class ClearingHouseService implements IDSClearingHouseService {
      * {@inheritDoc}
      */
     @Override
-    public Response sendLogToClearingHouse(final Message messageToLog, final String pid)
+    public Map<String, String> sendLogToClearingHouse( final Message messageToLog, final String pid)
             throws ClearingHouseClientException {
         try {
             //Build IDS Multipart Message
@@ -70,17 +73,21 @@ public class ClearingHouseService implements IDSClearingHouseService {
                     MediaType.parse("application/json"));
 
             //set some random id for message
-            return httpService.send(body, new URI(clearingHouseUrl + pid));
+            return httpService.sendAndCheckDat(body, new URI(clearingHouseUrl + pid));
         } catch (DapsTokenManagerException e) {
             return throwClearingHouseException(e, "Could not get a DAT for sending the LogMessage!");
         } catch (URISyntaxException e) {
             return throwClearingHouseException(e, String.format("Clearing House URI could not be parsed from String: %s!", clearingHouseUrl));
         } catch (IOException e) {
             return throwClearingHouseException(e, "Error while serializing LogMessage header or sending the request!");
+        } catch( ClaimsException e ) {
+            return throwClearingHouseException(e, "Error while parsing DAT claims!");
+        } catch( MultipartParseException e ) {
+            return throwClearingHouseException(e, "Error while parsing Response message!");
         }
     }
 
-    private Response throwClearingHouseException(final Exception e, final String message) throws ClearingHouseClientException {
+    private Map<String, String> throwClearingHouseException(final Exception e, final String message) throws ClearingHouseClientException {
         if (log.isWarnEnabled()) {
             log.warn(e.getMessage(), e);
         }
@@ -91,7 +98,7 @@ public class ClearingHouseService implements IDSClearingHouseService {
      * {@inheritDoc}
      */
     @Override
-    public Response queryClearingHouse(final String pid, final String messageid, final QueryLanguage queryLanguage,
+    public Map<String, String> queryClearingHouse(final String pid, final String messageid, final QueryLanguage queryLanguage,
                                        final QueryScope queryScope, final QueryTarget queryTarget, final String query)
             throws ClearingHouseClientException {
         try {
@@ -111,13 +118,17 @@ public class ClearingHouseService implements IDSClearingHouseService {
                             ? new URI(String.format("%s%s", clearingHouseUrl, pid))
                             : new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageid));
 
-            return httpService.send(body, targetURI);
+            return httpService.sendAndCheckDat(body, targetURI);
         } catch (DapsTokenManagerException e) {
             return throwClearingHouseException(e, "Could not get a DAT for sending the LogMessage!");
         } catch (URISyntaxException e) {
             return throwClearingHouseException(e, String.format("Clearing House URI could not be parsed from String: %s!", clearingHouseUrl));
         } catch (IOException e) {
             return throwClearingHouseException(e, "Error while serializing LogMessage header or sending the request!");
+        } catch( ClaimsException e ) {
+            return throwClearingHouseException(e, "Error while parsing DAT claims!");
+        } catch( MultipartParseException e ) {
+            return throwClearingHouseException(e, "Error while parsing Response message!");
         }
     }
 

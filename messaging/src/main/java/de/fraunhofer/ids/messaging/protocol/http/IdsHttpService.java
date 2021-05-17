@@ -65,12 +65,11 @@ public class IdsHttpService implements HttpService {
      * @throws IOException     if request cannot be sent
      * @throws ClaimsException if DAT of response is invalid or cannot be parsed
      */
-    private Map<String, String> checkDatFromResponse(final Response response)
-            throws MultipartParseException, IOException, ClaimsException {
+    private Map<String, String> checkDatFromResponse(final Map<String, String> response)
+            throws IOException, ClaimsException {
         //if connector is set to test deployment: ignore DAT Tokens
-        final var responseString = Objects.requireNonNull(response.body()).string();
-        final var multipartResponse = MultipartParser.stringToMultipart(responseString);
-        final var messageString = multipartResponse.get(MultipartDatapart.HEADER.toString());
+        final var messageString = response.get(MultipartDatapart.HEADER.toString());
+        final var payloadString = response.get(MultipartDatapart.PAYLOAD.toString());
 
         if (Boolean.TRUE.equals(shaclValidation)) {
             if (log.isInfoEnabled()) {
@@ -88,7 +87,6 @@ public class IdsHttpService implements HttpService {
 
         final Map<String, Object> extraAttributes = new ConcurrentHashMap<>();
         final var message = serializer.deserialize(messageString, Message.class);
-        final var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
         if (payloadString != null) {
             try {
@@ -120,7 +118,7 @@ public class IdsHttpService implements HttpService {
 
             throw new ClaimsException("DAT of incoming response is not valid!");
         }
-        return multipartResponse;
+        return response;
     }
 
     /**
@@ -144,7 +142,8 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response send(final String message, final URI target) throws IOException {
+    public Map<String, String> send(final String message, final URI target)
+            throws IOException, MultipartParseException {
         if (log.isDebugEnabled()) {
             log.debug("Creating requestBody");
         }
@@ -158,7 +157,8 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response send(final Request request) throws IOException {
+    public Map<String, String> send(final Request request)
+            throws IOException, MultipartParseException {
         return sendRequest(request, getClientWithSettings());
     }
 
@@ -166,7 +166,8 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response send(final RequestBody requestBody, final URI target) throws IOException {
+    public Map<String, String> send(final RequestBody requestBody, final URI target)
+            throws IOException, MultipartParseException {
         if (log.isDebugEnabled()) {
             log.debug(String.format("building request to %s", target.toString()));
         }
@@ -184,10 +185,10 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response sendWithHeaders(final RequestBody requestBody,
+    public Map<String, String> sendWithHeaders(final RequestBody requestBody,
                                     final URI target,
                                     final Map<String, String> headers)
-            throws IOException {
+            throws IOException, MultipartParseException {
 
         if (log.isDebugEnabled()) {
             log.debug(String.format("building request to %s", target.toString()));
@@ -206,7 +207,7 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response get(final URI target) throws IOException {
+    public Map<String, String> get(final URI target) throws IOException, MultipartParseException {
         final var request = new Request.Builder().url(target.toString()).get().build();
         return sendRequest(request, getClientWithSettings());
     }
@@ -215,7 +216,8 @@ public class IdsHttpService implements HttpService {
      * {@inheritDoc}
      */
     @Override
-    public Response getWithHeaders(final URI target, final Map<String, String> headers) throws IOException {
+    public Map<String, String> getWithHeaders(final URI target, final Map<String, String> headers)
+            throws IOException, MultipartParseException {
         final var builder = new Request.Builder().url(target.toString()).get();
 
         headers.keySet().forEach(key -> {
@@ -298,7 +300,8 @@ public class IdsHttpService implements HttpService {
      * @return Response object containing the return message from the broker
      * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
      */
-    private Response sendRequest(final Request request, final OkHttpClient client) throws IOException {
+    private Map<String, String> sendRequest(final Request request, final OkHttpClient client)
+            throws IOException, MultipartParseException {
         if (log.isInfoEnabled()) {
             log.info("Request is HTTPS: " + request.isHttps());
         }
@@ -314,7 +317,9 @@ public class IdsHttpService implements HttpService {
                     .requireNonNull(response.body()).string());
         }
 
-        return response;
+
+        final var responseString = Objects.requireNonNull(response.body()).string();
+        return MultipartParser.stringToMultipart(responseString);
     }
 
     /**
@@ -352,7 +357,7 @@ public class IdsHttpService implements HttpService {
     @Override
     public Map<String, String> sendAndCheckDat(final Request request)
             throws IOException, ClaimsException, MultipartParseException {
-        Response response;
+        Map<String, String> response;
 
         try {
             response = send(request);
@@ -373,7 +378,7 @@ public class IdsHttpService implements HttpService {
     @Override
     public Map<String, String> sendAndCheckDat(final RequestBody body, final URI target)
             throws IOException, ClaimsException, MultipartParseException {
-        Response response;
+        Map<String, String> response;
 
         try {
             response = send(body, target);
@@ -396,7 +401,7 @@ public class IdsHttpService implements HttpService {
                                                           final URI target,
                                                           final Map<String, String> headers)
             throws IOException, ClaimsException, MultipartParseException {
-        Response response;
+        Map<String, String> response;
 
         try {
             response = sendWithHeaders(body, target, headers);
