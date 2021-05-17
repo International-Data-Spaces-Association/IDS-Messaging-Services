@@ -13,7 +13,9 @@ import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
-import de.fraunhofer.ids.messaging.protocol.http.HttpService;
+import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
+import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
@@ -33,20 +35,26 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ClearingHouseService implements IDSClearingHouseService {
+public class ClearingHouseService extends InfrastructureService implements IDSClearingHouseService  {
 
     Serializer   serializer   = new Serializer();
     SecureRandom secureRandom = new SecureRandom();
 
-    ConfigContainer   configContainer;
-    DapsTokenProvider dapsTokenProvider;
-    HttpService       httpService;
+
+    IdsHttpService idsHttpService;
 
     @NonFinal
     @Value( "${clearinghouse.url}" )
     private String clearingHouseUrl;
+
+    public ClearingHouseService( ConfigContainer container,
+                                 DapsTokenProvider tokenProvider,
+                                 MessageService messageService,
+                                 IdsHttpService idsHttpService ) {
+        super(container, tokenProvider, messageService);
+        this.idsHttpService= idsHttpService;
+    }
 
     /**
      * {@inheritDoc}
@@ -78,12 +86,12 @@ public class ClearingHouseService implements IDSClearingHouseService {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
-                MessageBuilder.buildLogMessage(configContainer, dapsTokenProvider, clearingHouseUrl),
+                MessageBuilder.buildLogMessage(container, tokenProvider, clearingHouseUrl),
                 serializer.serialize(messageToLog),
                 MediaType.parse("application/json"));
 
         //set some random id for message
-        final var response = httpService.sendAndCheckDat(body, new URI(clearingHouseUrl + pid));
+        final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + pid));
         final var map = new MultipartResponseConverter().convertResponse(response);
         return expectMessageProcessedNotificationMAP(map);
     }
@@ -107,8 +115,8 @@ public class ClearingHouseService implements IDSClearingHouseService {
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
                 MessageBuilder.buildQueryMessage(
-                        queryLanguage, queryScope, queryTarget, configContainer,
-                        dapsTokenProvider),
+                        queryLanguage, queryScope, queryTarget, container,
+                        tokenProvider),
                 query,
                 MediaType.parse("text/plain")
         );
@@ -120,37 +128,10 @@ public class ClearingHouseService implements IDSClearingHouseService {
                         ? new URI(String.format("%s%s", clearingHouseUrl, pid))
                         : new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageId));
 
-        final var response = httpService.sendAndCheckDat(body, targetURI);
+        final var response = idsHttpService.sendAndCheckDat(body, targetURI);
         final var map = new MultipartResponseConverter().convertResponse(response);
         return expectResultMAP(map);
 
-    }
-    private MessageProcessedNotificationMAP expectMessageProcessedNotificationMAP(final MessageAndPayload<?, ?> response)
-            throws IOException {
-
-        if (response instanceof MessageProcessedNotificationMAP) {
-            return (MessageProcessedNotificationMAP) response;
-        }
-
-        if (response instanceof RejectionMAP ) {
-            final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
-        }
-
-        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
-    }
-
-    private ResultMAP expectResultMAP(final MessageAndPayload<?, ?> response) throws IOException {
-        if (response instanceof ResultMAP) {
-            return (ResultMAP) response;
-        }
-
-        if (response instanceof RejectionMAP) {
-            final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
-        }
-
-        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
     /**

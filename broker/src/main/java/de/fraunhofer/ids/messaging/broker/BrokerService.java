@@ -19,6 +19,7 @@ import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
@@ -29,6 +30,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -36,13 +38,16 @@ import org.springframework.stereotype.Service;
  * infrastructure api.
  **/
 @Slf4j
-@Service
-@RequiredArgsConstructor
+@Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class BrokerService implements IDSBrokerService {
-    ConfigContainer   container;
-    DapsTokenProvider tokenProvider;
-    MessageService    messageService;
+public class BrokerService extends InfrastructureService
+        implements IDSBrokerService {
+
+    public BrokerService( ConfigContainer container,
+                          DapsTokenProvider tokenProvider,
+                          MessageService messageService ) {
+        super(container, tokenProvider, messageService);
+    }
 
     /**
      * {@inheritDoc}
@@ -64,21 +69,6 @@ public class BrokerService implements IDSBrokerService {
 
         return expectMessageProcessedNotificationMAP(response);
 
-    }
-
-    private MessageProcessedNotificationMAP expectMessageProcessedNotificationMAP(final MessageAndPayload<?, ?> response)
-            throws IOException {
-
-        if (response instanceof MessageProcessedNotificationMAP) {
-            return (MessageProcessedNotificationMAP) response;
-        }
-
-        if (response instanceof RejectionMAP) {
-            final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
-        }
-
-        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
     /**
@@ -195,19 +185,6 @@ public class BrokerService implements IDSBrokerService {
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
         return expectResultMAP(response);
-    }
-
-    private ResultMAP expectResultMAP(final MessageAndPayload<?, ?> response) throws IOException {
-        if (response instanceof ResultMAP) {
-            return (ResultMAP) response;
-        }
-
-        if (response instanceof RejectionMAP) {
-            final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
-        }
-
-        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
 
