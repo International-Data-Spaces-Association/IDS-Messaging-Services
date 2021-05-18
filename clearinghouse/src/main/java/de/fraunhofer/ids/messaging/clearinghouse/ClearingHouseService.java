@@ -40,7 +40,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
     Serializer   serializer   = new Serializer();
     SecureRandom secureRandom = new SecureRandom();
-    MultipartResponseConverter multipartResponseConverter= new MultipartResponseConverter();
+    MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
 
     IdsHttpService idsHttpService;
 
