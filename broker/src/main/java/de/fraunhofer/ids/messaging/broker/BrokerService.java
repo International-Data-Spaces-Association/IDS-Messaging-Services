@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
  * Broker Communication Controller. Generates appropriate ids multipart messages and sends them to the broker
  * infrastructure api.
  **/
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,8 @@ public class BrokerService implements IDSBrokerService {
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP removeResourceFromBroker( @NonNull final URI brokerURI, @NonNull final Resource resource)
+    public MessageProcessedNotificationMAP removeResourceFromBroker(@NonNull final URI brokerURI,
+                                                                    @NonNull final Resource resource)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
 
         logBuildingHeader();

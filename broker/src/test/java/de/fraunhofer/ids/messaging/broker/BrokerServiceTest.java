@@ -22,7 +22,6 @@ import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.config.ConfigProperties;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
 import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
@@ -94,17 +93,6 @@ public class BrokerServiceTest {
 
     @Configuration
     static class TestContextConfiguration {
-
-        @Bean
-        public Serializer getSerializer() {
-            return new Serializer();
-        }
-
-        @Bean
-        public BrokerService getBrokerService() {
-            return new BrokerService(configurationContainer, dapsTokenProvider, messageService);
-        }
-
         @MockBean
         private KeyStoreManager keyStoreManager;
 
@@ -131,6 +119,16 @@ public class BrokerServiceTest {
 
         @MockBean
         private Connector connector;
+
+        @Bean
+        public Serializer getSerializer() {
+            return new Serializer();
+        }
+
+        @Bean
+        public BrokerService getBrokerService() {
+            return new BrokerService(configurationContainer, dapsTokenProvider, messageService);
+        }
     }
 
 
