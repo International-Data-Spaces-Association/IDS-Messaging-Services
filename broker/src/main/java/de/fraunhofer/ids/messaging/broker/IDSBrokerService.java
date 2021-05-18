@@ -29,7 +29,7 @@ public interface IDSBrokerService {
      * @throws ClaimsException  if DAT of incoming message could not be validated.
      * @throws MultipartParseException  if response could not be parsed to header and payload.
      */
-    DescriptionResponseMAP requestSelfDescription( URI uri) throws
+    DescriptionResponseMAP requestSelfDescription(URI uri) throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
