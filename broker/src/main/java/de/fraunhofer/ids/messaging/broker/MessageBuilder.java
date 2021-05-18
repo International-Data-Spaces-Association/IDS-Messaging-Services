@@ -51,7 +51,7 @@ public class MessageBuilder {
     }
 
     /**
-     * Create a ResourceUpdateMessage used for registering and updating the given resource at a broker
+     * Create a ResourceUpdateMessage used for registering and updating the given resource at a broker.
      *
      * @param securityToken the DAT Token used for this request
      * @param connector     the connector from which the message is sent
@@ -75,7 +75,7 @@ public class MessageBuilder {
     }
 
     /**
-     * Create a ConnectorUnavailableMessage used for unregistering the connector at a broker
+     * Create a ConnectorUnavailableMessage used for unregistering the connector at a broker.
      *
      * @param securityToken the DAT Token used for this request
      * @param connector     the connector from which the message is sent
