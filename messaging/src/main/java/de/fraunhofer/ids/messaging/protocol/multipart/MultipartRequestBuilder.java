@@ -46,5 +46,4 @@ public class MultipartRequestBuilder implements RequestBuilder {
                 .post(body)
                 .build();
     }
-
 }

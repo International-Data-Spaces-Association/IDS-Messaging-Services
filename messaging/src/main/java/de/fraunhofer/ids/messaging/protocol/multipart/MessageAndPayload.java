@@ -10,7 +10,4 @@ public interface MessageAndPayload<M extends Message, T> {
     M getMessage();
     Optional<T> getPayload();
     SerializedPayload serializePayload() throws IOException;
-
-
 }
-
