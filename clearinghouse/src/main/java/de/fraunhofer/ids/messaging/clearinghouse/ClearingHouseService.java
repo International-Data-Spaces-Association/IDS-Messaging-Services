@@ -40,6 +40,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
     Serializer   serializer   = new Serializer();
     SecureRandom secureRandom = new SecureRandom();
+    MultipartResponseConverter multipartResponseConverter= new MultipartResponseConverter();
 
     IdsHttpService idsHttpService;
 
@@ -92,7 +93,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
         //set some random id for message
         final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + pid));
-        final var map = new MultipartResponseConverter().convertResponse(response);
+        final var map = multipartResponseConverter.convertResponse(response);
         return expectMessageProcessedNotificationMAP(map);
     }
 
@@ -131,7 +132,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
                         : new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageId));
 
         final var response = idsHttpService.sendAndCheckDat(body, targetURI);
-        final var map = new MultipartResponseConverter().convertResponse(response);
+        final var map = multipartResponseConverter.convertResponse(response);
         return expectResultMAP(map);
 
     }
