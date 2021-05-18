@@ -1,11 +1,23 @@
 package de.fraunhofer.ids.messaging.clearinghouse;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
-import okhttp3.Response;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 
+/**
+ * Interface for Communication with IDS ClearingHouses
+ */
 public interface IDSClearingHouseService {
 
     /**
@@ -13,33 +25,77 @@ public interface IDSClearingHouseService {
      *
      * @param messageToLog Infomodel Message that should be Logged
      * @return Response from ClearingHouse
-     * @throws ClearingHouseClientException when some error occurs while sending the message to the ClearingHouse
+     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
+     * @throws URISyntaxException if Clearing House URI can not be parsed from String. Check Application Properties!
+     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws ClaimsException if DAT of incoming message could not be validated.
+     * @throws MultipartParseException if response could not be parsed to header and payload.
      */
-    Response sendLogToClearingHouse(Message messageToLog) throws ClearingHouseClientException;
+    MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog) throws
+            DapsTokenManagerException,
+            ClaimsException,
+            MultipartParseException,
+            URISyntaxException,
+            IOException;
 
+
+    /**
+     *
+     * @param uri  the URI of the Infrastructure Component
+     * @return Response MAP with the SelfDescription in the payload as String
+     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
+     * @throws IOException  if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws ClaimsException  if DAT of incoming message could not be validated.
+     * @throws MultipartParseException  if response could not be parsed to header and payload.
+     */
+    DescriptionResponseMAP requestSelfDescription(URI uri) throws
+            DapsTokenManagerException,
+            ClaimsException,
+            MultipartParseException,
+            IOException;
     /**
      * Send a LogMessage with given pid to ClearingHouse.
      *
      * @param messageToLog Infomodel Message that should be Logged
      * @param pid          process id under which the message will be logged
      * @return Response from ClearingHouse
-     * @throws ClearingHouseClientException when some error occurs while sending the message to the ClearingHouse
+     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
+     * @throws URISyntaxException if Clearing House URI can not be parsed from String. Check Application Properties!
+     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws ClaimsException if DAT of incoming message could not be validated.
+     * @throws MultipartParseException if response could not be parsed to header and payload.
      */
-    Response sendLogToClearingHouse(Message messageToLog, String pid) throws ClearingHouseClientException;
+    MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog, String pid)
+            throws
+            DapsTokenManagerException,
+            URISyntaxException,
+            IOException,
+            ClaimsException,
+            MultipartParseException;
 
     /**
      * Query the Clearing House (Currently not working correctly @ ClearingHouse, HTTP 500).
      *
      * @param pid           process id to Query (or null when querying whole clearingHouse)
-     * @param messageid     message id to Query (or null when querying whole process if pid is given)
+     * @param messageId     message id to Query (or null when querying whole process if pid is given)
      * @param queryLanguage Language of the Query
      * @param queryScope    Scope of the Query
      * @param queryTarget   Target of the Query
      * @param query         QueryString
      * @return Response from ClearingHouse
-     * @throws ClearingHouseClientException when some error occurs while sending the message to the ClearingHouse
+     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
+     * @throws URISyntaxException if Clearing House URI can not be parsed from String. Check Application Properties!
+     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws ClaimsException if DAT of incoming message could not be validated.
+     * @throws MultipartParseException if response could not be parsed to header and payload.
      */
-    Response queryClearingHouse(String pid, String messageid, QueryLanguage queryLanguage, QueryScope queryScope,
-                                QueryTarget queryTarget, String query) throws ClearingHouseClientException;
+    ResultMAP queryClearingHouse(String pid, String messageId, QueryLanguage queryLanguage, QueryScope queryScope,
+                                 QueryTarget queryTarget, String query)
+            throws
+            DapsTokenManagerException,
+            URISyntaxException,
+            ClaimsException,
+            MultipartParseException,
+            IOException;
 
 }

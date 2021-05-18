@@ -12,11 +12,17 @@ import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.http.HttpService;
+import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
+import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -24,113 +30,127 @@ import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ClearingHouseService implements IDSClearingHouseService {
+public class ClearingHouseService extends InfrastructureService implements IDSClearingHouseService  {
 
     Serializer   serializer   = new Serializer();
     SecureRandom secureRandom = new SecureRandom();
+    MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
 
-    ConfigContainer   configContainer;
-    DapsTokenProvider dapsTokenProvider;
-    HttpService       httpService;
+    IdsHttpService idsHttpService;
 
     @NonFinal
     @Value("${clearinghouse.url}")
     private String clearingHouseUrl;
 
+    public ClearingHouseService(final ConfigContainer container,
+                                final DapsTokenProvider tokenProvider,
+                                final MessageService messageService,
+                                final IdsHttpService idsHttpService) {
+        super(container, tokenProvider, messageService);
+        this.idsHttpService = idsHttpService;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public Response sendLogToClearingHouse(final Message messageToLog) throws ClearingHouseClientException {
+    public MessageProcessedNotificationMAP sendLogToClearingHouse(final Message messageToLog)
+            throws DapsTokenManagerException,
+            ClaimsException,
+            MultipartParseException,
+            URISyntaxException,
+            IOException {
         //log message under some random processId
-        final var id = Math.abs(secureRandom.nextInt());
+        final var pid = Math.abs(secureRandom.nextInt());
 
-        return sendLogToClearingHouse(messageToLog, String.valueOf(id));
+        return sendLogToClearingHouse(messageToLog, String.valueOf(pid));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Response sendLogToClearingHouse(final Message messageToLog, final String pid)
-            throws ClearingHouseClientException {
-        try {
-            //Build IDS Multipart Message
-            final var body = buildMultipartWithInternalHeaders(
-                    MessageBuilder.buildLogMessage(configContainer, dapsTokenProvider, clearingHouseUrl),
-                    serializer.serialize(messageToLog),
-                    MediaType.parse("application/json"));
+    public MessageProcessedNotificationMAP sendLogToClearingHouse(final Message messageToLog,
+                                                                  final String pid)
+            throws
+            DapsTokenManagerException,
+            URISyntaxException,
+            IOException,
+            ClaimsException,
+            MultipartParseException {
 
-            //set some random id for message
-            return httpService.send(body, new URI(clearingHouseUrl + pid));
-        } catch (DapsTokenManagerException e) {
-            return throwClearingHouseException(e, "Could not get a DAT for sending the LogMessage!");
-        } catch (URISyntaxException e) {
-            return throwClearingHouseException(e, String.format("Clearing House URI could not be parsed from String: %s!", clearingHouseUrl));
-        } catch (IOException e) {
-            return throwClearingHouseException(e, "Error while serializing LogMessage header or sending the request!");
-        }
+        //Build IDS Multipart Message
+        final var body = buildMultipartWithInternalHeaders(
+                MessageBuilder.buildLogMessage(container, tokenProvider, clearingHouseUrl),
+                serializer.serialize(messageToLog),
+                MediaType.parse("application/json"));
+
+        //set some random id for message
+        final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + pid));
+        final var map = multipartResponseConverter.convertResponse(response);
+        return expectMessageProcessedNotificationMAP(map);
     }
 
-    private Response throwClearingHouseException(final Exception e, final String message) throws ClearingHouseClientException {
-        if (log.isWarnEnabled()) {
-            log.warn(e.getMessage(), e);
-        }
-        throw new ClearingHouseClientException(message, e);
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Response queryClearingHouse(final String pid, final String messageid, final QueryLanguage queryLanguage,
-                                       final QueryScope queryScope, final QueryTarget queryTarget, final String query)
-            throws ClearingHouseClientException {
-        try {
-            //Build IDS Multipart Message
-            final var body = buildMultipartWithInternalHeaders(
-                    MessageBuilder.buildQueryMessage(
-                            queryLanguage, queryScope, queryTarget, configContainer,
-                            dapsTokenProvider),
-                    query,
-                    MediaType.parse("text/plain")
-            );
+    public ResultMAP queryClearingHouse(final String pid,
+                                        final String messageId,
+                                        final QueryLanguage queryLanguage,
+                                        final QueryScope queryScope,
+                                        final QueryTarget queryTarget,
+                                        final String query)
+            throws
+            DapsTokenManagerException,
+            URISyntaxException,
+            ClaimsException,
+            MultipartParseException,
+            IOException {
 
-            //build targetURI of QueryMessage (if pid and messageid are given)
-            final var targetURI = (pid == null)
-                    ? new URI(clearingHouseUrl)
-                        : messageid == null
-                            ? new URI(String.format("%s%s", clearingHouseUrl, pid))
-                            : new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageid));
+        //Build IDS Multipart Message
+        final var body = buildMultipartWithInternalHeaders(
+                MessageBuilder.buildQueryMessage(
+                        queryLanguage, queryScope, queryTarget, container,
+                        tokenProvider),
+                query,
+                MediaType.parse("text/plain")
+        );
 
-            return httpService.send(body, targetURI);
-        } catch (DapsTokenManagerException e) {
-            return throwClearingHouseException(e, "Could not get a DAT for sending the LogMessage!");
-        } catch (URISyntaxException e) {
-            return throwClearingHouseException(e, String.format("Clearing House URI could not be parsed from String: %s!", clearingHouseUrl));
-        } catch (IOException e) {
-            return throwClearingHouseException(e, "Error while serializing LogMessage header or sending the request!");
-        }
+        //build targetURI of QueryMessage (if pid and messageid are given)
+        final var targetURI = (pid == null)
+                ? new URI(clearingHouseUrl)
+                : messageId == null
+                        ? new URI(String.format("%s%s", clearingHouseUrl, pid))
+                        : new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageId));
+
+        final var response = idsHttpService.sendAndCheckDat(body, targetURI);
+        final var map = multipartResponseConverter.convertResponse(response);
+        return expectResultMAP(map);
+
     }
 
     /**
      * @param headerMessage  IDS Message used as Header
      * @param payloadContent Payload String
      * @param payloadType    MediaType of Payload String
+     *
      * @return built MultipartBody
+     *
      * @throws IOException when headerMessage cannot be serialized
      */
     private MultipartBody buildMultipartWithInternalHeaders(final Message headerMessage,
                                                             final String payloadContent,
-                                                            final MediaType payloadType) throws IOException {
+                                                            final MediaType payloadType)
+            throws IOException {
+
         final var bodyBuilder = new MultipartBody.Builder();
 
         //OkHttp does not support setting Content Type on Multipart Parts directly on creation, workaround
@@ -148,7 +168,7 @@ public class ClearingHouseService implements IDSClearingHouseService {
         final var header = MultipartBody.Part.create(headerHeader, headerBody);
         bodyBuilder.addPart(header);
 
-        if (payloadContent != null && !payloadContent.isBlank()) {
+        if (payloadContent != null && !payloadContent.isBlank())  {
             //Create Header for payload Part of IDS Multipart Message
             final var payloadHeader = new Headers.Builder()
                     .add("Content-Disposition: form-data; name=\"payload\"")

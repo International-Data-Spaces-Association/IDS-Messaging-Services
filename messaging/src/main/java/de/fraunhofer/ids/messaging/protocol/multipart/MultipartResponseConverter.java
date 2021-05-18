@@ -30,6 +30,7 @@ import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.iais.eis.ResourceUnavailableMessage;
 import de.fraunhofer.iais.eis.ResourceUpdateMessage;
+import de.fraunhofer.iais.eis.ResultMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.util.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactRequestMAP;
@@ -48,6 +49,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ParticipantRequest
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.QueryMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResourceMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import okhttp3.Response;
 
 /**
@@ -102,6 +104,8 @@ public class MultipartResponseConverter {
             return new InfrastructurePayloadMAP(message, null);
         } else if (message instanceof QueryMessage) {
             return new QueryMAP((QueryMessage) message, payloadString);
+        } else if (message instanceof ResultMessage ) {
+            return new ResultMAP((ResultMessage) message, payloadString);
         } else if (message instanceof ResourceUpdateMessage) {
             return new ResourceMAP(message, serializer.deserialize(payloadString, Resource.class));
         } else if (message instanceof ResourceUnavailableMessage) {

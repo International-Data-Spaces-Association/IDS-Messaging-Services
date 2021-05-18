@@ -74,7 +74,3 @@ Types: `fix`, `feat`, `chore`, `test`, `refactor`, `docs`, `release`. Append `!`
 changes to a type. 
 
 An example of a very good commit might look like this: `feat![login]: add awesome breaking feature`
-
-## Versioning
-The IDS-ConfigurationManager uses the [SemVer](https://semver.org/) for versioning. The release versions 
-are tagged with their respective version.
