@@ -22,7 +22,7 @@
     </licenses>
 
     <dependencies>
-        <!-- IDS-Framework Core-Module Dependency -->
+        <!-- IDS-Messaging-Services Dependency -->
         <dependency>
             <groupId>de.fraunhofer.ids.messaging</groupId>
             <artifactId>core</artifactId>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>5.3.6</version>
+            <version>5.3.7</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>5.3.6</version>
+            <version>5.3.7</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>5.3.6</version>
+            <version>5.3.7</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-project-info-reports-plugin -->
@@ -89,7 +89,7 @@
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-engine</artifactId>
-                        <version>5.3.2</version>
+                        <version>5.7.2</version>
                     </dependency>
                 </dependencies>
             </plugin>

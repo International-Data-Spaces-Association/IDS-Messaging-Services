@@ -58,8 +58,8 @@ Currently being worked on advanced functionality for:
 
 - The IDS-Messaging-Services use asymmetric encryption concepts and requires public and private key of the Connector-Instance.
 - The IDS-Messaging-Services utilize contents of the IDSConfiguration Model which is part of the IDS Information Model. Therefor a *configmodel.json*-file should exist to load the configuration of the IDS-Connector. For example, the configuration file should reference the key- and trust-store.
-- ApplicationPropeties
 - The IDS-Messaging-Services assume a SpringBoot project and therefore require various specific SpringBoot functionalities.
+- [Settings in the Application Properties](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki/6.-Settings:-Application-Properties)
 
 ## Quick Start: Integration into a Maven-Java-Project
 
@@ -79,9 +79,13 @@ The Java-modules provided by the project are accessible as Maven artifact depend
 
 ### Step 2
 
-The current module artifact structure of the IDS-Messaging-Services is built along the different IDS-Infrastructure-Components, which are currently supported with advanced functionalities out-of-the-box:
+The current module artifact structure of the IDS-Messaging-Services is built along the different IDS-Infrastructure-Components, which are currently supported with advanced functionalities out-of-the-box.
+
+Modules with basic functions:
 - core
 - messaging
+
+Modules for different infrastructure components:
 - broker
 - clearinghouse
 
@@ -89,8 +93,7 @@ In general, the core-module artifact is the main module artifact with the config
 
 The individual module-artifacts of the IDS-Infrastructure-Components in turn require functionalities of the messaging-module artifact and have it therefore linked as a dependency in each module case. This simplified architecture means that it is sufficient, for example, to integrate the broker-module artifact into the project's pom, which automatically makes the functionalities of the messaging- and thus also the core-module artifact available.
 
-
-So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Broker occurs as IDS-Infrastructure-Component, the following entry in the project's pom is completely sufficient as dependcies to get all needed functionalities to exchange messages with the IDS-Broker with advanced functionalities:
+So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Broker occurs as IDS-Infrastructure-Component, the following entry in the project's pom is completely sufficient as dependcies to get all needed functionalities to exchange messages with the IDS-Broker with advanced functionalities, without the need to use the full-module:
 
 ```xml
 <dependency>
@@ -100,7 +103,6 @@ So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Br
 </dependency>
 ```
 Of course, the entry IDS_MESSAGING_SERVICES_VERSION must be exchanged with the desired version number of the IDS-Messaging-Services artifact.
-
 
 
 ## Quick Start: First steps towards use
@@ -191,10 +193,12 @@ Message message = new RequestMessageBuilder()
             .build();
 
 MultipartBody body = this.buildRequestBody(InfomodelMessageBuilder.messageWithString(message, payload));
-var response = idsHttpService.send(body, targetUri);
+final var response = idsHttpService.sendAndCheckDat(body, targetUri);
 ```
 
-The above is a standard example of HTTP-Multipart using the services' send()-method. In addition, there are other methods like the sendAndCheckDat() which will also check the DAT of the received response to the message.
+The above is a standard example of HTTP-Multipart using the services' sendAndCheckDat()-method. In addition, there are other methods like a plain send()-Method which will not check the DAT of the received response to the message. 
+
+The sendAndCheckDat() returns a Map<String, String> where, for example, response.get("header") and response.get("payload") can be used to access the message-fields.
 
 For extended instructions and info on the other modules, see the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki">GitHub-Wiki</a>.
 

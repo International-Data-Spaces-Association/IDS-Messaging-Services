@@ -27,6 +27,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNo
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Service;
  * Broker Communication Controller. Generates appropriate ids multipart messages and sends them to the broker
  * infrastructure api.
  **/
+
 @Slf4j
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -53,7 +55,8 @@ public class BrokerService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP removeResourceFromBroker(final URI brokerURI, final Resource resource)
+    public MessageProcessedNotificationMAP removeResourceFromBroker(@NonNull final URI brokerURI,
+                                                                    @NonNull final Resource resource)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
 
         logBuildingHeader();
@@ -64,11 +67,26 @@ public class BrokerService extends InfrastructureService
                 container.getConnector(),
                 resource);
 
-        final var messageAndPayload = new GenericMessageAndPayload(header, resource);
+        final var messageAndPayload = new GenericMessageAndPayload(header);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
         return expectMessageProcessedNotificationMAP(response);
 
+    }
+
+    private MessageProcessedNotificationMAP expectMessageProcessedNotificationMAP(@NonNull final MessageAndPayload<?, ?> response)
+            throws IOException {
+
+        if (response instanceof MessageProcessedNotificationMAP) {
+            return (MessageProcessedNotificationMAP) response;
+        }
+
+        if (response instanceof RejectionMAP) {
+            final var rejectionMessage = (RejectionMessage) response.getMessage();
+            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
+        }
+
+        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
     /**
@@ -77,7 +95,7 @@ public class BrokerService extends InfrastructureService
      * @return
      */
     @Override
-    public MessageProcessedNotificationMAP updateResourceAtBroker(final URI brokerURI, final Resource resource) throws
+    public MessageProcessedNotificationMAP updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource) throws
             IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
 
         logBuildingHeader();
@@ -101,7 +119,7 @@ public class BrokerService extends InfrastructureService
      * @return
      */
     @Override
-    public MessageProcessedNotificationMAP unregisterAtBroker(final URI brokerURI)
+    public MessageProcessedNotificationMAP unregisterAtBroker(@NonNull final URI brokerURI)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
         logBuildingHeader();
 
@@ -120,7 +138,7 @@ public class BrokerService extends InfrastructureService
      * @return
      */
     @Override
-    public MessageProcessedNotificationMAP updateSelfDescriptionAtBroker(final URI brokerURI) throws
+    public MessageProcessedNotificationMAP updateSelfDescriptionAtBroker(@NonNull final URI brokerURI) throws
             IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
         logBuildingHeader();
 
@@ -140,7 +158,7 @@ public class BrokerService extends InfrastructureService
      * @param brokerURIs
      */
     @Override
-    public List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers(final List<URI> brokerURIs) {
+    public List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers(@NonNull final List<URI> brokerURIs) {
         final ArrayList<MessageProcessedNotificationMAP> responses = new ArrayList<>();
 
         for (final var uri : brokerURIs) {
@@ -166,11 +184,11 @@ public class BrokerService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public ResultMAP queryBroker(final URI brokerURI,
-                                 final String query,
-                                 final QueryLanguage queryLanguage,
-                                 final QueryScope queryScope,
-                                 final QueryTarget queryTarget)
+    public ResultMAP queryBroker(@NonNull final URI brokerURI,
+                                 @NonNull final String query,
+                                 @NonNull final QueryLanguage queryLanguage,
+                                 @NonNull final QueryScope queryScope,
+                                 @NonNull final QueryTarget queryTarget)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
         logBuildingHeader();
 
@@ -185,6 +203,19 @@ public class BrokerService extends InfrastructureService
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
         return expectResultMAP(response);
+    }
+
+    private ResultMAP expectResultMAP(final MessageAndPayload<?, ?> response) throws IOException {
+        if (response instanceof ResultMAP) {
+            return (ResultMAP) response;
+        }
+
+        if (response instanceof RejectionMAP) {
+            final var rejectionMessage = (RejectionMessage) response.getMessage();
+            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
+        }
+
+        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
 

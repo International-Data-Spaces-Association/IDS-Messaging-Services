@@ -268,7 +268,7 @@ public class MessageController {
             return false;
         }
 
-        for (var i = 0; i < inputSplit.length; i++){
+        for (var i = 0; i < inputSplit.length; i++) {
            if (!inputSplit[i].equals(acceptedSplit[i]) && !"*".equals(acceptedSplit[i])) {
                return false;
            }
