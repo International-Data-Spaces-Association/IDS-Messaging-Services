@@ -33,6 +33,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.jena.riot.RiotException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -97,7 +98,7 @@ public class IdsHttpService implements HttpService {
                     extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
                 }
 
-            } catch (IOException e) {
+            } catch (IOException | RiotException e) {
                 if (log.isWarnEnabled()) {
                     log.warn("Could not deserialize Playload " + e.getMessage());
                     log.warn("Skipping Connector-SecurityProfile Attribute!");
