@@ -11,7 +11,11 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.*;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +30,10 @@ public class InfrastructureService  {
     DapsTokenProvider tokenProvider;
     MessageService    messageService;
 
-
     /**
      * {@inheritDoc}
      */
-    public DescriptionResponseMAP requestSelfDescription( final URI uri) throws
+    public DescriptionResponseMAP requestSelfDescription(final URI uri) throws
             IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
         final var header =   new DescriptionRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -47,18 +50,19 @@ public class InfrastructureService  {
     }
 
     /**
-     * casts generic {@link MessageAndPayload} to {@link DescriptionResponseMAP}
+     * casts generic {@link MessageAndPayload} to {@link DescriptionResponseMAP}.
      *
      * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
      * @return {@link MessageAndPayload object specialized to the expected Message}
      * @throws IOException if a rejection message or any other unexpected message was returned.
      */
-    private DescriptionResponseMAP expectDescriptionResponseMAP( final MessageAndPayload<?,?> response ) throws IOException {
+    private DescriptionResponseMAP expectDescriptionResponseMAP(final MessageAndPayload<?, ?> response)
+            throws IOException {
         if (response instanceof DescriptionResponseMAP) {
             return (DescriptionResponseMAP) response;
         }
 
-        if (response instanceof RejectionMAP ) {
+        if (response instanceof RejectionMAP) {
             final var rejectionMessage = (RejectionMessage) response.getMessage();
             throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
         }
@@ -67,7 +71,7 @@ public class InfrastructureService  {
     }
 
     /**
-     * casts generic {@link MessageAndPayload} to {@link MessageProcessedNotificationMAP}
+     * Casts generic {@link MessageAndPayload} to {@link MessageProcessedNotificationMAP}.
      *
      * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
      * @return {@link MessageAndPayload object specialized to the expected Message}
@@ -80,7 +84,7 @@ public class InfrastructureService  {
             return (MessageProcessedNotificationMAP) response;
         }
 
-        if (response instanceof RejectionMAP ) {
+        if (response instanceof RejectionMAP) {
             final var rejectionMessage = (RejectionMessage) response.getMessage();
             throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
         }
@@ -89,7 +93,7 @@ public class InfrastructureService  {
     }
 
     /**
-     * casts generic {@link MessageAndPayload} to {@link ResultMAP}
+     * Casts generic {@link MessageAndPayload} to {@link ResultMAP}.
      *
      * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
      * @return {@link MessageAndPayload object specialized to the expected Message}
