@@ -6,7 +6,10 @@ import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.util.Objects;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.QueryLanguage;
+import de.fraunhofer.iais.eis.QueryScope;
+import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -16,13 +19,10 @@ import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
-import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -41,27 +41,26 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     Serializer   serializer   = new Serializer();
     SecureRandom secureRandom = new SecureRandom();
 
-
     IdsHttpService idsHttpService;
 
     @NonFinal
-    @Value( "${clearinghouse.url}" )
+    @Value("${clearinghouse.url}")
     private String clearingHouseUrl;
 
-    public ClearingHouseService( ConfigContainer container,
-                                 DapsTokenProvider tokenProvider,
-                                 MessageService messageService,
-                                 IdsHttpService idsHttpService ) {
+    public ClearingHouseService(final ConfigContainer container,
+                                final DapsTokenProvider tokenProvider,
+                                final MessageService messageService,
+                                final IdsHttpService idsHttpService) {
         super(container, tokenProvider, messageService);
-        this.idsHttpService= idsHttpService;
+        this.idsHttpService = idsHttpService;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP sendLogToClearingHouse( final Message messageToLog ) throws
-            DapsTokenManagerException,
+    public MessageProcessedNotificationMAP sendLogToClearingHouse(final Message messageToLog)
+            throws DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
             URISyntaxException,
@@ -76,7 +75,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP sendLogToClearingHouse( final Message messageToLog, final String pid )
+    public MessageProcessedNotificationMAP sendLogToClearingHouse(final Message messageToLog,
+                                                                  final String pid)
             throws
             DapsTokenManagerException,
             URISyntaxException,
@@ -101,10 +101,12 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
      * {@inheritDoc}
      */
     @Override
-    public ResultMAP queryClearingHouse( final String pid, final String messageId,
-                                         final QueryLanguage queryLanguage,
-                                         final QueryScope queryScope, final QueryTarget queryTarget,
-                                         final String query )
+    public ResultMAP queryClearingHouse(final String pid,
+                                        final String messageId,
+                                        final QueryLanguage queryLanguage,
+                                        final QueryScope queryScope,
+                                        final QueryTarget queryTarget,
+                                        final String query)
             throws
             DapsTokenManagerException,
             URISyntaxException,
@@ -122,7 +124,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
         );
 
         //build targetURI of QueryMessage (if pid and messageid are given)
-        final var targetURI = ( pid == null )
+        final var targetURI = (pid == null)
                 ? new URI(clearingHouseUrl)
                 : messageId == null
                         ? new URI(String.format("%s%s", clearingHouseUrl, pid))
@@ -143,9 +145,11 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
      *
      * @throws IOException when headerMessage cannot be serialized
      */
-    private MultipartBody buildMultipartWithInternalHeaders( final Message headerMessage,
-                                                             final String payloadContent,
-                                                             final MediaType payloadType ) throws IOException {
+    private MultipartBody buildMultipartWithInternalHeaders(final Message headerMessage,
+                                                            final String payloadContent,
+                                                            final MediaType payloadType)
+            throws IOException {
+
         final var bodyBuilder = new MultipartBody.Builder();
 
         //OkHttp does not support setting Content Type on Multipart Parts directly on creation, workaround
@@ -163,7 +167,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
         final var header = MultipartBody.Part.create(headerHeader, headerBody);
         bodyBuilder.addPart(header);
 
-        if( payloadContent != null && !payloadContent.isBlank() ) {
+        if (payloadContent != null && !payloadContent.isBlank())  {
             //Create Header for payload Part of IDS Multipart Message
             final var payloadHeader = new Headers.Builder()
                     .add("Content-Disposition: form-data; name=\"payload\"")

@@ -4,18 +4,19 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.QueryLanguage;
+import de.fraunhofer.iais.eis.QueryScope;
+import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
-import okhttp3.Response;
 
 /**
- *
+ * Interface for Communication with IDS ClearingHouses
  */
 public interface IDSClearingHouseService {
 
@@ -30,7 +31,7 @@ public interface IDSClearingHouseService {
      * @throws ClaimsException if DAT of incoming message could not be validated.
      * @throws MultipartParseException if response could not be parsed to header and payload.
      */
-    MessageProcessedNotificationMAP sendLogToClearingHouse( Message messageToLog) throws
+    MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog) throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
@@ -47,7 +48,7 @@ public interface IDSClearingHouseService {
      * @throws ClaimsException  if DAT of incoming message could not be validated.
      * @throws MultipartParseException  if response could not be parsed to header and payload.
      */
-    DescriptionResponseMAP requestSelfDescription( URI uri) throws
+    DescriptionResponseMAP requestSelfDescription(URI uri) throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
@@ -88,8 +89,8 @@ public interface IDSClearingHouseService {
      * @throws ClaimsException if DAT of incoming message could not be validated.
      * @throws MultipartParseException if response could not be parsed to header and payload.
      */
-    ResultMAP queryClearingHouse( String pid, String messageId, QueryLanguage queryLanguage, QueryScope queryScope,
-                                  QueryTarget queryTarget, String query)
+    ResultMAP queryClearingHouse(String pid, String messageId, QueryLanguage queryLanguage, QueryScope queryScope,
+                                 QueryTarget queryTarget, String query)
             throws
             DapsTokenManagerException,
             URISyntaxException,
