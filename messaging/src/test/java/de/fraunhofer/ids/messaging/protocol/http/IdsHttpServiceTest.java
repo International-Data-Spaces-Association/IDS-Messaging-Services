@@ -6,6 +6,7 @@ import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
+import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;

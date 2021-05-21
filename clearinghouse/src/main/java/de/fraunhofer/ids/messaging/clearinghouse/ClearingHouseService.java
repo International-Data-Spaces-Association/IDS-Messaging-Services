@@ -48,6 +48,14 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     @Value("${clearinghouse.url}")
     private String clearingHouseUrl;
 
+    @NonFinal
+    @Value("${clearinghouse.query.endpoint:/messages/query}")
+    private String queryEndpoint;
+
+    @NonFinal
+    @Value("${clearinghouse.log.endpoint:/messages/log}")
+    private String logEndpoint;
+
     public ClearingHouseService(final ConfigContainer container,
                                 final DapsTokenProvider tokenProvider,
                                 final MessageService messageService,
@@ -92,7 +100,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
                 MediaType.parse("application/json"));
 
         //set some random id for message
-        final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + pid));
+        final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl+logEndpoint + "/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
         return expectMessageProcessedNotificationMAP(map);
     }
@@ -126,10 +134,10 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
         //build targetURI of QueryMessage (if pid and messageid are given)
         final var targetURI = (pid == null)
-                ? new URI(clearingHouseUrl)
+                ? new URI(clearingHouseUrl+queryEndpoint)
                 : messageId == null
-                        ? new URI(String.format("%s%s", clearingHouseUrl, pid))
-                        : new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageId));
+                        ? new URI(String.format("%s/%s", clearingHouseUrl+queryEndpoint, pid))
+                        : new URI(String.format("%s/%s/%s", clearingHouseUrl+queryEndpoint, pid, messageId));
 
         final var response = idsHttpService.sendAndCheckDat(body, targetURI);
         final var map = multipartResponseConverter.convertResponse(response);

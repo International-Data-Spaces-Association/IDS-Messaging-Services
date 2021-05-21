@@ -46,7 +46,7 @@ public interface IDSClearingHouseService {
      * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
      * @throws IOException  if message could not be sent or Serializer could not parse RDF to Java Object.
      * @throws ClaimsException  if DAT of incoming message could not be validated.
-     * @throws MultipartParseException  if response could not be parsed to header and payload.
+     * @throws MultipartParseException  if sresponse could not be parsed to header and payload.
      */
     DescriptionResponseMAP requestSelfDescription(URI uri) throws
             DapsTokenManagerException,
