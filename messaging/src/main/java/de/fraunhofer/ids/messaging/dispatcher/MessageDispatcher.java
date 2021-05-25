@@ -38,22 +38,24 @@ public class MessageDispatcher {
     List<PreDispatchingFilter> preDispatchingFilters;
     RequestMessageHandler      requestMessageHandler;
     ConfigContainer            configContainer;
+    DapsValidator              dapsValidator;
 
     /**
      * Create a MessageDispatcher.
-     *
-     * @param objectMapper          a jackson objectmapper for (de)serializing objects
+     *  @param objectMapper          a jackson objectmapper for (de)serializing objects
      * @param requestMessageHandler resolver for finding the fitting {@link MessageHandler} for the incoming Message
      * @param provider              a provider that can access the public key of the DAPS
      * @param configContainer       the connector configuration
+     * @param dapsValidator
      */
     public MessageDispatcher(final ObjectMapper objectMapper,
                              final RequestMessageHandler requestMessageHandler,
                              final DapsPublicKeyProvider provider,
-                             final ConfigContainer configContainer) {
+                             final ConfigContainer configContainer, DapsValidator dapsValidator) {
         this.objectMapper = objectMapper;
         this.requestMessageHandler = requestMessageHandler;
         this.configContainer = configContainer;
+        this.dapsValidator = dapsValidator;
         this.preDispatchingFilters = new LinkedList<>();
 
         registerDatVerificationFilter(provider, configContainer);
@@ -73,20 +75,11 @@ public class MessageDispatcher {
             if (configurationContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT) {
                 return PreDispatchingFilterResult.successResult("ConnectorDeployMode is Test. Skipping Token verification!");
             }
-
-            try {
-                final var verified = DapsVerifier.verify(DapsValidator.getClaims(in.getSecurityToken(), provider.providePublicKeys()));
-
-                return PreDispatchingFilterResult.builder()
-                                                 .withSuccess(verified)
-                                                 .withMessage(String.format("Token verification result is: %s", verified))
-                                                 .build();
-            } catch (ClaimsException e) {
-                return PreDispatchingFilterResult.builder()
-                                                 .withSuccess(false)
-                                                 .withMessage("Token could not be parsed!" + e.getMessage())
-                                                 .build();
-            }
+            final var verified = dapsValidator.checkDat(in.getSecurityToken());
+            return PreDispatchingFilterResult.builder()
+                    .withSuccess(verified)
+                    .withMessage(String.format("Token verification result is: %s", verified))
+                    .build();
         });
     }
 
