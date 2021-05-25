@@ -9,6 +9,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [?] UNRELEASED
+
+### Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-parent 2.4.5 -> 2.5.0
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.4.5 -> 2.5.0
+- Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.2.0 -> 3.3.0
+
+---
+
 ## Version 4.1.0.0 2021-05-18
 - First stable non-snapshot version 
 
