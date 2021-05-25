@@ -39,7 +39,12 @@ public class TrustStoreManager {
     public X509TrustManager configureTrustStore(final X509TrustManager myTrustManager)
             throws NoSuchAlgorithmException, KeyStoreException {
         final var jreTrustManager = findDefaultTrustManager();
-        return createMergedTrustManager(jreTrustManager, myTrustManager);
+        if(myTrustManager != null){
+            return createMergedTrustManager(jreTrustManager, myTrustManager);
+        }else{
+            //if no custom truststore is specified: only use jreTrustManager
+            return jreTrustManager;
+        }
     }
 
     /**

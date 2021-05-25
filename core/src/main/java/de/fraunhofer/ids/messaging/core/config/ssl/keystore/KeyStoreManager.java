@@ -121,6 +121,11 @@ public class KeyStoreManager {
             if (log.isDebugEnabled()) {
                 log.debug("Initializing KeyStoreManager");
             }
+            var keystorePw = configurationModel.getKeyStorePassword().get(0).toCharArray();
+            char[] trustStorePw = null;
+            if(configurationModel.getTrustStorePassword() != null && !configurationModel.getTrustStorePassword().isEmpty()) {
+                trustStorePw = configurationModel.getTrustStorePassword().get(0).toCharArray();
+            }
             initClassVars(configurationModel, keystorePw, trustStorePw, keyAlias);
         } catch (IOException e) {
             throwKeyStoreInitException(e, "Key- or Truststore could not be loaded!");
@@ -168,7 +173,9 @@ public class KeyStoreManager {
         this.keyAlias = keyAlias;
 
         createKeyStore(configurationModel, keystorePw);
-        createTrustStore(configurationModel, trustStorePw);
+        if(configurationModel.getTrustStore() != null) {
+            createTrustStore(configurationModel, trustStorePw);
+        }
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
         initCertificateSubjectCn(); //requires valid connector certificate (e.g. issued by DAPS)
@@ -195,8 +202,11 @@ public class KeyStoreManager {
 
     private void initTrustManager(final char... trustStorePw)
             throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
-        final var myManager = loadTrustManager(trustStorePw);
-        trustManager = trustStoreManager.configureTrustStore(myManager);
+        if(trustStore != null) {
+            final var myManager = loadTrustManager(trustStorePw);
+            trustManager = trustStoreManager.configureTrustStore(myManager);
+        }
+        trustManager = trustStoreManager.configureTrustStore(null);
     }
 
     private void createTrustStore(final ConfigurationModel configurationModel,

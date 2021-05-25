@@ -128,11 +128,7 @@ public class ConfigContainer {
         if (log.isDebugEnabled()) {
             log.debug("Creating a new KeyStoreManager using current configuration");
         }
-
-        final var keyPw = keyStoreManager.getKeyStorePw();
-        final var trustPw = keyStoreManager.getTrustStorePw();
         final var alias = keyStoreManager.getKeyAlias();
-
-        return new KeyStoreManager(configurationModel, keyPw, trustPw, alias);
+        return new KeyStoreManager(configurationModel, alias);
     }
 }

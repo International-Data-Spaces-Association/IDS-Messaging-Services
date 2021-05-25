@@ -55,7 +55,12 @@
   "ids:trustStore" : {
     "@id" : "file:///server-truststore.p12"
   },
-  "ids:keyStore" : {
+  "ids:keyStorePassword" : [
+    "password"
+  ],
+  "ids:trustStorePassword" :[
+    "password"
+  ]
     "@id" : "file:///ids-keystore.p12"
   }
 }
