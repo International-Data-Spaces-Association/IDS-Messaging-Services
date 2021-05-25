@@ -27,4 +27,6 @@ public interface DapsPublicKeyProvider {
      * @return the public Key of a DAPS Service
      */
     List<Key> providePublicKeys();
+
+    Key providePublicKey(String issuer, String keyId);
 }

@@ -1,23 +1,9 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.fraunhofer.ids.messaging.dispatcher;
 
 import java.net.URI;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
@@ -36,7 +22,6 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
-import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterResult;
 import de.fraunhofer.ids.messaging.dispatcher.testhandlers.NotificationMessageHandler;
 import de.fraunhofer.ids.messaging.dispatcher.testhandlers.RequestMessageHandler;
 import de.fraunhofer.ids.messaging.handler.message.MessageHandler;
@@ -58,11 +43,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@WebMvcTest
 @ExtendWith(SpringExtension.class)
+@WebMvcTest
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@TestPropertySource(properties = { "shacl.validation=false" })
 @ContextConfiguration(classes = {RequestMessageHandlerService.class, MessageDispatcherProvider.class, MessageDispatcherTest.TestContextConfiguration.class})
+@TestPropertySource(properties = { "shacl.validation=false" })
 class MessageDispatcherTest {
     @Autowired
     MessageDispatcherProvider messageDispatcherProvider;
@@ -118,23 +103,15 @@ class MessageDispatcherTest {
         Mockito.when(publicKeyProvider.providePublicKeys()).thenReturn(null);
         Mockito.when(dapsValidator.checkDat(Mockito.any(DynamicAttributeToken.class), Mockito.anyMap())).thenReturn(true);
 
-        final var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, configurationContainer, dapsValidator);
+        final var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, publicKeyProvider, configurationContainer, dapsValidator);
         final var reqMsg = buildRequestMessage();
         final var notMsg = buildNotificationMessage();
-        final var artMsg = buildArtifactRequestMessage();
 
         final var requestResponse = (ErrorResponse) dispatcher.process(reqMsg, null);
         assertEquals("request", requestResponse.getErrorMessage()); //use error message to check which handler got the message
 
         final var notificationResponse = (ErrorResponse) dispatcher.process(notMsg, null);
-        assertEquals("Error while handling the request!", notificationResponse.getErrorMessage()); //use error message to check which handler got the message
-
-        final var artifactResponse = (ErrorResponse) dispatcher.process(artMsg, null);
-        assertEquals("No handler for provided message type was found!", artifactResponse.getErrorMessage());
-
-        dispatcher.registerPreDispatchingAction(in -> PreDispatchingFilterResult.successResult());
-        dispatcher.registerPreDispatchingAction(in -> PreDispatchingFilterResult.builder().withMessage("predispatching").withSuccess(false).build());
-        assertEquals("predispatching", ((ErrorResponse) dispatcher.process(reqMsg, null)).getErrorMessage());
+        assertEquals("notification", notificationResponse.getErrorMessage()); //use error message to check which handler got the message
     }
 
     private NotificationMessage buildNotificationMessage() {
@@ -163,22 +140,6 @@ class MessageDispatcherTest {
                                          ._tokenFormat_(TokenFormat.JWT)
                                          ._tokenValue_("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRlZmF1bHQifQ.eyJ...")
                                          .build())
-                ._senderAgent_(URI.create("http://example.org#senderAgent"))
-                ._recipientConnector_(Util.asList(URI.create("http://example.org#recipientConnector1"), URI.create("http://example.org#recipientConnector2")))
-                .build();
-    }
-
-    private RequestMessage buildArtifactRequestMessage() {
-        final var now = IdsMessageUtils.getGregorianNow();
-        return new ArtifactRequestMessageBuilder()
-                ._issuerConnector_(URI.create("http://example.org#connector"))
-                ._issued_(now)
-                ._requestedArtifact_(URI.create("http://example.artifact"))
-                ._modelVersion_("4.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()
-                        ._tokenFormat_(TokenFormat.JWT)
-                        ._tokenValue_("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRlZmF1bHQifQ.eyJ...")
-                        .build())
                 ._senderAgent_(URI.create("http://example.org#senderAgent"))
                 ._recipientConnector_(Util.asList(URI.create("http://example.org#recipientConnector1"), URI.create("http://example.org#recipientConnector2")))
                 .build();

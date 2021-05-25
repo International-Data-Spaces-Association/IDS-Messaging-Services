@@ -27,6 +27,13 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.plexus.util.StringUtils;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.jose4j.jwx.JsonWebStructure;
 import org.springframework.stereotype.Service;
 
 /**
@@ -57,11 +64,22 @@ public class DapsValidator {
      * @return the Claims of the messages DAT Token, when it can be signed with the given key
      * @throws ClaimsException if Token cannot be signed with the given key
      */
-    public static Jws<Claims> getClaims(final DynamicAttributeToken token, final List<Key> signingKeys)
+    public Jws<Claims> getClaims(final DynamicAttributeToken token, final List<Key> signingKeys)
             throws ClaimsException {
-
         final var tokenValue = token.getTokenValue();
-
+        try {
+            var noSigJwt = tokenValue.substring(0, tokenValue.lastIndexOf('.') + 1);
+            var claim = Jwts.parser()
+                    .parseClaimsJwt(noSigJwt);
+            var key = this.keyProvider.providePublicKey((String) claim.getHeader().get("kid"), claim.getBody().getIssuer());
+            if (key != null) {
+                return Jwts.parser().setSigningKey(key).parseClaimsJws(tokenValue);
+            }
+        }catch (Exception e){
+            if (log.isErrorEnabled()) {
+                log.error(e.getMessage(), e);
+            }
+        }
         if (signingKeys == null || signingKeys.isEmpty()) {
             throw new ClaimsException("No signing keys were given!");
         }

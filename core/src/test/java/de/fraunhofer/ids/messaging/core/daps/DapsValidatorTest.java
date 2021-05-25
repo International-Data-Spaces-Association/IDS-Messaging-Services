@@ -74,6 +74,7 @@ class DapsValidatorTest {
         Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
         //create JWT and sign it with generated private Key
         var jwt = Jwts.builder()
+                .setHeaderParam("kid", "default")
                 .setIssuedAt(Date.from(Instant.now()))
                 .setNotBefore(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(600)))
@@ -87,6 +88,7 @@ class DapsValidatorTest {
 
         //create a new token, already expired on creation
         jwt = Jwts.builder()
+                .setHeaderParam("kid", "default")
                 .setIssuedAt(Date.from(Instant.now()))
                 .setNotBefore(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().minusSeconds(600)))

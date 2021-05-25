@@ -15,6 +15,7 @@ package de.fraunhofer.ids.messaging.core.daps;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.net.URI;
 import java.security.Key;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -111,6 +113,28 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         return publicKeys;
     }
 
+    @Override
+    public Key providePublicKey(String issuer, String keyId){
+        try{
+            final var client = clientProvider.getClient();
+            final var request = new Request.Builder().url(issuer + "/.well-known/jwks.json").build();
+            final var response = client.newCall(request).execute();
+            final var keySetJSON = Objects.requireNonNull(response.body()).string();
+            final var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
+            final var jsonWebKey =
+                    jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(keyId))
+                            .findAny()
+                            .orElse(null);
+            if(jsonWebKey != null) {
+                return jsonWebKey.getKey();
+            }else{
+                throw new IOException();
+            }
+        }catch (IOException | JoseException e){
+            return null;
+        }
+    }
+
     /**
      * Pull the Public Key from the DAPS and save it in the publicKey variable.
      */
@@ -161,18 +185,9 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * @return true if jwt expired
      */
     private boolean isExpired(final String jwt) {
-        final var token = new DynamicAttributeTokenBuilder()._tokenFormat_(TokenFormat.JWT)._tokenValue_(jwt).build();
-
-        Claims claims;
-        try {
-            claims = DapsValidator.getClaims(token, this.publicKeys).getBody();
-        } catch (ClaimsException e) {
-            if (log.isWarnEnabled()) {
-                log.warn("Could not parse jwt!");
-            }
-
-            return true;
-        }
-        return claims.getExpiration().before(Date.from(Instant.now()));
+        var noSigJwt = jwt.substring(0, jwt.lastIndexOf('.') + 1);
+        var claims = Jwts.parser()
+                .parseClaimsJwt(noSigJwt);
+        return claims.getBody().getExpiration().before(Date.from(Instant.now()));
     }
 }
