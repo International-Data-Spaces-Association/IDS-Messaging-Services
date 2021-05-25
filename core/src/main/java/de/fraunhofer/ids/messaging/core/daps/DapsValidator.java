@@ -1,9 +1,11 @@
 package de.fraunhofer.ids.messaging.core.daps;
 
+import java.net.URI;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import io.jsonwebtoken.Claims;
@@ -12,8 +14,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
 
 /**
  * The DapsValidator checks the DAPS Token of a RequestMessage using a public signingKey.
@@ -22,6 +28,11 @@ import org.springframework.stereotype.Service;
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DapsValidator {
+
+    @Value("#{'${connector.blacklist}'.split(',')}")
+    @NonFinal
+    private List<String> blacklistedIds;
+
     DapsPublicKeyProvider keyProvider;
     String[] baseSecProfVals = {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE"};
     String[] trustSecProfVals =
@@ -88,7 +99,10 @@ public class DapsValidator {
         if (claims == null) {
             return false;
         }
-
+        var connectorId = (String) claims.getBody().get("referringConnector");
+        if (onBlacklist(connectorId)) {
+            return false;
+        }
         if (extraAttributes != null && extraAttributes.containsKey("securityProfile")) {
             try {
                 verifySecurityProfile(claims.getBody().get("securityProfile", String.class),
@@ -167,5 +181,10 @@ public class DapsValidator {
                     "Security profile violation. Registered security profile at DAPS is:  " + registered
                     + ", but the given security profile is: " + given);
         }
+    }
+
+    private boolean onBlacklist(String connectorId){
+        if(blacklistedIds == null || blacklistedIds.isEmpty()) return false;
+        return blacklistedIds.contains(connectorId);
     }
 }
