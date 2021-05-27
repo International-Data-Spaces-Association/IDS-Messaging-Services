@@ -21,11 +21,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.NoArgsConstructor;
 
 /**
  * The IDSTrustStore contains the trusted certificates.
  */
+@Slf4j
 @NoArgsConstructor
 public class TrustStoreManager {
     /**
@@ -39,10 +41,17 @@ public class TrustStoreManager {
     public X509TrustManager configureTrustStore(final X509TrustManager myTrustManager)
             throws NoSuchAlgorithmException, KeyStoreException {
         final var jreTrustManager = findDefaultTrustManager();
-        if(myTrustManager != null){
+
+        if (myTrustManager != null) {
+            if (log.isInfoEnabled()) {
+                log.info("Custom TrustStore specified, creating merged TrustManager with JRE-TrustManager.");
+            }
             return createMergedTrustManager(jreTrustManager, myTrustManager);
-        }else{
+        } else {
             //if no custom truststore is specified: only use jreTrustManager
+            if (log.isInfoEnabled()) {
+                log.info("No custom TrustStore specified, using only default JRE-TrustManager.");
+            }
             return jreTrustManager;
         }
     }
