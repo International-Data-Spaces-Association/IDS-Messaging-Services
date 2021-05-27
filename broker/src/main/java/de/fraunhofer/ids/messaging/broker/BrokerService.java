@@ -10,6 +10,7 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
+import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
@@ -17,14 +18,12 @@ import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
-import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
@@ -41,20 +40,6 @@ import org.springframework.stereotype.Component;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BrokerService extends InfrastructureService
         implements IDSBrokerService {
-
-    static String FULL_TEXT_QUERY = "PREFIX ids: <https://w3id.org/idsa/core/>\n"
-                                                  + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
-                                                  + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n"
-                                                  + "SELECT DISTINCT ?resultUri ?res { \n"
-                                                  + "  GRAPH ?g { \n"
-                                                  + "    { ?resultUri a ids:Resource } \n"
-                                                  + "    UNION \n"
-                                                  + "    { ?resultUri a ids:BaseConnector }\n"
-                                                  + "    ?resultUri ?predicate ?res .\n"
-                                                  + "    FILTER ( DATATYPE(?res) = xsd:string ) .\n"
-                                                  + "    FILTER(REGEX(?res, \"%1$s\", \"i\"))\n"
-                                                  + "  }\n"
-                                                  + "} LIMIT %2$d OFFSET %3$d\n";
 
     static int DEFAULT_LIMIT = 50;
     static int DEFAULT_OFFSET = 0;
@@ -209,11 +194,14 @@ public class BrokerService extends InfrastructureService
         return expectResultMAP(response);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ResultMAP ftSearchBroker(final URI brokerURI,
-                                    final String searchTerm,
-                                    final QueryScope queryScope,
-                                    final QueryTarget queryTarget)
+    public ResultMAP fullTextSearchBroker(final URI brokerURI,
+                                          final String searchTerm,
+                                          final QueryScope queryScope,
+                                          final QueryTarget queryTarget)
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
@@ -221,16 +209,24 @@ public class BrokerService extends InfrastructureService
             IOException,
             MultipartParseException,
             ClaimsException {
-        return ftSearchBroker(brokerURI, searchTerm, queryScope, queryTarget, DEFAULT_LIMIT, DEFAULT_OFFSET);
+        return fullTextSearchBroker(brokerURI,
+                                    searchTerm,
+                                    queryScope,
+                                    queryTarget,
+                                    DEFAULT_LIMIT,
+                                    DEFAULT_OFFSET);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ResultMAP ftSearchBroker(final URI brokerURI,
-                                    final String searchTerm,
-                                    final QueryScope queryScope,
-                                    final QueryTarget queryTarget,
-                                    final int limit,
-                                    final int offset )
+    public ResultMAP fullTextSearchBroker(final URI brokerURI,
+                                          final String searchTerm,
+                                          final QueryScope queryScope,
+                                          final QueryTarget queryTarget,
+                                          final int limit,
+                                          final int offset )
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
@@ -240,10 +236,18 @@ public class BrokerService extends InfrastructureService
             ClaimsException {
         var securityToken = getDat();
         var header = MessageBuilder
-                .buildQueryMessage(securityToken, container.getConnector(), QueryLanguage.SPARQL, queryScope,queryTarget);
-        var payload = String.format(FULL_TEXT_QUERY, searchTerm, limit, offset);
+                .buildQueryMessage(securityToken,
+                                   container.getConnector(),
+                                   QueryLanguage.SPARQL,
+                                   queryScope,
+                                   queryTarget);
+
+        final var payload = String.format(
+                FullTextQueryTemplate.FULL_TEXT_QUERY,
+                searchTerm, limit, offset);
         final var messageAndPayload = new GenericMessageAndPayload(header, payload);
-        var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
+        final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
+
         return expectResultMAP(response);
     }
 

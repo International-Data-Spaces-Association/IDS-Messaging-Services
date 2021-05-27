@@ -265,7 +265,7 @@ class BrokerServiceTest {
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
 
-        final var result = this.brokerService.ftSearchBroker(URI.create("/"), "",QueryScope.ALL,QueryTarget.BROKER);
+        final var result = this.brokerService.fullTextSearchBroker(URI.create("/"), "", QueryScope.ALL, QueryTarget.BROKER);
         assertNotNull(result.getMessage(), "Method should return a message");
         assertEquals(ResultMAP.class, result.getClass(), "Method should return ResultMap");
         assertTrue(result.getPayload().isPresent(),"ResultMAP should have payload");
