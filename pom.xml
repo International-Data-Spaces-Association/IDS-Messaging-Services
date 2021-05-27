@@ -240,10 +240,6 @@
                     <id>isst-nexus-public</id>
                     <url>https://mvn.ids.isst.fraunhofer.de/nexus/repository/ids-public/</url>
                 </repository>
-                <snapshotRepository>
-                    <id>isst-nexus-public</id>
-                    <url>https://mvn.ids.isst.fraunhofer.de/nexus/repository/ids-public/</url>
-                </snapshotRepository>
             </distributionManagement>
             <build>
                 <plugins>
