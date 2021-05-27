@@ -17,7 +17,7 @@
     </modules>
 
     <properties>
-        <revision>4.1.0.0</revision>
+        <revision>4.1.0.1</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -165,19 +165,19 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
             <artifactId>java</artifactId>
-            <version>4.0.5</version>
+            <version>4.0.8</version>
         </dependency>
 
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>infomodel-serializer</artifactId>
-            <version>4.0.5</version>
+            <version>4.0.8</version>
         </dependency>
 
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>interaction</artifactId>
-            <version>4.0.5</version>
+            <version>4.0.8</version>
         </dependency>
     </dependencies>
 
@@ -240,10 +240,6 @@
                     <id>isst-nexus-public</id>
                     <url>https://mvn.ids.isst.fraunhofer.de/nexus/repository/ids-public/</url>
                 </repository>
-                <snapshotRepository>
-                    <id>isst-nexus-public</id>
-                    <url>https://mvn.ids.isst.fraunhofer.de/nexus/repository/ids-public/</url>
-                </snapshotRepository>
             </distributionManagement>
             <build>
                 <plugins>
