@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 
 ### Miscellaneous
 - Patch Change: In POM an unnecessary snapshot-repo has been removed, since snapshot-versions are not currently used as releases
+- Patch Change: Move MultipartParser to Messaging Module (no access to the methods known from external)
 
 ---
 
