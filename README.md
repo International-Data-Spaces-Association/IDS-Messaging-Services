@@ -29,9 +29,9 @@ The following IDS-Infomodel-Artifacts are used as dependencies.
 
 | Group | Artifact | Version |
 | ------ | ------ | ------ | 
-| de.fraunhofer.iais.eis.ids.infomodel | java | 4.0.5 |
-| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.0.5 |
-| de.fraunhofer.iais.eis.ids | interaction | 4.0.5 |
+| de.fraunhofer.iais.eis.ids.infomodel | java | 4.0.8 |
+| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.0.8 |
+| de.fraunhofer.iais.eis.ids | interaction | 4.0.8 |
 
 ## Overview: Supported IDS-Message protocols
 
