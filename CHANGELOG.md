@@ -9,13 +9,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [?] UNRELEASED
+## Version [4.1.0.1] UNRELEASED
 
-### Infomodel Maintenance
+### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.0.8
 - Used Artifacts: java, infomodel-serializer, interaction
 
-### Dependency Maintenance
+### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-parent 2.4.5 -> 2.5.0
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.4.5 -> 2.5.0
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.2.0 -> 3.3.0
