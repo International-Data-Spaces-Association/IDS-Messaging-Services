@@ -32,7 +32,7 @@ import de.fraunhofer.iais.eis.ResourceUnavailableMessage;
 import de.fraunhofer.iais.eis.ResourceUpdateMessage;
 import de.fraunhofer.iais.eis.ResultMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.messaging.core.util.MultipartDatapart;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactRequestMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractAgreementMAP;

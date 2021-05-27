@@ -16,7 +16,7 @@ import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.core.util.MultipartParser;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
 import de.fraunhofer.ids.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.messaging.response.BodyResponse;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;

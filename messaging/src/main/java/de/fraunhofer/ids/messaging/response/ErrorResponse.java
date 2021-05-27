@@ -11,7 +11,7 @@ import de.fraunhofer.iais.eis.RejectionMessageBuilder;
 import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.messaging.core.util.MultipartDatapart;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

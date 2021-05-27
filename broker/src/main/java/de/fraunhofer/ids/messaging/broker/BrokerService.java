@@ -5,14 +5,25 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.DynamicAttributeToken;
+import de.fraunhofer.iais.eis.QueryLanguage;
+import de.fraunhofer.iais.eis.QueryScope;
+import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.daps.*;
-import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
+import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
+import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -31,7 +42,7 @@ import org.springframework.stereotype.Component;
 public class BrokerService extends InfrastructureService
         implements IDSBrokerService {
 
-    private static final String FULL_TEXT_QUERY = "PREFIX ids: <https://w3id.org/idsa/core/>\n"
+    static String FULL_TEXT_QUERY = "PREFIX ids: <https://w3id.org/idsa/core/>\n"
                                                   + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
                                                   + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n"
                                                   + "SELECT DISTINCT ?resultUri ?res { \n"
@@ -45,8 +56,8 @@ public class BrokerService extends InfrastructureService
                                                   + "  }\n"
                                                   + "} LIMIT %2$d OFFSET %3$d\n";
 
-    private static final int DEFAULT_LIMIT = 50;
-    private static final int DEFAULT_OFFSET = 0;
+    static int DEFAULT_LIMIT = 50;
+    static int DEFAULT_OFFSET = 0;
     /**
      * BrokerService constructor.
      * @param container the ConfigContainer
@@ -199,24 +210,34 @@ public class BrokerService extends InfrastructureService
     }
 
     @Override
-    public ResultMAP ftSearchBroker( URI brokerURI, String searchTerm, QueryScope queryScope,
-                                     QueryTarget queryTarget )
+    public ResultMAP ftSearchBroker(final URI brokerURI,
+                                    final String searchTerm,
+                                    final QueryScope queryScope,
+                                    final QueryTarget queryTarget)
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException,
-            IOException, MultipartParseException, ClaimsException {
-        return ftSearchBroker (brokerURI, searchTerm, queryScope, queryTarget, DEFAULT_LIMIT, DEFAULT_OFFSET);
+            IOException,
+            MultipartParseException,
+            ClaimsException {
+        return ftSearchBroker(brokerURI, searchTerm, queryScope, queryTarget, DEFAULT_LIMIT, DEFAULT_OFFSET);
     }
 
     @Override
-    public ResultMAP ftSearchBroker( URI brokerURI, String searchTerm, QueryScope queryScope,
-                                     QueryTarget queryTarget, int limit, int offset )
+    public ResultMAP ftSearchBroker(final URI brokerURI,
+                                    final String searchTerm,
+                                    final QueryScope queryScope,
+                                    final QueryTarget queryTarget,
+                                    final int limit,
+                                    final int offset )
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException,
-            IOException, MultipartParseException, ClaimsException {
+            IOException,
+            MultipartParseException,
+            ClaimsException {
         var securityToken = getDat();
         var header = MessageBuilder
                 .buildQueryMessage(securityToken, container.getConnector(), QueryLanguage.SPARQL, queryScope,queryTarget);

@@ -8,8 +8,9 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.ids.messaging.core.daps.*;
-import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
@@ -104,15 +105,15 @@ public interface IDSBrokerService {
      */
     ResultMAP queryBroker(URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException;
-    ResultMAP ftSearchBroker( URI brokerURI, String searchTerm, QueryScope queryScope,
-                              QueryTarget queryTarget )
+    ResultMAP ftSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
+                             QueryTarget queryTarget)
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException,
             IOException, MultipartParseException, ClaimsException;
-    ResultMAP ftSearchBroker( URI brokerURI, String searchTerm, QueryScope queryScope,
-                              QueryTarget queryTarget, int limit, int offset )
+    ResultMAP ftSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
+                             QueryTarget queryTarget, int limit, int offset )
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
