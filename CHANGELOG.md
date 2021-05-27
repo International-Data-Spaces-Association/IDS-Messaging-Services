@@ -9,7 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.1.0.1] UNRELEASED
+## Version [4.1.1.0] UNRELEASED
+
+### Added
+- Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
 
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.0.8
