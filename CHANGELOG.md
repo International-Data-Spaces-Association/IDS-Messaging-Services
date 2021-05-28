@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
 
+### Changes
+- Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT
+
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.0.8
 - Used Artifacts: java, infomodel-serializer, interaction
