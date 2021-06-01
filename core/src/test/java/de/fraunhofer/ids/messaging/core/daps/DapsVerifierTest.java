@@ -2,6 +2,8 @@ package de.fraunhofer.ids.messaging.core.daps;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
