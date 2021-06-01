@@ -16,7 +16,7 @@ public class CustomRuleResult {
      *
      * @return CustomRuleResult with success flag set to true
      */
-    public static CustomRuleResult successResult(){
+    public static CustomRuleResult success(){
         return new CustomRuleResult(true, "");
     }
 
@@ -26,7 +26,7 @@ public class CustomRuleResult {
      * @param message error message (information why validation failed)
      * @return CustomRuleResult with success flag set to false
      */
-    public static CustomRuleResult failureResult(@NonNull String message){
+    public static CustomRuleResult failure(@NonNull String message){
         return new CustomRuleResult(false, message);
     }
 
