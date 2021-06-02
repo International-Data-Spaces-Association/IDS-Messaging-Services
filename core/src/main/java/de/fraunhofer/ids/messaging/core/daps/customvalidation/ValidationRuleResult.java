@@ -1,4 +1,4 @@
-package de.fraunhofer.ids.messaging.core.daps.customcheck;
+package de.fraunhofer.ids.messaging.core.daps.customvalidation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,15 +9,15 @@ import lombok.NonNull;
  */
 @Getter
 @AllArgsConstructor
-public class CustomRuleResult {
+public class ValidationRuleResult {
 
     /**
      * Create a successResult
      *
      * @return CustomRuleResult with success flag set to true
      */
-    public static CustomRuleResult success(){
-        return new CustomRuleResult(true, "");
+    public static ValidationRuleResult success(){
+        return new ValidationRuleResult(true, "");
     }
 
     /**
@@ -26,8 +26,8 @@ public class CustomRuleResult {
      * @param message error message (information why validation failed)
      * @return CustomRuleResult with success flag set to false
      */
-    public static CustomRuleResult failure(@NonNull String message){
-        return new CustomRuleResult(false, message);
+    public static ValidationRuleResult failure(@NonNull String message){
+        return new ValidationRuleResult(false, message);
     }
 
     private boolean success;
