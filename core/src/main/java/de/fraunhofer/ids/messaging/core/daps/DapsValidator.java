@@ -17,6 +17,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import io.jsonwebtoken.Claims;
@@ -64,22 +65,15 @@ public class DapsValidator {
      * @return the Claims of the messages DAT Token, when it can be signed with the given key
      * @throws ClaimsException if Token cannot be signed with the given key
      */
-    public Jws<Claims> getClaims(final DynamicAttributeToken token, final List<Key> signingKeys)
+    public Jws<Claims> getClaims(final DynamicAttributeToken token, final Set<Key> signingKeys)
             throws ClaimsException {
         final var tokenValue = token.getTokenValue();
-        try {
-            var noSigJwt = tokenValue.substring(0, tokenValue.lastIndexOf('.') + 1);
-            var claim = Jwts.parser()
-                    .parseClaimsJwt(noSigJwt);
-            var key = this.keyProvider.providePublicKey((String) claim.getHeader().get("kid"), claim.getBody().getIssuer());
-            if (key != null) {
-                return Jwts.parser().setSigningKey(key).parseClaimsJws(tokenValue);
-            }
-        }catch (Exception e){
-            if (log.isErrorEnabled()) {
-                log.error(e.getMessage(), e);
-            }
+        //try to find public key from token fields
+        var key = findPublicKeyForToken(tokenValue);
+        if(key != null){
+            return Jwts.parser().setSigningKey(key).parseClaimsJws(tokenValue);
         }
+        //if no key was found, use set of all signing keys
         if (signingKeys == null || signingKeys.isEmpty()) {
             throw new ClaimsException("No signing keys were given!");
         }
@@ -131,11 +125,12 @@ public class DapsValidator {
                 return false;
             }
         }
+
         try {
             return DapsVerifier.verify(claims);
         } catch (ClaimsException e) {
             if (log.isWarnEnabled()) {
-                log.warn("Claims could not be verified!");
+                log.warn(String.format("Claims could not be verified! Message: %s", e.getMessage()));
             }
             return false;
         }
@@ -151,6 +146,23 @@ public class DapsValidator {
         return checkDat(token, null);
     }
 
+    /**
+     * @param tokenValue string value of a DAT
+     * @return Public Key with kid from DAT located at Issuer from DAT
+     */
+    private Key findPublicKeyForToken(String tokenValue){
+        try {
+            var noSigJwt = tokenValue.substring(0, tokenValue.lastIndexOf('.') + 1);
+            var claim = Jwts.parser()
+                    .parseClaimsJwt(noSigJwt);
+            return this.keyProvider.providePublicKey(claim.getBody().getIssuer(), (String) claim.getHeader().get("kid"));
+        }catch (Exception e){
+            if (log.isErrorEnabled()) {
+                log.error(e.getMessage(), e);
+            }
+            return null;
+        }
+    }
     /**
      * Verifies that the {@link de.fraunhofer.iais.eis.SecurityProfile} in the token is  same as in the Selfdescription.
      *

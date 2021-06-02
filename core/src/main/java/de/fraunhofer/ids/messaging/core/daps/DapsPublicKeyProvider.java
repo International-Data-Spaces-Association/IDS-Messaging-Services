@@ -15,6 +15,7 @@ package de.fraunhofer.ids.messaging.core.daps;
 
 import java.security.Key;
 import java.util.List;
+import java.util.Set;
 
 /**
  * an Implementation of this has to provide the Public Key from the DAPS Service.
@@ -26,7 +27,14 @@ public interface DapsPublicKeyProvider {
      *
      * @return the public Key of a DAPS Service
      */
-    List<Key> providePublicKeys();
+    Set<Key> providePublicKeys();
 
+    /**
+     * Try to get the Public Key with kid keyId from jwks of issuer DAPS
+     *
+     * @param issuer base uri of issuer DAPS
+     * @param keyId kid of public key from jwks
+     * @return publicKey with kid from jwks of issuer DAPS (or null if it does not exist)
+     */
     Key providePublicKey(String issuer, String keyId);
 }

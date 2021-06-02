@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
@@ -71,7 +72,7 @@ class DapsValidatorTest {
         keyGen.initialize(512);
         final var pair = keyGen.generateKeyPair();
         //when PublicKeyProvider is called, return generated Public Key
-        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
+        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(Set.of(pair.getPublic()));
         //create JWT and sign it with generated private Key
         var jwt = Jwts.builder()
                 .setHeaderParam("kid", "default")
@@ -117,7 +118,7 @@ class DapsValidatorTest {
         keyGen.initialize(512);
         final var pair = keyGen.generateKeyPair();
         //when PublicKeyProvider is called, return generated Public Key
-        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
+        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(Set.of(pair.getPublic()));
         //create JWT with BASE_CONNECTOR_SECURITY_PROFILE
         var jwt = Jwts.builder()
                 .setIssuedAt(Date.from(Instant.now()))

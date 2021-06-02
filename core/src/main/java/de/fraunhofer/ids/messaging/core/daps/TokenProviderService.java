@@ -18,11 +18,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.security.Key;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
@@ -48,19 +45,31 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
     final ClientProvider      clientProvider;
     final TokenManagerService tokenManagerService;
 
     String      currentJwt;
-    List<Key>   publicKeys;
 
     @Value("${daps.token.url}")
     String dapsTokenUrl;
 
     @Value("#{${daps.key.url.kid}}")
     Map<String, String> urlKidMap;
+
+    Map<String, Key> publicKeyMap;
+
+    /**
+     * @param clientProvider      the {@link ClientProvider} providing HttpClients using the current connector configuration
+     * @param tokenManagerService client to get a DAT Token from a DAPS (eg Orbiter/AISEC)
+     */
+    @Autowired
+    public TokenProviderService(final ClientProvider clientProvider,
+                                final TokenManagerService tokenManagerService) {
+        this.clientProvider = clientProvider;
+        this.tokenManagerService = tokenManagerService;
+        this.publicKeyMap = new HashMap<>();
+    }
 
     /**
      * Return the DAT as a Infomodel {@link DynamicAttributeToken}.
@@ -101,8 +110,9 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * @return the Public Key from the DAPS (used for validating Tokens of incoming Messages)
      */
     @Override
-    public List<Key> providePublicKeys() {
-        if (publicKeys == null) {
+    public Set<Key> providePublicKeys() {
+        //while not all trusted keys are cached, try to get the rest of them
+        if (publicKeyMap.size() < urlKidMap.size()) {
             getPublicKeys();
         }
 
@@ -110,27 +120,62 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
             log.debug("Provide public key!");
         }
 
-        return publicKeys;
+        return new HashSet<>(publicKeyMap.values());
     }
 
+    /**
+     * Try to get the Public Key with kid keyId from jwks of issuer DAPS
+     *
+     * @param issuer base uri of issuer DAPS
+     * @param keyId kid of public key from jwks
+     * @return publicKey with kid from jwks of issuer DAPS (or null if it does not exist)
+     */
     @Override
     public Key providePublicKey(String issuer, String keyId){
         try{
             final var client = clientProvider.getClient();
-            final var request = new Request.Builder().url(issuer + "/.well-known/jwks.json").build();
-            final var response = client.newCall(request).execute();
-            final var keySetJSON = Objects.requireNonNull(response.body()).string();
-            final var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
-            final var jsonWebKey =
-                    jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(keyId))
-                            .findAny()
-                            .orElse(null);
-            if(jsonWebKey != null) {
-                return jsonWebKey.getKey();
-            }else{
-                throw new IOException();
+
+            //Standard JWKS location is /.well-known/jwks.json
+            final var dapsUrl = issuer + "/.well-known/jwks.json";
+
+            //if public key from this combination is already cached, use this one
+            if(publicKeyMap.containsKey(String.format("%s:%s", dapsUrl, keyId))){
+                return publicKeyMap.get(String.format("%s:%s", dapsUrl, keyId));
             }
+
+            //only pull public key if it is in set of trusted keys
+            if(urlKidMap.getOrDefault(dapsUrl, "").equals(keyId)){
+                final var request = new Request.Builder().url(dapsUrl).build();
+                final var response = client.newCall(request).execute();
+                final var keySetJSON = Objects.requireNonNull(response.body()).string();
+                final var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
+                final var jsonWebKey =
+                        jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(keyId))
+                                .findAny()
+                                .orElse(null);
+                if(jsonWebKey != null) {
+                    //if a public key was found, save it in publicKeyMap and return the key
+                    var key = jsonWebKey.getKey();
+                    publicKeyMap.put(dapsUrl + ":" + keyId, key);
+                    return key;
+                }else{
+                    //if no key was found, return null
+                    if(log.isWarnEnabled()){
+                        log.warn(String.format("No key found at DAPS url, kid combination %s:%s!", dapsUrl, keyId));
+                    }
+                    return null;
+                }
+            }
+            if(log.isWarnEnabled()){
+                log.warn(String.format("DAT url, kid combination %s:%s not from a trusted DAPS!", dapsUrl, keyId));
+            }
+            //if key is not trusted, return null
+            return null;
         }catch (IOException | JoseException e){
+            if(log.isErrorEnabled()){
+                log.error("Exception while pulling public key from DAPS!");
+                log.error(e.getMessage(), e);
+            }
             return null;
         }
     }
@@ -140,11 +185,12 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      */
     @PostConstruct
     private void getPublicKeys() {
-        this.publicKeys = new ArrayList<>();
         //request the JWK-Set
         final var client = clientProvider.getClient();
 
         for (final var entry : urlKidMap.entrySet()) {
+            //if key was already saved, skip it
+            if(publicKeyMap.containsKey(String.format("%s:%s", entry.getKey(), entry.getValue()))) continue;
             try {
                 if (log.isDebugEnabled()) {
                     log.debug(String.format("Getting json web keyset from %s", entry.getKey()));
@@ -160,7 +206,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                                      .orElse(null);
 
                 if (jsonWebKey != null) {
-                    this.publicKeys.add(jsonWebKey.getKey());
+                    this.publicKeyMap.put(String.format("%s:%s", entry.getKey(), entry.getValue()),jsonWebKey.getKey());
                 } else {
                     if (log.isWarnEnabled()) {
                         log.warn("Could not get JsonWebKey with kid " + entry.getValue() + " from received KeySet! PublicKey is null!");
