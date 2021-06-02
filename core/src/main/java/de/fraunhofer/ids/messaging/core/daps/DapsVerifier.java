@@ -28,7 +28,7 @@ public class DapsVerifier {
      *
      * @param DATValidationRule {@link DATValidationRule} to add
      */
-    public void registerValidationRule(DATValidationRule DATValidationRule){
+    public void addValidationRule(DATValidationRule DATValidationRule){
         datValidationRules.add(DATValidationRule);
     }
 
