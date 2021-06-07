@@ -9,10 +9,7 @@ import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
-import de.fraunhofer.ids.messaging.core.daps.DapsVerifier;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilter;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterResult;
@@ -44,32 +41,29 @@ public class MessageDispatcher {
      * Create a MessageDispatcher.
      *  @param objectMapper          a jackson objectmapper for (de)serializing objects
      * @param requestMessageHandler resolver for finding the fitting {@link MessageHandler} for the incoming Message
-     * @param provider              a provider that can access the public key of the DAPS
      * @param configContainer       the connector configuration
-     * @param dapsValidator
+     * @param dapsValidator         validator class for daps dat
      */
     public MessageDispatcher(final ObjectMapper objectMapper,
                              final RequestMessageHandler requestMessageHandler,
-                             final DapsPublicKeyProvider provider,
-                             final ConfigContainer configContainer, DapsValidator dapsValidator) {
+                             final ConfigContainer configContainer,
+                             final DapsValidator dapsValidator) {
         this.objectMapper = objectMapper;
         this.requestMessageHandler = requestMessageHandler;
         this.configContainer = configContainer;
         this.dapsValidator = dapsValidator;
         this.preDispatchingFilters = new LinkedList<>();
 
-        registerDatVerificationFilter(provider, configContainer);
+        registerDatVerificationFilter(configContainer);
     }
 
 
     /**
      * Incoming messages are checked for a valid DAT token.
      *
-     * @param provider               DAPS Public Key Provider
      * @param configurationContainer Configuration
      */
-    private void registerDatVerificationFilter(final DapsPublicKeyProvider provider,
-                                               final ConfigContainer configurationContainer) {
+    private void registerDatVerificationFilter(final ConfigContainer configurationContainer) {
         //add DAT verification as PreDispatchingFilter
         registerPreDispatchingAction(in -> {
             if (configurationContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT) {

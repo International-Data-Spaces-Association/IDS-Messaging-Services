@@ -5,8 +5,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 
-import de.fraunhofer.ids.messaging.core.daps.customvalidation.DATValidationRule;
-import de.fraunhofer.ids.messaging.core.daps.customvalidation.ValidationRuleException;
 import de.fraunhofer.ids.messaging.core.daps.customvalidation.ValidationRuleResult;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -46,7 +44,7 @@ class DapsVerifierTest {
         assertThrows(ClaimsException.class, () -> DapsVerifier.verify(invalidClaims));
         DapsVerifier.addValidationRule(toVerify -> ValidationRuleResult.success());
         assertTrue(DapsVerifier.verify(claims));
-        DapsVerifier.addValidationRule(claim -> claim.getIssuer().equals("Test") ?
+        DapsVerifier.addValidationRule(claim -> "Test".equals(claim.getIssuer()) ?
                 ValidationRuleResult.success() :
                 ValidationRuleResult.failure("This rule sometimes fails!")
         );
@@ -55,7 +53,7 @@ class DapsVerifierTest {
         assertThrows(ClaimsException.class, () -> DapsVerifier.verify(claims));
         DapsVerifier.addValidationRule(claim -> ValidationRuleResult.failure("This rule always fails!"));
         assertThrows(ClaimsException.class, () -> DapsVerifier.verify(claims));
-        Field field = DapsVerifier.class.getDeclaredField("datValidationRules");
+        final var field = DapsVerifier.class.getDeclaredField("datValidationRules");
         field.setAccessible(true);
         field.set(null, new ArrayList<>());
     }

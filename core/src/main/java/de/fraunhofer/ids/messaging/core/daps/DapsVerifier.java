@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import de.fraunhofer.ids.messaging.core.daps.customvalidation.DATValidationRule;
+import de.fraunhofer.ids.messaging.core.daps.customvalidation.DatValidationRule;
 import de.fraunhofer.ids.messaging.core.daps.customvalidation.ValidationRuleException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -19,17 +19,18 @@ import lombok.extern.slf4j.Slf4j;
 public class DapsVerifier {
 
     /**
-     * Custom DAT validation rules, which are checked additionally to the default checks
+     * Custom DAT validation rules, which are checked additionally to the default checks.
      */
-    private static List<DATValidationRule> datValidationRules = new ArrayList<>();
+    @SuppressWarnings("FieldMayBeFinal")
+    private static List<DatValidationRule> datValidationRules = new ArrayList<>();
 
     /**
-     * Add a custom validation rule to check the DAT
+     * Add a custom validation rule to check the DAT.
      *
-     * @param DATValidationRule {@link DATValidationRule} to add
+     * @param datValidationRule {@link DatValidationRule} to add
      */
-    public void addValidationRule(DATValidationRule DATValidationRule){
-        datValidationRules.add(DATValidationRule);
+    public void addValidationRule(final DatValidationRule datValidationRule) {
+        datValidationRules.add(datValidationRule);
     }
 
 
@@ -73,15 +74,17 @@ public class DapsVerifier {
                 log.debug("Checking custom rules...");
             }
             //check custom dat rules
-            if(datValidationRules != null && !datValidationRules.isEmpty()){
-                for(var rule : datValidationRules){
+            if (!datValidationRules.isEmpty()) {
+                for (final var rule : datValidationRules) {
                     try {
-                        var result = rule.checkRule(toVerify);
-                        if(!result.isSuccess()){
+                        final var result = rule.checkRule(toVerify);
+
+                        if (!result.isSuccess()) {
                             //if a rule fails, reject token
                             if (log.isWarnEnabled()) {
                                 log.warn(String.format("Custom DAT validation rule failed! Message: %s", result.getMessage()));
                             }
+
                             throw new ClaimsException(String.format("Custom Rule failed! Message: %s", result.getMessage()));
                         }
                     } catch (ValidationRuleException e) {
@@ -97,11 +100,13 @@ public class DapsVerifier {
             if (log.isInfoEnabled()) {
                 log.info("Claims verified successfully");
             }
+
             return true;
         } catch (NullPointerException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Could not verify Claims of the DAT Token!");
             }
+
             throw new ClaimsException(e.getMessage());
         }
     }
