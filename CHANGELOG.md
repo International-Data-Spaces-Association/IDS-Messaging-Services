@@ -13,9 +13,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
+- Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 applicaton.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
 
 ### Changes
 - Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT
+- Patch Change: Stopped printing values in logs for "Request token", "Response body of token request", "Dynamic Attribute Token" 
 
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.0.8

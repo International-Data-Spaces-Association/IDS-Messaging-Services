@@ -15,13 +15,13 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -46,7 +46,15 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
     @NonFinal
     @Value("${clearinghouse.url}")
-    private String clearingHouseUrl;
+    String clearingHouseUrl;
+
+    @NonFinal
+    @Value("${clearinghouse.query.endpoint:/messages/query}")
+    String queryEndpoint;
+
+    @NonFinal
+    @Value("${clearinghouse.log.endpoint:/messages/log}")
+    String logEndpoint;
 
     public ClearingHouseService(final ConfigContainer container,
                                 final DapsTokenProvider tokenProvider,
@@ -92,7 +100,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
                 MediaType.parse("application/json"));
 
         //set some random id for message
-        final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + pid));
+        final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + logEndpoint + "/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
         return expectMessageProcessedNotificationMAP(map);
     }
@@ -126,10 +134,10 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
         //build targetURI of QueryMessage (if pid and messageid are given)
         final var targetURI = (pid == null)
-                ? new URI(clearingHouseUrl)
+                ? new URI(clearingHouseUrl + queryEndpoint)
                 : messageId == null
-                        ? new URI(String.format("%s%s", clearingHouseUrl, pid))
-                        : new URI(String.format("%s%s/%s", clearingHouseUrl, pid, messageId));
+                        ? new URI(String.format("%s/%s", clearingHouseUrl + queryEndpoint, pid))
+                        : new URI(String.format("%s/%s/%s", clearingHouseUrl + queryEndpoint, pid, messageId));
 
         final var response = idsHttpService.sendAndCheckDat(body, targetURI);
         final var map = multipartResponseConverter.convertResponse(response);
