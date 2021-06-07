@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
 - Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 applicaton.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
+- Minor Change: New feature - At Connector runtime, individual additional DAPS DAT validation rules can now be added during the verification process of the DAT. For example, it is possible to create a blacklist of untrusted IDS-Connectors or DAPS-Systems and save them in a Connector-Database and check for them when a message is received. If the rules are not met, a RejectionMessage is sent automatically by the IDS-Messaging-Services.
 
 ### Changes
 - Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT
