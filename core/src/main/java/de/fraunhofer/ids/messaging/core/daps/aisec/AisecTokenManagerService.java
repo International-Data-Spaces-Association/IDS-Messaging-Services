@@ -92,10 +92,6 @@ public class AisecTokenManagerService implements TokenManagerService {
 
             final var jws = getRequestToken(targetAudience, privateKey, connectorUUID);
 
-            if (log.isInfoEnabled()) {
-                log.info("Request token: " + jws);
-            }
-
             // build form body to embed client assertion into post request
             final var formBody = getFormBody(jws);
 
@@ -115,10 +111,6 @@ public class AisecTokenManagerService implements TokenManagerService {
             checkEmptyDAPSResponse(responseBody); //can throw exception
 
             final var jwtString = responseBody.string();
-
-            if (log.isInfoEnabled()) {
-                log.info("Response body of token request:\n{}", jwtString);
-            }
 
             dynamicAttributeToken = getDAT(jwtString);
         } catch (IOException e) {
@@ -205,13 +197,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     private String getDAT(final String jwtString) {
         final var jsonObject = new JSONObject(jwtString);
-        final var dynamicAttributeToken = jsonObject.getString("access_token");
-
-        if (log.isInfoEnabled()) {
-            log.info("Dynamic Attribute Token: " + dynamicAttributeToken);
-        }
-
-        return dynamicAttributeToken;
+        return jsonObject.getString("access_token");
     }
 
     /**
