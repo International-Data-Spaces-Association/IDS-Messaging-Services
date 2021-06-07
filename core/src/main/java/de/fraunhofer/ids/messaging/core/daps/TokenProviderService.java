@@ -15,17 +15,19 @@ package de.fraunhofer.ids.messaging.core.daps;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.net.URI;
 import java.security.Key;
 import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +59,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     @Value("#{${daps.key.url.kid}}")
     Map<String, String> urlKidMap;
 
+    @SuppressWarnings("FieldMayBeFinal")
     Map<String, Key> publicKeyMap;
 
     /**
@@ -124,27 +127,27 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     }
 
     /**
-     * Try to get the Public Key with kid keyId from jwks of issuer DAPS
+     * Try to get the Public Key with kid keyId from jwks of issuer DAPS.
      *
      * @param issuer base uri of issuer DAPS
      * @param keyId kid of public key from jwks
      * @return publicKey with kid from jwks of issuer DAPS (or null if it does not exist)
      */
     @Override
-    public Key providePublicKey(String issuer, String keyId){
-        try{
+    public Key providePublicKey(final String issuer, final String keyId) {
+        try {
             final var client = clientProvider.getClient();
 
             //Standard JWKS location is /.well-known/jwks.json
             final var dapsUrl = issuer + "/.well-known/jwks.json";
 
             //if public key from this combination is already cached, use this one
-            if(publicKeyMap.containsKey(String.format("%s:%s", dapsUrl, keyId))){
+            if (publicKeyMap.containsKey(String.format("%s:%s", dapsUrl, keyId))) {
                 return publicKeyMap.get(String.format("%s:%s", dapsUrl, keyId));
             }
 
             //only pull public key if it is in set of trusted keys
-            if(urlKidMap.getOrDefault(dapsUrl, "").equals(keyId)){
+            if (urlKidMap.getOrDefault(dapsUrl, "").equals(keyId)) {
                 final var request = new Request.Builder().url(dapsUrl).build();
                 final var response = client.newCall(request).execute();
                 final var keySetJSON = Objects.requireNonNull(response.body()).string();
@@ -153,26 +156,26 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                         jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(keyId))
                                 .findAny()
                                 .orElse(null);
-                if(jsonWebKey != null) {
+                if (jsonWebKey != null) {
                     //if a public key was found, save it in publicKeyMap and return the key
                     var key = jsonWebKey.getKey();
                     publicKeyMap.put(dapsUrl + ":" + keyId, key);
                     return key;
-                }else{
+                } else {
                     //if no key was found, return null
-                    if(log.isWarnEnabled()){
+                    if (log.isWarnEnabled()) {
                         log.warn(String.format("No key found at DAPS url, kid combination %s:%s!", dapsUrl, keyId));
                     }
                     return null;
                 }
             }
-            if(log.isWarnEnabled()){
+            if (log.isWarnEnabled()) {
                 log.warn(String.format("DAT url, kid combination %s:%s not from a trusted DAPS!", dapsUrl, keyId));
             }
             //if key is not trusted, return null
             return null;
-        }catch (IOException | JoseException e){
-            if(log.isErrorEnabled()){
+        } catch (IOException | JoseException e) {
+            if (log.isErrorEnabled()) {
                 log.error("Exception while pulling public key from DAPS!");
                 log.error(e.getMessage(), e);
             }
@@ -190,7 +193,10 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
         for (final var entry : urlKidMap.entrySet()) {
             //if key was already saved, skip it
-            if(publicKeyMap.containsKey(String.format("%s:%s", entry.getKey(), entry.getValue()))) continue;
+            if (publicKeyMap.containsKey(String.format("%s:%s", entry.getKey(), entry.getValue()))) {
+                continue;
+            }
+
             try {
                 if (log.isDebugEnabled()) {
                     log.debug(String.format("Getting json web keyset from %s", entry.getKey()));
@@ -206,7 +212,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                                      .orElse(null);
 
                 if (jsonWebKey != null) {
-                    this.publicKeyMap.put(String.format("%s:%s", entry.getKey(), entry.getValue()),jsonWebKey.getKey());
+                    this.publicKeyMap.put(String.format("%s:%s", entry.getKey(), entry.getValue()), jsonWebKey.getKey());
                 } else {
                     if (log.isWarnEnabled()) {
                         log.warn("Could not get JsonWebKey with kid " + entry.getValue() + " from received KeySet! PublicKey is null!");

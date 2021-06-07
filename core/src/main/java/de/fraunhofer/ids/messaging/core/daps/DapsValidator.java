@@ -15,7 +15,6 @@ package de.fraunhofer.ids.messaging.core.daps;
 
 import java.security.Key;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,13 +27,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.plexus.util.StringUtils;
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.MalformedClaimException;
-import org.jose4j.jwt.consumer.InvalidJwtException;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.jose4j.jwx.JsonWebStructure;
 import org.springframework.stereotype.Service;
 
 /**
@@ -70,7 +62,7 @@ public class DapsValidator {
         final var tokenValue = token.getTokenValue();
         //try to find public key from token fields
         var key = findPublicKeyForToken(tokenValue);
-        if(key != null){
+        if (key != null) {
             return Jwts.parser().setSigningKey(key).parseClaimsJws(tokenValue);
         }
         //if no key was found, use set of all signing keys
@@ -150,13 +142,13 @@ public class DapsValidator {
      * @param tokenValue string value of a DAT
      * @return Public Key with kid from DAT located at Issuer from DAT
      */
-    private Key findPublicKeyForToken(String tokenValue){
+    private Key findPublicKeyForToken(final String tokenValue) {
         try {
             var noSigJwt = tokenValue.substring(0, tokenValue.lastIndexOf('.') + 1);
             var claim = Jwts.parser()
                     .parseClaimsJwt(noSigJwt);
             return this.keyProvider.providePublicKey(claim.getBody().getIssuer(), (String) claim.getHeader().get("kid"));
-        }catch (Exception e){
+        } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error(e.getMessage(), e);
             }
