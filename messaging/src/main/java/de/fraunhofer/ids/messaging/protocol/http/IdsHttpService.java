@@ -33,7 +33,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.Buffer;
 import org.apache.jena.riot.RiotException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -88,7 +87,6 @@ public class IdsHttpService implements HttpService {
         }
 
         final Map<String, Object> extraAttributes = new ConcurrentHashMap<>();
-        log.info(messageString);
         final var message = serializer.deserialize(messageString, Message.class);
         final var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
@@ -174,23 +172,12 @@ public class IdsHttpService implements HttpService {
         }
 
         final var request = buildRequest(requestBody, target);
-        log.info(bodyToString(request));
+
         if (log.isDebugEnabled()) {
             log.debug(String.format("sending request to %s", target.toString()));
         }
 
         return sendRequest(request, getClientWithSettings());
-    }
-
-    private static String bodyToString(final Request request){
-        try {
-            final Request copy = request.newBuilder().build();
-            final Buffer buffer = new Buffer();
-            copy.body().writeTo(buffer);
-            return buffer.readUtf8();
-        } catch (final IOException e) {
-            return "did not work";
-        }
     }
 
     /**

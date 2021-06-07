@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 - Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT
+- Patch Change: Stopped printing values in logs for "Request token", "Response body of token request", "Dynamic Attribute Token" 
 
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.0.8

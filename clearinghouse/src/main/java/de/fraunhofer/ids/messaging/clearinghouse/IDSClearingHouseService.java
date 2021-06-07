@@ -40,20 +40,6 @@ public interface IDSClearingHouseService {
 
 
     /**
-     *
-     * @param uri  the URI of the Infrastructure Component
-     * @return Response MAP with the SelfDescription in the payload as String
-     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
-     * @throws IOException  if message could not be sent or Serializer could not parse RDF to Java Object.
-     * @throws ClaimsException  if DAT of incoming message could not be validated.
-     * @throws MultipartParseException  if sresponse could not be parsed to header and payload.
-     */
-    DescriptionResponseMAP requestSelfDescription(URI uri) throws
-            DapsTokenManagerException,
-            ClaimsException,
-            MultipartParseException,
-            IOException;
-    /**
      * Send a LogMessage with given pid to ClearingHouse.
      *
      * @param messageToLog Infomodel Message that should be Logged
@@ -74,7 +60,7 @@ public interface IDSClearingHouseService {
             MultipartParseException;
 
     /**
-     * Query the Clearing House (Currently not working correctly @ ClearingHouse, HTTP 500).
+     * Query the Clearing House.
      *
      * @param pid           process id to Query (or null when querying whole clearingHouse)
      * @param messageId     message id to Query (or null when querying whole process if pid is given)

@@ -6,7 +6,6 @@ import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
-import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,10 +22,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.Assert.assertEquals;
 
-@ContextConfiguration(classes = {IdsHttpServiceTest.TestContextConfiguration.class})
-@AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = { "shacl.validation=false" })
+@ContextConfiguration(classes = {IdsHttpServiceTest.TestContextConfiguration.class})
 class IdsHttpServiceTest {
     @Autowired
     IdsHttpService idsHttpService;
