@@ -103,7 +103,7 @@ class MessageDispatcherTest {
         Mockito.when(publicKeyProvider.providePublicKeys()).thenReturn(null);
         Mockito.when(dapsValidator.checkDat(Mockito.any(DynamicAttributeToken.class), Mockito.anyMap())).thenReturn(true);
 
-        final var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, publicKeyProvider, configurationContainer);
+        final var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, configurationContainer, dapsValidator);
         final var reqMsg = buildRequestMessage();
         final var notMsg = buildNotificationMessage();
 

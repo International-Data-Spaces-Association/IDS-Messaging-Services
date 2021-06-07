@@ -11,6 +11,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,12 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DapsValidator {
+
     DapsPublicKeyProvider keyProvider;
+
     String[] baseSecProfVals = {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE"};
     String[] trustSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
@@ -31,10 +35,6 @@ public class DapsValidator {
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
                     "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE", "idsc:TRUST_PLUS_SECURITY_PROFILE",
                     "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE"};
-
-    public DapsValidator(final DapsPublicKeyProvider keyProvider) {
-        this.keyProvider = keyProvider;
-    }
 
     /**
      * Extract the Claims from the Dat token of a message, given the Message and a signingKey.
