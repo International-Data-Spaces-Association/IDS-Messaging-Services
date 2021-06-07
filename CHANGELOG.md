@@ -9,6 +9,30 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.1.1.0] UNRELEASED
+
+### Added
+- Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
+
+### Changes
+- Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT
+
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.0.8
+- Used Artifacts: java, infomodel-serializer, interaction
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-parent 2.4.5 -> 2.5.0
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.4.5 -> 2.5.0
+- Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.2.0 -> 3.3.0
+- Downgrade: plugins:maven-surefire-plugin 2.22.2 -> 2.19.1 (ensure compatibility with JUnit5)
+
+### Miscellaneous
+- Patch Change: In POM an unnecessary snapshot-repo has been removed, since snapshot-versions are not currently used as releases
+- Patch Change: Move MultipartParser to Messaging Module (no access to the methods known from external)
+
+---
+
 ## Version 4.1.0.0 2021-05-18
 - First stable non-snapshot version 
 

@@ -1,4 +1,4 @@
-package de.fraunhofer.ids.messaging.core.util;
+package de.fraunhofer.ids.messaging.protocol.multipart.parser;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MultipartBody;
