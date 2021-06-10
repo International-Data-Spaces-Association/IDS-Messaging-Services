@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework:spring-core 5.3.7 -> 5.3.8
 - Upgrade: org.springframework:spring-tx 5.3.7 -> 5.3.8
 - Upgrade: org.springframework:spring-test 5.3.7 -> 5.3.8
+- Upgrade: org.springframework:spring-web 5.3.7 -> 5.3.8
 - Upgrade: org.bitbucket.b_c:jose4j 0.7.7 -> 0.7.8
 - Downgrade: plugins:maven-surefire-plugin 2.22.2 -> 2.19.1 (ensure compatibility with JUnit5)
 
