@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.1.1.0] UNRELEASED
+## Version [4.1.1.0] 2021-06-10
 
 ### Added
 - Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
