@@ -102,8 +102,8 @@ public class AisecTokenManagerService implements TokenManagerService {
             final var client = clientProvider.getClient();
             final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Sending request to %s", dapsUrl));
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Sending request to DAPS: %s", dapsUrl));
             }
 
             final var jwtResponse = sendRequestToDAPS(client, request);
