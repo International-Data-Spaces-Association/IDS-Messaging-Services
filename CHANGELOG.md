@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file.
 - Patch Change: Stopped printing values in logs for "Request token", "Response body of token request", "Dynamic Attribute Token" 
 
 ### Patch Change: Infomodel Maintenance
-- Used Dependency Version: 4.0.9
+- Used Dependency Version: 4.0.9 (released 2021-06-08)
 - Used Artifacts: java, infomodel-serializer, interaction
 
 ### Patch Change: Dependency Maintenance
