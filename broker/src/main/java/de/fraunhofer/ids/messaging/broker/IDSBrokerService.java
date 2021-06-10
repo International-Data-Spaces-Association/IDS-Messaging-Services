@@ -9,11 +9,14 @@ import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
+import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
+import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
-import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 
 /**
  * Interface for Communication with IDS Brokers, implemented by {@link BrokerService}.
@@ -105,4 +108,54 @@ public interface IDSBrokerService {
      */
     ResultMAP queryBroker(URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException;
+
+    /**
+     * Do a FullText Query on the Broker with default limit and offset.
+     *
+     * @param brokerURI The URI of the Broker.
+     * @param searchTerm The searchterm used in the query.
+     * @param queryScope The Scope of the query.
+     * @param queryTarget The target of the query.
+     * @return The query result from the Broker.
+     * @throws ConnectorMissingCertExtensionException Exception while getting DAT from DAPS.
+     * @throws DapsConnectionException Exception while getting DAT from DAPS.
+     * @throws DapsEmptyResponseException Exception while getting DAT from DAPS.
+     * @throws IOException Exception while getting DAT from DAPS.
+     * @throws MultipartParseException Exception while parsing the response.
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     */
+    ResultMAP fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
+                                   QueryTarget queryTarget)
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException,
+            IOException,
+            MultipartParseException,
+            ClaimsException;
+
+    /**
+     * Do a FullText Query on the Broker with custom limit and offset.
+     *
+     * @param brokerURI The URI of the Broker.
+     * @param searchTerm The searchterm used in the query.
+     * @param queryScope The Scope of the query.
+     * @param queryTarget The target of the query.
+     * @param limit Custom limit used in the query.
+     * @param offset Custom offset used in the query.
+     * @return The query result from the Broker.
+     * @throws ConnectorMissingCertExtensionException Exception while getting DAT from DAPS.
+     * @throws DapsConnectionException Exception while getting DAT from DAPS.
+     * @throws DapsEmptyResponseException Exception while getting DAT from DAPS.
+     * @throws IOException Exception while getting DAT from DAPS.
+     * @throws MultipartParseException Exception while parsing the response.
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     */
+    ResultMAP fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
+                                   QueryTarget queryTarget, int limit, int offset )
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException,
+            IOException, MultipartParseException, ClaimsException;
 }

@@ -9,7 +9,40 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+## Version [4.1.1.0] 2021-06-10
+
+### Added
+- Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
+- Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 applicaton.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
+- Minor Change: New feature - At Connector runtime, individual additional DAPS DAT validation rules can now be added during the verification process of the DAT. For example, it is possible to create a blacklist of untrusted IDS-Connectors or DAPS-Systems and save them in a Connector-Database and check for them when a message is received. If the rules are not met, a RejectionMessage is sent automatically by the IDS-Messaging-Services.
+
+### Changes
+- Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT
+- Patch Change: Stopped printing values in logs for "Request token", "Response body of token request", "Dynamic Attribute Token" 
+
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.0.9 (released 2021-06-08)
+- Used Artifacts: java, infomodel-serializer, interaction
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-parent 2.4.5 -> 2.5.0
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.4.5 -> 2.5.0
+- Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.2.0 -> 3.3.0
+- Upgrade: org.bouncycastle:bcprov-jdk15on 1.68 -> 1.69
+- Upgrade: org.bouncycastle:bcmail-jdk15o 1.68 -> 1.69
+- Upgrade: org.springframework:spring-core 5.3.7 -> 5.3.8
+- Upgrade: org.springframework:spring-tx 5.3.7 -> 5.3.8
+- Upgrade: org.springframework:spring-test 5.3.7 -> 5.3.8
+- Upgrade: org.springframework:spring-web 5.3.7 -> 5.3.8
+- Upgrade: org.springframework:spring-webmvc 5.3.7 -> 5.3.8
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.7 -> 0.7.8
+- Downgrade: plugins:maven-surefire-plugin 2.22.2 -> 2.19.1 (ensure compatibility with JUnit5)
+
+### Miscellaneous
+- Patch Change: In POM an unnecessary snapshot-repo has been removed, since snapshot-versions are not currently used as releases
+- Patch Change: Move MultipartParser to Messaging Module (no access to the methods known from external)
+
+---
 
 ## Version 4.1.0.0 2021-05-18
 - First stable non-snapshot version 

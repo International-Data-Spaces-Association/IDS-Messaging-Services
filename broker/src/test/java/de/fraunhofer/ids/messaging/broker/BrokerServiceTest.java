@@ -3,22 +3,7 @@ package de.fraunhofer.ids.messaging.broker;
 import java.net.URI;
 import java.util.ArrayList;
 
-import de.fraunhofer.iais.eis.BaseConnectorBuilder;
-import de.fraunhofer.iais.eis.ConfigurationModel;
-import de.fraunhofer.iais.eis.Connector;
-import de.fraunhofer.iais.eis.ConnectorDeployMode;
-import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
-import de.fraunhofer.iais.eis.DynamicAttributeToken;
-import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
-import de.fraunhofer.iais.eis.MessageProcessedNotificationMessage;
-import de.fraunhofer.iais.eis.MessageProcessedNotificationMessageBuilder;
-import de.fraunhofer.iais.eis.QueryLanguage;
-import de.fraunhofer.iais.eis.QueryScope;
-import de.fraunhofer.iais.eis.QueryTarget;
-import de.fraunhofer.iais.eis.ResourceBuilder;
-import de.fraunhofer.iais.eis.ResultMessageBuilder;
-import de.fraunhofer.iais.eis.SecurityProfile;
-import de.fraunhofer.iais.eis.TokenFormat;
+import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -46,10 +31,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 
@@ -58,7 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 //@EnableConfigurationProperties(value = ConfigProperties.class)
 @ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
-public class BrokerServiceTest {
+class BrokerServiceTest {
 
     @Autowired
     private  Connector connector;
@@ -88,7 +70,9 @@ public class BrokerServiceTest {
 
     private DynamicAttributeToken fakeToken;
 
-    private MessageProcessedNotificationMessage message;
+    private MessageProcessedNotificationMessage notificationMessage;
+
+    private ResultMessage resultMessage;
 
 
     @Configuration
@@ -157,7 +141,18 @@ public class BrokerServiceTest {
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsTokenProvider.getDAT()).thenReturn(fakeToken);
-        this. message = new MessageProcessedNotificationMessageBuilder()
+        this.notificationMessage = new MessageProcessedNotificationMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._issuerConnector_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._senderAgent_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._securityToken_(this.fakeToken)
+                ._modelVersion_("4.0.0")
+                ._correlationMessage_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                .build();
+        this.resultMessage = new ResultMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(
                         URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
@@ -171,9 +166,9 @@ public class BrokerServiceTest {
     }
 
     @Test
-    public void testUpdateSelfDescriptionAtBroker() throws Exception {
+    void testUpdateSelfDescriptionAtBroker() throws Exception {
 
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
 
@@ -184,8 +179,8 @@ public class BrokerServiceTest {
 
 
     @Test
-    public void testRemoveResourceFromBroker() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+    void testRemoveResourceFromBroker() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
 
@@ -195,8 +190,8 @@ public class BrokerServiceTest {
     }
 
     @Test
-    public void testUpdateResourceAtBroker() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+    void testUpdateResourceAtBroker() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
 
@@ -206,8 +201,8 @@ public class BrokerServiceTest {
     }
 
     @Test
-    public void testUnregisterAtBroker() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+    void testUnregisterAtBroker() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
 
@@ -217,8 +212,8 @@ public class BrokerServiceTest {
     }
 
     @Test
-    public void testUpdateSelfDescriptionAtBrokers() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+    void testUpdateSelfDescriptionAtBrokers() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
         final var list = new ArrayList<URI>();
@@ -237,8 +232,8 @@ public class BrokerServiceTest {
     }
 
     @Test
-    public void testEmptyList() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(message);
+    void testEmptyList() throws Exception{
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
 
@@ -250,18 +245,8 @@ public class BrokerServiceTest {
     }
 
     @Test
-    public void testQueryBroker() throws Exception{
-        final var resultMessage = new ResultMessageBuilder()
-                ._issued_(IdsMessageUtils.getGregorianNow())
-                ._issuerConnector_(
-                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
-                ._senderAgent_(
-                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
-                ._securityToken_(this.fakeToken)
-                ._modelVersion_("4.0.0")
-                ._correlationMessage_(
-                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
-                .build();
+    void testQueryBroker() throws Exception{
+
         final MessageAndPayload map = new ResultMAP(resultMessage, "This is the QueryResult");
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
@@ -271,6 +256,21 @@ public class BrokerServiceTest {
         assertEquals(ResultMAP.class, result.getClass(), "Method should return ResultMap");
         assertTrue(result.getPayload().isPresent(),"ResultMAP should have payload");
         assertNotNull(result.getPayload().get(),"ResultMAP should have payload");
+
+    }
+
+    @Test
+    void testFtSearchBroker() throws Exception{
+        final MessageAndPayload map = new ResultMAP(resultMessage, "This is the QueryResult");
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
+
+        final var result = this.brokerService.fullTextSearchBroker(URI.create("/"), "", QueryScope.ALL, QueryTarget.BROKER);
+        assertNotNull(result.getMessage(), "Method should return a message");
+        assertEquals(ResultMAP.class, result.getClass(), "Method should return ResultMap");
+        assertTrue(result.getPayload().isPresent(),"ResultMAP should have payload");
+        assertNotNull(result.getPayload().get(),"ResultMAP should have payload");
+
     }
 
 }

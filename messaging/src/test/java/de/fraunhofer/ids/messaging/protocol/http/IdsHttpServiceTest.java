@@ -23,10 +23,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.Assert.assertEquals;
 
-@ContextConfiguration(classes = {IdsHttpServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = { "shacl.validation=false" })
+@ContextConfiguration(classes = {IdsHttpServiceTest.TestContextConfiguration.class})
 class IdsHttpServiceTest {
     @Autowired
     IdsHttpService idsHttpService;

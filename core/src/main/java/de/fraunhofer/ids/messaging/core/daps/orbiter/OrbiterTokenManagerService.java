@@ -232,13 +232,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
     private String getDAT(final OkHttpClient client, final Request request) throws IOException {
         final var jwtResponse = client.newCall(request).execute();
         final var responseJson = new JSONObject(Objects.requireNonNull(jwtResponse.body()).string());
-        final var jwtString = responseJson.getString("accessToken");
-
-        if (log.isInfoEnabled()) {
-            log.info("Response body of token request:\n{}", jwtString);
-        }
-
-        return jwtString;
+        return responseJson.getString("accessToken");
     }
 
     private Request getRequestMessage(final String dapsUrl, final RequestBody formBody) {

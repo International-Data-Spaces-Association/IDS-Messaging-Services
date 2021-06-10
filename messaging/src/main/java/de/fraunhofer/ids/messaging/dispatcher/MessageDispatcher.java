@@ -9,10 +9,7 @@ import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
-import de.fraunhofer.ids.messaging.core.daps.DapsVerifier;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilter;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterResult;
@@ -38,55 +35,45 @@ public class MessageDispatcher {
     List<PreDispatchingFilter> preDispatchingFilters;
     RequestMessageHandler      requestMessageHandler;
     ConfigContainer            configContainer;
+    DapsValidator              dapsValidator;
 
     /**
      * Create a MessageDispatcher.
-     *
-     * @param objectMapper          a jackson objectmapper for (de)serializing objects
+     *  @param objectMapper          a jackson objectmapper for (de)serializing objects
      * @param requestMessageHandler resolver for finding the fitting {@link MessageHandler} for the incoming Message
-     * @param provider              a provider that can access the public key of the DAPS
      * @param configContainer       the connector configuration
+     * @param dapsValidator         validator class for daps dat
      */
     public MessageDispatcher(final ObjectMapper objectMapper,
                              final RequestMessageHandler requestMessageHandler,
-                             final DapsPublicKeyProvider provider,
-                             final ConfigContainer configContainer) {
+                             final ConfigContainer configContainer,
+                             final DapsValidator dapsValidator) {
         this.objectMapper = objectMapper;
         this.requestMessageHandler = requestMessageHandler;
         this.configContainer = configContainer;
+        this.dapsValidator = dapsValidator;
         this.preDispatchingFilters = new LinkedList<>();
 
-        registerDatVerificationFilter(provider, configContainer);
+        registerDatVerificationFilter(configContainer);
     }
 
 
     /**
      * Incoming messages are checked for a valid DAT token.
      *
-     * @param provider               DAPS Public Key Provider
      * @param configurationContainer Configuration
      */
-    private void registerDatVerificationFilter(final DapsPublicKeyProvider provider,
-                                               final ConfigContainer configurationContainer) {
+    private void registerDatVerificationFilter(final ConfigContainer configurationContainer) {
         //add DAT verification as PreDispatchingFilter
         registerPreDispatchingAction(in -> {
             if (configurationContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT) {
                 return PreDispatchingFilterResult.successResult("ConnectorDeployMode is Test. Skipping Token verification!");
             }
-
-            try {
-                final var verified = DapsVerifier.verify(DapsValidator.getClaims(in.getSecurityToken(), provider.providePublicKeys()));
-
-                return PreDispatchingFilterResult.builder()
-                                                 .withSuccess(verified)
-                                                 .withMessage(String.format("Token verification result is: %s", verified))
-                                                 .build();
-            } catch (ClaimsException e) {
-                return PreDispatchingFilterResult.builder()
-                                                 .withSuccess(false)
-                                                 .withMessage("Token could not be parsed!" + e.getMessage())
-                                                 .build();
-            }
+            final var verified = dapsValidator.checkDat(in.getSecurityToken());
+            return PreDispatchingFilterResult.builder()
+                    .withSuccess(verified)
+                    .withMessage(String.format("Token verification result is: %s", verified))
+                    .build();
         });
     }
 
