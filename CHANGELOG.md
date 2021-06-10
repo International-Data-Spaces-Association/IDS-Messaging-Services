@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.bouncycastle:bcmail-jdk15o 1.68 -> 1.69
 - Upgrade: org.springframework:spring-core 5.3.7 -> 5.3.8
 - Upgrade: org.springframework:spring-tx 5.3.7 -> 5.3.8
+- Upgrade: org.springframework:spring-test 5.3.7 -> 5.3.8
 - Downgrade: plugins:maven-surefire-plugin 2.22.2 -> 2.19.1 (ensure compatibility with JUnit5)
 
 ### Miscellaneous
