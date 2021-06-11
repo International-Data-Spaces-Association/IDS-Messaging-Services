@@ -17,7 +17,7 @@
     </modules>
 
     <properties>
-        <revision>4.1.1.0</revision>
+        <revision>4.1.1.1</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -93,7 +93,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.5.0</version>
+            <version>2.5.1</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
