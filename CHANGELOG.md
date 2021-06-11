@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.0 -> 2.5.1
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.0 -> 2.5.1
 
 ## Version [4.1.1.0] 2021-06-10
 
