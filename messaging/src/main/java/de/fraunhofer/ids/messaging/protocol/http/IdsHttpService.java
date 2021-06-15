@@ -20,10 +20,7 @@ import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -174,7 +171,7 @@ public class IdsHttpService implements HttpService {
         final var request = buildRequest(requestBody, target);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("sending request to %s", target.toString()));
+            log.debug(String.format("sending request to %s", target));
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -196,7 +193,7 @@ public class IdsHttpService implements HttpService {
         final var request = buildWithHeaders(requestBody, target, headers);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("sending request to %s", target.toString()));
+            log.debug(String.format("sending request to %s", target));
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -414,7 +411,7 @@ public class IdsHttpService implements HttpService {
     /**
      * Inner class, managing timeout settings for custom HttpClients.
      */
-    @Data
+    @Getter
     @AllArgsConstructor
     private class TimeoutSettings {
         private Duration connectTimeout;
