@@ -56,6 +56,6 @@
     "@id" : "file:///server-truststore.p12"
   },
   "ids:keyStore" : {
-    "@id" : "file:///ids-keystore.p12"
+    "@id" : "file:///keystore.p12"
   }
 }
