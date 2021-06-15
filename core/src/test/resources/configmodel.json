@@ -33,6 +33,6 @@
     "@id" : "file:///server-truststore.p12"
   },
   "ids:keyStore" : {
-    "@id" : "file:///isst_ids_framework_demo_connector.p12"
+    "@id" : "file:///keystore.p12"
   }
 }
