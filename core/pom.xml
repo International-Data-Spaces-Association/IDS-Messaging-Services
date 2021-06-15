@@ -125,7 +125,7 @@
                     <include>application.properties</include>
                     <include>configmodel.json</include>
                     <include>keystore.p12</include>
-                    <include>isst_ids_framework_demo_connector.p12</include>
+                    <include>ids-keystore.p12</include>
                 </includes>
             </testResource>
         </testResources>
