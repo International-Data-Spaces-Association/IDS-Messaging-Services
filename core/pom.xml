@@ -121,10 +121,8 @@
                 <filtering>false</filtering>
                 <includes>
                     <include>server-truststore.p12</include>
-                    <include>server-truststore.p12</include>
                     <include>application.properties</include>
                     <include>configmodel.json</include>
-                    <include>keystore.p12</include>
                     <include>ids-keystore.p12</include>
                 </includes>
             </testResource>
