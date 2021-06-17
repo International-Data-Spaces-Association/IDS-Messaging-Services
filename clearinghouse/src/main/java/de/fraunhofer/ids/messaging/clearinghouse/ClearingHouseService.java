@@ -133,7 +133,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
         //set some random id for message
         final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + logEndpoint + "/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
-        return expectMessageProcessedNotificationMAP(map);
+        return expectMapOfTypeT(map, MessageProcessedNotificationMAP.class);
     }
 
 
@@ -178,7 +178,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
         final var response = idsHttpService.sendAndCheckDat(body, targetURI);
         final var map = multipartResponseConverter.convertResponse(response);
-        return expectResultMAP(map);
+        return expectMapOfTypeT(map, ResultMAP.class);
 
     }
 
