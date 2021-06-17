@@ -104,7 +104,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
         final var messageAndPayload = new GenericMessageAndPayload(header);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
-        return expectMessageProcessedNotificationMAP(response);
+        return expectMapOfTypeT(response, MessageProcessedNotificationMAP.class);
 
     }
 
@@ -140,7 +140,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
         final var messageAndPayload = new GenericMessageAndPayload(header, resource);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
-        return expectMessageProcessedNotificationMAP(response);
+        return expectMapOfTypeT(response, MessageProcessedNotificationMAP.class);
     }
 
     /**
@@ -170,7 +170,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
         final var messageAndPayload = new GenericMessageAndPayload(header, payload);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
-        return expectMessageProcessedNotificationMAP(response);
+        return expectMapOfTypeT(response, MessageProcessedNotificationMAP.class);
     }
 
     /**
@@ -200,7 +200,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
         final var messageAndPayload = new GenericMessageAndPayload(header, payload);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
-        return expectMessageProcessedNotificationMAP(response);
+        return expectMapOfTypeT(response, MessageProcessedNotificationMAP.class);
 
     }
 
@@ -269,7 +269,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
         final var messageAndPayload = new GenericMessageAndPayload(header, null);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
-        return expectResultMAP(response);
+        return expectMapOfTypeT(response, ResultMAP.class);
     }
 
     /**
@@ -340,7 +340,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
         final var messageAndPayload = new GenericMessageAndPayload(header, payload);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
-        return expectResultMAP(response);
+        return expectMapOfTypeT(response, ResultMAP.class);
     }
 
     /**

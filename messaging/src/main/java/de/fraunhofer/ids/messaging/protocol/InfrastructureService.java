@@ -15,6 +15,9 @@ package de.fraunhofer.ids.messaging.protocol;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
 import de.fraunhofer.iais.eis.RejectionMessage;
@@ -78,73 +81,124 @@ public class InfrastructureService  {
             final var response =
                     messageService.sendIdsMessage(messageAndPayload, uri);
 
-            return expectDescriptionResponseMAP(response);
+            return expectMapOfTypeT(response, DescriptionResponseMAP.class);
         } catch (ConstraintViolationException constraintViolationException) {
             throw new MessageBuilderException(constraintViolationException);
         }
     }
 
     /**
-     * casts generic {@link MessageAndPayload} to {@link DescriptionResponseMAP}.
+     * Request an Artifact from another Connector
      *
-     * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
-     * @return {@link MessageAndPayload object specialized to the expected Message}
-     * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
+     * @param uri uri of target connector
+     * @param requestedArtifact artifact which is requested
+     * @return ArtifactResponseMAP from response, if response is received correctly
+     * @throws IOException if Response Cannot be parsed
+     * @throws DapsTokenManagerException if there is an error when getting a DAT Token
+     * @throws MultipartParseException if response cannot be parsed to multipart map
+     * @throws ClaimsException when DAT of incoming response is rejected
      */
-    private DescriptionResponseMAP expectDescriptionResponseMAP(final MessageAndPayload<?, ?> response)
-            throws UnexpectedResponseException {
-        if (response instanceof DescriptionResponseMAP) {
-            return (DescriptionResponseMAP) response;
-        }
+    public MaybeMAP<ArtifactResponseMAP, MessageProcessedNotificationMAP> requestArtifact(final URI uri, final URI requestedArtifact)
+            throws ClaimsException, IOException, DapsTokenManagerException, MultipartParseException {
 
-        if (response instanceof RejectionMAP) {
-            final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new UnexpectedResponseException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
-        }
+        final var header = new ArtifactRequestMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._requestedArtifact_(requestedArtifact)
+                ._issuerConnector_(container.getConnector().getId())
+                ._senderAgent_(container.getConnector().getId())
+                ._securityToken_(tokenProvider.getDAT())
+                .build();
+        final var messageAndPayload = new GenericMessageAndPayload(header);
+        final var response = messageService.sendIdsMessage(messageAndPayload, uri);
 
-        throw new UnexpectedResponseException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
+        return expectMaybeMapOfTypeT(response, ArtifactResponseMAP.class);
     }
 
     /**
-     * Casts generic {@link MessageAndPayload} to {@link MessageProcessedNotificationMAP}.
+     * Check if incoming response if of expected type, throw an IOException with information, if it is not
      *
-     * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
-     * @return {@link MessageAndPayload object specialized to the expected Message}
-     * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
+     * @param response incoming response MAP
+     * @param expectedType Expected type response MAP should have
+     * @param <T> expected Type as generic
+     * @return response MAP cast to expected type (if it can be cast to type)
+     * @throws IOException if response cannot be cast to expected type
      */
-    protected MessageProcessedNotificationMAP expectMessageProcessedNotificationMAP(final MessageAndPayload<?, ?> response)
-            throws UnexpectedResponseException {
+    protected <T extends MessageAndPayload<?,?>> MaybeMAP<T, MessageProcessedNotificationMAP> expectMaybeMapOfTypeT(
+            final MessageAndPayload<?, ?> response,
+            final Class<T> expectedType) throws IOException {
 
-        if (response instanceof MessageProcessedNotificationMAP) {
-            return (MessageProcessedNotificationMAP) response;
+        if (expectedType.isAssignableFrom(response.getClass())){
+            return new MaybeMAP<>(expectedType.cast(response), null);
+        }
+        if(response instanceof MessageProcessedNotificationMAP){
+            return new MaybeMAP(null, response);
         }
 
         if (response instanceof RejectionMAP) {
             final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new UnexpectedResponseException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
+            throw new IOException(
+                    String.format(
+                            "Message rejected by target with following Reason: %s",
+                            rejectionMessage.getRejectionReason()
+                    )
+            );
         }
-
-        throw new UnexpectedResponseException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
+        throw new IOException(
+                String.format(
+                        "Unexpected Message of type %s was returned, expected Message of type %s",
+                        response.getMessage().getClass().toString(), expectedType.getSimpleName()
+                )
+        );
     }
 
     /**
-     * Casts generic {@link MessageAndPayload} to {@link ResultMAP}.
+     * Check if incoming response if of expected type, throw an IOException with information, if it is not
      *
+     * @param response incoming response MAP
+     * @param expectedType Expected type response MAP should have
+     * @param <T> expected Type as generic
+     * @return response MAP cast to expected type (if it can be cast to type)
+     * @throws IOException if response cannot be cast to expected type
      * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
      * @return {@link MessageAndPayload object specialized to the expected Message}
      * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
      */
-    protected ResultMAP expectResultMAP(final MessageAndPayload<?, ?> response) throws UnexpectedResponseException {
-        if (response instanceof ResultMAP) {
-            return (ResultMAP) response;
+    protected <T extends MessageAndPayload<?,?>> T expectMapOfTypeT(
+            final MessageAndPayload<?, ?> response,
+            final Class<T> expectedType) throws IOException {
+
+        if (expectedType.isAssignableFrom(response.getClass())){
+            return expectedType.cast(response);
         }
 
         if (response instanceof RejectionMAP) {
             final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new UnexpectedResponseException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
+            throw new IOException(
+                    String.format(
+                            "Message rejected by target with following Reason: %s",
+                            rejectionMessage.getRejectionReason()
+                    )
+            );
         }
+        throw new IOException(
+                String.format(
+                        "Unexpected Message of type %s was returned, expected Message of type %s",
+                        response.getMessage().getClass().toString(), expectedType.getSimpleName()
+                )
+        );
+    }
 
-        throw new UnexpectedResponseException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
+    @Getter
+    public static class MaybeMAP<K extends MessageAndPayload<?,?>, V extends MessageAndPayload<?,?>>{
+
+        private final Optional<K> expectedMAP;
+        private final Optional<V> alternativeMAP;
+
+        public MaybeMAP(K expectedMAP, V alternativeMAP){
+            this.expectedMAP = Optional.ofNullable(expectedMAP);
+            this.alternativeMAP = Optional.ofNullable(alternativeMAP);
+        }
     }
 
 }
