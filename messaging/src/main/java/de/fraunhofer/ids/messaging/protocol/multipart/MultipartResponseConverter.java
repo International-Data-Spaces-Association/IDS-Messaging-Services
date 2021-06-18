@@ -1,55 +1,11 @@
 package de.fraunhofer.ids.messaging.protocol.multipart;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import de.fraunhofer.iais.eis.ArtifactRequestMessage;
-import de.fraunhofer.iais.eis.ArtifactResponseMessage;
-import de.fraunhofer.iais.eis.ConnectorUnavailableMessage;
-import de.fraunhofer.iais.eis.ConnectorUpdateMessage;
-import de.fraunhofer.iais.eis.ContractAgreement;
-import de.fraunhofer.iais.eis.ContractAgreementMessage;
-import de.fraunhofer.iais.eis.ContractOffer;
-import de.fraunhofer.iais.eis.ContractOfferMessage;
-import de.fraunhofer.iais.eis.ContractRejectionMessage;
-import de.fraunhofer.iais.eis.ContractRequest;
-import de.fraunhofer.iais.eis.ContractRequestMessage;
-import de.fraunhofer.iais.eis.ContractResponseMessage;
-import de.fraunhofer.iais.eis.DescriptionRequestMessage;
-import de.fraunhofer.iais.eis.DescriptionResponseMessage;
-import de.fraunhofer.iais.eis.InfrastructureComponent;
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.iais.eis.MessageProcessedNotificationMessage;
-import de.fraunhofer.iais.eis.Participant;
-import de.fraunhofer.iais.eis.ParticipantRequestMessage;
-import de.fraunhofer.iais.eis.ParticipantUnavailableMessage;
-import de.fraunhofer.iais.eis.ParticipantUpdateMessage;
-import de.fraunhofer.iais.eis.QueryMessage;
-import de.fraunhofer.iais.eis.RejectionMessage;
-import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.iais.eis.ResourceUnavailableMessage;
-import de.fraunhofer.iais.eis.ResourceUpdateMessage;
-import de.fraunhofer.iais.eis.ResultMessage;
+import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.util.MultipartDatapart;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactRequestMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractAgreementMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractOfferMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractRejectionMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractRequestMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionRequestMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.InfrastructurePayloadMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ParticipantNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ParticipantRequestMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.QueryMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResourceMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.*;
 import okhttp3.Response;
 
 /**
@@ -65,8 +21,6 @@ public class MultipartResponseConverter {
      * @throws IOException if message or payload cannot be parsed
      */
     public MessageAndPayload<?, ?> convertResponse(final Map<String, String> responseMap) throws IOException {
-        //var responseMap = MultipartParser.stringToMultipart(Objects.requireNonNull(response.body()).string());
-        //var messageString = responseMap.get(MultipartDatapart.HEADER.toString());
         final var payloadString = responseMap.getOrDefault(MultipartDatapart.PAYLOAD.toString(), "");
         final var message = serializer.deserialize(responseMap.getOrDefault(MultipartDatapart.HEADER.toString(), ""), Message.class);
 
@@ -89,12 +43,7 @@ public class MultipartResponseConverter {
         else if (message instanceof ArtifactRequestMessage) {
             return new ArtifactRequestMAP((ArtifactRequestMessage) message);
         } else if (message instanceof ArtifactResponseMessage) {
-            //ToDo: Write Artifact to temp file
-            //File artifactTmp = Files.createTempFile("tmp", payloadString.getFilename()).toFile();
-            //FileUtils.writeByteArrayToFile(artifactTmp, payload.getSerialization());
-            final var artifactTmp = new File("tmp");
-
-            return new ArtifactResponseMAP((ArtifactResponseMessage) message, artifactTmp);
+            return new ArtifactResponseMAP((ArtifactResponseMessage) message, payloadString);
         }
 
         // broker-related messages

@@ -3,84 +3,67 @@ package de.fraunhofer.ids.framework.appstore;
 import java.io.IOException;
 import java.net.URI;
 
-import de.fraunhofer.iais.eis.AppRegistrationResponseMessage;
-import de.fraunhofer.iais.eis.AppResource;
-import de.fraunhofer.ids.framework.daps.ClaimsException;
-import de.fraunhofer.ids.framework.daps.ConnectorMissingCertExtensionException;
-import de.fraunhofer.ids.framework.daps.DapsConnectionException;
-import de.fraunhofer.ids.framework.daps.DapsEmptyResponseException;
-import de.fraunhofer.ids.framework.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.ArtifactResponseMAP;
-import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.InfrastructurePayloadMAP;
-import de.fraunhofer.ids.framework.messaging.protocol.multipart.mapping.ResourceMAP;
-import de.fraunhofer.ids.framework.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactResponseMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.InfrastructurePayloadMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResourceMAP;
+
 
 /**
  *
  */
 public interface IDSAppStoreService {
 
-    /**
-     * @param appURI URI of the App Store to be used
-     *
-     * @return MessageAndPayload Object containing the IDS Message Headers and the Selfdescription of the App Store as the payload
-     *
-     * @throws ConnectorMissingCertExtensionException
-     * @throws DapsConnectionException
-     * @throws DapsEmptyResponseException
-     * @throws ClaimsException
-     * @throws MultipartParseException
-     * @throws IOException
-     */
-    InfrastructurePayloadMAP requestSelfDescription( URI appURI)
-            throws
-            ConnectorMissingCertExtensionException,
-            DapsConnectionException,
-            DapsEmptyResponseException,
-            ClaimsException,
-            MultipartParseException,
-            IOException;
 
     /**
      * @param appStoreURI URI of the App Store to be used
      * @param app  URI of the requested app
      *
-     * @return MessageAndPayload Object containing the IDS Message Headers and the Selfdescription of the App as the payload
+     * @return Response MAP with the SelfDescription in the payload as an AppStore
      *
-     * @throws ClaimsException
-     * @throws MultipartParseException
-     * @throws IOException
-     * @throws ConnectorMissingCertExtensionException
-     * @throws DapsConnectionException
-     * @throws DapsEmptyResponseException
+     * @throws MultipartParseException if response could not be parsed to header and payload.@throws ClaimsException
+     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws DapsTokenManagerException if no DAT for sending the message could be received.
+     * @throws ClaimsException if DAT of incoming message could not be validated.
      */
     ResourceMAP requestAppDescription( URI appStoreURI, URI app)
             throws
             ClaimsException,
             MultipartParseException,
             IOException,
-            ConnectorMissingCertExtensionException,
-            DapsConnectionException,
-            DapsEmptyResponseException;
-
+            DapsTokenManagerException;
+    /**
+     * @param appStoreURI URI of the App Store to be used
+     *
+     * @return Response MAP with the SelfDescription in the payload as AppResource
+     *
+     * @throws MultipartParseException if response could not be parsed to header and payload.@throws ClaimsException
+     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws DapsTokenManagerException if no DAT for sending the message could be received.
+     * @throws ClaimsException if DAT of incoming message could not be validated.
+     */
+    InfrastructurePayloadMAP requestAppStoreDescription( URI appStoreURI)
+            throws
+            ClaimsException,
+            MultipartParseException,
+            IOException,
+            DapsTokenManagerException;
     /**
      * @param appStoreURI URI of the App Store to be used
      * @param app  URI of the requested app
      *
-     * @return
+     * @return Response MAP with the SelfDescription in the payload as String
      *
-     * @throws ConnectorMissingCertExtensionException
-     * @throws DapsConnectionException
-     * @throws DapsEmptyResponseException
-     * @throws ClaimsException
-     * @throws MultipartParseException
-     * @throws IOException
+     * @throws MultipartParseException if response could not be parsed to header and payload.@throws ClaimsException
+     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws DapsTokenManagerException if no DAT for sending the message could be received.
+     * @throws ClaimsException if DAT of incoming message could not be validated.
      */
     ArtifactResponseMAP requestAppArtifact(URI appStoreURI, URI app)
             throws
-            ConnectorMissingCertExtensionException,
-            DapsConnectionException,
-            DapsEmptyResponseException,
+            DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
             IOException;
