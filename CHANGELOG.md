@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 
 ## Version [4.1.1.1] UNRELEASED
 
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.0.10 (released 2021-06-21)
+- Used Artifacts: java, infomodel-serializer, interaction
+
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.0 -> 2.5.1
 - Upgrade: org.springframework.boot:spring-boot-starter 2.5.0 -> 2.5.1
