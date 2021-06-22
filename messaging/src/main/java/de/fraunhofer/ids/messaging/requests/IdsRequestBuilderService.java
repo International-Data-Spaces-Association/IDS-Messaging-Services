@@ -1,5 +1,6 @@
 package de.fraunhofer.ids.messaging.requests;
 
+import com.github.jsonldjava.utils.Obj;
 import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
@@ -16,7 +17,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
 
@@ -28,36 +31,37 @@ public class IdsRequestBuilderService {
 
     MessageService messageService;
 
-    public IdsRequestBuilder newRequest(){
-        return new IdsRequestBuilder();
+    public IdsRequestBuilder<Object> newRequest(){
+        return new IdsRequestBuilder<>();
     }
 
-    class IdsRequestBuilder {
+    public <T> IdsRequestBuilder<T> newRequestExpectingType(Class<T> expected) {return new IdsRequestBuilder<>(expected);}
+
+    class IdsRequestBuilder<T> {
 
         private RequestMessageTemplate requestMessageTemplate;
-        private Optional<Class<?>> expectedPayload;
+        private Optional<Class<T>> expectedPayload;
         private boolean throwOnRejection;
 
         public IdsRequestBuilder() {
             this.throwOnRejection = false;
         }
 
-        public IdsRequestBuilder useTemplate(RequestMessageTemplate template){
-            this.requestMessageTemplate = requestMessageTemplate;
+        public IdsRequestBuilder(Class<T> expected) {
+            this.expectedPayload = Optional.of(expected);
+        }
+
+        public IdsRequestBuilder<T> useTemplate(RequestMessageTemplate template){
+            this.requestMessageTemplate = template;
             return this;
         }
 
-        public IdsRequestBuilder expectPayload(final Class<?> expectedPayload) {
-            this.expectedPayload = Optional.of(expectedPayload);
-            return this;
-        }
-
-        public IdsRequestBuilder throwOnRejection() {
+        public IdsRequestBuilder<T> throwOnRejection() {
             this.throwOnRejection = true;
             return this;
         }
 
-        public MessageContainer<?> execute(URI target) throws ClaimsException, MultipartParseException, IOException, DapsTokenManagerException, IdsRequestException {
+        public MessageContainer<T> execute(URI target) throws ClaimsException, MultipartParseException, IOException, DapsTokenManagerException, IdsRequestException {
             if(requestMessageTemplate == null) throw new NoTemplateProvidedException("No Message Template was Provided!");
             var message = requestMessageTemplate.buildMessage();
             final var messageAndPayload = new GenericMessageAndPayload(message);
@@ -68,9 +72,13 @@ public class IdsRequestBuilderService {
                 if (header instanceof RejectionMessage) throw new RejectionException(String.format("Message was Rejected! Reason: %s", String.valueOf(payload)), ((RejectionMessage) header).getRejectionReason());
             }
             if(expectedPayload.isPresent()){
-                if(payload == null || !expectedPayload.get().isAssignableFrom(payload.getClass())) throw new UnexpectedPayloadException(String.format("Expected payload of type %s but received %s!", expectedPayload.get(), payload.getClass()));
+                if(payload == null || !expectedPayload.get().isAssignableFrom(payload.getClass())){
+                    throw new UnexpectedPayloadException(String.format("Expected payload of type %s but received %s!", expectedPayload.get(), payload.getClass()));
+                }else{
+                    return new MessageContainer<>(header, (T) payload);
+                }
             }
-            return new MessageContainer(header, payload);
+            return new MessageContainer<>(header, (T) payload);
         }
     }
 }
