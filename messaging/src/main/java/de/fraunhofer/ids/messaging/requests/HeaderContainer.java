@@ -10,6 +10,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class containing IDS Header Fields
+ */
 @AllArgsConstructor
 @Getter
 public class HeaderContainer {
