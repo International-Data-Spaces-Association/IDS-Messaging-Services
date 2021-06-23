@@ -49,8 +49,6 @@ import static org.mockito.ArgumentMatchers.any;
 
 
 @ExtendWith(SpringExtension.class)
-//@SpringBootTest( webEnvironment= SpringBootTest.WebEnvironment.NONE )
-//@EnableConfigurationProperties(value = ConfigProperties.class)
 @ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
 class BrokerServiceTest {
