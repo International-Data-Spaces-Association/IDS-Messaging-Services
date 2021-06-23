@@ -38,21 +38,6 @@ import de.fraunhofer.ids.messaging.requests.MessageContainer;
 public interface IDSBrokerService {
 
     /**
-     *
-     * @param uri  the URI of the Infrastructure Component
-     * @return Response MAP with the SelfDescription in the payload as String
-     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
-     * @throws IOException  if message could not be sent or Serializer could not parse RDF to Java Object.
-     * @throws ClaimsException  if DAT of incoming message could not be validated.
-     * @throws MultipartParseException  if response could not be parsed to header and payload.
-     */
-    MessageContainer<?> requestDescription(URI uri, URI requestedElement) throws
-            DapsTokenManagerException,
-            ClaimsException,
-            MultipartParseException,
-            IOException;
-
-    /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage} to the broker.
      * The given Resource will be unregistered from the broker.
      *

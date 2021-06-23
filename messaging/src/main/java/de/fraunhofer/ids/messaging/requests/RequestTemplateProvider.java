@@ -5,7 +5,7 @@ import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
 import de.fraunhofer.iais.eis.DescriptionRequestMessage;
 import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.daps.*;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

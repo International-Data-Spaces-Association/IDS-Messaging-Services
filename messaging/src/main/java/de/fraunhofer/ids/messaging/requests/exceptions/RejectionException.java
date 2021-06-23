@@ -1,8 +1,9 @@
 package de.fraunhofer.ids.messaging.requests.exceptions;
 
-import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.iais.eis.RejectionReason;
+import lombok.Getter;
 
+@Getter
 public class RejectionException extends IdsRequestException{
 
     private RejectionReason rejectionReason;

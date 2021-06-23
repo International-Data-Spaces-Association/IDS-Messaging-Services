@@ -1,39 +1,183 @@
 package de.fraunhofer.ids.messaging.requests;
 
-import de.fraunhofer.iais.eis.Artifact;
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.iais.eis.util.Util;
+import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
+import de.fraunhofer.ids.messaging.core.daps.*;
+import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.requests.exceptions.IdsRequestException;
+import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
 import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { IdsRequestBuilderServiceTest.TestContextConfiguration.class})
+@AutoConfigureMockMvc
 class IdsRequestBuilderServiceTest {
 
     @Autowired
-    private IdsRequestBuilderService idsRequestBuilderService;
+    private  Connector connector;
 
     @Autowired
-    private RequestTemplateProvider requestTemplateProvider;
+    private ConfigurationModel configurationModel;
+
+    @Autowired
+    private ConfigContainer configurationContainer;
+
+    @Autowired
+    private DapsTokenProvider dapsTokenProvider;
+
+    @Autowired
+    private DapsPublicKeyProvider dapsPublicKeyProvider;
+
+    @Autowired
+    private DapsValidator dapsValidator;
+
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private IdsRequestBuilderService requestBuilderService;
+
+    @Autowired
+    private RequestTemplateProvider templateProvider;
+
+    private MockWebServer mockWebServer;
+
+    private DynamicAttributeToken fakeToken;
+
+    private MessageProcessedNotificationMessage notificationMessage;
+
+    private ResultMessage resultMessage;
+
+    @Configuration
+    static class TestContextConfiguration {
+        @MockBean
+        private KeyStoreManager keyStoreManager;
+
+        @MockBean
+        private ConfigurationModel configurationModel;
+
+        @MockBean
+        private ConfigContainer configurationContainer;
+
+        @MockBean
+        private DapsTokenProvider dapsTokenProvider;
+
+        @MockBean
+        private DapsPublicKeyProvider dapsPublicKeyProvider;
+
+        @MockBean
+        private DapsValidator dapsValidator;
+
+        @MockBean
+        private IdsHttpService idsHttpService;
+
+        @MockBean
+        private MessageService messageService;
+
+        @MockBean
+        private Connector connector;
+
+        @Bean
+        public Serializer getSerializer() {
+            return new Serializer();
+        }
+
+        @Bean
+        public IdsRequestBuilderService getBrokerService() {
+            return new IdsRequestBuilderService(messageService);
+        }
+
+        @Bean
+        public RequestTemplateProvider getTemplateProvider() {
+            return new RequestTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+    }
+
+    @BeforeEach
+    public void setUp() throws Exception{
+        this.fakeToken = new DynamicAttributeTokenBuilder()
+                ._tokenFormat_(TokenFormat.JWT)
+                ._tokenValue_("fake Token")
+                .build();
+        final var endpoint = new ConnectorEndpointBuilder()
+                ._accessURL_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                .build();
+        connector = new BaseConnectorBuilder()
+                ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
+                ._outboundModelVersion_("4.0.0")
+                ._inboundModelVersion_(Util.asList("4.0.0"))
+                ._curator_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._maintainer_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._hasDefaultEndpoint_(endpoint)
+                .build();
+        Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
+        Mockito.when(configurationContainer.getConfigurationModel()).thenReturn(configurationModel);
+        Mockito.when(configurationModel.getConnectorDeployMode()).thenReturn(ConnectorDeployMode.TEST_DEPLOYMENT);
+        Mockito.when(dapsTokenProvider.provideDapsToken()).thenReturn("Mocked Token.");
+        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(null);
+        Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
+        Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
+        Mockito.when(dapsTokenProvider.getDAT()).thenReturn(fakeToken);
+        this.notificationMessage = new MessageProcessedNotificationMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._issuerConnector_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._senderAgent_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._securityToken_(this.fakeToken)
+                ._modelVersion_("4.0.0")
+                ._correlationMessage_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                .build();
+        this.resultMessage = new ResultMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._issuerConnector_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._senderAgent_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._securityToken_(this.fakeToken)
+                ._modelVersion_("4.0.0")
+                ._correlationMessage_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                .build();
+    }
 
     @Test
-    public void test() throws DapsTokenManagerException, IdsRequestException, ClaimsException, MultipartParseException, IOException {
-        MessageContainer<Object> response = idsRequestBuilderService
-                                                    .newRequest() //create a new RequestBuilder instance
-                                                    .useTemplate(requestTemplateProvider.artifactRequestMessageMessageTemplate(URI.create("http://artifact"))) //mandatory: get a template (or create own Template using Lambda: () -> RequestMessage). Calling execute without set template leads to NoTemplateProvidedException.
-                                                    .throwOnRejection() //optional: RejectionMessages will not be put into a MessageContainer, instead an IdsRequestException containing the RejectionReason will be thrown.
-                                                    .execute(URI.create("http://target")); //send message to target uri and put response into MessageContainer
+    void testUpdateSelfDescriptionAtBroker() throws Exception {
 
-        MessageContainer<Artifact> resp = idsRequestBuilderService.newRequestExpectingType(Artifact.class)
-                                                    .useTemplate(requestTemplateProvider.artifactRequestMessageMessageTemplate(URI.create("http://artifact"))) //mandatory: get a template (or create own Template using Lambda: () -> RequestMessage). Calling execute without set template leads to NoTemplateProvidedException.
-                                                    .throwOnRejection() //optional: RejectionMessages will not be put into a MessageContainer, instead an IdsRequestException containing the RejectionReason will be thrown.
-                                                    .execute(URI.create("http://target")); //send message to target uri and put response into MessageContainer
+        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+                .thenReturn(map);
 
+        final var result = this.requestBuilderService.newRequest().useTemplate(templateProvider.descriptionRequestMessageTemplate(null)).execute(URI.create("/"));
+        assertNotNull(result.getHeaders().getIdsSecurityToken(), "Method should return a" +
+                " message");
+        assertEquals(MessageContainer.class, result.getClass(), "Method should return MessageContainer");
     }
+
 }
