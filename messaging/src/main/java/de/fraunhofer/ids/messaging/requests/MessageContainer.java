@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Container holding ids header fields, the underlying IDS message they were parsed from and the message payload
+ *
+ * @param <T> Type of payload
+ */
 @Getter
 public class MessageContainer<T> {
 
