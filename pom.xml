@@ -14,6 +14,7 @@
         <module>messaging</module>
         <module>clearinghouse</module>
         <module>broker</module>
+        <module>paris</module>
     </modules>
 
     <properties>

@@ -9,13 +9,9 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.*;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -35,13 +31,21 @@ public class InfrastructureService  {
      */
     public DescriptionResponseMAP requestSelfDescription(final URI uri) throws
             IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
-        final var header =   new DescriptionRequestMessageBuilder()
+        return  requestSelfDescription( uri, null);
+    }
+
+    public DescriptionResponseMAP requestSelfDescription(final URI uri, URI requestedElement) throws
+            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
+        final var builder =   new DescriptionRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
-                ._securityToken_(tokenProvider.getDAT())
-                .build();
+                ._securityToken_(tokenProvider.getDAT());
+        if( requestedElement != null ) {
+            builder._requestedElement_(requestedElement);
+        }
+        final var header = builder.build();
         final var messageAndPayload = new GenericMessageAndPayload(header);
         final var response = messageService.sendIdsMessage(messageAndPayload, uri);
 
@@ -111,5 +115,6 @@ public class InfrastructureService  {
 
         throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
+
 
 }
