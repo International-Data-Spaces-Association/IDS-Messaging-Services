@@ -36,15 +36,23 @@ public class IdsRequestBuilderService {
     class IdsRequestBuilder<T> {
 
         private RequestMessageTemplate<?> requestMessageTemplate;
+        private Optional<Object> payload;
         private Optional<Class<T>> expectedPayload;
         private boolean throwOnRejection;
 
         public IdsRequestBuilder() {
             this.expectedPayload = Optional.empty();
+            this.payload = Optional.empty();
         }
 
         public IdsRequestBuilder(Class<T> expected) {
             this.expectedPayload = Optional.of(expected);
+            this.payload = Optional.empty();
+        }
+
+        public IdsRequestBuilder<T> withPayload(Object payload){
+            this.payload = Optional.ofNullable(payload);
+            return this;
         }
 
         public IdsRequestBuilder<T> useTemplate(RequestMessageTemplate<?> template){
@@ -60,7 +68,7 @@ public class IdsRequestBuilderService {
         public MessageContainer<T> execute(URI target) throws ClaimsException, MultipartParseException, IOException, DapsTokenManagerException, NoTemplateProvidedException, RejectionException, UnexpectedPayloadException {
             if(requestMessageTemplate == null) throw new NoTemplateProvidedException("No Message Template was Provided!");
             var message = requestMessageTemplate.buildMessage();
-            final var messageAndPayload = new GenericMessageAndPayload(message);
+            final var messageAndPayload = new GenericMessageAndPayload(message, payload.orElse(null));
             final var response = messageService.sendIdsMessage(messageAndPayload, target);
             var header = response.getMessage();
             var payload = response.getPayload().orElse(null);
