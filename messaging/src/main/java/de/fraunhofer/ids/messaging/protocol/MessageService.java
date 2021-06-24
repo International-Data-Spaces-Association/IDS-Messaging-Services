@@ -18,7 +18,7 @@ import java.net.URI;
 
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
@@ -75,7 +75,7 @@ public class MessageService {
             ClaimsException,
             IOException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
 
         final var payloadOptional = messageAndPayload.getPayload();
         var payloadString = "";
@@ -130,7 +130,7 @@ public class MessageService {
             ClaimsException,
             IOException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
         return sendIdsMessage(messageAndPayload, target, ProtocolType.MULTIPART);
     }
 }

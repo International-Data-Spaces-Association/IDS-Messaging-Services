@@ -33,7 +33,7 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
@@ -81,7 +81,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
 
         logBuildingHeader();
 
@@ -111,7 +111,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
 
         logBuildingHeader();
 
@@ -141,7 +141,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -166,7 +166,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -197,7 +197,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
                 }
                 responses.add(response);
 
-            } catch (IOException | MultipartParseException | ClaimsException | DapsTokenManagerException | UnknownResponseException | DeserializeHeaderException e) {
+            } catch (IOException | MultipartParseException | ClaimsException | DapsTokenManagerException | UnknownResponseException | DeserializeException e) {
                 if (log.isWarnEnabled()) {
                     log.warn(String.format("Connection to Broker %s failed!", uri));
                     log.warn(e.getMessage(), e);
@@ -222,7 +222,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -254,7 +254,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -281,7 +281,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
         var securityToken = getDat();
         var header = MessageBuilder
                 .buildQueryMessage(securityToken,

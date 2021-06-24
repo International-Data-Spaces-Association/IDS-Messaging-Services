@@ -22,7 +22,7 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
@@ -54,7 +54,7 @@ public class InfrastructureService  {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
         final var header =   new DescriptionRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())

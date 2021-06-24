@@ -26,7 +26,7 @@ import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionExcept
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
@@ -53,7 +53,7 @@ public interface IDSBrokerService {
             MultipartParseException,
             IOException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage} to the broker.
@@ -71,7 +71,7 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -89,7 +89,7 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
@@ -106,7 +106,7 @@ public interface IDSBrokerService {
             ClaimsException,
             MultipartParseException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -124,7 +124,7 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to a list of brokers.
@@ -154,7 +154,7 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
     /**
      * Do a FullText Query on the Broker with default limit and offset.
@@ -181,7 +181,7 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
     /**
      * Do a FullText Query on the Broker with custom limit and offset.
@@ -210,5 +210,5 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 }

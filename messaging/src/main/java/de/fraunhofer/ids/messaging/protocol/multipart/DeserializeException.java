@@ -18,7 +18,7 @@ import okhttp3.Response;
 /**
  * An exception that is thrown during converting a {@link Response} into the corresponding {@link MessageAndPayload object} if deserializing gone wrong and threw IOException.
  */
-public class DeserializeHeaderException extends Exception {
+public class DeserializeException extends Exception {
     private static final long serialVersionUID = 42L;
 
     /**
@@ -26,7 +26,7 @@ public class DeserializeHeaderException extends Exception {
      *
      * @param cause Throwable cause of the Exception
      */
-    public DeserializeHeaderException(final Throwable cause) {
+    public DeserializeException(final Throwable cause) {
         super(cause);
     }
 }

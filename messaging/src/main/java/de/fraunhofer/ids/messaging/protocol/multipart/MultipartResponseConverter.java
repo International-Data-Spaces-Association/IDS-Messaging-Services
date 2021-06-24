@@ -86,7 +86,7 @@ public class MultipartResponseConverter {
      * @throws UnknownResponseException if message or payload cannot be parsed
      */
     public MessageAndPayload<?, ?> convertResponse(final Map<String, String> responseMap)
-            throws UnknownResponseException, DeserializeHeaderException {
+            throws UnknownResponseException, DeserializeException {
         //The return param
         MessageAndPayload<?, ?> messageAndPayload = null;
 
@@ -101,7 +101,7 @@ public class MultipartResponseConverter {
             if (log.isErrorEnabled()) {
                 log.error("Error deserializing Header!");
             }
-            throw new DeserializeHeaderException(ioException);
+            throw new DeserializeException(ioException);
         }
 
         try {
@@ -162,7 +162,7 @@ public class MultipartResponseConverter {
             if (log.isErrorEnabled()) {
                 log.error("Error deserializing Payload!");
             }
-            throw new DeserializeHeaderException(ioException);
+            throw new DeserializeException(ioException);
         }
     }
 

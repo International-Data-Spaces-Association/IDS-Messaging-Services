@@ -22,7 +22,7 @@ import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
@@ -52,7 +52,7 @@ public interface IDSClearingHouseService {
             URISyntaxException,
             IOException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
 
     /**
@@ -75,7 +75,7 @@ public interface IDSClearingHouseService {
             ClaimsException,
             MultipartParseException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
     /**
      * Query the Clearing House.
@@ -102,6 +102,6 @@ public interface IDSClearingHouseService {
             MultipartParseException,
             IOException,
             UnknownResponseException,
-            DeserializeHeaderException;
+            DeserializeException;
 
 }

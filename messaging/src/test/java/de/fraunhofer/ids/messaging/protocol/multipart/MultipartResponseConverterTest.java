@@ -74,7 +74,7 @@ class MultipartResponseConverterTest {
             IOException,
             MultipartParseException,
             UnknownResponseException,
-            DeserializeHeaderException {
+            DeserializeException {
         //setup converter
         final var serializer = new Serializer();
         final var converter = new MultipartResponseConverter();
