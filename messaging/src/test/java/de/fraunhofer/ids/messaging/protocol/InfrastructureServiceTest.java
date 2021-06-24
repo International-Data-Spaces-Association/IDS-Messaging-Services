@@ -110,7 +110,8 @@ class InfrastructureServiceTest {
             ClaimsException,
             MultipartParseException,
             UnknownResponseException,
-            DeserializeException {
+            DeserializeException,
+            UnexpectedResponseException {
         //setup mockito
         final var connector = new BaseConnectorBuilder()
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)

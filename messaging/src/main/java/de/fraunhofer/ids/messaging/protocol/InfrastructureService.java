@@ -54,7 +54,8 @@ public class InfrastructureService  {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeException {
+            DeserializeException,
+            UnexpectedResponseException {
         final var header =   new DescriptionRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -74,20 +75,20 @@ public class InfrastructureService  {
      *
      * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
      * @return {@link MessageAndPayload object specialized to the expected Message}
-     * @throws IOException if a rejection message or any other unexpected message was returned.
+     * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
      */
     private DescriptionResponseMAP expectDescriptionResponseMAP(final MessageAndPayload<?, ?> response)
-            throws IOException {
+            throws UnexpectedResponseException {
         if (response instanceof DescriptionResponseMAP) {
             return (DescriptionResponseMAP) response;
         }
 
         if (response instanceof RejectionMAP) {
             final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
+            throw new UnexpectedResponseException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
         }
 
-        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
+        throw new UnexpectedResponseException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
     /**
@@ -95,10 +96,10 @@ public class InfrastructureService  {
      *
      * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
      * @return {@link MessageAndPayload object specialized to the expected Message}
-     * @throws IOException if a rejection message or any other unexpected message was returned.
+     * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
      */
     protected MessageProcessedNotificationMAP expectMessageProcessedNotificationMAP(final MessageAndPayload<?, ?> response)
-            throws IOException {
+            throws UnexpectedResponseException {
 
         if (response instanceof MessageProcessedNotificationMAP) {
             return (MessageProcessedNotificationMAP) response;
@@ -106,10 +107,10 @@ public class InfrastructureService  {
 
         if (response instanceof RejectionMAP) {
             final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
+            throw new UnexpectedResponseException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
         }
 
-        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
+        throw new UnexpectedResponseException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
     /**
@@ -117,19 +118,19 @@ public class InfrastructureService  {
      *
      * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
      * @return {@link MessageAndPayload object specialized to the expected Message}
-     * @throws IOException if a rejection message or any other unexpected message was returned.
+     * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
      */
-    protected ResultMAP expectResultMAP(final MessageAndPayload<?, ?> response) throws IOException {
+    protected ResultMAP expectResultMAP(final MessageAndPayload<?, ?> response) throws UnexpectedResponseException {
         if (response instanceof ResultMAP) {
             return (ResultMAP) response;
         }
 
         if (response instanceof RejectionMAP) {
             final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new IOException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
+            throw new UnexpectedResponseException("Message rejected by target with following Reason: " + rejectionMessage.getRejectionReason());
         }
 
-        throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
+        throw new UnexpectedResponseException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
     }
 
 }

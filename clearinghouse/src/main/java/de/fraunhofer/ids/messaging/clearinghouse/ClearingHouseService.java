@@ -30,6 +30,7 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
@@ -90,7 +91,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             URISyntaxException,
             IOException,
             UnknownResponseException,
-            DeserializeException {
+            DeserializeException,
+            UnexpectedResponseException {
         //log message under some random processId
         final var pid = Math.abs(secureRandom.nextInt());
 
@@ -110,7 +112,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             ClaimsException,
             MultipartParseException,
             UnknownResponseException,
-            DeserializeException {
+            DeserializeException,
+            UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
@@ -142,7 +145,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             MultipartParseException,
             IOException,
             UnknownResponseException,
-            DeserializeException {
+            DeserializeException,
+            UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
