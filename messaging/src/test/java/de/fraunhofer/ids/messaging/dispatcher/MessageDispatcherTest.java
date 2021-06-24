@@ -17,7 +17,19 @@ import java.net.URI;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
+import de.fraunhofer.iais.eis.ConfigurationModel;
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.DynamicAttributeToken;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.NotificationMessage;
+import de.fraunhofer.iais.eis.NotificationMessageBuilder;
+import de.fraunhofer.iais.eis.NotificationMessageImpl;
+import de.fraunhofer.iais.eis.RequestMessage;
+import de.fraunhofer.iais.eis.RequestMessageBuilder;
+import de.fraunhofer.iais.eis.RequestMessageImpl;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -46,11 +58,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
 @WebMvcTest
+@ExtendWith(SpringExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ContextConfiguration(classes = {RequestMessageHandlerService.class, MessageDispatcherProvider.class, MessageDispatcherTest.TestContextConfiguration.class})
 @TestPropertySource(properties = { "shacl.validation=false" })
+@ContextConfiguration(classes = {RequestMessageHandlerService.class, MessageDispatcherProvider.class, MessageDispatcherTest.TestContextConfiguration.class})
 class MessageDispatcherTest {
     @Autowired
     MessageDispatcherProvider messageDispatcherProvider;

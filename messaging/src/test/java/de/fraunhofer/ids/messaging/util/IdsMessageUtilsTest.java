@@ -1,20 +1,27 @@
 package de.fraunhofer.ids.messaging.util;
 
-import de.fraunhofer.iais.eis.*;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.net.URI;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import de.fraunhofer.iais.eis.BaseConnector;
+import de.fraunhofer.iais.eis.BaseConnectorBuilder;
+import de.fraunhofer.iais.eis.ConfigurationModelBuilder;
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
+import de.fraunhofer.iais.eis.ConnectorStatus;
+import de.fraunhofer.iais.eis.LogLevel;
+import de.fraunhofer.iais.eis.SecurityProfile;
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class IdsMessageUtilsTest {
 
     @Test
     public void testUtils(){
-        var connector = new BaseConnectorBuilder()
+        final var connector = new BaseConnectorBuilder()
                 ._curator_(URI.create("http://curator"))
                 ._hasDefaultEndpoint_(new ConnectorEndpointBuilder()._accessURL_(URI.create("http://localhost")).build())
                 ._inboundModelVersion_(List.of("1.0.0"))
@@ -23,7 +30,7 @@ class IdsMessageUtilsTest {
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
                 .build();
 
-        var configurationModel = new ConfigurationModelBuilder()
+        final var configurationModel = new ConfigurationModelBuilder()
                 ._configurationModelLogLevel_(LogLevel.DEBUG_LEVEL_LOGGING)
                 ._connectorDeployMode_(ConnectorDeployMode.TEST_DEPLOYMENT)
                 ._connectorStatus_(ConnectorStatus.CONNECTOR_OFFLINE)

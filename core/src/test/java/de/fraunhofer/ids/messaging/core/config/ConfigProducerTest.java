@@ -13,20 +13,13 @@
  */
 package de.fraunhofer.ids.messaging.core.config;
 
-import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
-import java.util.List;
 
-import de.fraunhofer.iais.eis.BasicAuthenticationBuilder;
-import de.fraunhofer.iais.eis.ConfigurationModelImpl;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
-import de.fraunhofer.iais.eis.ProxyBuilder;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
-import de.fraunhofer.ids.messaging.core.daps.TokenManagerService;
 import de.fraunhofer.ids.messaging.core.daps.aisec.AisecTokenManagerService;
 import de.fraunhofer.ids.messaging.core.daps.orbiter.OrbiterTokenManagerService;
 import lombok.AccessLevel;
@@ -38,7 +31,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -78,11 +74,11 @@ class ConfigProducerTest {
 
     @Test
     void testProvider() throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
-        var tokenManagerService = new AisecTokenManagerService(clientProvider, configContainer);
+        final var tokenManagerService = new AisecTokenManagerService(clientProvider, configContainer);
         assertEquals("INVALID_TOKEN", tokenManagerService.acquireToken("https://daps.aisec.fraunhofer.de/v2/token"));
 
         //orbiter DAPS currently not reachable (and currently not added to test connectors NO_PROXY), so this should throw an IllegalArgumentException
-        var orbiterTokenManagerService = new OrbiterTokenManagerService(clientProvider);
+        final var orbiterTokenManagerService = new OrbiterTokenManagerService(clientProvider);
         assertThrows(IllegalArgumentException.class, () -> orbiterTokenManagerService.acquireToken("https://orbiter-daps-staging.truzzt.org/api/oauth/token"));
     }
 }

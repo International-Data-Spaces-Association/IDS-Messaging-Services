@@ -1,6 +1,20 @@
 package de.fraunhofer.ids.messaging.protocol;
 
-import de.fraunhofer.iais.eis.*;
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+
+import de.fraunhofer.iais.eis.BaseConnectorBuilder;
+import de.fraunhofer.iais.eis.ConfigurationModelBuilder;
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
+import de.fraunhofer.iais.eis.ConnectorStatus;
+import de.fraunhofer.iais.eis.DescriptionResponseMessageBuilder;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.LogLevel;
+import de.fraunhofer.iais.eis.SecurityProfile;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -10,7 +24,6 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -28,15 +41,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
-//@SpringBootTest( webEnvironment= SpringBootTest.WebEnvironment.NONE )
-//@EnableConfigurationProperties(value = ConfigProperties.class)
 @ContextConfiguration(classes = { InfrastructureServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
 class InfrastructureServiceTest {
@@ -141,7 +148,7 @@ class InfrastructureServiceTest {
         mockWebServer.enqueue(new MockResponse().setBody(multipartString));
 
         //request selfdescription and check if MAP handles response correctly
-        var map = infrastructureService.requestSelfDescription(mockWebServer.url("/").uri());
+        final var map = infrastructureService.requestSelfDescription(mockWebServer.url("/").uri());
         assertEquals(descRespMsg, map.getMessage());
         assertEquals(connector, serializer.deserialize(map.getPayload().get(), Connector.class));
     }

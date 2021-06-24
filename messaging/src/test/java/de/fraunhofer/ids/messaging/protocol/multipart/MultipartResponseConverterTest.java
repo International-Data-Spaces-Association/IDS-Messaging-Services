@@ -1,9 +1,61 @@
 package de.fraunhofer.ids.messaging.protocol.multipart;
 
-import de.fraunhofer.iais.eis.*;
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
+import de.fraunhofer.iais.eis.ArtifactRequestMessage;
+import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
+import de.fraunhofer.iais.eis.ArtifactResponseMessage;
+import de.fraunhofer.iais.eis.ArtifactResponseMessageBuilder;
+import de.fraunhofer.iais.eis.BaseConnectorBuilder;
+import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
+import de.fraunhofer.iais.eis.ConnectorUnavailableMessage;
+import de.fraunhofer.iais.eis.ConnectorUnavailableMessageBuilder;
+import de.fraunhofer.iais.eis.ConnectorUpdateMessage;
+import de.fraunhofer.iais.eis.ConnectorUpdateMessageBuilder;
+import de.fraunhofer.iais.eis.ContractAgreementBuilder;
+import de.fraunhofer.iais.eis.ContractAgreementMessage;
+import de.fraunhofer.iais.eis.ContractAgreementMessageBuilder;
+import de.fraunhofer.iais.eis.ContractOfferBuilder;
+import de.fraunhofer.iais.eis.ContractOfferMessage;
+import de.fraunhofer.iais.eis.ContractOfferMessageBuilder;
+import de.fraunhofer.iais.eis.ContractRejectionMessage;
+import de.fraunhofer.iais.eis.ContractRejectionMessageBuilder;
+import de.fraunhofer.iais.eis.ContractRequestBuilder;
+import de.fraunhofer.iais.eis.ContractRequestMessage;
+import de.fraunhofer.iais.eis.ContractRequestMessageBuilder;
+import de.fraunhofer.iais.eis.ContractResponseMessage;
+import de.fraunhofer.iais.eis.ContractResponseMessageBuilder;
+import de.fraunhofer.iais.eis.DescriptionRequestMessage;
+import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
+import de.fraunhofer.iais.eis.DescriptionResponseMessage;
+import de.fraunhofer.iais.eis.DescriptionResponseMessageBuilder;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.iais.eis.NotificationMessage;
+import de.fraunhofer.iais.eis.NotificationMessageBuilder;
+import de.fraunhofer.iais.eis.ParticipantBuilder;
+import de.fraunhofer.iais.eis.ParticipantRequestMessage;
+import de.fraunhofer.iais.eis.ParticipantRequestMessageBuilder;
+import de.fraunhofer.iais.eis.ParticipantUnavailableMessage;
+import de.fraunhofer.iais.eis.ParticipantUnavailableMessageBuilder;
+import de.fraunhofer.iais.eis.ParticipantUpdateMessage;
+import de.fraunhofer.iais.eis.ParticipantUpdateMessageBuilder;
+import de.fraunhofer.iais.eis.QueryMessage;
+import de.fraunhofer.iais.eis.QueryMessageBuilder;
+import de.fraunhofer.iais.eis.RejectionMessage;
+import de.fraunhofer.iais.eis.RejectionMessageBuilder;
+import de.fraunhofer.iais.eis.ResourceBuilder;
+import de.fraunhofer.iais.eis.ResourceUnavailableMessage;
+import de.fraunhofer.iais.eis.ResourceUnavailableMessageBuilder;
+import de.fraunhofer.iais.eis.ResourceUpdateMessage;
+import de.fraunhofer.iais.eis.ResourceUpdateMessageBuilder;
+import de.fraunhofer.iais.eis.SecurityProfile;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractOfferMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractRejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
@@ -12,12 +64,8 @@ import okhttp3.MultipartBody;
 import okio.Buffer;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MultipartResponseConverterTest {
 
@@ -93,7 +141,7 @@ class MultipartResponseConverterTest {
         assertEquals(component, convertedMAP.getPayload().get());
 
         //messages where payload does not matter for MAP
-        var messages = List.of(
+        final var messages = List.of(
                 buildDescriptionRequestMessage(),
                 buildDescriptionResponseMessage(),
                 buildContractRejectionMessage(),
@@ -106,14 +154,14 @@ class MultipartResponseConverterTest {
                 buildParticipantUnavailableMessage(),
                 buildParticipantRequestMessage()
         );
-        for(var msg : messages){
+        for (final var msg : messages){
             final var multiMap = buildMultipart(msg, "payload");
             final var convMap = converter.convertResponse(multiMap);
             assertEquals(msg, convMap.getMessage());
         }
 
         //check unsupported message (should throw IOException)
-        var noteMsg = buildNotificationMessage();
+        final var noteMsg = buildNotificationMessage();
         assertThrows(IOException.class, () -> converter.convertResponse(Map.of(
                 "header", serializer.serialize(noteMsg),
                 "payload", "a")
@@ -122,8 +170,8 @@ class MultipartResponseConverterTest {
 
     //utility: builder methods
 
-    private Map<String, String> buildMultipart(Message message, String payload) throws IOException, MultipartParseException {
-        var serializer = new Serializer();
+    private Map<String, String> buildMultipart(final Message message, final String payload) throws IOException, MultipartParseException {
+        final var serializer = new Serializer();
         final var multipart = new MultipartBody.Builder()
                 .addFormDataPart("header", serializer.serialize(message))
                 .addFormDataPart("payload", payload)
@@ -134,8 +182,8 @@ class MultipartResponseConverterTest {
         return MultipartParser.stringToMultipart(multipartString);
     }
 
-    private Map<String, String> buildMultipart(Message message, Object payload) throws IOException, MultipartParseException {
-        var serializer = new Serializer();
+    private Map<String, String> buildMultipart(final Message message, final Object payload) throws IOException, MultipartParseException {
+        final var serializer = new Serializer();
         return buildMultipart(message, serializer.serialize(payload));
     }
 

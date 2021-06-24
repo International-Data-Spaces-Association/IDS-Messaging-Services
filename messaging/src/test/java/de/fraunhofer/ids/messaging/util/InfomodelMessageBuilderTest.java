@@ -1,15 +1,18 @@
 package de.fraunhofer.ids.messaging.util;
 
-import de.fraunhofer.iais.eis.*;
-import de.fraunhofer.iais.eis.util.Util;
-import okhttp3.MediaType;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import static org.junit.jupiter.api.Assertions.*;
+import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.RequestMessage;
+import de.fraunhofer.iais.eis.TokenFormat;
+import de.fraunhofer.iais.eis.util.Util;
+import okhttp3.MediaType;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class InfomodelMessageBuilderTest {
 

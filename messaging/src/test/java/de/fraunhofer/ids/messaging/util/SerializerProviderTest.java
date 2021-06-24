@@ -2,7 +2,7 @@ package de.fraunhofer.ids.messaging.util;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class SerializerProviderTest {
 
@@ -10,5 +10,4 @@ class SerializerProviderTest {
     void testProvideSerializer(){
         assertNotNull(new SerializerProvider().getSerializer());
     }
-
 }

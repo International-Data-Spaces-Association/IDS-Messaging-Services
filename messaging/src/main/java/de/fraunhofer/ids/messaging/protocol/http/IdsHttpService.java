@@ -33,7 +33,10 @@ import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -426,10 +429,11 @@ public class IdsHttpService implements HttpService {
      */
     @Getter
     @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
     private class TimeoutSettings {
-        private Duration connectTimeout;
-        private Duration readTimeout;
-        private Duration writeTimeout;
-        private Duration callTimeout;
+        Duration connectTimeout;
+        Duration readTimeout;
+        Duration writeTimeout;
+        Duration callTimeout;
     }
 }
