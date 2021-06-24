@@ -8,11 +8,7 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
-import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
-import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
-import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.core.daps.*;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
@@ -105,6 +101,12 @@ public interface IDSBrokerService {
      * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
      * @return the brokers response to the query request
      * @throws IOException if the built message could not be serialized
+     * @throws ConnectorMissingCertExtensionException Exception while getting DAT from DAPS.
+     * @throws DapsConnectionException Exception while getting DAT from DAPS.
+     * @throws DapsEmptyResponseException Exception while getting DAT from DAPS.
+     * @throws IOException Exception while getting DAT from DAPS.
+     * @throws MultipartParseException Exception while parsing the response.
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
      */
     ResultMAP queryBroker(URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
             throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException;

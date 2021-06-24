@@ -4,18 +4,13 @@ import java.io.IOException;
 import java.net.URI;
 
 import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
+import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
-import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.core.daps.*;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.*;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -110,6 +105,27 @@ public class InfrastructureService  {
         }
 
         throw new IOException(String.format("Unexpected Message of type %s was returned", response.getMessage().getClass().toString()));
+    }
+    /**
+     * Get a new DAT from the DAPS.
+     *
+     * @return DAT, returned by the DAPS for the Connector
+     * @throws ConnectorMissingCertExtensionException Something went wrong with the Certificate of the Connector
+     * @throws DapsConnectionException                The DAPS is not reachable (wrong URL, network problems..)
+     * @throws DapsEmptyResponseException             The DAPS didn't return the expected response (maybe DAPS internal Problem?)
+     */
+    protected DynamicAttributeToken getDat()
+            throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
+        return tokenProvider.getDAT();
+    }
+
+    /**
+     * Log info about starting to build the header.
+     */
+    protected void logBuildingHeader() {
+        if (log.isDebugEnabled()) {
+            log.debug("Building message header");
+        }
     }
 
 }
