@@ -9,7 +9,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [w.x.y.z] UNRELEASED
+## Version [4.2.0.0] UNRELEASED
+
+### Major Change: New Exceptions
+- New Exceptions can be thrown while handling incoming response-messages:
+- DeserializeException: if response-header (message) or response-payload could not be deserialized in MultipartResponseConverter (maps Serializer-IOException to new DeserializeException)
+- UnknownResponseException: if no response cast in MultipartResponseConverter available
+- UnexpectedResponseException: If the response can be cast, but was not expected to the request send
 
 ### Miscellaneous
 - Patch Change: Added Apache 2.0 License Header to all files
