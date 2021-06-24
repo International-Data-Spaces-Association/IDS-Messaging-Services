@@ -9,6 +9,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [w.x.y.z] UNRELEASED
+
+### Miscellaneous
+- Patch Change: Added Apache 2.0 License Header to all files
+
 ## Version [4.1.1.1] 2021-06-21
 
 ### Patch Change: Infomodel Maintenance
