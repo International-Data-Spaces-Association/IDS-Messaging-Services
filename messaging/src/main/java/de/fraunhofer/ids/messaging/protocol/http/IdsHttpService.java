@@ -35,7 +35,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseExcep
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -187,7 +187,7 @@ public class IdsHttpService implements HttpService {
         final var request = buildRequest(requestBody, target);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("sending request to %s", target.toString()));
+            log.debug(String.format("sending request to %s", target));
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -209,7 +209,7 @@ public class IdsHttpService implements HttpService {
         final var request = buildWithHeaders(requestBody, target, headers);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("sending request to %s", target.toString()));
+            log.debug(String.format("sending request to %s", target));
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -427,12 +427,13 @@ public class IdsHttpService implements HttpService {
     /**
      * Inner class, managing timeout settings for custom HttpClients.
      */
-    @Data
+    @Getter
     @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
     private class TimeoutSettings {
-        private Duration connectTimeout;
-        private Duration readTimeout;
-        private Duration writeTimeout;
-        private Duration callTimeout;
+        Duration connectTimeout;
+        Duration readTimeout;
+        Duration writeTimeout;
+        Duration callTimeout;
     }
 }

@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Miscellaneous
 - Patch Change: Added Apache 2.0 License Header to all files
+- Patch Change: Increased Test-Coverage
 
 ## Version [4.1.1.1] 2021-06-21
 

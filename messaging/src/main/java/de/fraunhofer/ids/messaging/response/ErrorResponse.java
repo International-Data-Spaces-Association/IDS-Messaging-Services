@@ -87,7 +87,7 @@ public class ErrorResponse implements MessageResponse {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 .build();
 
-        return new ErrorResponse(rejectionMessage, errorMessage);
+        return ErrorResponse.create(rejectionMessage, errorMessage);
     }
 
     /**

@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
@@ -35,6 +36,7 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
+import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterResult;
 import de.fraunhofer.ids.messaging.dispatcher.testhandlers.NotificationMessageHandler;
 import de.fraunhofer.ids.messaging.dispatcher.testhandlers.RequestMessageHandler;
 import de.fraunhofer.ids.messaging.handler.message.MessageHandler;
@@ -54,13 +56,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
 @WebMvcTest
+@ExtendWith(SpringExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ContextConfiguration(classes = {RequestMessageHandlerService.class, MessageDispatcherProvider.class, MessageDispatcherTest.TestContextConfiguration.class})
 @TestPropertySource(properties = { "shacl.validation=false" })
+@ContextConfiguration(classes = {RequestMessageHandlerService.class, MessageDispatcherProvider.class, MessageDispatcherTest.TestContextConfiguration.class})
 class MessageDispatcherTest {
     @Autowired
     MessageDispatcherProvider messageDispatcherProvider;
@@ -119,12 +121,20 @@ class MessageDispatcherTest {
         final var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, configurationContainer, dapsValidator);
         final var reqMsg = buildRequestMessage();
         final var notMsg = buildNotificationMessage();
+        final var artMsg = buildArtifactRequestMessage();
 
         final var requestResponse = (ErrorResponse) dispatcher.process(reqMsg, null);
         assertEquals("request", requestResponse.getErrorMessage()); //use error message to check which handler got the message
 
         final var notificationResponse = (ErrorResponse) dispatcher.process(notMsg, null);
-        assertEquals("notification", notificationResponse.getErrorMessage()); //use error message to check which handler got the message
+        assertEquals("Error while handling the request!", notificationResponse.getErrorMessage()); //use error message to check which handler got the message
+
+        final var artifactResponse = (ErrorResponse) dispatcher.process(artMsg, null);
+        assertEquals("No handler for provided message type was found!", artifactResponse.getErrorMessage());
+
+        dispatcher.registerPreDispatchingAction(in -> PreDispatchingFilterResult.successResult());
+        dispatcher.registerPreDispatchingAction(in -> PreDispatchingFilterResult.builder().withMessage("predispatching").withSuccess(false).build());
+        assertEquals("predispatching", ((ErrorResponse) dispatcher.process(reqMsg, null)).getErrorMessage());
     }
 
     private NotificationMessage buildNotificationMessage() {
@@ -153,6 +163,22 @@ class MessageDispatcherTest {
                                          ._tokenFormat_(TokenFormat.JWT)
                                          ._tokenValue_("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRlZmF1bHQifQ.eyJ...")
                                          .build())
+                ._senderAgent_(URI.create("http://example.org#senderAgent"))
+                ._recipientConnector_(Util.asList(URI.create("http://example.org#recipientConnector1"), URI.create("http://example.org#recipientConnector2")))
+                .build();
+    }
+
+    private RequestMessage buildArtifactRequestMessage() {
+        final var now = IdsMessageUtils.getGregorianNow();
+        return new ArtifactRequestMessageBuilder()
+                ._issuerConnector_(URI.create("http://example.org#connector"))
+                ._issued_(now)
+                ._requestedArtifact_(URI.create("http://example.artifact"))
+                ._modelVersion_("4.0.0")
+                ._securityToken_(new DynamicAttributeTokenBuilder()
+                        ._tokenFormat_(TokenFormat.JWT)
+                        ._tokenValue_("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRlZmF1bHQifQ.eyJ...")
+                        .build())
                 ._senderAgent_(URI.create("http://example.org#senderAgent"))
                 ._recipientConnector_(Util.asList(URI.create("http://example.org#recipientConnector1"), URI.create("http://example.org#recipientConnector2")))
                 .build();

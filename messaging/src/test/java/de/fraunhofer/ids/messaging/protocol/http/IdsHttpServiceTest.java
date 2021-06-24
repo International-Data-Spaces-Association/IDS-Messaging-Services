@@ -13,13 +13,20 @@
  */
 package de.fraunhofer.ids.messaging.protocol.http;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.Test;
@@ -35,6 +42,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
@@ -86,6 +95,15 @@ class IdsHttpServiceTest {
         Mockito.when(configContainer.getConnector()).thenReturn(connector);
         Mockito.when(configurationModel.getConnectorDescription()).thenReturn(connector);
         Mockito.when(clientProvider.getClient()).thenReturn(new OkHttpClient());
+        Mockito.when(clientProvider.getClientWithTimeouts(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(
+                        new OkHttpClient.Builder()
+                                .callTimeout(Duration.ofMillis(10))
+                                .writeTimeout(Duration.ofMillis(10))
+                                .readTimeout(Duration.ofMillis(10))
+                                .connectTimeout(Duration.ofMillis(10))
+                                .build()
+                );
         //start the MockWebServer
         mockWebServer.start();
         //create a default response
@@ -93,6 +111,16 @@ class IdsHttpServiceTest {
         mockWebServer.enqueue(mockResponse);
         //send a request using idsHttpService
         var response = idsHttpService.send("This is a Message.", mockWebServer.url("/").uri());
+        mockWebServer.enqueue(mockResponse);
+        assertNotNull(idsHttpService.get(mockWebServer.url("/").uri()));
+        mockWebServer.enqueue(mockResponse);
+        assertNotNull(idsHttpService.getWithHeaders(mockWebServer.url("/").uri(), Map.of("header", "payload")));
+        mockWebServer.enqueue(mockResponse);
+        assertNotNull(idsHttpService.sendWithHeaders(RequestBody.create("String", MediaType.parse("text/plain")), mockWebServer.url("/").uri(), Map.of("header", "payload")));
+        idsHttpService.setTimeouts(Duration.ofMillis(10), Duration.ofMillis(10), Duration.ofMillis(10), Duration.ofMillis(10));
+        mockWebServer.enqueue(mockResponse.setBodyDelay(10, TimeUnit.SECONDS).setHeadersDelay(10, TimeUnit.SECONDS));
+        assertThrows(IOException.class, () -> idsHttpService.get(mockWebServer.url("/").uri()));
+        idsHttpService.removeTimeouts();
         //check if response body and MockWebServer response are equal
         assertEquals("This is a response.", response.body().string());
     }
