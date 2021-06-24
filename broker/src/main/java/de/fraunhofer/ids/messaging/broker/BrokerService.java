@@ -33,6 +33,8 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
@@ -51,8 +53,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class BrokerService extends InfrastructureService
-        implements IDSBrokerService {
+public class BrokerService extends InfrastructureService implements IDSBrokerService {
 
     static int DEFAULT_LIMIT = 50;
     static int DEFAULT_OFFSET = 0;
@@ -74,7 +75,13 @@ public class BrokerService extends InfrastructureService
     @Override
     public MessageProcessedNotificationMAP removeResourceFromBroker(@NonNull final URI brokerURI,
                                                                     @NonNull final Resource resource)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException {
 
         logBuildingHeader();
 
@@ -97,8 +104,14 @@ public class BrokerService extends InfrastructureService
      * @return
      */
     @Override
-    public MessageProcessedNotificationMAP updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource) throws
-            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
+    public MessageProcessedNotificationMAP updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource)
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException {
 
         logBuildingHeader();
 
@@ -122,7 +135,13 @@ public class BrokerService extends InfrastructureService
      */
     @Override
     public MessageProcessedNotificationMAP unregisterAtBroker(@NonNull final URI brokerURI)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -140,8 +159,14 @@ public class BrokerService extends InfrastructureService
      * @return
      */
     @Override
-    public MessageProcessedNotificationMAP updateSelfDescriptionAtBroker(@NonNull final URI brokerURI) throws
-            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
+    public MessageProcessedNotificationMAP updateSelfDescriptionAtBroker(@NonNull final URI brokerURI)
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -172,7 +197,7 @@ public class BrokerService extends InfrastructureService
                 }
                 responses.add(response);
 
-            } catch (IOException | MultipartParseException | ClaimsException | DapsTokenManagerException e) {
+            } catch (IOException | MultipartParseException | ClaimsException | DapsTokenManagerException | UnknownResponseException | DeserializeHeaderException e) {
                 if (log.isWarnEnabled()) {
                     log.warn(String.format("Connection to Broker %s failed!", uri));
                     log.warn(e.getMessage(), e);
@@ -191,7 +216,13 @@ public class BrokerService extends InfrastructureService
                                  @NonNull final QueryLanguage queryLanguage,
                                  @NonNull final QueryScope queryScope,
                                  @NonNull final QueryTarget queryTarget)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException {
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -221,7 +252,9 @@ public class BrokerService extends InfrastructureService
             DapsEmptyResponseException,
             IOException,
             MultipartParseException,
-            ClaimsException {
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -246,7 +279,9 @@ public class BrokerService extends InfrastructureService
             DapsEmptyResponseException,
             IOException,
             MultipartParseException,
-            ClaimsException {
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException {
         var securityToken = getDat();
         var header = MessageBuilder
                 .buildQueryMessage(securityToken,

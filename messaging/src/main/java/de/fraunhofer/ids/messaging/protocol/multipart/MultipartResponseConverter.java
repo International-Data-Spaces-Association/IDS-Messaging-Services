@@ -63,87 +63,241 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.QueryMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResourceMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Converts a {@link Response} into the corresponding {@link MessageAndPayload object}.
  */
+@Slf4j
+@NoArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MultipartResponseConverter {
-    private final Serializer serializer = new Serializer();
+    Serializer serializer = new Serializer();
 
     /**
-     *
-     * @param responseMap in a Map
+     * Converts a Response into a corresponding MessageAndPayload Object.
+     * @param responseMap Response in a Map
      * @return MessageAndPayload containing the corresponding Message and the payload parsed in Infomodel classes
-     * @throws IOException if message or payload cannot be parsed
+     * @throws UnknownResponseException if message or payload cannot be parsed
      */
-    public MessageAndPayload<?, ?> convertResponse(final Map<String, String> responseMap) throws IOException {
-        //var responseMap = MultipartParser.stringToMultipart(Objects.requireNonNull(response.body()).string());
-        //var messageString = responseMap.get(MultipartDatapart.HEADER.toString());
-        final var payloadString = responseMap.getOrDefault(MultipartDatapart.PAYLOAD.toString(), "");
-        final var message = serializer.deserialize(responseMap.getOrDefault(MultipartDatapart.HEADER.toString(), ""), Message.class);
+    public MessageAndPayload<?, ?> convertResponse(final Map<String, String> responseMap)
+            throws UnknownResponseException, DeserializeHeaderException {
+        //The return param
+        MessageAndPayload<?, ?> messageAndPayload = null;
 
-        // core message types
-        if (message instanceof DescriptionRequestMessage) {
-            return new DescriptionRequestMAP((DescriptionRequestMessage) message);
-        } else if (message instanceof DescriptionResponseMessage) {
-            return new DescriptionResponseMAP(
-                    (DescriptionResponseMessage) message, payloadString);
-        } else if (message instanceof MessageProcessedNotificationMessage) {
-            return new MessageProcessedNotificationMAP((MessageProcessedNotificationMessage) message);
-        } else if (message instanceof RejectionMessage) {
-            if (message instanceof ContractRejectionMessage) {
-                return new ContractRejectionMAP((ContractRejectionMessage) message);
+        Message responseHeader; //The response "message", set in try catch
+        
+        final var responsePayload = getResponsePayload(responseMap);
+
+        try {
+            //Can throw IOException if Header can not be deserialized
+            responseHeader = getResponseHeader(responseMap);
+        } catch (IOException ioException) {
+            if (log.isErrorEnabled()) {
+                log.error("Error deserializing Header!");
             }
-            return new RejectionMAP((RejectionMessage) message, payloadString);
+            throw new DeserializeHeaderException(ioException);
         }
 
-        // artifact-related message types
-        else if (message instanceof ArtifactRequestMessage) {
-            return new ArtifactRequestMAP((ArtifactRequestMessage) message);
-        } else if (message instanceof ArtifactResponseMessage) {
-            //ToDo: Write Artifact to temp file
-            //File artifactTmp = Files.createTempFile("tmp", payloadString.getFilename()).toFile();
-            //FileUtils.writeByteArrayToFile(artifactTmp, payload.getSerialization());
-            final var artifactTmp = new File("tmp");
+        try {
+            if (responseHeader instanceof DescriptionRequestMessage) {
+                messageAndPayload = getDescriptionRequestMessage(responseHeader);
+            } else if (responseHeader instanceof DescriptionResponseMessage) {
+                messageAndPayload = getDescriptionResponseMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof MessageProcessedNotificationMessage) {
+                messageAndPayload = getMessageProcessedNotificationMessage(responseHeader);
+            } else if (responseHeader instanceof RejectionMessage) {
+                messageAndPayload = getRejectionMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ArtifactRequestMessage) {
+                messageAndPayload = getArtifactRequestMessage(responseHeader);
+            } else if (responseHeader instanceof ArtifactResponseMessage) {
+                messageAndPayload = getArtifactResponseMessage(responseHeader);
+            } else if (responseHeader instanceof ConnectorUpdateMessage) {
+                messageAndPayload = getConnectorUpdateMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ConnectorUnavailableMessage) {
+                messageAndPayload = getConnectorUnavailableMessage(responseHeader);
+            } else if (responseHeader instanceof QueryMessage) {
+                messageAndPayload = getQueryMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ResultMessage) {
+                messageAndPayload = getResultMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ResourceUpdateMessage) {
+                messageAndPayload = getResourceUpdateMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ResourceUnavailableMessage) {
+                messageAndPayload = getResourceUnavailableMessage(responseHeader);
+            } else if (responseHeader instanceof ParticipantUpdateMessage) {
+                messageAndPayload = getParticipantUpdateMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ParticipantUnavailableMessage) {
+                messageAndPayload = getParticipantUnavailableMessage(responseHeader);
+            } else if (responseHeader instanceof ParticipantRequestMessage) {
+                messageAndPayload = getParticipantRequestMessage(responseHeader);
+            } else if (responseHeader instanceof ContractOfferMessage) {
+                messageAndPayload = getContractOfferMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ContractRequestMessage) {
+                messageAndPayload = getContractRequestMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ContractAgreementMessage) {
+                messageAndPayload = getContractAgreementMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ContractResponseMessage) {
+                messageAndPayload = getContractResponseMessage(responseHeader, responsePayload);
+            }
 
-            return new ArtifactResponseMAP((ArtifactResponseMessage) message, artifactTmp);
+            if (messageAndPayload != null) {
+                //Match found, returning messageAndPayload
+                return messageAndPayload;
+            } else {
+                //No match found, throw UnknownResponseException
+                if (log.isErrorEnabled()) {
+                    log.error("Could not convert input header to suitable responseHeader and payload type!");
+                }
+                throw new UnknownResponseException(
+                        "Could not convert input header to suitable responseHeader and payload type. Header: "
+                        + responseHeader.toRdf());
+            }
+        } catch (IOException ioException) {
+            //Deserializing Payload threw exception
+            if (log.isErrorEnabled()) {
+                log.error("Error deserializing Payload!");
+            }
+            throw new DeserializeHeaderException(ioException);
         }
+    }
 
-        // broker-related messages
-        else if (message instanceof ConnectorUpdateMessage) {
-            return new InfrastructurePayloadMAP(message, serializer.deserialize(payloadString, InfrastructureComponent.class));
-        } else if (message instanceof ConnectorUnavailableMessage) {
-            return new InfrastructurePayloadMAP(message, null);
-        } else if (message instanceof QueryMessage) {
-            return new QueryMAP((QueryMessage) message, payloadString);
-        } else if (message instanceof ResultMessage ) {
-            return new ResultMAP((ResultMessage) message, payloadString);
-        } else if (message instanceof ResourceUpdateMessage) {
-            return new ResourceMAP(message, serializer.deserialize(payloadString, Resource.class));
-        } else if (message instanceof ResourceUnavailableMessage) {
-            return new ResourceMAP(message);
-        }
+    @NotNull
+    private MessageAndPayload<?, ?> getContractResponseMessage(final Message responseHeader, final String responsePayload)
+            throws IOException {
+        return new ContractResponseMAP((ContractResponseMessage) responseHeader, serializer.deserialize(responsePayload, ContractOffer.class));
+    }
 
-        // participant-related messages
-        else if (message instanceof ParticipantUpdateMessage) {
-            return new ParticipantNotificationMAP(message, serializer.deserialize(payloadString, Participant.class));
-        } else if (message instanceof ParticipantUnavailableMessage) {
-            return new ParticipantNotificationMAP(message);
-        } else if (message instanceof ParticipantRequestMessage) {
-            return new ParticipantRequestMAP((ParticipantRequestMessage) message);
-        }
+    @NotNull
+    private MessageAndPayload<?, ?> getContractAgreementMessage(
+            final Message responseHeader, final String responsePayload)
+            throws IOException {
+        return new ContractAgreementMAP((ContractAgreementMessage) responseHeader,
+                                        serializer.deserialize(responsePayload, ContractAgreement.class));
+    }
 
-        // contract-related messages
-        else if (message instanceof ContractOfferMessage) {
-            return new ContractOfferMAP((ContractOfferMessage) message, serializer.deserialize(payloadString, ContractOffer.class));
-        } else if (message instanceof ContractRequestMessage) {
-            return new ContractRequestMAP((ContractRequestMessage) message, serializer.deserialize(payloadString, ContractRequest.class));
-        } else if (message instanceof ContractAgreementMessage) {
-            return new ContractAgreementMAP((ContractAgreementMessage) message, serializer.deserialize(payloadString, ContractAgreement.class));
-        } else if (message instanceof ContractResponseMessage) {
-            return new ContractResponseMAP((ContractResponseMessage) message, serializer.deserialize(payloadString, ContractOffer.class));
+    @NotNull
+    private MessageAndPayload<?, ?> getContractRequestMessage(final Message responseHeader,
+                                                              final String responsePayload)
+            throws IOException {
+        return new ContractRequestMAP((ContractRequestMessage) responseHeader,
+                                      serializer.deserialize(responsePayload, ContractRequest.class));
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getContractOfferMessage(final Message responseHeader,
+                                                            final String responsePayload)
+            throws IOException {
+        return new ContractOfferMAP((ContractOfferMessage) responseHeader,
+                                    serializer.deserialize(responsePayload, ContractOffer.class));
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getParticipantRequestMessage(final Message responseHeader) {
+        return new ParticipantRequestMAP((ParticipantRequestMessage) responseHeader);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getParticipantUnavailableMessage(final Message responseHeader) {
+        return new ParticipantNotificationMAP(responseHeader);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getParticipantUpdateMessage(final Message responseHeader,
+                                                                final String responsePayload)
+            throws IOException {
+        return new ParticipantNotificationMAP(responseHeader, serializer.deserialize(responsePayload, Participant.class));
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getResourceUnavailableMessage(final Message responseHeader) {
+        return new ResourceMAP(responseHeader);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getResourceUpdateMessage(final Message responseHeader,
+                                                             final String responsePayload)
+            throws IOException {
+        return new ResourceMAP(responseHeader, serializer.deserialize(responsePayload, Resource.class));
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getResultMessage(final Message responseHeader,
+                                                     final String responsePayload) {
+        return new ResultMAP((ResultMessage) responseHeader, responsePayload);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getQueryMessage(final Message responseHeader,
+                                                    final String responsePayload) {
+        return new QueryMAP((QueryMessage) responseHeader, responsePayload);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getConnectorUnavailableMessage(final Message responseHeader) {
+        return new InfrastructurePayloadMAP(responseHeader, null);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getConnectorUpdateMessage(final Message responseHeader,
+                                                              final String responsePayload)
+            throws IOException {
+        return new InfrastructurePayloadMAP(responseHeader,
+                                            serializer.deserialize(
+                                                    responsePayload,
+                                                    InfrastructureComponent.class));
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getArtifactResponseMessage(final Message responseHeader) {
+        //ToDo: Write Artifact to temp file
+        //File artifactTmp = Files.createTempFile("tmp", responsePayload.getFilename()).toFile();
+        //FileUtils.writeByteArrayToFile(artifactTmp, payload.getSerialization());
+        final var artifactTmp = new File("tmp");
+        return new ArtifactResponseMAP((ArtifactResponseMessage) responseHeader, artifactTmp);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getArtifactRequestMessage(final Message responseHeader) {
+        return new ArtifactRequestMAP((ArtifactRequestMessage) responseHeader);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getMessageProcessedNotificationMessage(final Message responseHeader) {
+        return new MessageProcessedNotificationMAP((MessageProcessedNotificationMessage) responseHeader);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getDescriptionResponseMessage(
+            final Message responseHeader,
+            final String responsePayload) {
+        return new DescriptionResponseMAP((DescriptionResponseMessage) responseHeader, responsePayload);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getDescriptionRequestMessage(final Message responseHeader) {
+        return new DescriptionRequestMAP((DescriptionRequestMessage) responseHeader);
+    }
+
+    @NotNull
+    private MessageAndPayload<?, ?> getRejectionMessage(final Message responseHeader,
+                                                        final String responsePayload) {
+        if (responseHeader instanceof ContractRejectionMessage) {
+            return new ContractRejectionMAP((ContractRejectionMessage) responseHeader);
+        } else {
+            return new RejectionMAP((RejectionMessage) responseHeader, responsePayload);
         }
-        throw new IOException("Could not convert input header to suitable message and payload type. Header: " + message.toRdf());
+    }
+
+    private Message getResponseHeader(final Map<String, String> responseMap) throws IOException {
+        return serializer.deserialize(responseMap.getOrDefault(MultipartDatapart.HEADER.toString(), ""), Message.class);
+    }
+
+    private String getResponsePayload(final Map<String, String> responseMap) {
+        return responseMap.getOrDefault(MultipartDatapart.PAYLOAD.toString(), "");
     }
 }

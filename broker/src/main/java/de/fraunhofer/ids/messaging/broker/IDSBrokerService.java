@@ -26,6 +26,8 @@ import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionExcept
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
@@ -49,7 +51,9 @@ public interface IDSBrokerService {
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException;
+            IOException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage} to the broker.
@@ -61,7 +65,13 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     MessageProcessedNotificationMAP removeResourceFromBroker(URI brokerURI, Resource resource)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException;
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -73,7 +83,13 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     MessageProcessedNotificationMAP updateResourceAtBroker(URI brokerURI, Resource resource)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException;
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
@@ -84,7 +100,13 @@ public interface IDSBrokerService {
      * @throws IOException if the message could not be serialized
      */
     MessageProcessedNotificationMAP unregisterAtBroker(URI brokerURI)
-            throws IOException, DapsTokenManagerException, ClaimsException, MultipartParseException;
+            throws
+            IOException,
+            DapsTokenManagerException,
+            ClaimsException,
+            MultipartParseException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -96,7 +118,13 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     MessageProcessedNotificationMAP updateSelfDescriptionAtBroker(URI brokerURI)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException;
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to a list of brokers.
@@ -120,7 +148,13 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     ResultMAP queryBroker(URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException;
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
     /**
      * Do a FullText Query on the Broker with default limit and offset.
@@ -145,7 +179,9 @@ public interface IDSBrokerService {
             DapsEmptyResponseException,
             IOException,
             MultipartParseException,
-            ClaimsException;
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
     /**
      * Do a FullText Query on the Broker with custom limit and offset.
@@ -170,5 +206,9 @@ public interface IDSBrokerService {
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException,
-            IOException, MultipartParseException, ClaimsException;
+            IOException,
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 }

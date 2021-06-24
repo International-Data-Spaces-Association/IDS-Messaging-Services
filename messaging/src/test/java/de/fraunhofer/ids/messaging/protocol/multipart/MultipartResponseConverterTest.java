@@ -70,7 +70,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class MultipartResponseConverterTest {
 
     @Test
-    void testConvertResponse() throws IOException, MultipartParseException {
+    void testConvertResponse() throws
+            IOException,
+            MultipartParseException,
+            UnknownResponseException,
+            DeserializeHeaderException {
         //setup converter
         final var serializer = new Serializer();
         final var converter = new MultipartResponseConverter();
@@ -160,9 +164,9 @@ class MultipartResponseConverterTest {
             assertEquals(msg, convMap.getMessage());
         }
 
-        //check unsupported message (should throw IOException)
+        //check unsupported message (should throw UnknownResponseException)
         final var noteMsg = buildNotificationMessage();
-        assertThrows(IOException.class, () -> converter.convertResponse(Map.of(
+        assertThrows(UnknownResponseException.class, () -> converter.convertResponse(Map.of(
                 "header", serializer.serialize(noteMsg),
                 "payload", "a")
         ));

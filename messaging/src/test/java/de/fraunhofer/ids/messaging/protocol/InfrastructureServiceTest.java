@@ -23,6 +23,8 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.MultipartBody;
@@ -102,7 +104,13 @@ class InfrastructureServiceTest {
     }
 
     @Test
-    void testInfrastructureService() throws IOException, DapsTokenManagerException, ClaimsException, MultipartParseException {
+    void testInfrastructureService() throws
+            IOException,
+            DapsTokenManagerException,
+            ClaimsException,
+            MultipartParseException,
+            UnknownResponseException,
+            DeserializeHeaderException {
         //setup mockito
         final var connector = new BaseConnectorBuilder()
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)

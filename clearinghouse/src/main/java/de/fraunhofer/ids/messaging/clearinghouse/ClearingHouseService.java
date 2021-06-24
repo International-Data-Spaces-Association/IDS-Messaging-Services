@@ -31,7 +31,9 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
@@ -86,7 +88,9 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             ClaimsException,
             MultipartParseException,
             URISyntaxException,
-            IOException {
+            IOException,
+            UnknownResponseException,
+            DeserializeHeaderException {
         //log message under some random processId
         final var pid = Math.abs(secureRandom.nextInt());
 
@@ -104,7 +108,9 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             URISyntaxException,
             IOException,
             ClaimsException,
-            MultipartParseException {
+            MultipartParseException,
+            UnknownResponseException,
+            DeserializeHeaderException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
@@ -134,7 +140,9 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             URISyntaxException,
             ClaimsException,
             MultipartParseException,
-            IOException {
+            IOException,
+            UnknownResponseException,
+            DeserializeHeaderException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(

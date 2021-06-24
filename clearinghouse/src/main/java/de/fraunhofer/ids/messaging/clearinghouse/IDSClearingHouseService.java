@@ -14,7 +14,6 @@
 package de.fraunhofer.ids.messaging.clearinghouse;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import de.fraunhofer.iais.eis.Message;
@@ -23,8 +22,9 @@ import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeHeaderException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 
@@ -44,12 +44,15 @@ public interface IDSClearingHouseService {
      * @throws ClaimsException if DAT of incoming message could not be validated.
      * @throws MultipartParseException if response could not be parsed to header and payload.
      */
-    MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog) throws
+    MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog)
+            throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
             URISyntaxException,
-            IOException;
+            IOException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
 
     /**
@@ -70,7 +73,9 @@ public interface IDSClearingHouseService {
             URISyntaxException,
             IOException,
             ClaimsException,
-            MultipartParseException;
+            MultipartParseException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
     /**
      * Query the Clearing House.
@@ -95,6 +100,8 @@ public interface IDSClearingHouseService {
             URISyntaxException,
             ClaimsException,
             MultipartParseException,
-            IOException;
+            IOException,
+            UnknownResponseException,
+            DeserializeHeaderException;
 
 }
