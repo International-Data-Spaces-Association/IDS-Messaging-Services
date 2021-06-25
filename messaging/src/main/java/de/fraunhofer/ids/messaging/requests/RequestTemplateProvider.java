@@ -27,7 +27,7 @@ public class RequestTemplateProvider {
      * @param requestedElement requested element ID, or null if selfdescription is requested
      * @return template to build a {@link DescriptionRequestMessage}
      */
-    public RequestMessageTemplate<DescriptionRequestMessage> descriptionRequestMessageTemplate(final URI requestedElement) {
+    public MessageTemplate<DescriptionRequestMessage> descriptionRequestMessageTemplate(final URI requestedElement) {
         return () -> new DescriptionRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -44,7 +44,7 @@ public class RequestTemplateProvider {
      * @param requestedArtifact ID of requested artifact
      * @return template to build a {@link ArtifactRequestMessage}
      */
-    public RequestMessageTemplate<ArtifactRequestMessage> artifactRequestMessageTemplate(final URI requestedArtifact) {
+    public MessageTemplate<ArtifactRequestMessage> artifactRequestMessageTemplate(final URI requestedArtifact) {
         return () -> new ArtifactRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -60,7 +60,7 @@ public class RequestTemplateProvider {
      *
      * @return template to build a {@link ContractRequestMessage}
      */
-    public RequestMessageTemplate<ContractRequestMessage> contractRequestMessageTemplate() {
+    public MessageTemplate<ContractRequestMessage> contractRequestMessageTemplate() {
         return () -> new ContractRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -75,7 +75,7 @@ public class RequestTemplateProvider {
      *
      * @return template to build an {@link UploadMessage}
      */
-    public RequestMessageTemplate<UploadMessage> uploadMessageTemplate() {
+    public MessageTemplate<UploadMessage> uploadMessageTemplate() {
         return () -> new UploadMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -91,7 +91,7 @@ public class RequestTemplateProvider {
      * @param requestedParticipant ID of requested participant
      * @return template to build a {@link ParticipantRequestMessage}
      */
-    public RequestMessageTemplate<ParticipantRequestMessage> participantRequestMessageTemplate(final URI requestedParticipant) {
+    public MessageTemplate<ParticipantRequestMessage> participantRequestMessageTemplate(final URI requestedParticipant) {
         return () -> new ParticipantRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -111,7 +111,7 @@ public class RequestTemplateProvider {
      * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
      * @return template to build a {@link QueryMessage}
      */
-    public RequestMessageTemplate<QueryMessage> queryMessageTemplate(final QueryLanguage queryLanguage, final QueryScope queryScope, final QueryTarget queryTarget){
+    public MessageTemplate<QueryMessage> queryMessageTemplate(final QueryLanguage queryLanguage, final QueryScope queryScope, final QueryTarget queryTarget){
         return () -> new QueryMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -129,7 +129,7 @@ public class RequestTemplateProvider {
      *
      * @return template to build a {@link AccessTokenRequestMessage}
      */
-    public RequestMessageTemplate<AccessTokenRequestMessage> accessTokenRequestMessageTemplate(){
+    public MessageTemplate<AccessTokenRequestMessage> accessTokenRequestMessageTemplate(){
         return () -> new AccessTokenRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -145,7 +145,7 @@ public class RequestTemplateProvider {
      * @param affectedDataApp ID of affected data app
      * @return template to build a {@link AppRegistrationRequestMessage}
      */
-    public RequestMessageTemplate<AppRegistrationRequestMessage> appRegistrationRequestMessageTemplate(final URI affectedDataApp){
+    public MessageTemplate<AppRegistrationRequestMessage> appRegistrationRequestMessageTemplate(final URI affectedDataApp){
         return () -> new AppRegistrationRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -162,7 +162,7 @@ public class RequestTemplateProvider {
      * @param operationReference reference of operation to execute by target connector
      * @return template to build a {@link InvokeOperationMessage}
      */
-    public RequestMessageTemplate<InvokeOperationMessage> invokeOperationMessageTemplate(final URI operationReference){
+    public MessageTemplate<InvokeOperationMessage> invokeOperationMessageTemplate(final URI operationReference){
         return () -> new InvokeOperationMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
