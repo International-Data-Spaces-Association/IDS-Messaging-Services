@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.protocol.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -39,12 +40,17 @@ public final class InfomodelMessageBuilder {
      * Internal builder used by the static methods.
      *
      * @param header the header Part of the MultipartMessage (an implementation of {@link Message})
-     * @throws IOException if the given header cannot be serialized by the given serializer
+     * @throws SerializeException if the given header cannot be serialized by the given serializer
      */
-    private InfomodelMessageBuilder(final Message header) throws IOException {
-        this.builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart(MultipartDatapart.HEADER.toString(), SERIALIZER.serialize(header));
+    private InfomodelMessageBuilder(final Message header) throws SerializeException {
+        try {
+            this.builder = new MultipartBody.Builder();
+            builder.setType(MultipartBody.FORM);
+            builder.addFormDataPart(MultipartDatapart.HEADER.toString(),
+                                    SERIALIZER.serialize(header));
+        } catch(IOException ioException) {
+            throw new SerializeException(ioException);
+        }
     }
 
     /**
@@ -54,10 +60,10 @@ public final class InfomodelMessageBuilder {
      * @param payload  the File that is added to the MultipartMessages payload
      * @param fileType the MediaType of the file
      * @return the built Message as OkHttp MultipartBody
-     * @throws IOException if the given header cannot be serialized by the given serializer
+     * @throws SerializeException if the given header cannot be serialized by the given serializer
      */
     public static MultipartBody messageWithFile(final Message header, final File payload, final MediaType fileType)
-            throws IOException {
+            throws SerializeException {
         final var imb = new InfomodelMessageBuilder(header);
         imb.addPayload(payload, fileType);
         return imb.getRequestBody();
@@ -71,7 +77,8 @@ public final class InfomodelMessageBuilder {
      * @return the built Message as OkHttp MultipartBody
      * @throws IOException if the given header cannot be serialized by the given serializer
      */
-    public static MultipartBody messageWithString(final Message header, final String payload) throws IOException {
+    public static MultipartBody messageWithString(final Message header, final String payload)
+            throws SerializeException {
         final var imb = new InfomodelMessageBuilder(header);
         imb.addPayload(payload);
         return imb.getRequestBody();

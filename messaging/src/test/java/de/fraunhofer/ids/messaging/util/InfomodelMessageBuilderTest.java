@@ -9,6 +9,7 @@ import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.RequestMessage;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.util.Util;
+import de.fraunhofer.ids.messaging.protocol.SerializeException;
 import okhttp3.MediaType;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class InfomodelMessageBuilderTest {
 
     @Test
-    public void testBuildMessage() throws IOException {
+    public void testBuildMessage() throws IOException, SerializeException {
         assertNotNull(InfomodelMessageBuilder.messageWithFile(buildArtifactRequestMessage(), File.createTempFile("temp", "file"), MediaType.parse("image/jpeg")));
         assertNotNull(InfomodelMessageBuilder.messageWithString(buildArtifactRequestMessage(), "String payload!"));
     }
