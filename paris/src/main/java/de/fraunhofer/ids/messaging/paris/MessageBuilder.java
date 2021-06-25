@@ -8,13 +8,13 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class MessageBuilder {
-    public static ParticipantUpdateMessage buildParticipantUpdateMessage( final DynamicAttributeToken securityToken, final Connector connector ) {
+    public static ParticipantUpdateMessage buildParticipantUpdateMessage( final DynamicAttributeToken securityToken, final Connector connector, final URI participantURI ) {
         return new ParticipantUpdateMessageBuilder()
                 ._issued_(CalendarUtil.now())
                 ._modelVersion_(connector.getOutboundModelVersion())
                 ._issuerConnector_(connector.getId())
                 ._securityToken_(securityToken)
-                ._affectedParticipant_(connector.getId())
+                ._affectedParticipant_(participantURI)
                 ._senderAgent_(connector.getId())
                 .build();
     }

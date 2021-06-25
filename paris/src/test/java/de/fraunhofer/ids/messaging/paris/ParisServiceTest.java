@@ -151,7 +151,7 @@ class ParisServiceTest {
                 ._securityToken_(this.fakeToken)
                 ._modelVersion_("4.0.0")
                 ._correlationMessage_(
-                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                        URI.create("https://w3id.org/idsa/autogen/someMessage"))
                 .build();
         this.resultMessage = new DescriptionResponseMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -162,7 +162,7 @@ class ParisServiceTest {
                 ._securityToken_(this.fakeToken)
                 ._modelVersion_("4.0.0")
                 ._correlationMessage_(
-                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                        URI.create("https://w3id.org/idsa/autogen/someOtherMessage"))
                 .build();
         this.participant = new ParticipantBuilder()
                 ._title_(Util.asList(new TypedLiteral("Fraunhofer IAIS")))

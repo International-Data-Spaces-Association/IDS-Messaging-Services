@@ -56,8 +56,7 @@ public class ParisService extends InfrastructureService
 
         final var securityToken = tokenProvider.getDAT();
         final var header = MessageBuilder.buildParticipantUpdateMessage(
-                securityToken,
-                container.getConnector());
+                securityToken,container.getConnector(),participant.getId());
 
         final var messageAndPayload =
                 new GenericMessageAndPayload(header, participant);
