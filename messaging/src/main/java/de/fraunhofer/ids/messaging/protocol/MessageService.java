@@ -18,6 +18,8 @@ import java.net.URI;
 
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
@@ -68,7 +70,12 @@ public class MessageService {
     public MessageAndPayload<?, ?> sendIdsMessage(final MessageAndPayload<?, ?> messageAndPayload,
                                                   final URI target,
                                                   final ProtocolType protocolType)
-            throws MultipartParseException, ClaimsException, IOException {
+            throws
+            MultipartParseException,
+            ClaimsException,
+            IOException,
+            UnknownResponseException,
+            DeserializeException {
 
         final var payloadOptional = messageAndPayload.getPayload();
         var payloadString = "";
@@ -118,7 +125,12 @@ public class MessageService {
      * @throws IOException             DAPS or target could not be reached
      */
     public MessageAndPayload<?, ?> sendIdsMessage(final MessageAndPayload<?, ?> messageAndPayload, final URI target)
-            throws MultipartParseException, ClaimsException, IOException {
+            throws
+            MultipartParseException,
+            ClaimsException,
+            IOException,
+            UnknownResponseException,
+            DeserializeException {
         return sendIdsMessage(messageAndPayload, target, ProtocolType.MULTIPART);
     }
 }
