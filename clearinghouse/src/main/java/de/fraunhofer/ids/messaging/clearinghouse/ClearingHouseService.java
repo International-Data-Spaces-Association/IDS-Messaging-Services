@@ -30,6 +30,7 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.DeserializeException;
@@ -94,7 +95,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException {
+            ShaclValidatorException,
+            SerializeException {
         //log message under some random processId
         final var pid = Math.abs(secureRandom.nextInt());
 
@@ -116,7 +118,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException {
+            ShaclValidatorException,
+            SerializeException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
@@ -150,7 +153,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException {
+            ShaclValidatorException,
+            SerializeException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
@@ -181,47 +185,53 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
      *
      * @return built MultipartBody
      *
-     * @throws IOException when headerMessage cannot be serialized
+     * @throws SerializeException when headerMessage cannot be serialized
      */
     private MultipartBody buildMultipartWithInternalHeaders(final Message headerMessage,
                                                             final String payloadContent,
                                                             final MediaType payloadType)
-            throws IOException {
+            throws SerializeException {
+        try {
+            final var bodyBuilder = new MultipartBody.Builder();
 
-        final var bodyBuilder = new MultipartBody.Builder();
-
-        //OkHttp does not support setting Content Type on Multipart Parts directly on creation, workaround
-        //Create Header for header Part of IDS Multipart Message
-        final var headerHeader = new Headers.Builder()
-                .add("Content-Disposition: form-data; name=\"header\"")
-                .build();
-
-        //Create RequestBody for header Part of IDS Multipart Message (with json content-type)
-        final var headerBody = RequestBody.create(
-                serializer.serialize(headerMessage),
-                MediaType.parse("application/json+ld"));
-
-        //Create header Part of Multipart Message
-        final var header = MultipartBody.Part.create(headerHeader, headerBody);
-        bodyBuilder.addPart(header);
-
-        if (payloadContent != null && !payloadContent.isBlank())  {
-            //Create Header for payload Part of IDS Multipart Message
-            final var payloadHeader = new Headers.Builder()
-                    .add("Content-Disposition: form-data; name=\"payload\"")
+            //OkHttp does not support setting Content Type on Multipart Parts directly on creation, workaround
+            //Create Header for header Part of IDS Multipart Message
+            final var headerHeader = new Headers.Builder()
+                    .add("Content-Disposition: form-data; name=\"header\"")
                     .build();
 
-            //Create RequestBody for payload Part of IDS Multipart Message (with json content-type)
-            final var payloadBody = RequestBody.create(payloadContent, payloadType);
+            //Create RequestBody for header Part of IDS Multipart Message (with json content-type)
+            final var headerBody = RequestBody.create(
+                    serializer.serialize(headerMessage),
+                    MediaType.parse("application/json+ld"));
 
-            //Create payload Part of Multipart Message
-            final var payload = MultipartBody.Part.create(payloadHeader, payloadBody);
-            bodyBuilder.addPart(payload);
+            //Create header Part of Multipart Message
+            final var header =
+                    MultipartBody.Part.create(headerHeader, headerBody);
+            bodyBuilder.addPart(header);
+
+            if(payloadContent != null && !payloadContent.isBlank()) {
+                //Create Header for payload Part of IDS Multipart Message
+                final var payloadHeader = new Headers.Builder()
+                        .add("Content-Disposition: form-data; name=\"payload\"")
+                        .build();
+
+                //Create RequestBody for payload Part of IDS Multipart Message (with json content-type)
+                final var payloadBody =
+                        RequestBody.create(payloadContent, payloadType);
+
+                //Create payload Part of Multipart Message
+                final var payload =
+                        MultipartBody.Part.create(payloadHeader, payloadBody);
+                bodyBuilder.addPart(payload);
+            }
+            //Build IDS Multipart Message
+            return bodyBuilder.setType(
+                    Objects.requireNonNull(
+                            MediaType.parse("multipart/form-data")
+                    )).build();
+        } catch(IOException ioException) {
+            throw new SerializeException(ioException);
         }
-        //Build IDS Multipart Message
-        return bodyBuilder.setType(
-                Objects.requireNonNull(
-                        MediaType.parse("multipart/form-data")
-                )).build();
     }
 }
