@@ -1,15 +1,6 @@
 package de.fraunhofer.ids.messaging.requests;
 
-import de.fraunhofer.iais.eis.ArtifactRequestMessage;
-import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
-import de.fraunhofer.iais.eis.ContractRequestMessage;
-import de.fraunhofer.iais.eis.ContractRequestMessageBuilder;
-import de.fraunhofer.iais.eis.DescriptionRequestMessage;
-import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
-import de.fraunhofer.iais.eis.ParticipantRequestMessage;
-import de.fraunhofer.iais.eis.ParticipantRequestMessageBuilder;
-import de.fraunhofer.iais.eis.UploadMessage;
-import de.fraunhofer.iais.eis.UploadMessageBuilder;
+import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
@@ -112,4 +103,73 @@ public class RequestTemplateProvider {
 
     }
 
+    /**
+     * Template for QueryMessage.
+     *
+     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY). See {@link QueryLanguage}
+     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors, INACTIVE connectors). See {@link QueryScope}
+     * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
+     * @return template to build a {@link QueryMessage}
+     */
+    public RequestMessageTemplate<QueryMessage> queryMessageTemplate(final QueryLanguage queryLanguage, final QueryScope queryScope, final QueryTarget queryTarget){
+        return () -> new QueryMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._issuerConnector_(container.getConnector().getId())
+                ._senderAgent_(container.getConnector().getId())
+                ._securityToken_(tokenProvider.getDAT())
+                ._queryLanguage_(queryLanguage)
+                ._queryScope_(queryScope)
+                ._recipientScope_(queryTarget)
+                .build();
+    }
+
+    /**
+     * Template for AccessTokenRequestMessage.
+     *
+     * @return template to build a {@link AccessTokenRequestMessage}
+     */
+    public RequestMessageTemplate<AccessTokenRequestMessage> accessTokenRequestMessageTemplate(){
+        return () -> new AccessTokenRequestMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._issuerConnector_(container.getConnector().getId())
+                ._senderAgent_(container.getConnector().getId())
+                ._securityToken_(tokenProvider.getDAT())
+                .build();
+    }
+
+    /**
+     * Template for AppRegistrationRequestMessage.
+     *
+     * @param affectedDataApp ID of affected data app
+     * @return template to build a {@link AppRegistrationRequestMessage}
+     */
+    public RequestMessageTemplate<AppRegistrationRequestMessage> appRegistrationRequestMessageTemplate(final URI affectedDataApp){
+        return () -> new AppRegistrationRequestMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._issuerConnector_(container.getConnector().getId())
+                ._senderAgent_(container.getConnector().getId())
+                ._securityToken_(tokenProvider.getDAT())
+                ._affectedDataApp_(affectedDataApp)
+                .build();
+    }
+
+    /**
+     * Template for InvokeOperationMessage.
+     *
+     * @param operationReference reference of operation to execute by target connector
+     * @return template to build a {@link InvokeOperationMessage}
+     */
+    public RequestMessageTemplate<InvokeOperationMessage> invokeOperationMessageTemplate(final URI operationReference){
+        return () -> new InvokeOperationMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._issuerConnector_(container.getConnector().getId())
+                ._senderAgent_(container.getConnector().getId())
+                ._securityToken_(tokenProvider.getDAT())
+                ._operationReference_(operationReference)
+                .build();
+    }
 }
