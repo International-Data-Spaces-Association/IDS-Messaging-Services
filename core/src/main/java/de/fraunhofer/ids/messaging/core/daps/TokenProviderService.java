@@ -29,6 +29,7 @@ import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
@@ -45,6 +46,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
     final ClientProvider      clientProvider;
     final TokenManagerService tokenManagerService;
@@ -57,17 +59,6 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
     @Value("#{${daps.key.url.kid}}")
     Map<String, String> urlKidMap;
-
-    /**
-     * @param clientProvider      the {@link ClientProvider} providing HttpClients using the current connector configuration
-     * @param tokenManagerService client to get a DAT Token from a DAPS (eg Orbiter/AISEC)
-     */
-    @Autowired
-    public TokenProviderService(final ClientProvider clientProvider,
-                                final TokenManagerService tokenManagerService) {
-        this.clientProvider = clientProvider;
-        this.tokenManagerService = tokenManagerService;
-    }
 
     /**
      * Return the DAT as a Infomodel {@link DynamicAttributeToken}.
