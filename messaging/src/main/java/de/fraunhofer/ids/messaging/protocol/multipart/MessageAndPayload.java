@@ -17,10 +17,11 @@ import java.io.IOException;
 import java.util.Optional;
 
 import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.ids.messaging.protocol.SerializeException;
 
 public interface MessageAndPayload<M extends Message, T> {
 
     M getMessage();
     Optional<T> getPayload();
-    SerializedPayload serializePayload() throws IOException;
+    SerializedPayload serializePayload() throws IOException, SerializeException;
 }
