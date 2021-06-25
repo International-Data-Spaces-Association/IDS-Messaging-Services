@@ -26,7 +26,8 @@ public interface RequestBuilder {
      * @return okhttp Response (to be updated to Infomation Model Message)
      * @throws IOException if serialization of Message Header is not successful.
      */
-    Request build(Message message, URI target) throws IOException;
+    Request build(Message message, URI target)
+            throws IOException, SerializeException;
 
 
     /**

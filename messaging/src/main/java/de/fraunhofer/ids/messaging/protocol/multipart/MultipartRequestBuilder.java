@@ -32,16 +32,26 @@ public class MultipartRequestBuilder implements RequestBuilder {
      * {@inheritDoc}
      */
     @Override
-    public Request build(final Message message, final URI target) throws IOException {
-        final var body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart(MultipartDatapart.HEADER.toString(), SERIALIZER.serialize(message))
-                .build();
+    public Request build(final Message message, final URI target)
+            throws MalformedURLException, SerializeException {
+        try {
+            final var body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart(MultipartDatapart.HEADER.toString(),
+                                     SERIALIZER.serialize(message))
+                    .build();
 
         return new Request.Builder()
                 .url(target.toURL())
                 .post(body)
                 .build();
+        } catch (MalformedURLException malformedURLException) {
+            //taget.toUrl threw malformedURLException
+            throw malformedURLException;
+        } catch (IOException ioException) {
+            //SERIALIZER.serialize(message) threw IOException
+            throw new SerializeException(ioException);
+        }
     }
 
 
