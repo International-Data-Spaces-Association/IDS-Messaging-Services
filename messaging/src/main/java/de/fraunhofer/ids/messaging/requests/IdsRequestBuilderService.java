@@ -20,76 +20,109 @@ import java.net.URI;
 import java.util.Optional;
 
 /**
- * Service for building and sending ids requests
+ * Service for building and sending ids requests.
  */
 @Slf4j
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
 public class IdsRequestBuilderService {
 
+    /**
+     * {@link MessageService} used for sending messages.
+     */
     MessageService messageService;
 
-    public IdsRequestBuilder<Object> newRequest(){
+    /**
+     * Get a requestbuilder, expecting no specific payload type.
+     *
+     * @return an {@link IdsRequestBuilder} expecting no specific payload type.
+     */
+    public IdsRequestBuilder<Object> newRequest() {
         return new IdsRequestBuilder<>();
     }
 
-    public <T> IdsRequestBuilder<T> newRequestExpectingType(Class<T> expected) {return new IdsRequestBuilder<>(expected);}
+    /**
+     * Get a requestbuilder, expecting payload of type T.
+     *
+     * @param expected expected class of payload object.
+     * @param <T> expected type of payload.
+     * @return an {@link IdsRequestBuilder} expecting payload of type T.
+     */
+    public <T> IdsRequestBuilder<T> newRequestExpectingType(final Class<T> expected) {
+        return new IdsRequestBuilder<>(expected);
+    }
 
     /**
-     * Builder class for configurable ids requests
+     * Builder class for configurable ids requests.
      *
      * @param <T> type of payload
      */
     class IdsRequestBuilder<T> {
 
+        /**
+         * Template from which sent message header is built.
+         */
         private RequestMessageTemplate<?> requestMessageTemplate;
-        private Optional<Object> payload;
+
+
+        /**
+         * Optional: payload, when payload should be sent with message.
+         */
+        private Optional<Object> optPayload;
+
+        /**
+         * Optional: expected payload type, will be checked when receiving a response.
+         */
         private Optional<Class<T>> expectedPayload;
+
+        /**
+         * Boolean flag, if set to true a RejectionMessage will lead to an {@link RejectionException}.
+         */
         private boolean throwOnRejection;
 
         /**
-         * Generic IDS request, expecting no specific type of payload
+         * Generic IDS request, expecting no specific type of payload.
          */
-        public IdsRequestBuilder() {
+        IdsRequestBuilder() {
             this.expectedPayload = Optional.empty();
-            this.payload = Optional.empty();
+            this.optPayload = Optional.empty();
         }
 
         /**
-         * IDS request, expecting payload of type 'expected'
+         * IDS request, expecting payload of type 'expected'.
          *
          * @param expected expected Type of payload
          */
-        public IdsRequestBuilder(Class<T> expected) {
+        IdsRequestBuilder(final Class<T> expected) {
             this.expectedPayload = Optional.of(expected);
-            this.payload = Optional.empty();
+            this.optPayload = Optional.empty();
         }
 
         /**
-         * Add a payload to the request
+         * Add a payload to the request.
          *
          * @param payload payload to be sent with the request
          * @return this builder instance
          */
-        public IdsRequestBuilder<T> withPayload(Object payload){
-            this.payload = Optional.ofNullable(payload);
+        public IdsRequestBuilder<T> withPayload(final Object payload) {
+            this.optPayload = Optional.ofNullable(payload);
             return this;
         }
 
         /**
-         * Choose a header template to use for the request
+         * Choose a header template to use for the request.
          *
          * @param template header template to use for the request
          * @return this builder instance
          */
-        public IdsRequestBuilder<T> useTemplate(RequestMessageTemplate<?> template){
+        public IdsRequestBuilder<T> useTemplate(final RequestMessageTemplate<?> template) {
             this.requestMessageTemplate = template;
             return this;
         }
 
         /**
-         * If this is set, a RejectionMessage as response will trigger a {@link RejectionException}
+         * If this is set, a RejectionMessage as response will trigger a {@link RejectionException}.
          *
          * @return this builder instance
          */
@@ -109,20 +142,40 @@ public class IdsRequestBuilderService {
          * @throws RejectionException when 'throwOnRejection' is active and RejectionMessage is received
          * @throws UnexpectedPayloadException when 'expectedPayload' is set and response payload has a different type
          */
-        public MessageContainer<T> execute(URI target) throws ClaimsException, MultipartParseException, IOException, DapsTokenManagerException, NoTemplateProvidedException, RejectionException, UnexpectedPayloadException {
-            if(requestMessageTemplate == null) throw new NoTemplateProvidedException("No Message Template was Provided!");
+        public MessageContainer<T> execute(final URI target) throws
+                ClaimsException,
+                MultipartParseException,
+                IOException,
+                DapsTokenManagerException,
+                NoTemplateProvidedException,
+                RejectionException,
+                UnexpectedPayloadException {
+            if (requestMessageTemplate == null) {
+                throw new NoTemplateProvidedException("No Message Template was Provided!");
+            }
             var message = requestMessageTemplate.buildMessage();
-            final var messageAndPayload = new GenericMessageAndPayload(message, payload.orElse(null));
+            final var messageAndPayload = new GenericMessageAndPayload(message, optPayload.orElse(null));
             final var response = messageService.sendIdsMessage(messageAndPayload, target);
             var header = response.getMessage();
             var payload = response.getPayload().orElse(null);
-            if(throwOnRejection){
-                if (header instanceof RejectionMessage) throw new RejectionException(String.format("Message was Rejected! Reason: %s", payload), ((RejectionMessage) header).getRejectionReason());
+            if (throwOnRejection) {
+                if (header instanceof RejectionMessage) {
+                    throw new RejectionException(
+                            String.format("Message was Rejected! Reason: %s", payload),
+                            ((RejectionMessage) header).getRejectionReason()
+                    );
+                }
             }
-            if(expectedPayload.isPresent()){
-                if(payload == null || !expectedPayload.get().isAssignableFrom(payload.getClass())){
-                    throw new UnexpectedPayloadException(String.format("Expected payload of type %s but received %s!", expectedPayload.get(), payload == null ? "null" : payload.getClass()), new MessageContainer<>(header, payload));
-                }else{
+            if (expectedPayload.isPresent()) {
+                if (payload == null || !expectedPayload.get().isAssignableFrom(payload.getClass())) {
+                    throw new UnexpectedPayloadException(
+                            String.format(
+                                    "Expected payload of type %s but received %s!",
+                                    expectedPayload.get(),
+                                    payload == null ? "null" : payload.getClass()
+                            ),
+                            new MessageContainer<>(header, payload));
+                } else {
                     return new MessageContainer<>(header, (T) payload);
                 }
             }
