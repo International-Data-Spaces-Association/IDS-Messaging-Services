@@ -3,7 +3,6 @@ package de.fraunhofer.ids.messaging.requests;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.iais.eis.RejectionReason;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import lombok.Getter;
 
 import java.net.URI;
@@ -12,43 +11,84 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Container holding ids header fields, the underlying IDS message they were parsed from and the message payload
+ * Container holding ids header fields, the underlying IDS message they were parsed from and the message payload.
  *
  * @param <T> Type of payload
  */
 @Getter
 public class MessageContainer<T> {
 
-    private static final Serializer SERIALIZER = new Serializer();
+    /**
+     * Container holding IDS Message HTTP header fields.
+     */
+    private final HeaderContainer headerContainer;
 
-    private final HeaderContainer headers;
-    private final T payload;
+    /**
+     * Payload received from response.
+     */
+    private final T receivedPayload;
+
+    /**
+     * Received message header als {@link Message} object.
+     */
     private final Message underlyingMessage;
+
+    /**
+     * Optional: RejectionReason, if received message was a {@link RejectionMessage}.
+     */
     private final Optional<RejectionReason> rejectionReason;
 
-    public MessageContainer(Message underlyingMessage, final T payload){
-        this.payload = payload;
-        this.underlyingMessage = underlyingMessage;
-        this.headers = containerFromMessage(underlyingMessage);
-        rejectionReason = underlyingMessage instanceof RejectionMessage ?
-                    Optional.of(((RejectionMessage) underlyingMessage).getRejectionReason()) :
-                    Optional.empty();
+    /**
+     * Construct a MessageContainer from incoming MAP.
+     *
+     * @param message incoming message header
+     * @param payload incoming message payload
+     */
+    public MessageContainer(final Message message, final T payload) {
+        this.receivedPayload = payload;
+        this.underlyingMessage = message;
+        this.headerContainer = containerFromMessage(underlyingMessage);
+        rejectionReason = underlyingMessage instanceof RejectionMessage
+                ? Optional.of(((RejectionMessage) underlyingMessage).getRejectionReason())
+                : Optional.empty();
     }
 
-    public MessageContainer(Map<String,String> headers, final T payload){
+    /**
+     * Construct a MessageContainer from incoming MAP.
+     *
+     * @param headers incoming map from http headers
+     * @param payload incoming message payload
+     */
+    public MessageContainer(final Map<String, String> headers, final T payload) {
         //TODO build headerContainer from httpHeaders given in header map (used for incoming IDS_LDP messages)
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
-    private boolean isRejection(){
+    /**
+     * Check if message was a RejectionMessage.
+     *
+     * @return true, if this container saves a RejectionMessage.
+     */
+    private boolean isRejection() {
         return rejectionReason.isPresent();
     }
 
-    private URI getMessageID(){
+    /**
+     * Get ID of incoming message.
+     *
+     * @return message ID
+     */
+    private URI getMessageID() {
         return underlyingMessage.getId();
     }
 
-    private HeaderContainer containerFromMessage(Message message){
+    /**
+     * Extract headers from incoming message.
+     *
+     * @param message incoming message header
+     * @return {@link HeaderContainer} from extracted header fields
+     */
+    private HeaderContainer containerFromMessage(final Message message) {
         return new HeaderContainer(
                 Optional.ofNullable(message.getAuthorizationToken()),
                 message.getSecurityToken(),
