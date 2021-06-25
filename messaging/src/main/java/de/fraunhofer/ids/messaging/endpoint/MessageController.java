@@ -30,6 +30,7 @@ import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.protocol.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
@@ -147,7 +148,7 @@ public class MessageController {
                                  .body(createDefaultErrorMessage(RejectionReason.BAD_PARAMETERS,
                                                                  String.format("Error during preprocessing: %s",
                                                                                e.getMessage())));
-        } catch (IOException e) {
+        } catch (IOException |SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("incoming message could not be parsed!");
                 log.warn(e.getMessage(), e);
