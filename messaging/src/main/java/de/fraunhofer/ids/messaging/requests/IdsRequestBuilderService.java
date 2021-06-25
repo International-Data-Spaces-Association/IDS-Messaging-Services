@@ -63,7 +63,7 @@ public class IdsRequestBuilderService {
         /**
          * Template from which sent message header is built.
          */
-        private RequestMessageTemplate<?> requestMessageTemplate;
+        private MessageTemplate<?> messageTemplate;
 
 
         /**
@@ -116,8 +116,8 @@ public class IdsRequestBuilderService {
          * @param template header template to use for the request
          * @return this builder instance
          */
-        public IdsRequestBuilder<T> useTemplate(final RequestMessageTemplate<?> template) {
-            this.requestMessageTemplate = template;
+        public IdsRequestBuilder<T> useTemplate(final MessageTemplate<?> template) {
+            this.messageTemplate = template;
             return this;
         }
 
@@ -150,10 +150,10 @@ public class IdsRequestBuilderService {
                 NoTemplateProvidedException,
                 RejectionException,
                 UnexpectedPayloadException {
-            if (requestMessageTemplate == null) {
+            if (messageTemplate == null) {
                 throw new NoTemplateProvidedException("No Message Template was Provided!");
             }
-            var message = requestMessageTemplate.buildMessage();
+            var message = messageTemplate.buildMessage();
             final var messageAndPayload = new GenericMessageAndPayload(message, optPayload.orElse(null));
             final var response = messageService.sendIdsMessage(messageAndPayload, target);
             var header = response.getMessage();
