@@ -11,22 +11,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol.multipart;
-
-import okhttp3.Response;
+package de.fraunhofer.ids.messaging.protocol.http;
 
 /**
- * An exception that is thrown during converting a {@link Response} into the corresponding {@link MessageAndPayload object} if deserializing gone wrong and threw IOException.
+ * SHACL Validation: Received message headers does not conform to IDS-infomodel
  */
-public class DeserializeException extends Exception {
+public class SendMessageException extends Exception {
     private static final long serialVersionUID = 42L;
 
     /**
-     * An exception that is thrown during converting a {@link Response} into the corresponding {@link MessageAndPayload object} if deserializing gone wrong and threw IOException.
+     * SHACL Validation: Received message headers does not conform to IDS-infomodel
      *
      * @param cause Throwable cause of the Exception
      */
-    public DeserializeException(final Throwable cause) {
+    public SendMessageException(final Throwable cause) {
         super(cause);
+    }
+
+    /**
+     * SHACL Validation: Received message headers does not conform to IDS-infomodel
+     *
+     * @param message The error message
+     */
+    public SendMessageException(final String message) {
+        super(message);
     }
 }

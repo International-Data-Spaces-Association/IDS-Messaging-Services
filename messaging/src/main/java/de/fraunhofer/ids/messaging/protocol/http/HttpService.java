@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.util.Map;
 
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.protocol.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -109,7 +110,11 @@ public interface HttpService {
      * @throws MultipartParseException if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendAndCheckDat(Request request)
-            throws IOException, ClaimsException, MultipartParseException;
+            throws
+            IOException,
+            ClaimsException,
+            MultipartParseException,
+            SendMessageException, ShaclValidatorException, DeserializeException;
 
     /**
      * @param body requestBody to be sent
@@ -120,7 +125,12 @@ public interface HttpService {
      * @throws ClaimsException         if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendAndCheckDat(RequestBody body, URI target)
-            throws IOException, MultipartParseException, ClaimsException;
+            throws
+            IOException,
+            MultipartParseException,
+            ClaimsException,
+            DeserializeException,
+            ShaclValidatorException;
 
     /**
      * @param body    requestBody to be sent
@@ -132,5 +142,10 @@ public interface HttpService {
      * @throws ClaimsException         if DAT of response is invalid or cannot be parsed
      */
     Map<String, String> sendWithHeadersAndCheckDat(RequestBody body, URI target, Map<String, String> headers)
-            throws IOException, MultipartParseException, ClaimsException;
+            throws
+            IOException,
+            MultipartParseException,
+            ClaimsException,
+            DeserializeException,
+            ShaclValidatorException;
 }

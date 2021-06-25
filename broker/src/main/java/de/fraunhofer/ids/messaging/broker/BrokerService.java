@@ -33,8 +33,11 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
@@ -83,7 +86,10 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
 
         logBuildingHeader();
 
@@ -114,7 +120,10 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
 
         logBuildingHeader();
 
@@ -145,7 +154,10 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -171,7 +183,10 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -190,24 +205,27 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
      * @param brokerURIs
      */
     @Override
-    public List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers(@NonNull final List<URI> brokerURIs) {
+    public List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers(@NonNull final List<URI> brokerURIs)
+            throws
+            IOException,
+            DeserializeException,
+            ShaclValidatorException,
+            UnexpectedResponseException,
+            SerializeException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            SendMessageException,
+            UnknownResponseException {
         final ArrayList<MessageProcessedNotificationMAP> responses = new ArrayList<>();
 
         for (final var uri : brokerURIs) {
-            try {
-                final var response = updateSelfDescriptionAtBroker(uri);
+            final var response = updateSelfDescriptionAtBroker(uri);
 
-                if (log.isInfoEnabled()) {
-                    log.info(String.format("Received response from %s", uri));
-                }
-                responses.add(response);
-
-            } catch (IOException | MultipartParseException | ClaimsException | DapsTokenManagerException | UnknownResponseException | DeserializeException | UnexpectedResponseException e) {
-                if (log.isWarnEnabled()) {
-                    log.warn(String.format("Connection to Broker %s failed!", uri));
-                    log.warn(e.getMessage(), e);
-                }
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Received response from %s", uri));
             }
+            responses.add(response);
         }
         return responses;
     }
@@ -228,7 +246,10 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -261,7 +282,10 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -289,7 +313,10 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
         var securityToken = getDat();
         var header = MessageBuilder
                 .buildQueryMessage(securityToken,

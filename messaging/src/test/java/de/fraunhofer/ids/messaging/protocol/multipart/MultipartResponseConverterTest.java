@@ -55,6 +55,7 @@ import de.fraunhofer.iais.eis.ResourceUpdateMessageBuilder;
 import de.fraunhofer.iais.eis.SecurityProfile;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.protocol.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractOfferMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ContractResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;

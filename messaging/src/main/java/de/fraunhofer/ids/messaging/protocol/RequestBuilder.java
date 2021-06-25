@@ -36,6 +36,7 @@ public interface RequestBuilder {
      * @return {@link Request}
      * @throws IOException if serialization of Message is not successful.
      */
-    Request build(Message message, URI target, String payload) throws IOException;
+    Request build(Message message, URI target, String payload)
+            throws IOException, SerializeException;
 
 }
