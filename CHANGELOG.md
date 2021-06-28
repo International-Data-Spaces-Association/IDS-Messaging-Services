@@ -17,6 +17,9 @@ All notable changes to this project will be documented in this file.
 - UnknownResponseException: if no response cast in MultipartResponseConverter available
 - UnexpectedResponseException: If the response can be cast, but was not expected to the request send
 
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.1 -> 2.5.2
+
 ### Miscellaneous
 - Patch Change: Added Apache 2.0 License Header to all files
 - Patch Change: Increased Test-Coverage
