@@ -252,7 +252,7 @@ public interface IDSBrokerService {
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
      */
     ResultMAP fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
-                                   QueryTarget queryTarget, int limit, int offset )
+                                   QueryTarget queryTarget, int limit, int offset)
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,

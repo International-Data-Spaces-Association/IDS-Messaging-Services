@@ -75,7 +75,7 @@ public final class InfomodelMessageBuilder {
      * @param header  the header Part of the MultipartMessage (an implementation of {@link Message})
      * @param payload the (String) payload that is added to the MultipartMessages Payload
      * @return the built Message as OkHttp MultipartBody
-     * @throws IOException if the given header cannot be serialized by the given serializer
+     * @throws SerializeException if the given header cannot be serialized by the given serializer
      */
     public static MultipartBody messageWithString(final Message header, final String payload)
             throws SerializeException {

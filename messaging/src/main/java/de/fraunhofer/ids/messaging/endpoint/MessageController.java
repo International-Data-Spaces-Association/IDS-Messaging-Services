@@ -148,7 +148,7 @@ public class MessageController {
                                  .body(createDefaultErrorMessage(RejectionReason.BAD_PARAMETERS,
                                                                  String.format("Error during preprocessing: %s",
                                                                                e.getMessage())));
-        } catch (IOException |SerializeException e) {
+        } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("incoming message could not be parsed!");
                 log.warn(e.getMessage(), e);

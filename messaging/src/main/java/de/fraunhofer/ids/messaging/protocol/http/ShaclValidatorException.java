@@ -14,13 +14,13 @@
 package de.fraunhofer.ids.messaging.protocol.http;
 
 /**
- * SHACL Validation: Received message headers does not conform to IDS-infomodel
+ * SHACL Validation: Received message headers does not conform to IDS-infomodel.
  */
 public class ShaclValidatorException extends Exception {
     private static final long serialVersionUID = 42L;
 
     /**
-     * SHACL Validation: Received message headers does not conform to IDS-infomodel
+     * SHACL Validation: Received message headers does not conform to IDS-infomodel.
      *
      * @param message The error message
      */

@@ -214,7 +214,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
                     MultipartBody.Part.create(headerHeader, headerBody);
             bodyBuilder.addPart(header);
 
-            if(payloadContent != null && !payloadContent.isBlank()) {
+            if (payloadContent != null && !payloadContent.isBlank()) {
                 //Create Header for payload Part of IDS Multipart Message
                 final var payloadHeader = new Headers.Builder()
                         .add("Content-Disposition: form-data; name=\"payload\"")
@@ -234,7 +234,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
                     Objects.requireNonNull(
                             MediaType.parse("multipart/form-data")
                     )).build();
-        } catch(IOException ioException) {
+        } catch (IOException ioException) {
             throw new SerializeException(ioException);
         }
     }

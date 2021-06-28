@@ -311,7 +311,7 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
                                           final QueryScope queryScope,
                                           final QueryTarget queryTarget,
                                           final int limit,
-                                          final int offset )
+                                          final int offset)
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,

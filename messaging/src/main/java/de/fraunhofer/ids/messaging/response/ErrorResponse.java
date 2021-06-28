@@ -117,7 +117,7 @@ public class ErrorResponse implements MessageResponse {
             multiMap.put(MultipartDatapart.PAYLOAD.toString(), errorMessage);
 
             return multiMap;
-        } catch(IOException ioException) {
+        } catch (IOException ioException) {
             throw new SerializeException(ioException);
         }
     }

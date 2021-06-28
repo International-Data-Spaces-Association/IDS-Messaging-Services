@@ -13,17 +13,14 @@
  */
 package de.fraunhofer.ids.messaging.protocol;
 
-import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import okhttp3.Response;
-
 /**
- * An exception that is thrown after converting a {@link Response} into the corresponding {@link MessageAndPayload object} if
+ * An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
  * the received response-type is not expected as a response to the request send.
  */
 public class UnexpectedResponseException extends Exception {
     private static final long serialVersionUID = 42L;
     /**
-     *  An exception that is thrown after converting a {@link Response} into the corresponding {@link MessageAndPayload object} if
+     *  An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
      *  the received response-type is not expected as a response to the request send.
      *
      * @param message Message of the Exception to be thrown
