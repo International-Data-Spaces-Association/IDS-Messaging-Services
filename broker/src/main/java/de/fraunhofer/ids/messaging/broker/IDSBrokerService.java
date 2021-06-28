@@ -250,6 +250,13 @@ public interface IDSBrokerService {
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws UnknownResponseException thrown during converting IDS-Response into a corresponding Object if no possible cast found
+     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
+     * @throws UnexpectedResponseException exception that is thrownif the received response-type is not expected as a response to the request send
+     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
+     * @throws SendMessageException sending the IDS-Request returns an IOException
+     * @throws MessageBuilderException exception that is thrown if building an IDS-Message with the given information threw a  RuntimeException
      */
     ResultMAP fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
                                    QueryTarget queryTarget, int limit, int offset)
