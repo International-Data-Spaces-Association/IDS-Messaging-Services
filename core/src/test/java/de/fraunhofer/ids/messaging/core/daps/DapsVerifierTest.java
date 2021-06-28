@@ -13,7 +13,6 @@
  */
 package de.fraunhofer.ids.messaging.core.daps;
 
-import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;

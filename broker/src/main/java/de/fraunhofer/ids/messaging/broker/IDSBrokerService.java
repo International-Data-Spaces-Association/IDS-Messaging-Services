@@ -21,6 +21,7 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
@@ -61,7 +62,8 @@ public interface IDSBrokerService {
             SerializeException,
             UnexpectedResponseException,
             ShaclValidatorException,
-            SendMessageException;
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage} to the broker.
@@ -83,7 +85,8 @@ public interface IDSBrokerService {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException;
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -105,7 +108,8 @@ public interface IDSBrokerService {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException;
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
@@ -126,7 +130,8 @@ public interface IDSBrokerService {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException;
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -148,7 +153,8 @@ public interface IDSBrokerService {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException;
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to a list of brokers.
@@ -168,7 +174,8 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             SendMessageException,
-            UnknownResponseException;
+            UnknownResponseException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage} to the broker.
@@ -192,7 +199,8 @@ public interface IDSBrokerService {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException;
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Do a FullText Query on the Broker with default limit and offset.
@@ -223,7 +231,8 @@ public interface IDSBrokerService {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException;
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Do a FullText Query on the Broker with custom limit and offset.
@@ -256,5 +265,6 @@ public interface IDSBrokerService {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException;
+            SendMessageException,
+            MessageBuilderException;
 }

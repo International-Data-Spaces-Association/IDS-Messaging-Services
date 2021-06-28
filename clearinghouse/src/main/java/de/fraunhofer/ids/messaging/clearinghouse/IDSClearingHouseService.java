@@ -20,6 +20,7 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
@@ -57,7 +58,8 @@ public interface IDSClearingHouseService {
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException, SerializeException;
+            ShaclValidatorException, SerializeException,
+            MessageBuilderException;
 
 
     /**
@@ -82,7 +84,8 @@ public interface IDSClearingHouseService {
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException, SerializeException;
+            ShaclValidatorException, SerializeException,
+            MessageBuilderException;
 
     /**
      * Query the Clearing House.
@@ -111,6 +114,7 @@ public interface IDSClearingHouseService {
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException, SerializeException;
+            ShaclValidatorException, SerializeException,
+            MessageBuilderException;
 
 }

@@ -22,9 +22,11 @@ import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.RequestBuilder;
+import lombok.NoArgsConstructor;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
 
+@NoArgsConstructor
 public class MultipartRequestBuilder implements RequestBuilder {
     private static final Serializer SERIALIZER = new Serializer();
 

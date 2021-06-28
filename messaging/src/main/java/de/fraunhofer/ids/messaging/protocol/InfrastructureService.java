@@ -18,7 +18,9 @@ import java.net.URI;
 
 import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
 import de.fraunhofer.iais.eis.RejectionMessage;
+import de.fraunhofer.iais.eis.util.ConstraintViolationException;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -61,19 +63,25 @@ public class InfrastructureService  {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
-        final var header =   new DescriptionRequestMessageBuilder()
-                ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
-                ._issuerConnector_(container.getConnector().getId())
-                ._senderAgent_(container.getConnector().getId())
-                ._securityToken_(tokenProvider.getDAT())
-                .build();
-        final var messageAndPayload = new GenericMessageAndPayload(header);
-        final var response = messageService.sendIdsMessage(messageAndPayload, uri);
+            SendMessageException,
+            MessageBuilderException {
+        try {
+            final var header = new DescriptionRequestMessageBuilder()
+                    ._issued_(IdsMessageUtils.getGregorianNow())
+                    ._modelVersion_(
+                            container.getConnector().getOutboundModelVersion())
+                    ._issuerConnector_(container.getConnector().getId())
+                    ._senderAgent_(container.getConnector().getId())
+                    ._securityToken_(tokenProvider.getDAT())
+                    .build();
+            final var messageAndPayload = new GenericMessageAndPayload(header);
+            final var response =
+                    messageService.sendIdsMessage(messageAndPayload, uri);
 
-        return expectDescriptionResponseMAP(response);
-
+            return expectDescriptionResponseMAP(response);
+        } catch (ConstraintViolationException constraintViolationException) {
+            throw new MessageBuilderException(constraintViolationException);
+        }
     }
 
     /**

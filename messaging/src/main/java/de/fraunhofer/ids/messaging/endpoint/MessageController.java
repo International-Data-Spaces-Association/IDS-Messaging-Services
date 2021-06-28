@@ -229,21 +229,6 @@ public class MessageController {
     }
 
     /**
-     * @param message incoming infomodel message
-     * @return true if infomodel version is supported
-     */
-    private boolean checkInboundVersion(final Message message) {
-        final var inboundList = configContainer.getConfigurationModel()
-                .getConnectorDescription()
-                .getInboundModelVersion();
-
-        return inboundList.stream()
-                .map(version -> checkInfomodelContainment(message.getModelVersion(), version))
-                .reduce(Boolean::logicalOr)
-                .orElse(false);
-    }
-
-    /**
      * @param input controllers header input as string
      * @return true if infomodel version is supported
      * @throws IOException if no infomodel version is found in input

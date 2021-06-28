@@ -17,6 +17,7 @@ import de.fraunhofer.iais.eis.SecurityProfile;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -117,7 +118,8 @@ class InfrastructureServiceTest {
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
+            SendMessageException,
+            MessageBuilderException {
         //setup mockito
         final var connector = new BaseConnectorBuilder()
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)

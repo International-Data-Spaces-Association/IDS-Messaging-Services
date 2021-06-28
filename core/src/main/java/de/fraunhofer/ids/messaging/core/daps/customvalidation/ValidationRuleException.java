@@ -20,5 +20,5 @@ public class ValidationRuleException extends Exception{
 
     public ValidationRuleException(){super();}
 
-    public ValidationRuleException(String message){super(message);}
+    public ValidationRuleException(final String message){super(message);}
 }

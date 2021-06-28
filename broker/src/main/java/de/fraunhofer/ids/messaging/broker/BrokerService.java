@@ -24,6 +24,7 @@ import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
@@ -89,7 +90,8 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
+            SendMessageException,
+            MessageBuilderException {
 
         logBuildingHeader();
 
@@ -123,7 +125,8 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
+            SendMessageException,
+            MessageBuilderException {
 
         logBuildingHeader();
 
@@ -157,7 +160,8 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
+            SendMessageException,
+            MessageBuilderException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -186,7 +190,8 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
+            SendMessageException,
+            MessageBuilderException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -216,7 +221,8 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             MultipartParseException,
             ClaimsException,
             SendMessageException,
-            UnknownResponseException {
+            UnknownResponseException,
+            MessageBuilderException {
         final ArrayList<MessageProcessedNotificationMAP> responses = new ArrayList<>();
 
         for (final var uri : brokerURIs) {
@@ -249,7 +255,8 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
+            SendMessageException,
+            MessageBuilderException {
         logBuildingHeader();
 
         final var securityToken = getDat();
@@ -285,7 +292,8 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
+            SendMessageException,
+            MessageBuilderException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -316,9 +324,10 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
-            SendMessageException {
-        var securityToken = getDat();
-        var header = MessageBuilder
+            SendMessageException,
+            MessageBuilderException {
+        final var securityToken = getDat();
+        final var header = MessageBuilder
                 .buildQueryMessage(securityToken,
                                    container.getConnector(),
                                    QueryLanguage.SPARQL,
