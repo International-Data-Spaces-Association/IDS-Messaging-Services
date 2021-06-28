@@ -12,10 +12,16 @@ All notable changes to this project will be documented in this file.
 ## Version [4.2.0.0] UNRELEASED
 
 ### Major Change: New Exceptions
-- New Exceptions can be thrown while handling incoming response-messages:
-- DeserializeException: if response-header (message) or response-payload could not be deserialized in MultipartResponseConverter (maps Serializer-IOException to new DeserializeException)
-- UnknownResponseException: if no response cast in MultipartResponseConverter available
-- UnexpectedResponseException: If the response can be cast, but was not expected to the request send
+- Added MessageBuilderException: An exception that is thrown if building an IDS-Message with the given information threw a ConstraintViolationException (catches builders RuntimeException).
+- Added SerializeException: An exception that is thrown if serializing a message using the IDS-Serializer threw an IOException. Could indicate missing required message-fields.
+- Added URISyntaxException: If the URL of the target is not a valid URI.
+- Added SendMessageException: If sending the IDS-Request returns an IOException. Recipient not reachable or other further problems.
+- Added DeserializeException: An exception that is thrown if deserializing a message using the IDS-Serializer threw an IOException. Could indicate a non-valid IDS-Message.
+- Added ShaclValidatorException: SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation.
+- Added UnknownResponseException: An exception that is thrown during converting an IDS-Response into a corresponding Object if no possible cast found. Could indicate a new unknown IDS-Message-Type. Error which is caused internally, but is passed on.
+- Added UnexpectedResponseException: An exception that is thrown after converting a Response into the corresponding Object if the received response-type is not expected as a response to the request send.
+- New Wiki-Page for exception documentation.
+
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.1 -> 2.5.2
