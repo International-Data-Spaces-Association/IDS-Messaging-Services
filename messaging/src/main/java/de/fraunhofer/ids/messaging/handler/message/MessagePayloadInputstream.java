@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.ids.messaging.protocol.DeserializeException;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

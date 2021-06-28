@@ -13,10 +13,9 @@
  */
 package de.fraunhofer.ids.messaging.handler.message;
 
-import java.io.IOException;
 import java.io.InputStream;
 
-import de.fraunhofer.ids.messaging.protocol.DeserializeException;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
 
 /**
  * Wrapper for payloads of incoming Messages. Implementation can be found in {@link MessagePayloadInputstream}.

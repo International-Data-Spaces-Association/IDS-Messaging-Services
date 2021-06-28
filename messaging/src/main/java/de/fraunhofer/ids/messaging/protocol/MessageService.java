@@ -14,10 +14,10 @@
 package de.fraunhofer.ids.messaging.protocol;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
