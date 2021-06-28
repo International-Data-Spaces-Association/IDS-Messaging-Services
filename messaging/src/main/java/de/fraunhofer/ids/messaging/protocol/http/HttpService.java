@@ -18,7 +18,12 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
 
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -107,9 +112,19 @@ public interface HttpService {
      * @throws IOException             if request cannot be sent
      * @throws ClaimsException         if response cannot be parsed to multipart map
      * @throws MultipartParseException if DAT of response is invalid or cannot be parsed
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
+     * @throws SendMessageException sending the IDS-Request returns an IOException
      */
     Map<String, String> sendAndCheckDat(Request request)
-            throws IOException, ClaimsException, MultipartParseException;
+            throws
+            IOException,
+            ClaimsException,
+            MultipartParseException,
+            SendMessageException,
+            ShaclValidatorException,
+            DeserializeException;
 
     /**
      * @param body requestBody to be sent
@@ -118,9 +133,17 @@ public interface HttpService {
      * @throws IOException             if request cannot be sent
      * @throws MultipartParseException if response cannot be parsed to multipart map
      * @throws ClaimsException         if DAT of response is invalid or cannot be parsed
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
      */
     Map<String, String> sendAndCheckDat(RequestBody body, URI target)
-            throws IOException, MultipartParseException, ClaimsException;
+            throws
+            IOException,
+            MultipartParseException,
+            ClaimsException,
+            DeserializeException,
+            ShaclValidatorException;
 
     /**
      * @param body    requestBody to be sent
@@ -130,7 +153,15 @@ public interface HttpService {
      * @throws IOException             if request cannot be sent
      * @throws MultipartParseException if response cannot be parsed to multipart map
      * @throws ClaimsException         if DAT of response is invalid or cannot be parsed
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
      */
     Map<String, String> sendWithHeadersAndCheckDat(RequestBody body, URI target, Map<String, String> headers)
-            throws IOException, MultipartParseException, ClaimsException;
+            throws
+            IOException,
+            MultipartParseException,
+            ClaimsException,
+            DeserializeException,
+            ShaclValidatorException;
 }

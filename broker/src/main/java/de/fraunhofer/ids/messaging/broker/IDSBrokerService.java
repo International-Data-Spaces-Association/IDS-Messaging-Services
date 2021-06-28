@@ -21,13 +21,17 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
@@ -55,7 +59,11 @@ public interface IDSBrokerService {
             IOException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException;
+            SerializeException,
+            UnexpectedResponseException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage} to the broker.
@@ -73,7 +81,12 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -91,7 +104,12 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
@@ -108,7 +126,12 @@ public interface IDSBrokerService {
             ClaimsException,
             MultipartParseException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -126,7 +149,12 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to a list of brokers.
@@ -136,7 +164,18 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers(List<URI> brokerURIs)
-            throws IOException, DapsTokenManagerException;
+            throws
+            IOException,
+            DapsTokenManagerException,
+            DeserializeException,
+            ShaclValidatorException,
+            UnexpectedResponseException,
+            SerializeException,
+            MultipartParseException,
+            ClaimsException,
+            SendMessageException,
+            UnknownResponseException,
+            MessageBuilderException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage} to the broker.
@@ -156,7 +195,12 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Do a FullText Query on the Broker with default limit and offset.
@@ -183,7 +227,12 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException;
 
     /**
      * Do a FullText Query on the Broker with custom limit and offset.
@@ -201,9 +250,16 @@ public interface IDSBrokerService {
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws UnknownResponseException thrown during converting IDS-Response into a corresponding Object if no possible cast found
+     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
+     * @throws UnexpectedResponseException exception that is thrownif the received response-type is not expected as a response to the request send
+     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
+     * @throws SendMessageException sending the IDS-Request returns an IOException
+     * @throws MessageBuilderException exception that is thrown if building an IDS-Message with the given information threw a  RuntimeException
      */
     ResultMAP fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
-                                   QueryTarget queryTarget, int limit, int offset )
+                                   QueryTarget queryTarget, int limit, int offset)
             throws
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
@@ -212,5 +268,10 @@ public interface IDSBrokerService {
             MultipartParseException,
             ClaimsException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException;
 }

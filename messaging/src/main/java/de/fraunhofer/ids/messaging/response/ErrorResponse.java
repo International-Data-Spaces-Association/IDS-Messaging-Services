@@ -24,6 +24,7 @@ import de.fraunhofer.iais.eis.RejectionMessageBuilder;
 import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.AccessLevel;
@@ -108,11 +109,16 @@ public class ErrorResponse implements MessageResponse {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> createMultipartMap(final Serializer serializer) throws IOException {
-        final var multiMap = new LinkedHashMap<String, Object>();
-        multiMap.put(MultipartDatapart.HEADER.toString(), serializer.serialize(rejectionMessage));
-        multiMap.put(MultipartDatapart.PAYLOAD.toString(), errorMessage);
+    public Map<String, Object> createMultipartMap(final Serializer serializer) throws SerializeException {
+        try {
+            final var multiMap = new LinkedHashMap<String, Object>();
+            multiMap.put(MultipartDatapart.HEADER.toString(),
+                         serializer.serialize(rejectionMessage));
+            multiMap.put(MultipartDatapart.PAYLOAD.toString(), errorMessage);
 
-        return multiMap;
+            return multiMap;
+        } catch (IOException ioException) {
+            throw new SerializeException(ioException);
+        }
     }
 }

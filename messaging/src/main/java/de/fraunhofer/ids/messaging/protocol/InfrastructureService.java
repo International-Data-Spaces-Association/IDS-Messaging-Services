@@ -18,11 +18,16 @@ import java.net.URI;
 
 import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
 import de.fraunhofer.iais.eis.RejectionMessage;
+import de.fraunhofer.iais.eis.util.ConstraintViolationException;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
@@ -55,19 +60,28 @@ public class InfrastructureService  {
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
-        final var header =   new DescriptionRequestMessageBuilder()
-                ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
-                ._issuerConnector_(container.getConnector().getId())
-                ._senderAgent_(container.getConnector().getId())
-                ._securityToken_(tokenProvider.getDAT())
-                .build();
-        final var messageAndPayload = new GenericMessageAndPayload(header);
-        final var response = messageService.sendIdsMessage(messageAndPayload, uri);
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException {
+        try {
+            final var header = new DescriptionRequestMessageBuilder()
+                    ._issued_(IdsMessageUtils.getGregorianNow())
+                    ._modelVersion_(
+                            container.getConnector().getOutboundModelVersion())
+                    ._issuerConnector_(container.getConnector().getId())
+                    ._senderAgent_(container.getConnector().getId())
+                    ._securityToken_(tokenProvider.getDAT())
+                    .build();
+            final var messageAndPayload = new GenericMessageAndPayload(header);
+            final var response =
+                    messageService.sendIdsMessage(messageAndPayload, uri);
 
-        return expectDescriptionResponseMAP(response);
-
+            return expectDescriptionResponseMAP(response);
+        } catch (ConstraintViolationException constraintViolationException) {
+            throw new MessageBuilderException(constraintViolationException);
+        }
     }
 
     /**

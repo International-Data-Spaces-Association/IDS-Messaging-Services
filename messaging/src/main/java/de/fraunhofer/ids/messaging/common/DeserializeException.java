@@ -11,21 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol;
+package de.fraunhofer.ids.messaging.common;
 
 /**
- * An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
- * the received response-type is not expected as a response to the request send.
+ * An exception that is thrown if deserializing gone wrong and threw IOException.
  */
-public class UnexpectedResponseException extends Exception {
+public class DeserializeException extends Exception {
     private static final long serialVersionUID = 42L;
+
     /**
-     *  An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
-     *  the received response-type is not expected as a response to the request send.
+     * An exception that is thrown if deserializing gone wrong and threw IOException.
      *
-     * @param message Message of the Exception to be thrown
+     * @param cause Throwable cause of the Exception
      */
-    public UnexpectedResponseException(final String message) {
-        super(message);
+    public DeserializeException(final Throwable cause) {
+        super(cause);
     }
 }

@@ -16,6 +16,9 @@ import de.fraunhofer.iais.eis.LogLevel;
 import de.fraunhofer.iais.eis.SecurityProfile;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -23,7 +26,8 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
@@ -111,7 +115,11 @@ class InfrastructureServiceTest {
             MultipartParseException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException {
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException {
         //setup mockito
         final var connector = new BaseConnectorBuilder()
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)

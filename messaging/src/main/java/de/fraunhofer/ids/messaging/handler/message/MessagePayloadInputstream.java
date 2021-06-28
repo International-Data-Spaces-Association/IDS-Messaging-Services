@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +35,12 @@ public class MessagePayloadInputstream implements MessagePayload {
     ObjectMapper objectMapper;
 
     @Override
-    public <T> T readFromJSON(final Class<? extends T> targetType) throws IOException {
-        return this.objectMapper.readValue(underlyingInputStream, targetType);
+    public <T> T readFromJSON(final Class<? extends T> targetType)
+            throws DeserializeException {
+        try {
+            return this.objectMapper.readValue(underlyingInputStream, targetType);
+        } catch (IOException ioException) {
+            throw new DeserializeException(ioException);
+        }
     }
 }

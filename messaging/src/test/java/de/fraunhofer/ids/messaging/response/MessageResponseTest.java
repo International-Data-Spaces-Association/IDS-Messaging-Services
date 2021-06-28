@@ -13,6 +13,7 @@ import de.fraunhofer.iais.eis.ResponseMessageBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.Util;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class MessageResponseTest {
 
     @Test
-    void testResponses() throws IOException {
+    void testResponses() throws IOException, SerializeException {
         final var empty = MessageResponse.empty();
         assertNotNull(empty.createMultipartMap(new Serializer()));
         final var bodyRes = BodyResponse.create(buildResponseMessage(), "String payload!");

@@ -14,6 +14,7 @@
 package de.fraunhofer.ids.messaging.util;
 
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
  * The Serializer is used by various components inside the framework.
  */
 @Configuration
+@NoArgsConstructor
 public class SerializerProvider {
 
     /**

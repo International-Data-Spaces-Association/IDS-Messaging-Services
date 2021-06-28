@@ -11,21 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol;
+package de.fraunhofer.ids.messaging.protocol.http;
 
 /**
- * An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
- * the received response-type is not expected as a response to the request send.
+ * If sending the IDS-Request returns an IOException.
  */
-public class UnexpectedResponseException extends Exception {
+public class SendMessageException extends Exception {
     private static final long serialVersionUID = 42L;
+
     /**
-     *  An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
-     *  the received response-type is not expected as a response to the request send.
+     * If sending the IDS-Request returns an IOException.
      *
-     * @param message Message of the Exception to be thrown
+     * @param cause Throwable cause of the Exception
      */
-    public UnexpectedResponseException(final String message) {
-        super(message);
+    public SendMessageException(final Throwable cause) {
+        super(cause);
     }
 }

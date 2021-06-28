@@ -17,8 +17,11 @@ import java.io.IOException;
 import java.net.URI;
 
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
@@ -73,9 +76,11 @@ public class MessageService {
             throws
             MultipartParseException,
             ClaimsException,
-            IOException,
             UnknownResponseException,
-            DeserializeException {
+            DeserializeException,
+            SerializeException,
+            IOException,
+            SendMessageException, ShaclValidatorException {
 
         final var payloadOptional = messageAndPayload.getPayload();
         var payloadString = "";
@@ -84,7 +89,12 @@ public class MessageService {
             final var payload = payloadOptional.get();
 
             if (!(payload instanceof String)) {
-                payloadString = serializer.serialize(payload);
+                try {
+                    payloadString = serializer.serialize(payload);
+                } catch (IOException ioException) {
+                    //Map Serializer-IOException to SerializeException
+                    throw new SerializeException(ioException);
+                }
             } else {
                 payloadString = (String) payload;
             }
@@ -130,7 +140,10 @@ public class MessageService {
             ClaimsException,
             IOException,
             UnknownResponseException,
-            DeserializeException {
+            DeserializeException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
         return sendIdsMessage(messageAndPayload, target, ProtocolType.MULTIPART);
     }
 }

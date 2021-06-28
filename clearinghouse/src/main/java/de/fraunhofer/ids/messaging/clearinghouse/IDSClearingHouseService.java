@@ -20,10 +20,14 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.DeserializeException;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
@@ -44,6 +48,13 @@ public interface IDSClearingHouseService {
      * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      * @throws MultipartParseException if response could not be parsed to header and payload.
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws UnknownResponseException thrown during converting IDS-Response into a corresponding Object if no possible cast found
+     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
+     * @throws UnexpectedResponseException exception that is thrownif the received response-type is not expected as a response to the request send
+     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
+     * @throws MessageBuilderException exception that is thrown if building an IDS-Message with the given information threw a  RuntimeException
      */
     MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog)
             throws
@@ -53,7 +64,11 @@ public interface IDSClearingHouseService {
             URISyntaxException,
             IOException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            ShaclValidatorException,
+            SerializeException,
+            MessageBuilderException;
 
 
     /**
@@ -67,6 +82,13 @@ public interface IDSClearingHouseService {
      * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      * @throws MultipartParseException if response could not be parsed to header and payload.
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws UnknownResponseException thrown during converting IDS-Response into a corresponding Object if no possible cast found
+     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
+     * @throws UnexpectedResponseException exception that is thrownif the received response-type is not expected as a response to the request send
+     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
+     * @throws MessageBuilderException exception that is thrown if building an IDS-Message with the given information threw a  RuntimeException
      */
     MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog, String pid)
             throws
@@ -76,7 +98,10 @@ public interface IDSClearingHouseService {
             ClaimsException,
             MultipartParseException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            ShaclValidatorException, SerializeException,
+            MessageBuilderException;
 
     /**
      * Query the Clearing House.
@@ -93,6 +118,13 @@ public interface IDSClearingHouseService {
      * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      * @throws MultipartParseException if response could not be parsed to header and payload.
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws UnknownResponseException thrown during converting IDS-Response into a corresponding Object if no possible cast found
+     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
+     * @throws UnexpectedResponseException exception that is thrownif the received response-type is not expected as a response to the request send
+     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
+     * @throws MessageBuilderException exception that is thrown if building an IDS-Message with the given information threw a  RuntimeException
      */
     ResultMAP queryClearingHouse(String pid, String messageId, QueryLanguage queryLanguage, QueryScope queryScope,
                                  QueryTarget queryTarget, String query)
@@ -103,6 +135,9 @@ public interface IDSClearingHouseService {
             MultipartParseException,
             IOException,
             UnknownResponseException,
-            DeserializeException, UnexpectedResponseException;
+            DeserializeException,
+            UnexpectedResponseException,
+            ShaclValidatorException, SerializeException,
+            MessageBuilderException;
 
 }

@@ -82,13 +82,13 @@ public class KeyStoreManager {
             }
             initClassVars(configurationModel, keystorePw, trustStorePw, keyAlias);
         } catch (IOException e) {
-            throwKeyStoreIntiException(e, "Key- or Truststore could not be loaded!");
+            throwKeyStoreInitException(e, "Key- or Truststore could not be loaded!");
         } catch (CertificateException | NoSuchAlgorithmException e) {
-            throwKeyStoreIntiException(e, "Error while loading a Certificate!");
+            throwKeyStoreInitException(e, "Error while loading a Certificate!");
         } catch (UnrecoverableKeyException e) {
-            throwKeyStoreIntiException(e, "Could not initialize Key/Truststore: password is incorrect!");
+            throwKeyStoreInitException(e, "Could not initialize Key/Truststore: password is incorrect!");
         } catch (KeyStoreException e) {
-            throwKeyStoreIntiException(e, "Initialization of Key- or Truststore failed!");
+            throwKeyStoreInitException(e, "Initialization of Key- or Truststore failed!");
         }
     }
 
@@ -101,7 +101,7 @@ public class KeyStoreManager {
         return ((X509Certificate) cert).getNotAfter();
     }
 
-    private void throwKeyStoreIntiException(final Exception exception, final String message)
+    private void throwKeyStoreInitException(final Exception exception, final String message)
             throws KeyStoreManagerInitializationException {
         if (log.isErrorEnabled()) {
             log.error(message);
@@ -118,7 +118,8 @@ public class KeyStoreManager {
             NoSuchAlgorithmException,
             IOException,
             KeyStoreException,
-            UnrecoverableKeyException {
+            UnrecoverableKeyException,
+            KeyStoreManagerInitializationException {
         this.configurationModel = configurationModel;
         this.keyStorePw = keystorePw;
         this.trustStorePw = trustStorePw;
@@ -137,12 +138,20 @@ public class KeyStoreManager {
     }
 
     private void createTrustStore(final ConfigurationModel configurationModel, final char... trustStorePw)
-            throws CertificateException, NoSuchAlgorithmException, IOException {
+            throws
+            CertificateException,
+            NoSuchAlgorithmException,
+            IOException,
+            KeyStoreManagerInitializationException {
         trustStore = loadKeyStore(trustStorePw, configurationModel.getTrustStore());
     }
 
     private void createKeyStore(final ConfigurationModel configurationModel, final char... keystorePw)
-            throws CertificateException, NoSuchAlgorithmException, IOException {
+            throws
+            CertificateException,
+            NoSuchAlgorithmException,
+            IOException,
+            KeyStoreManagerInitializationException {
         keyStore = loadKeyStore(keystorePw, configurationModel.getKeyStore());
     }
 
@@ -158,7 +167,11 @@ public class KeyStoreManager {
      * @throws IOException              when the Key-/Truststore File cannot be found
      */
     private KeyStore loadKeyStore(final char[] pw, final URI location)
-            throws CertificateException, NoSuchAlgorithmException, IOException {
+            throws
+            CertificateException,
+            NoSuchAlgorithmException,
+            IOException,
+            KeyStoreManagerInitializationException {
         if (log.isInfoEnabled()) {
             log.info(String.format("Searching for keystore file %s", location.toString()));
         }
@@ -193,7 +206,7 @@ public class KeyStoreManager {
                 if (log.isWarnEnabled()) {
                     log.warn("Could not find keystore, aborting!");
                 }
-                throw e;
+                throwKeyStoreInitException(e, e.getMessage());
             }
         } else {
             if (log.isWarnEnabled()) {
@@ -210,7 +223,7 @@ public class KeyStoreManager {
                 if (log.isWarnEnabled()) {
                     log.warn("Could not find keystore at system scope, aborting!");
                 }
-                throw e;
+                throwKeyStoreInitException(e, e.getMessage());
             }
         }
         if (log.isDebugEnabled()) {

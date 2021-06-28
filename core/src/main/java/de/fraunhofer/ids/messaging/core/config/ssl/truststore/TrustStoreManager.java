@@ -21,9 +21,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import lombok.NoArgsConstructor;
+
 /**
  * The IDSTrustStore contains the trusted certificates.
  */
+@NoArgsConstructor
 public class TrustStoreManager {
     /**
      * Create a merged trustmanager (trust anchors are TrustStore + java Truststore combined).

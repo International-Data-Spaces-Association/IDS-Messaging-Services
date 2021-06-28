@@ -11,21 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol;
+package de.fraunhofer.ids.messaging.common;
 
 /**
- * An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
- * the received response-type is not expected as a response to the request send.
+ * An exception that is thrown if building an IDS-Message with the given information threw a ConstraintViolationException (catches builders RuntimeException).
  */
-public class UnexpectedResponseException extends Exception {
+public class MessageBuilderException extends Exception {
     private static final long serialVersionUID = 42L;
+
     /**
-     *  An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
-     *  the received response-type is not expected as a response to the request send.
+     * An exception that is thrown if building an IDS-Message with the given information threw a ConstraintViolationException (catches builders RuntimeException).
      *
-     * @param message Message of the Exception to be thrown
+     * @param cause Throwable cause of the Exception
      */
-    public UnexpectedResponseException(final String message) {
-        super(message);
+    public MessageBuilderException(final Throwable cause) {
+        super(cause);
     }
 }

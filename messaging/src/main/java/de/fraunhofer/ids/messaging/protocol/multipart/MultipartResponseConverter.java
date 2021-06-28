@@ -45,6 +45,7 @@ import de.fraunhofer.iais.eis.ResourceUnavailableMessage;
 import de.fraunhofer.iais.eis.ResourceUpdateMessage;
 import de.fraunhofer.iais.eis.ResultMessage;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactRequestMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactResponseMAP;
@@ -67,11 +68,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Converts a {@link Response} into the corresponding {@link MessageAndPayload object}.
+ * Converts a Response into the corresponding MessageAndPayload object.
  */
 @Slf4j
 @NoArgsConstructor
@@ -91,7 +91,7 @@ public class MultipartResponseConverter {
         MessageAndPayload<?, ?> messageAndPayload = null;
 
         Message responseHeader; //The response "message", set in try catch
-        
+
         final var responsePayload = getResponsePayload(responseMap);
 
         try {

@@ -14,15 +14,19 @@
 package de.fraunhofer.ids.messaging.protocol.multipart;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.RequestBuilder;
+import lombok.NoArgsConstructor;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
 
+@NoArgsConstructor
 public class MultipartRequestBuilder implements RequestBuilder {
     private static final Serializer SERIALIZER = new Serializer();
 
@@ -30,16 +34,26 @@ public class MultipartRequestBuilder implements RequestBuilder {
      * {@inheritDoc}
      */
     @Override
-    public Request build(final Message message, final URI target) throws IOException {
-        final var body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart(MultipartDatapart.HEADER.toString(), SERIALIZER.serialize(message))
-                .build();
+    public Request build(final Message message, final URI target)
+            throws MalformedURLException, SerializeException {
+        try {
+            final var body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart(MultipartDatapart.HEADER.toString(),
+                                     SERIALIZER.serialize(message))
+                    .build();
 
         return new Request.Builder()
                 .url(target.toURL())
                 .post(body)
                 .build();
+        } catch (MalformedURLException malformedURLException) {
+            //taget.toUrl threw malformedURLException
+            throw malformedURLException;
+        } catch (IOException ioException) {
+            //SERIALIZER.serialize(message) threw IOException
+            throw new SerializeException(ioException);
+        }
     }
 
 
@@ -47,16 +61,27 @@ public class MultipartRequestBuilder implements RequestBuilder {
      * {@inheritDoc}
      */
     @Override
-    public Request build(final Message message, final URI target, final String payload) throws IOException {
-        final var body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart(MultipartDatapart.HEADER.toString(), SERIALIZER.serialize(message))
-                .addFormDataPart(MultipartDatapart.PAYLOAD.toString(), payload)
-                .build();
+    public Request build(final Message message, final URI target, final String payload)
+            throws SerializeException, MalformedURLException {
+        try {
+            final var body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart(MultipartDatapart.HEADER.toString(),
+                                     SERIALIZER.serialize(message))
+                    .addFormDataPart(MultipartDatapart.PAYLOAD.toString(),
+                                     payload)
+                    .build();
 
-        return new Request.Builder()
-                .url(target.toURL())
-                .post(body)
-                .build();
+            return new Request.Builder()
+                    .url(target.toURL())
+                    .post(body)
+                    .build();
+        } catch (MalformedURLException malformedURLException) {
+            //taget.toUrl threw malformedURLException
+            throw malformedURLException;
+        } catch (IOException ioException) {
+            //SERIALIZER.serialize(message) threw IOException
+            throw new SerializeException(ioException);
+        }
     }
 }

@@ -30,6 +30,7 @@ import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
@@ -147,7 +148,7 @@ public class MessageController {
                                  .body(createDefaultErrorMessage(RejectionReason.BAD_PARAMETERS,
                                                                  String.format("Error during preprocessing: %s",
                                                                                e.getMessage())));
-        } catch (IOException e) {
+        } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("incoming message could not be parsed!");
                 log.warn(e.getMessage(), e);
@@ -225,21 +226,6 @@ public class MessageController {
             }
             return null;
         }
-    }
-
-    /**
-     * @param message incoming infomodel message
-     * @return true if infomodel version is supported
-     */
-    private boolean checkInboundVersion(final Message message) {
-        final var inboundList = configContainer.getConfigurationModel()
-                .getConnectorDescription()
-                .getInboundModelVersion();
-
-        return inboundList.stream()
-                .map(version -> checkInfomodelContainment(message.getModelVersion(), version))
-                .reduce(Boolean::logicalOr)
-                .orElse(false);
     }
 
     /**

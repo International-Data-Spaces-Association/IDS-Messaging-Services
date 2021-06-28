@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 import lombok.AccessLevel;
@@ -46,10 +47,14 @@ public class GenericMessageAndPayload implements MessageAndPayload<Message, Obje
     }
 
     @Override
-    public SerializedPayload serializePayload() throws IOException {
+    public SerializedPayload serializePayload() throws SerializeException {
         SerializedPayload serializedPayload;
         if (Objects.nonNull(payload)) {
-            serializedPayload = new SerializedPayload(new Serializer().serialize(payload).getBytes(), "application/ld+json");
+            try {
+                serializedPayload = new SerializedPayload(new Serializer().serialize(payload).getBytes(), "application/ld+json");
+            } catch(IOException ioException) {
+                throw new SerializeException(ioException);
+            }
         } else {
             serializedPayload =  SerializedPayload.EMPTY;
         }
