@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol;
+package de.fraunhofer.ids.messaging.common;
 
 /**
  * An exception that is thrown if serializing gone wrong and threw IOException.

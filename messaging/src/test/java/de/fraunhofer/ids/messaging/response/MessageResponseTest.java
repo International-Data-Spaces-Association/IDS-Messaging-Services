@@ -13,7 +13,7 @@ import de.fraunhofer.iais.eis.ResponseMessageBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.Util;
-import de.fraunhofer.ids.messaging.protocol.SerializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

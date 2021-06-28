@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 
 import de.fraunhofer.iais.eis.Message;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import okhttp3.Request;
 
 public interface RequestBuilder {

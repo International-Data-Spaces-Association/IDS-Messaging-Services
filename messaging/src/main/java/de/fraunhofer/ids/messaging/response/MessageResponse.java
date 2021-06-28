@@ -13,11 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.response;
 
-import java.io.IOException;
 import java.util.Map;
 
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.messaging.protocol.SerializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 
 /**
  * A MessageResponse is returned by the MessageHandlers, for easy building of Responses
