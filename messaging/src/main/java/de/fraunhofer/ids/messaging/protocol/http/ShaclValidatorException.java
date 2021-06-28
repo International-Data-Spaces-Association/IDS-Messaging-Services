@@ -22,15 +22,6 @@ public class ShaclValidatorException extends Exception {
     /**
      * SHACL Validation: Received message headers does not conform to IDS-infomodel
      *
-     * @param cause Throwable cause of the Exception
-     */
-    public ShaclValidatorException(final Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * SHACL Validation: Received message headers does not conform to IDS-infomodel
-     *
      * @param message The error message
      */
     public ShaclValidatorException(final String message) {
