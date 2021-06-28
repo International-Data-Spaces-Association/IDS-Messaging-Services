@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - UnexpectedResponseException: If the response can be cast, but was not expected to the request send
 
 ### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.1 -> 2.5.2
 - Upgrade: org.springframework.boot:spring-boot-starter 2.5.1 -> 2.5.2
 
 ### Miscellaneous
