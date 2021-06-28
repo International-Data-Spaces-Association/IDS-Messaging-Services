@@ -101,11 +101,11 @@ public class IdsHttpService implements HttpService {
                 ShaclValidator.validateRdf(messageString).conforms();
             } catch (IOException ioException) {
                 //catch IOException and throw ShaclValidatorException instead
-                throw new ShaclValidatorException("received message headers does not conform to IDS infomodel");
+                throw new ShaclValidatorException("Received message header does not conform to IDS-Infomodel! Received message did not pass SHACL-Validation!");
             }
 
             if (log.isInfoEnabled()) {
-                log.info("Received response passed Shacl Validation.");
+                log.info("Received response passed SHACL Validation.");
             }
         }
 
