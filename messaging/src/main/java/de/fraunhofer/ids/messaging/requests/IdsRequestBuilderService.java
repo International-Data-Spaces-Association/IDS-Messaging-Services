@@ -58,7 +58,7 @@ public class IdsRequestBuilderService {
      *
      * @param <T> type of payload
      */
-    class IdsRequestBuilder<T> {
+    public class IdsRequestBuilder<T> {
 
         /**
          * Template from which sent message header is built.
@@ -136,7 +136,6 @@ public class IdsRequestBuilderService {
          * @return response of target connector bundled in {@link MessageContainer}
          * @throws ClaimsException when incoming DAT cannot be parsed
          * @throws MultipartParseException when response cannot be parsed to multipart
-         * @throws IOException when there is an error while sending the message
          * @throws DapsTokenManagerException when DAT cannot be received from DAPS
          * @throws NoTemplateProvidedException when no Message Template is provided
          * @throws RejectionException when 'throwOnRejection' is active and RejectionMessage is received
