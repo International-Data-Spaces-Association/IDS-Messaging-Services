@@ -13,30 +13,13 @@
  */
 package de.fraunhofer.ids.messaging.requests;
 
-import java.io.IOException;
-import java.net.URI;
-
-import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
 import de.fraunhofer.iais.eis.RejectionMessage;
-import de.fraunhofer.iais.eis.util.ConstraintViolationException;
-import de.fraunhofer.ids.messaging.common.DeserializeException;
-import de.fraunhofer.ids.messaging.common.MessageBuilderException;
-import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
-import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
-import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,44 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
-public class InfrastructureService  {
+public abstract class InfrastructureService  {
     ConfigContainer   container;
     DapsTokenProvider tokenProvider;
     MessageService messageService;
-
-    /**
-     * {@inheritDoc}
-     */
-    public DescriptionResponseMAP requestSelfDescription(final URI uri) throws
-            IOException,
-            UnexpectedResponseException,
-            DapsTokenManagerException,
-            MultipartParseException,
-            ClaimsException,
-            UnknownResponseException,
-            DeserializeException,
-            SerializeException,
-            ShaclValidatorException,
-            SendMessageException,
-            MessageBuilderException {
-        try {
-            final var header = new DescriptionRequestMessageBuilder()
-                    ._issued_(IdsMessageUtils.getGregorianNow())
-                    ._modelVersion_(
-                            container.getConnector().getOutboundModelVersion())
-                    ._issuerConnector_(container.getConnector().getId())
-                    ._senderAgent_(container.getConnector().getId())
-                    ._securityToken_(tokenProvider.getDAT())
-                    .build();
-            final var messageAndPayload = new GenericMessageAndPayload(header);
-            final var response =
-                    messageService.sendIdsMessage(messageAndPayload, uri);
-
-            return expectMapOfTypeT(response, DescriptionResponseMAP.class);
-        } catch (ConstraintViolationException constraintViolationException) {
-            throw new MessageBuilderException(constraintViolationException);
-        }
-    }
 
     /**
      * Check if incoming response if of expected type, throw an IOException with information, if it is not.
