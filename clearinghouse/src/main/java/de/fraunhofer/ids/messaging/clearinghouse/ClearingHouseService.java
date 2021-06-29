@@ -29,6 +29,7 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
+import de.fraunhofer.ids.messaging.requests.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.common.SerializeException;
@@ -78,8 +79,9 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     public ClearingHouseService(final ConfigContainer container,
                                 final DapsTokenProvider tokenProvider,
                                 final MessageService messageService,
-                                final IdsHttpService idsHttpService) {
-        super(container, tokenProvider, messageService);
+                                final IdsHttpService idsHttpService,
+                                final IdsRequestBuilderService requestBuilderService) {
+        super(container, tokenProvider, messageService, requestBuilderService);
         this.idsHttpService = idsHttpService;
     }
 

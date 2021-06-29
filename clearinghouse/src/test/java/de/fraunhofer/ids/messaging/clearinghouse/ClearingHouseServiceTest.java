@@ -43,6 +43,7 @@ import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.requests.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.MultipartBody;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,6 +86,9 @@ class ClearingHouseServiceTest {
 
     @MockBean
     private Connector connector;
+
+    @MockBean
+    private IdsRequestBuilderService idsRequestBuilderService;
 
     @MockBean
     private MultipartResponseConverter multipartResponseConverter;
