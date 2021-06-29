@@ -78,7 +78,7 @@ public class BodyResponse<T extends Message> implements MessageResponse {
             multiMap.put(MultipartDatapart.PAYLOAD.toString(), payload);
 
             return multiMap;
-        } catch(IOException ioException) {
+        } catch (IOException ioException) {
             throw new SerializeException(ioException);
         }
     }

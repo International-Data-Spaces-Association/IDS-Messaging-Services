@@ -13,18 +13,28 @@
  */
 package de.fraunhofer.ids.messaging.broker;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.QueryLanguage;
+import de.fraunhofer.iais.eis.QueryScope;
+import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.daps.*;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
-import de.fraunhofer.ids.messaging.requests.*;
+import de.fraunhofer.ids.messaging.requests.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.InfrastructureService;
+import de.fraunhofer.ids.messaging.requests.MessageContainer;
+import de.fraunhofer.ids.messaging.requests.MessageTemplate;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.exceptions.NoTemplateProvidedException;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
@@ -61,17 +71,17 @@ public class BrokerService extends InfrastructureService
      * @param tokenProvider the DapsTokenProvider
      * @param messageService the MessageService
      * @param idsRequestBuilderService service to send request messages
-     * @param notificationTemplateProvider provider for notification message templates
+     * @param templateProvider provider for notification message templates
      * @param requestTemplateProvider provider for request message templates
      */
     public BrokerService(final ConfigContainer container,
                          final DapsTokenProvider tokenProvider,
                          final MessageService messageService,
                          final IdsRequestBuilderService idsRequestBuilderService,
-                         final NotificationTemplateProvider notificationTemplateProvider,
+                         final NotificationTemplateProvider templateProvider,
                          final RequestTemplateProvider requestTemplateProvider) {
         super(container, tokenProvider, messageService);
-        this.notificationTemplateProvider = notificationTemplateProvider;
+        this.notificationTemplateProvider = templateProvider;
         this.requestTemplateProvider = requestTemplateProvider;
         this.requestBuilderService = idsRequestBuilderService;
     }
@@ -213,7 +223,7 @@ public class BrokerService extends InfrastructureService
                                           final QueryScope queryScope,
                                           final QueryTarget queryTarget,
                                           final int limit,
-                                          final int offset )
+                                          final int offset)
             throws
             DapsTokenManagerException,
             IOException,

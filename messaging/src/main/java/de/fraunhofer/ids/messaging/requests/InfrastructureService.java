@@ -31,7 +31,9 @@ import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.*;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
@@ -91,11 +93,11 @@ public class InfrastructureService  {
      * @return {@link MessageAndPayload object specialized to the expected Message}
      * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
      */
-    protected <T extends MessageAndPayload<?,?>> T expectMapOfTypeT(
+    protected <T extends MessageAndPayload<?, ?>> T expectMapOfTypeT(
             final MessageAndPayload<?, ?> response,
             final Class<T> expectedType) throws UnexpectedResponseException {
 
-        if (expectedType.isAssignableFrom(response.getClass())){
+        if (expectedType.isAssignableFrom(response.getClass())) {
             return expectedType.cast(response);
         }
 

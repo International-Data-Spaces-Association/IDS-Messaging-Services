@@ -26,7 +26,6 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
-import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
@@ -34,7 +33,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNo
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 
 /**
- * Interface for Communication with IDS ClearingHouses
+ * Interface for Communication with IDS ClearingHouses.
  */
 public interface IDSClearingHouseService {
 

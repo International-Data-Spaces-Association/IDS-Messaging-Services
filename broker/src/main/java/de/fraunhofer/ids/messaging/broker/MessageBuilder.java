@@ -13,7 +13,22 @@
  */
 package de.fraunhofer.ids.messaging.broker;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.ConnectorUnavailableMessage;
+import de.fraunhofer.iais.eis.ConnectorUnavailableMessageBuilder;
+import de.fraunhofer.iais.eis.ConnectorUpdateMessage;
+import de.fraunhofer.iais.eis.ConnectorUpdateMessageBuilder;
+import de.fraunhofer.iais.eis.DynamicAttributeToken;
+import de.fraunhofer.iais.eis.QueryLanguage;
+import de.fraunhofer.iais.eis.QueryMessage;
+import de.fraunhofer.iais.eis.QueryMessageBuilder;
+import de.fraunhofer.iais.eis.QueryScope;
+import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.iais.eis.Resource;
+import de.fraunhofer.iais.eis.ResourceUnavailableMessage;
+import de.fraunhofer.iais.eis.ResourceUnavailableMessageBuilder;
+import de.fraunhofer.iais.eis.ResourceUpdateMessage;
+import de.fraunhofer.iais.eis.ResourceUpdateMessageBuilder;
 import de.fraunhofer.iais.eis.util.ConstraintViolationException;
 import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
