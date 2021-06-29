@@ -30,6 +30,9 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.requests.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
@@ -116,13 +119,27 @@ class BrokerServiceTest {
         private Connector connector;
 
         @Bean
+        public NotificationTemplateProvider getNotificationTemplateProvider(){
+            return new NotificationTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+
+        @Bean RequestTemplateProvider getRequestTemplateProvider(){
+            return new RequestTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+
+        @Bean
+        public IdsRequestBuilderService getIdsRequestBuilderService(){
+            return new IdsRequestBuilderService(messageService);
+        }
+
+        @Bean
         public Serializer getSerializer() {
             return new Serializer();
         }
 
         @Bean
         public BrokerService getBrokerService() {
-            return new BrokerService(configurationContainer, dapsTokenProvider, messageService);
+            return new BrokerService(configurationContainer, dapsTokenProvider, messageService, getIdsRequestBuilderService(), getNotificationTemplateProvider(), getRequestTemplateProvider());
         }
     }
 
@@ -184,8 +201,8 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.updateSelfDescriptionAtBroker(URI.create("/"));
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
 
@@ -196,8 +213,8 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.removeResourceFromBroker(URI.create("/"), new ResourceBuilder().build());
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
     @Test
@@ -207,8 +224,8 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var  result = this.brokerService.updateResourceAtBroker(URI.create("/"), new ResourceBuilder().build());
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
     @Test
@@ -218,41 +235,8 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.unregisterAtBroker(URI.create("/"));
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
-    }
-
-    @Test
-    void testUpdateSelfDescriptionAtBrokers() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-        final var list = new ArrayList<URI>();
-        list.add(URI.create("/"));
-        list.add(URI.create("/"));
-
-
-        final var result = this.brokerService.updateSelfDescriptionAtBrokers(list);
-
-        assertNotNull(result.get(0).getMessage(),"Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.get(0).getClass(), "Method should return MessageProcessedNotificationMessage");
-        assertFalse(result.get(0).getPayload().isPresent(),"Payload should be empty for MessageProcessedNotificationMAPs");
-        assertNotNull(result.get(1).getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.get(1).getClass(), "Method should return MessageProcessedNotificationMessage");
-        assertFalse(result.get(1).getPayload().isPresent(),"Payload should be empty for MessageProcessedNotificationMAPs");
-    }
-
-    @Test
-    void testEmptyList() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-
-        final var result = this.brokerService.updateSelfDescriptionAtBrokers(
-                new ArrayList<>());
-
-
-        assertEquals(new ArrayList<MessageProcessedNotificationMAP>(), result, "Should return empty list when no URIs are passed");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
     @Test
@@ -263,11 +247,9 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.queryBroker(URI.create("/"), "",QueryLanguage.SPARQL,QueryScope.ALL,QueryTarget.BROKER);
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(ResultMAP.class, result.getClass(), "Method should return ResultMap");
-        assertTrue(result.getPayload().isPresent(),"ResultMAP should have payload");
-        assertNotNull(result.getPayload().get(),"ResultMAP should have payload");
-
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(ResultMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return ResultMessage");
+        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
     }
 
     @Test
@@ -277,11 +259,9 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.fullTextSearchBroker(URI.create("/"), "", QueryScope.ALL, QueryTarget.BROKER);
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(ResultMAP.class, result.getClass(), "Method should return ResultMap");
-        assertTrue(result.getPayload().isPresent(),"ResultMAP should have payload");
-        assertNotNull(result.getPayload().get(),"ResultMAP should have payload");
-
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(ResultMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return ResultMessage");
+        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
     }
 
 }
