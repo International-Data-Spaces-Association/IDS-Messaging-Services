@@ -111,7 +111,7 @@ public class RequestTemplateProvider {
      * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
      * @return template to build a {@link QueryMessage}
      */
-    public MessageTemplate<QueryMessage> queryMessageTemplate(final QueryLanguage queryLanguage, final QueryScope queryScope, final QueryTarget queryTarget){
+    public MessageTemplate<QueryMessage> queryMessageTemplate(final QueryLanguage queryLanguage, final QueryScope queryScope, final QueryTarget queryTarget) {
         return () -> new QueryMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -129,7 +129,7 @@ public class RequestTemplateProvider {
      *
      * @return template to build a {@link AccessTokenRequestMessage}
      */
-    public MessageTemplate<AccessTokenRequestMessage> accessTokenRequestMessageTemplate(){
+    public MessageTemplate<AccessTokenRequestMessage> accessTokenRequestMessageTemplate() {
         return () -> new AccessTokenRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -145,7 +145,7 @@ public class RequestTemplateProvider {
      * @param affectedDataApp ID of affected data app
      * @return template to build a {@link AppRegistrationRequestMessage}
      */
-    public MessageTemplate<AppRegistrationRequestMessage> appRegistrationRequestMessageTemplate(final URI affectedDataApp){
+    public MessageTemplate<AppRegistrationRequestMessage> appRegistrationRequestMessageTemplate(final URI affectedDataApp) {
         return () -> new AppRegistrationRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -162,7 +162,7 @@ public class RequestTemplateProvider {
      * @param operationReference reference of operation to execute by target connector
      * @return template to build a {@link InvokeOperationMessage}
      */
-    public MessageTemplate<InvokeOperationMessage> invokeOperationMessageTemplate(final URI operationReference){
+    public MessageTemplate<InvokeOperationMessage> invokeOperationMessageTemplate(final URI operationReference) {
         return () -> new InvokeOperationMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())

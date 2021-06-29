@@ -19,7 +19,11 @@ import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
-import de.fraunhofer.ids.messaging.core.daps.*;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
+import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
+import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
@@ -188,7 +192,7 @@ public interface IDSBrokerService {
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
      */
     MessageContainer<?> fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
-                                   QueryTarget queryTarget, int limit, int offset )
+                                   QueryTarget queryTarget, int limit, int offset)
             throws
             DapsTokenManagerException,
             IOException,
