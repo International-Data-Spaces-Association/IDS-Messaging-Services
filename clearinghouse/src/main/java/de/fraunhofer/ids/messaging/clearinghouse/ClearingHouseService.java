@@ -79,9 +79,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     public ClearingHouseService(final ConfigContainer container,
                                 final DapsTokenProvider tokenProvider,
                                 final MessageService messageService,
-                                final IdsHttpService idsHttpService,
-                                final IdsRequestBuilderService requestBuilderService) {
-        super(container, tokenProvider, messageService, requestBuilderService);
+                                final IdsHttpService idsHttpService) {
+        super(container, tokenProvider, messageService);
         this.idsHttpService = idsHttpService;
     }
 
@@ -121,7 +120,6 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             MultipartParseException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException,
             ShaclValidatorException,
             SerializeException,
             MessageBuilderException {
@@ -157,7 +155,6 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             IOException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException,
             ShaclValidatorException,
             SerializeException,
             MessageBuilderException {

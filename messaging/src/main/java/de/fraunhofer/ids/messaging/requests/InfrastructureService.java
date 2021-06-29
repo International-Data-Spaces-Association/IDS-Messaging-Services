@@ -11,14 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol;
+package de.fraunhofer.ids.messaging.requests;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
+import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
 import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
 import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.iais.eis.util.ConstraintViolationException;
@@ -29,18 +28,17 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
+import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.*;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 public class InfrastructureService  {
     ConfigContainer   container;
     DapsTokenProvider tokenProvider;
-    MessageService    messageService;
+    MessageService messageService;
 
     /**
      * {@inheritDoc}
@@ -63,7 +61,6 @@ public class InfrastructureService  {
             ClaimsException,
             UnknownResponseException,
             DeserializeException,
-            UnexpectedResponseException,
             SerializeException,
             ShaclValidatorException,
             SendMessageException,
@@ -99,7 +96,7 @@ public class InfrastructureService  {
      * @throws ClaimsException when DAT of incoming response is rejected
      */
     public MaybeMAP<ArtifactResponseMAP, MessageProcessedNotificationMAP> requestArtifact(final URI uri, final URI requestedArtifact)
-            throws ClaimsException, IOException, DapsTokenManagerException, MultipartParseException {
+            throws ClaimsException, IOException, DapsTokenManagerException, MultipartParseException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
 
         final var header = new ArtifactRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
