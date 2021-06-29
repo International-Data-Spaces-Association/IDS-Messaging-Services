@@ -86,19 +86,31 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
+            NoTemplateProvidedException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException {
         logBuildingHeader();
         return buildAndSend(notificationTemplateProvider.resourceUnavailableMessageTemplate(resource.getId()), resource, brokerURI);
     }
 
     /**
      * {@inheritDoc}
-     *
-     * @return
      */
     @Override
     public MessageContainer<?> updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource) throws
-            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            NoTemplateProvidedException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException {
 
         logBuildingHeader();
         return buildAndSend(notificationTemplateProvider.resourceUpdateMessageTemplate(resource.getId()), resource, brokerURI);
@@ -106,24 +118,38 @@ public class BrokerService extends InfrastructureService
 
     /**
      * {@inheritDoc}
-     *
-     * @return
      */
     @Override
     public MessageContainer<?> unregisterAtBroker(@NonNull final URI brokerURI)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
+            throws IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            NoTemplateProvidedException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException {
         logBuildingHeader();
         return buildAndSend(notificationTemplateProvider.connectorUnavailableMessageTemplate((container.getConnector().getId())), container.getConnector(), brokerURI);
     }
 
     /**
      * {@inheritDoc}
-     *
-     * @return
      */
     @Override
     public MessageContainer<?> updateSelfDescriptionAtBroker(@NonNull final URI brokerURI) throws
-            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            NoTemplateProvidedException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException {
         logBuildingHeader();
         return buildAndSend(notificationTemplateProvider.connectorUpdateMessageTemplate((container.getConnector().getId())), container.getConnector(), brokerURI);
 
@@ -138,7 +164,16 @@ public class BrokerService extends InfrastructureService
                                  @NonNull final QueryLanguage queryLanguage,
                                  @NonNull final QueryScope queryScope,
                                  @NonNull final QueryTarget queryTarget)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
+            throws IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            NoTemplateProvidedException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException {
         logBuildingHeader();
         return buildAndSend(requestTemplateProvider.queryMessageTemplate(queryLanguage, queryScope, queryTarget), query, brokerURI);
     }
@@ -151,11 +186,16 @@ public class BrokerService extends InfrastructureService
                                           final String searchTerm,
                                           final QueryScope queryScope,
                                           final QueryTarget queryTarget)
-            throws
-            DapsTokenManagerException,
+            throws DapsTokenManagerException,
             IOException,
             MultipartParseException,
-            ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
+            ClaimsException,
+            NoTemplateProvidedException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -178,7 +218,13 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             IOException,
             MultipartParseException,
-            ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
+            ClaimsException,
+            NoTemplateProvidedException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException {
         final var payload = String.format(
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
@@ -197,7 +243,17 @@ public class BrokerService extends InfrastructureService
      * @throws MultipartParseException when Response cannot be parsed to multipart
      * @throws NoTemplateProvidedException when template is null
      */
-    private MessageContainer<?> buildAndSend(MessageTemplate<?> template, Object payload, URI brokerURI) throws DapsTokenManagerException, ClaimsException, MultipartParseException, NoTemplateProvidedException, IOException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
+    private MessageContainer<?> buildAndSend(MessageTemplate<?> template, Object payload, URI brokerURI)
+            throws DapsTokenManagerException,
+            ClaimsException,
+            MultipartParseException,
+            NoTemplateProvidedException,
+            IOException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException {
         try {
             return requestBuilderService
                     .newRequest()
@@ -207,18 +263,6 @@ public class BrokerService extends InfrastructureService
         } catch (RejectionException | UnexpectedPayloadException e) {
             throw new IllegalStateException(String.format("%s should never be thrown here.", e.getClass().getSimpleName()));
         }
-    }
-    /**
-     * Get a new DAT from the DAPS.
-     *
-     * @return DAT, returned by the DAPS for the Connector
-     * @throws ConnectorMissingCertExtensionException Something went wrong with the Certificate of the Connector
-     * @throws DapsConnectionException                The DAPS is not reachable (wrong URL, network problems..)
-     * @throws DapsEmptyResponseException             The DAPS didn't return the expected response (maybe DAPS internal Problem?)
-     */
-    private DynamicAttributeToken getDat()
-            throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
-        return tokenProvider.getDAT();
     }
 
     /**
