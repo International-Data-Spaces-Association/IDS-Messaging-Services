@@ -35,6 +35,9 @@ import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.MessageTemplate;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.enums.Crud;
+import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
+import de.fraunhofer.ids.messaging.requests.enums.Subject;
 import de.fraunhofer.ids.messaging.requests.exceptions.NoTemplateProvidedException;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
@@ -103,7 +106,7 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException {
         logBuildingHeader();
-        return buildAndSend(notificationTemplateProvider.resourceUnavailableMessageTemplate(resource.getId()), resource, brokerURI);
+        return buildAndSend(Subject.RESOURCE, Crud.DELETE, resource, brokerURI);
     }
 
     /**
@@ -123,7 +126,7 @@ public class BrokerService extends InfrastructureService
             DeserializeException {
 
         logBuildingHeader();
-        return buildAndSend(notificationTemplateProvider.resourceUpdateMessageTemplate(resource.getId()), resource, brokerURI);
+        return buildAndSend(Subject.RESOURCE, Crud.UPDATE, resource, brokerURI);
     }
 
     /**
@@ -142,7 +145,7 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException {
         logBuildingHeader();
-        return buildAndSend(notificationTemplateProvider.connectorUnavailableMessageTemplate((container.getConnector().getId())), container.getConnector(), brokerURI);
+        return buildAndSend(Subject.CONNECTOR, Crud.DELETE, container.getConnector(), brokerURI);
     }
 
     /**
@@ -161,7 +164,7 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException {
         logBuildingHeader();
-        return buildAndSend(notificationTemplateProvider.connectorUpdateMessageTemplate((container.getConnector().getId())), container.getConnector(), brokerURI);
+        return buildAndSend(Subject.CONNECTOR, Crud.UPDATE, container.getConnector(), brokerURI);
 
     }
 
@@ -185,7 +188,7 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException {
         logBuildingHeader();
-        return buildAndSend(requestTemplateProvider.queryMessageTemplate(queryLanguage, queryScope, queryTarget), query, brokerURI);
+        return buildAndSend(Subject.QUERY, Crud.RECEIVE, query, brokerURI);
     }
 
     /**
@@ -238,13 +241,12 @@ public class BrokerService extends InfrastructureService
         final var payload = String.format(
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
-        return buildAndSend(requestTemplateProvider.queryMessageTemplate(QueryLanguage.SPARQL, queryScope, queryTarget), payload, brokerURI);
+        return buildAndSend(Subject.QUERY, Crud.RECEIVE, payload, brokerURI);
     }
 
     /**
      * Build IDS Message and send to a broker.
      *
-     * @param template message template used for header
      * @param payload payload of message
      * @param brokerURI URI of broker message should be sent to
      * @return response from the broker packed inside a {@link MessageContainer}
@@ -253,7 +255,7 @@ public class BrokerService extends InfrastructureService
      * @throws MultipartParseException when Response cannot be parsed to multipart
      * @throws NoTemplateProvidedException when template is null
      */
-    private MessageContainer<?> buildAndSend(MessageTemplate<?> template, Object payload, URI brokerURI)
+    private MessageContainer<?> buildAndSend(Subject subject, Crud operation, Object payload, URI brokerURI)
             throws DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
@@ -266,8 +268,9 @@ public class BrokerService extends InfrastructureService
             DeserializeException {
         try {
             return requestBuilderService
-                    .newRequest()
-                    .useTemplate(template)
+                    .newRequest(ProtocolType.MULTIPART)
+                    .withSubject(subject)
+                    .withOperation(operation)
                     .withPayload(payload)
                     .execute(brokerURI);
         } catch (RejectionException | UnexpectedPayloadException e) {

@@ -19,11 +19,14 @@ import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.enums.Crud;
+import de.fraunhofer.ids.messaging.requests.enums.Subject;
 import de.fraunhofer.ids.messaging.requests.exceptions.NoTemplateProvidedException;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
@@ -50,14 +53,15 @@ public class IdsRequestBuilderService {
      * {@link MessageService} used for sending messages.
      */
     MessageService messageService;
+    TemplateResolveService templateResolveService;
 
     /**
      * Get a requestbuilder, expecting no specific payload type.
      *
      * @return an {@link IdsRequestBuilder} expecting no specific payload type.
      */
-    public IdsRequestBuilder<Object> newRequest() {
-        return new IdsRequestBuilder<>();
+    public IdsRequestBuilder<Object> newRequest(final ProtocolType protocolType) {
+        return new IdsRequestBuilder<>(protocolType);
     }
 
     /**
@@ -67,8 +71,8 @@ public class IdsRequestBuilderService {
      * @param <T> expected type of payload.
      * @return an {@link IdsRequestBuilder} expecting payload of type T.
      */
-    public <T> IdsRequestBuilder<T> newRequestExpectingType(final Class<T> expected) {
-        return new IdsRequestBuilder<>(expected);
+    public <T> IdsRequestBuilder<T> newRequestExpectingType(final Class<T> expected, final ProtocolType protocolType) {
+        return new IdsRequestBuilder<>(expected, protocolType);
     }
 
     /**
@@ -78,10 +82,9 @@ public class IdsRequestBuilderService {
      */
     public class IdsRequestBuilder<T> {
 
-        /**
-         * Template from which sent message header is built.
-         */
-        private MessageTemplate<?> messageTemplate;
+        private Subject subject;
+        private Crud operation;
+        private ProtocolType protocolType;
 
 
         /**
@@ -102,9 +105,10 @@ public class IdsRequestBuilderService {
         /**
          * Generic IDS request, expecting no specific type of payload.
          */
-        IdsRequestBuilder() {
+        IdsRequestBuilder(ProtocolType protocolType) {
             this.expectedPayload = Optional.empty();
             this.optPayload = Optional.empty();
+            this.protocolType = protocolType;
         }
 
         /**
@@ -112,9 +116,10 @@ public class IdsRequestBuilderService {
          *
          * @param expected expected Type of payload
          */
-        IdsRequestBuilder(final Class<T> expected) {
+        IdsRequestBuilder(final Class<T> expected, ProtocolType protocolType) {
             this.expectedPayload = Optional.of(expected);
             this.optPayload = Optional.empty();
+            this.protocolType = protocolType;
         }
 
         /**
@@ -128,14 +133,13 @@ public class IdsRequestBuilderService {
             return this;
         }
 
-        /**
-         * Choose a header template to use for the request.
-         *
-         * @param template header template to use for the request
-         * @return this builder instance
-         */
-        public IdsRequestBuilder<T> useTemplate(final MessageTemplate<?> template) {
-            this.messageTemplate = template;
+        public IdsRequestBuilder<T> withSubject(final Subject subject){
+            this.subject = subject;
+            return this;
+        }
+
+        public IdsRequestBuilder<T> withOperation(final Crud operation){
+            this.operation = operation;
             return this;
         }
 
@@ -166,11 +170,40 @@ public class IdsRequestBuilderService {
                 DapsTokenManagerException,
                 NoTemplateProvidedException,
                 RejectionException,
-                UnexpectedPayloadException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
-            if (messageTemplate == null) {
-                throw new NoTemplateProvidedException("No Message Template was Provided!");
+                UnexpectedPayloadException,
+                ShaclValidatorException,
+                SerializeException,
+                UnknownResponseException,
+                SendMessageException,
+                DeserializeException {
+            switch (protocolType) {
+                case LDP:
+                    //TODO send via IDS_LDP
+                    throw new UnsupportedOperationException("Not yet implemented!");
+                case IDSCP:
+                    throw new UnsupportedOperationException("Not yet implemented!");
+                case MULTIPART:
+                    //send via multipart
+                    var template = templateResolveService.provideMessageTemplate(subject, operation);
+                    if(template == null) throw new NoTemplateProvidedException();
+                    return sendMultipart(template, target);
             }
-            var message = messageTemplate.buildMessage();
+            return null;
+        }
+
+        private MessageContainer<T> sendMultipart(MessageTemplate template, URI target)
+                throws RejectionException,
+                UnexpectedPayloadException,
+                DapsTokenManagerException,
+                ShaclValidatorException,
+                SerializeException,
+                ClaimsException,
+                UnknownResponseException,
+                SendMessageException,
+                MultipartParseException,
+                IOException,
+                DeserializeException {
+            var message = template.buildMessage();
             final var messageAndPayload = new GenericMessageAndPayload(message, optPayload.orElse(null));
             final var response = messageService.sendIdsMessage(messageAndPayload, target);
             var header = response.getMessage();
