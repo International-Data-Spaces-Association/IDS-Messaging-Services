@@ -122,7 +122,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             DeserializeException,
             ShaclValidatorException,
             SerializeException,
-            MessageBuilderException {
+            MessageBuilderException,
+            UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
@@ -157,7 +158,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             DeserializeException,
             ShaclValidatorException,
             SerializeException,
-            MessageBuilderException {
+            MessageBuilderException,
+            UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
