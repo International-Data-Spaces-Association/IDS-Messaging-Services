@@ -1,10 +1,28 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.broker;
 
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.*;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.exceptions.NoTemplateProvidedException;
@@ -27,7 +45,7 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     MessageContainer<?> removeResourceFromBroker(URI brokerURI, Resource resource)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException;
+            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -39,7 +57,7 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     MessageContainer<?> updateResourceAtBroker(URI brokerURI, Resource resource)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException;
+            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
@@ -50,7 +68,7 @@ public interface IDSBrokerService {
      * @throws IOException if the message could not be serialized
      */
     MessageContainer<?> unregisterAtBroker(URI brokerURI)
-            throws IOException, DapsTokenManagerException, ClaimsException, MultipartParseException, NoTemplateProvidedException;
+            throws IOException, DapsTokenManagerException, ClaimsException, MultipartParseException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -62,7 +80,7 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     MessageContainer<?> updateSelfDescriptionAtBroker(URI brokerURI)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException;
+            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage} to the broker.
@@ -76,7 +94,7 @@ public interface IDSBrokerService {
      * @throws IOException if the built message could not be serialized
      */
     MessageContainer<?> queryBroker(URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException;
+            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException;
 
     /**
      * Do a FullText Query on the Broker with default limit and offset.
@@ -99,7 +117,7 @@ public interface IDSBrokerService {
             DapsTokenManagerException,
             IOException,
             MultipartParseException,
-            ClaimsException, NoTemplateProvidedException;
+            ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException;
 
     /**
      * Do a FullText Query on the Broker with custom limit and offset.
@@ -122,5 +140,5 @@ public interface IDSBrokerService {
                                    QueryTarget queryTarget, int limit, int offset )
             throws
             DapsTokenManagerException,
-            IOException, MultipartParseException, NoTemplateProvidedException, ClaimsException;
+            IOException, MultipartParseException, NoTemplateProvidedException, ClaimsException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException;
 }

@@ -1,10 +1,28 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.broker;
 
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.*;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.requests.*;
 import de.fraunhofer.ids.messaging.requests.exceptions.NoTemplateProvidedException;
@@ -35,25 +53,27 @@ public class BrokerService extends InfrastructureService
 
     NotificationTemplateProvider notificationTemplateProvider;
     RequestTemplateProvider requestTemplateProvider;
+    IdsRequestBuilderService requestBuilderService;
 
     /**
      * BrokerService constructor.
      * @param container the ConfigContainer
      * @param tokenProvider the DapsTokenProvider
      * @param messageService the MessageService
-     * @param requestBuilderService service to send request messages
+     * @param idsRequestBuilderService service to send request messages
      * @param notificationTemplateProvider provider for notification message templates
      * @param requestTemplateProvider provider for request message templates
      */
     public BrokerService(final ConfigContainer container,
                          final DapsTokenProvider tokenProvider,
                          final MessageService messageService,
-                         final IdsRequestBuilderService requestBuilderService,
+                         final IdsRequestBuilderService idsRequestBuilderService,
                          final NotificationTemplateProvider notificationTemplateProvider,
                          final RequestTemplateProvider requestTemplateProvider) {
-        super(container, tokenProvider, messageService, requestBuilderService);
+        super(container, tokenProvider, messageService);
         this.notificationTemplateProvider = notificationTemplateProvider;
         this.requestTemplateProvider = requestTemplateProvider;
+        this.requestBuilderService = idsRequestBuilderService;
     }
 
     /**
@@ -66,7 +86,7 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException {
+            NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
         logBuildingHeader();
         return buildAndSend(notificationTemplateProvider.resourceUnavailableMessageTemplate(resource.getId()), resource, brokerURI);
     }
@@ -78,7 +98,7 @@ public class BrokerService extends InfrastructureService
      */
     @Override
     public MessageContainer<?> updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource) throws
-            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException {
+            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
 
         logBuildingHeader();
         return buildAndSend(notificationTemplateProvider.resourceUpdateMessageTemplate(resource.getId()), resource, brokerURI);
@@ -91,7 +111,7 @@ public class BrokerService extends InfrastructureService
      */
     @Override
     public MessageContainer<?> unregisterAtBroker(@NonNull final URI brokerURI)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException {
+            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
         logBuildingHeader();
         return buildAndSend(notificationTemplateProvider.connectorUnavailableMessageTemplate((container.getConnector().getId())), container.getConnector(), brokerURI);
     }
@@ -103,7 +123,7 @@ public class BrokerService extends InfrastructureService
      */
     @Override
     public MessageContainer<?> updateSelfDescriptionAtBroker(@NonNull final URI brokerURI) throws
-            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException {
+            IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
         logBuildingHeader();
         return buildAndSend(notificationTemplateProvider.connectorUpdateMessageTemplate((container.getConnector().getId())), container.getConnector(), brokerURI);
 
@@ -118,7 +138,7 @@ public class BrokerService extends InfrastructureService
                                  @NonNull final QueryLanguage queryLanguage,
                                  @NonNull final QueryScope queryScope,
                                  @NonNull final QueryTarget queryTarget)
-            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException {
+            throws IOException, DapsTokenManagerException, MultipartParseException, ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
         logBuildingHeader();
         return buildAndSend(requestTemplateProvider.queryMessageTemplate(queryLanguage, queryScope, queryTarget), query, brokerURI);
     }
@@ -135,7 +155,7 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             IOException,
             MultipartParseException,
-            ClaimsException, NoTemplateProvidedException {
+            ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -158,7 +178,7 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             IOException,
             MultipartParseException,
-            ClaimsException, NoTemplateProvidedException {
+            ClaimsException, NoTemplateProvidedException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
         final var payload = String.format(
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
@@ -177,7 +197,7 @@ public class BrokerService extends InfrastructureService
      * @throws MultipartParseException when Response cannot be parsed to multipart
      * @throws NoTemplateProvidedException when template is null
      */
-    private MessageContainer<?> buildAndSend(MessageTemplate<?> template, Object payload, URI brokerURI) throws DapsTokenManagerException, ClaimsException, MultipartParseException, NoTemplateProvidedException, IOException {
+    private MessageContainer<?> buildAndSend(MessageTemplate<?> template, Object payload, URI brokerURI) throws DapsTokenManagerException, ClaimsException, MultipartParseException, NoTemplateProvidedException, IOException, ShaclValidatorException, SerializeException, UnknownResponseException, SendMessageException, DeserializeException {
         try {
             return requestBuilderService
                     .newRequest()
