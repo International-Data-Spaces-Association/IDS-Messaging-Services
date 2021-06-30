@@ -99,7 +99,7 @@ public class MultipartResponseConverter {
             responseHeader = getResponseHeader(responseMap);
         } catch (IOException ioException) {
             if (log.isErrorEnabled()) {
-                log.error("Error deserializing Header!");
+                log.error("Error deserializing Header! " + ioException.getMessage());
             }
             throw new DeserializeException(ioException);
         }
@@ -160,7 +160,7 @@ public class MultipartResponseConverter {
         } catch (IOException ioException) {
             //Deserializing Payload threw exception
             if (log.isErrorEnabled()) {
-                log.error("Error deserializing Payload!");
+                log.error("Error deserializing Payload! " + ioException.getMessage());
             }
             throw new DeserializeException(ioException);
         }

@@ -72,7 +72,7 @@ public class EndpointService {
             requestMappingHandlerMapping.registerMapping(requestMappingInfo, messageController, MessageController.class
                     .getDeclaredMethod("handleIDSMessage", HttpServletRequest.class));
         } catch (NoSuchMethodException e) {
-            if (log.isDebugEnabled()) {
+            if (log.isErrorEnabled()) {
                 log.error("MessageController could not be found for mapping route!");
             }
         }

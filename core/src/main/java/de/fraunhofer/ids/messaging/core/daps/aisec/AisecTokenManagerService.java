@@ -189,13 +189,13 @@ public class AisecTokenManagerService implements TokenManagerService {
 
     private void printTestDeploymentWarning(final String error) {
         if (log.isWarnEnabled()) {
-            log.warn("[DAPS Token Manager Service] TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, will not be send in PRODUCTIVE_DEPLOYMENT, reason: " + error);
+            log.warn("TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, will not be send in PRODUCTIVE_DEPLOYMENT, reason: " + error);
         }
     }
 
     private void printProductiveDeploymentError(final String error) {
         if (log.isErrorEnabled()) {
-            log.error("[DAPS Token Manager Service] PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! No DAT could be loaded from DAPS, reason: " + error);
+            log.error("PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! No DAT could be loaded from DAPS, reason: " + error);
         }
     }
 

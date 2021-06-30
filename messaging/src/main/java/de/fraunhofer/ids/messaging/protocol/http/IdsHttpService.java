@@ -394,8 +394,7 @@ public class IdsHttpService implements HttpService {
             response = send(request);
         } catch (IOException ioException) {
             if (log.isErrorEnabled()) {
-                log.error("Message could not be sent!");
-                log.error(ioException.getMessage(), ioException);
+                log.error("Message could not be sent! " + ioException.getMessage());
             }
 
             //throw SendMessageException instead of IOException
