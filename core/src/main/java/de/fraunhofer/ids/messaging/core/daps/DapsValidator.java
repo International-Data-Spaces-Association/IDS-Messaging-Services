@@ -73,7 +73,7 @@ public class DapsValidator {
                            .parseClaimsJws(tokenValue);
             } catch (Exception e) {
                 if (log.isErrorEnabled()) {
-                    log.error(e.getMessage(), e);
+                    log.error(e.getMessage());
                 }
             }
         }

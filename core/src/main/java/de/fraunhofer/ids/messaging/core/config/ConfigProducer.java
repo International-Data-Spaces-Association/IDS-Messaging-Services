@@ -90,18 +90,15 @@ public class ConfigProducer {
 
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
-                log.error("Configuration cannot be parsed!");
-                log.error(e.getMessage(), e);
+                log.error("Configuration cannot be parsed! " + e.getMessage());
             }
         } catch (KeyStoreManagerInitializationException e) {
             if (log.isErrorEnabled()) {
-                log.error("KeyStoreManager could not be initialized!");
-                log.error(e.getMessage(), e);
+                log.error("KeyStoreManager could not be initialized! " + e.getMessage());
             }
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             if (log.isErrorEnabled()) {
-                log.error("ClientProvider could not be initialized!");
-                log.error(e.getMessage(), e);
+                log.error("ClientProvider could not be initialized! " + e.getMessage());
             }
         }
     }

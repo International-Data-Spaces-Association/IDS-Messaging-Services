@@ -22,8 +22,11 @@ All notable changes to this project will be documented in this file.
 - Added UnexpectedResponseException: An exception that is thrown after converting a Response into the corresponding Object if the received response-type is not expected as a response to the request send.
 - New Wiki-Page for exception documentation.
 
+### Changes
+- Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT vs PRODUCTIVE_DEPLOYMENT
+- Patch Change: Improved error log level messages (no more plain error stack trace)
 
-### Patch Change: Dependency Maintenance
+### Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.1 -> 2.5.2
 - Upgrade: org.springframework.boot:spring-boot-starter 2.5.1 -> 2.5.2
 

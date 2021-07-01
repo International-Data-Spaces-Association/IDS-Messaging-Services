@@ -142,7 +142,7 @@ public class MessageController {
             }
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
-                log.error("Error during pre-processing with a PreDispatchingFilter!", e);
+                log.error("Error during pre-processing with a PreDispatchingFilter! " + e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(createDefaultErrorMessage(RejectionReason.BAD_PARAMETERS,
