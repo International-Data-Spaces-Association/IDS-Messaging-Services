@@ -143,7 +143,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @throws ConnectorMissingCertExtensionException forwarded to the connector developer if AKI or SKI of Certificate are not valid or missing
      */
     private void handleConnectorMissingCertExtensionException() throws ConnectorMissingCertExtensionException {
-        final var error = "[DAPS Token Manager Service] Mandatorily required information of the connector certificate is missing (AKI/SKI)!";
+        final var error = "Mandatorily required information of the connector certificate is missing (AKI/SKI)!";
 
         if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
             printProductiveDeploymentError(error);
@@ -160,7 +160,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @throws DapsEmptyResponseException forwarded exception to the connector developer if DAPS returned an empty response
      */
     private void handleDapsEmptyResponseException(final DapsEmptyResponseException e) throws DapsEmptyResponseException {
-        final var error = String.format("[DAPS Token Manager Service] Unusable answer from DAPS: Possible empty DAPS-Response, something went wrong at DAPS: %s", e.getMessage());
+        final var error = String.format("Unusable answer from DAPS: Possible empty DAPS-Response, something went wrong at DAPS: %s", e.getMessage());
 
         if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
             printProductiveDeploymentError(error);
@@ -177,7 +177,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @throws DapsConnectionException mapped exception, thworn if connection to DAPS failed
      */
     private void handleIOException(final IOException e) throws DapsConnectionException {
-        final var error = String.format("[DAPS Token Manager Service] Error connecting to DAPS (possibly currently not reachable or wrong DAPS-URL): %s", e.getMessage());
+        final var error = String.format("Error connecting to DAPS (possibly currently not reachable or wrong DAPS-URL): %s", e.getMessage());
 
         if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
             printProductiveDeploymentError(error);
@@ -189,16 +189,13 @@ public class AisecTokenManagerService implements TokenManagerService {
 
     private void printTestDeploymentWarning(final String error) {
         if (log.isWarnEnabled()) {
-            log.warn(error);
-            log.warn("[DAPS Token Manager Service] Since the connector is in TEST_DEPLOYMENT the IDS-Message is now sent without a valid DAT.");
-            log.warn("[DAPS Token Manager Service] If the connector is switched to PRODUCTIVE_DEPLOYMENT, no message without valid DAT will be sent at this point anymore!");
+            log.warn("TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, will not be send in PRODUCTIVE_DEPLOYMENT, reason: " + error);
         }
     }
 
     private void printProductiveDeploymentError(final String error) {
         if (log.isErrorEnabled()) {
-            log.error(error);
-            log.error("[DAPS Token Manager Service] Since the connector is not in TEST_DEPLOYMENT and no DAT could be loaded from DAPS, no IDS-Message is sent.");
+            log.error("PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! No DAT could be loaded from DAPS, reason: " + error);
         }
     }
 

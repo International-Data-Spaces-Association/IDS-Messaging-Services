@@ -105,7 +105,6 @@ public class KeyStoreManager {
             throws KeyStoreManagerInitializationException {
         if (log.isErrorEnabled()) {
             log.error(message);
-            log.error(exception.getMessage(), exception);
         }
         throw new KeyStoreManagerInitializationException(exception.getMessage(), exception.getCause());
     }
@@ -239,8 +238,7 @@ public class KeyStoreManager {
             store = KeyStore.getInstance(KeyStore.getDefaultType());
         } catch (KeyStoreException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not create a KeyStore with default type!");
-                log.error(e.getMessage(), e);
+                log.error("Could not create a KeyStore with default type! " + e.getMessage());
             }
         }
         return store;

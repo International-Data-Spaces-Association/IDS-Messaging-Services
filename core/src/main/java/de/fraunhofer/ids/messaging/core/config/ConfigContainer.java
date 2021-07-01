@@ -92,14 +92,13 @@ public class ConfigContainer {
             }
         } catch (KeyStoreManagerInitializationException e) {
             if (log.isErrorEnabled()) {
-                log.error("Configuration could not be updated! Keeping old configuration!");
+                log.error("Configuration could not be updated! Keeping old configuration! " + e.getMessage());
             }
 
             throw new ConfigUpdateException(e.getMessage(), e.getCause());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             if (log.isErrorEnabled()) {
-                log.error("New Key- or Truststore could not be initialized! Keeping old configuration!");
-                log.error(e.getMessage(), e);
+                log.error("New Key- or Truststore could not be initialized! Keeping old configuration! " + e.getMessage());
             }
             throw new ConfigUpdateException(e.getMessage(), e.getCause());
         }
