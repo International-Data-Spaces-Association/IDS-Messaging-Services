@@ -14,7 +14,6 @@
 package de.fraunhofer.ids.messaging.broker;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
@@ -30,7 +29,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
-import de.fraunhofer.ids.messaging.requests.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.TemplateResolveService;
@@ -56,7 +55,6 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
-@Disabled
 class BrokerServiceTest {
 
     @Autowired
@@ -135,7 +133,7 @@ class BrokerServiceTest {
 
         @Bean
         public IdsRequestBuilderService getIdsRequestBuilderService(){
-            return new IdsRequestBuilderService(messageService, templateResolveService);
+            return new IdsRequestBuilderService(messageService, getRequestTemplateProvider(), getNotificationTemplateProvider());
         }
 
         @Bean

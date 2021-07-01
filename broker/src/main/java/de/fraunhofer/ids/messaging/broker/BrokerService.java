@@ -29,10 +29,9 @@ import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
-import de.fraunhofer.ids.messaging.requests.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
-import de.fraunhofer.ids.messaging.requests.MessageTemplate;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.enums.Crud;
@@ -99,14 +98,17 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException,
             ShaclValidatorException,
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return buildAndSend(Subject.RESOURCE, Crud.DELETE, resource, brokerURI);
+        return requestBuilderService.newRequest(ProtocolType.MULTIPART)
+                .withPayload(resource)
+                .subjectResource()
+                .operationDelete(resource.getId())
+                .execute(brokerURI);
     }
 
     /**
@@ -118,15 +120,18 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException,
             ShaclValidatorException,
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
 
         logBuildingHeader();
-        return buildAndSend(Subject.RESOURCE, Crud.UPDATE, resource, brokerURI);
+        return requestBuilderService.newRequest(ProtocolType.MULTIPART)
+                .withPayload(resource)
+                .subjectResource()
+                .operationUpdate(resource.getId())
+                .execute(brokerURI);
     }
 
     /**
@@ -138,14 +143,17 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException,
             ShaclValidatorException,
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return buildAndSend(Subject.CONNECTOR, Crud.DELETE, container.getConnector(), brokerURI);
+        return requestBuilderService.newRequest(ProtocolType.MULTIPART)
+                .withPayload(container.getConnector())
+                .subjectConnector()
+                .operationDelete(container.getConnector().getId())
+                .execute(brokerURI);
     }
 
     /**
@@ -157,15 +165,17 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException,
             ShaclValidatorException,
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return buildAndSend(Subject.CONNECTOR, Crud.UPDATE, container.getConnector(), brokerURI);
-
+        return requestBuilderService.newRequest(ProtocolType.MULTIPART)
+                .withPayload(container.getConnector())
+                .subjectConnector()
+                .operationUpdate(container.getConnector().getId())
+                .execute(brokerURI);
     }
 
     /**
@@ -181,14 +191,18 @@ public class BrokerService extends InfrastructureService
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException,
             ShaclValidatorException,
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return buildAndSend(Subject.QUERY, Crud.RECEIVE, query, brokerURI);
+        return requestBuilderService
+                .newRequest(ProtocolType.MULTIPART)
+                .withPayload(query)
+                .subjectQuery()
+                .operationSend(queryLanguage, queryScope, queryTarget)
+                .execute(brokerURI);
     }
 
     /**
@@ -203,12 +217,11 @@ public class BrokerService extends InfrastructureService
             IOException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException,
             ShaclValidatorException,
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -232,50 +245,20 @@ public class BrokerService extends InfrastructureService
             IOException,
             MultipartParseException,
             ClaimsException,
-            NoTemplateProvidedException,
             ShaclValidatorException,
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         final var payload = String.format(
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
-        return buildAndSend(Subject.QUERY, Crud.RECEIVE, payload, brokerURI);
-    }
-
-    /**
-     * Build IDS Message and send to a broker.
-     *
-     * @param payload payload of message
-     * @param brokerURI URI of broker message should be sent to
-     * @return response from the broker packed inside a {@link MessageContainer}
-     * @throws DapsTokenManagerException when DAT for message cannot be received
-     * @throws ClaimsException when DAT of response cannot be parsed
-     * @throws MultipartParseException when Response cannot be parsed to multipart
-     * @throws NoTemplateProvidedException when template is null
-     */
-    private MessageContainer<?> buildAndSend(Subject subject, Crud operation, Object payload, URI brokerURI)
-            throws DapsTokenManagerException,
-            ClaimsException,
-            MultipartParseException,
-            NoTemplateProvidedException,
-            IOException,
-            ShaclValidatorException,
-            SerializeException,
-            UnknownResponseException,
-            SendMessageException,
-            DeserializeException {
-        try {
-            return requestBuilderService
-                    .newRequest(ProtocolType.MULTIPART)
-                    .withSubject(subject)
-                    .withOperation(operation)
-                    .withPayload(payload)
-                    .execute(brokerURI);
-        } catch (RejectionException | UnexpectedPayloadException e) {
-            throw new IllegalStateException(String.format("%s should never be thrown here.", e.getClass().getSimpleName()));
-        }
+        return requestBuilderService
+                .newRequest(ProtocolType.MULTIPART)
+                .withPayload(payload)
+                .subjectQuery()
+                .operationSend(QueryLanguage.SPARQL, queryScope, queryTarget)
+                .execute(brokerURI);
     }
 
     /**
