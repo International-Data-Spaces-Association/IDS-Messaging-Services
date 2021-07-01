@@ -104,7 +104,7 @@ public class KeyStoreManager {
     private void throwKeyStoreInitException(final Exception exception, final String message)
             throws KeyStoreManagerInitializationException {
         if (log.isErrorEnabled()) {
-            log.error(message + " " + exception.getMessage());
+            log.error(message);
         }
         throw new KeyStoreManagerInitializationException(exception.getMessage(), exception.getCause());
     }
