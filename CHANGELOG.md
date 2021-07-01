@@ -22,6 +22,9 @@ All notable changes to this project will be documented in this file.
 - Added UnexpectedResponseException: An exception that is thrown after converting a Response into the corresponding Object if the received response-type is not expected as a response to the request send.
 - New Wiki-Page for exception documentation.
 
+### Added
+- Patch change: Added Maven plugin to generate Apache 2.0 license-header in files
+
 ### Changes
 - Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT vs PRODUCTIVE_DEPLOYMENT
 - Patch Change: Improved error log level messages (no more plain error stack trace)
