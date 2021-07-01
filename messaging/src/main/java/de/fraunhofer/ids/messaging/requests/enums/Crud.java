@@ -1,11 +1,9 @@
 package de.fraunhofer.ids.messaging.requests.enums;
 
 public enum Crud {
-    RECEIVE,
     COMMAND,
+    RECEIVE,
     CREATE,
-    RESPOND,
     DELETE,
     UPDATE,
-
 }
