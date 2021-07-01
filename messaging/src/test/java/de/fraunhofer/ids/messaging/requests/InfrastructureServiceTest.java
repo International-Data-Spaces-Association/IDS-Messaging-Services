@@ -1,4 +1,17 @@
-package de.fraunhofer.ids.messaging.requests;
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package de.fraunhofer.ids.messaging.protocol;
 
 import java.io.IOException;
 import java.net.URI;
@@ -6,6 +19,7 @@ import java.util.List;
 
 import de.fraunhofer.iais.eis.BaseConnectorBuilder;
 import de.fraunhofer.iais.eis.ConfigurationModelBuilder;
+import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
 import de.fraunhofer.iais.eis.ConnectorStatus;
@@ -15,19 +29,24 @@ import de.fraunhofer.iais.eis.LogLevel;
 import de.fraunhofer.iais.eis.SecurityProfile;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
-import de.fraunhofer.ids.messaging.protocol.MessageService;
-import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okio.Buffer;
 import org.junit.jupiter.api.Test;
@@ -41,7 +60,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { InfrastructureServiceTest.TestContextConfiguration.class})
@@ -49,6 +68,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class InfrastructureServiceTest {
 
     private final MockWebServer mockWebServer = new MockWebServer();
+
+    @Autowired
+    private InfrastructureService infrastructureService;
 
     @Autowired
     private Serializer serializer;
@@ -91,12 +113,26 @@ class InfrastructureServiceTest {
             return new MessageService(getHttpService());
         }
 
+        @Bean
+        InfrastructureService getInfrastructureService(){
+            return new InfrastructureService(container, tokenProvider, getMessageService());
+        }
+
     }
 
     @Test
-    void testInfrastructureService()
-            throws IOException,
-            DapsTokenManagerException {
+    void testInfrastructureService() throws
+            IOException,
+            DapsTokenManagerException,
+            ClaimsException,
+            MultipartParseException,
+            UnknownResponseException,
+            DeserializeException,
+            UnexpectedResponseException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException,
+            MessageBuilderException {
         //setup mockito
         final var connector = new BaseConnectorBuilder()
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
@@ -123,11 +159,7 @@ class InfrastructureServiceTest {
                 .build()
         );
 
-        final var infrastructureService = Mockito.mock(
-                InfrastructureService.class,
-                Mockito.CALLS_REAL_METHODS
-        );
-
+        //setup mockwebserver response
         final var descRespMsg = new DescriptionResponseMessageBuilder()
                 ._correlationMessage_(URI.create("http://example.com"))
                 ._issued_(IdsMessageUtils.getGregorianNow())
@@ -142,9 +174,13 @@ class InfrastructureServiceTest {
                 .build();
         final Buffer buffer = new Buffer();
         multipart.writeTo(buffer);
-        DescriptionResponseMAP map = new DescriptionResponseMAP(descRespMsg, "payload");
-        assertDoesNotThrow(() -> infrastructureService.expectMapOfTypeT(map, DescriptionResponseMAP.class));
-        assertThrows(UnexpectedResponseException.class, () -> infrastructureService.expectMapOfTypeT(map, ArtifactResponseMAP.class));
+        final var multipartString = buffer.readUtf8();
+        mockWebServer.enqueue(new MockResponse().setBody(multipartString));
+
+        //request selfdescription and check if MAP handles response correctly
+        final var map = infrastructureService.requestSelfDescription(mockWebServer.url("/").uri());
+        assertEquals(descRespMsg, map.getMessage());
+        assertEquals(connector, serializer.deserialize(map.getPayload().get(), Connector.class));
     }
 
 }
