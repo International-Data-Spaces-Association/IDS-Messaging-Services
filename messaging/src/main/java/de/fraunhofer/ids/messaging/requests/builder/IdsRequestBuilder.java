@@ -169,6 +169,12 @@ public class IdsRequestBuilder<T> {
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
+    public AccessTokenRequestBuilder<T> subjectAccessToken(){
+        var builder = new AccessTokenRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+                .withPayload(protocolType);
+        return this.throwOnRejection ? builder.throwOnRejection() : builder;
+    }
+
     protected MessageContainer<T> sendMultipart(URI target, Message message)
             throws RejectionException,
             UnexpectedPayloadException,
