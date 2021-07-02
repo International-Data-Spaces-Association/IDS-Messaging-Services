@@ -17,6 +17,8 @@ import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
+import lombok.extern.java.Log;
+import org.checkerframework.checker.units.qual.C;
 
 import java.io.IOException;
 import java.net.URI;
@@ -107,6 +109,54 @@ public class IdsRequestBuilder<T> {
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
+    public ParticipantRequestBuilder<T> subjectParticipant(){
+        var builder = new ParticipantRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+                .withPayload(protocolType);
+        return this.throwOnRejection ? builder.throwOnRejection() : builder;
+    }
+
+    public AppRequestBuilder<T> subjectApp(){
+        var builder = new AppRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+                .withPayload(protocolType);
+        return this.throwOnRejection ? builder.throwOnRejection() : builder;
+    }
+
+    public DescriptionRequestBuilder<T> subjectDescription(){
+        var builder = new DescriptionRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+                .withPayload(protocolType);
+        return this.throwOnRejection ? builder.throwOnRejection() : builder;
+    }
+
+    public LogRequestBuilder<T> subjectLog(){
+        var builder = new LogRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+                .withPayload(protocolType);
+        return this.throwOnRejection ? builder.throwOnRejection() : builder;
+    }
+
+    public ConnectorCertificateRequestBuilder<T> subjectConnectorCertificate(){
+        var builder = new ConnectorCertificateRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+                .withPayload(protocolType);
+        return this.throwOnRejection ? builder.throwOnRejection() : builder;
+    }
+
+   public ParticipantCertificateRequestBuilder<T> subjectParticipantCertificate(){
+       var builder = new ParticipantCertificateRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+               .withPayload(protocolType);
+       return this.throwOnRejection ? builder.throwOnRejection() : builder;
+   }
+
+   public ContractRequestBuilder<T> subjectContract(){
+       var builder = new ContractRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+               .withPayload(protocolType);
+       return this.throwOnRejection ? builder.throwOnRejection() : builder;
+   }
+
+   public CommandRequestBuilder<T> subjectCommand(){
+       var builder = new CommandRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+               .withPayload(protocolType);
+       return this.throwOnRejection ? builder.throwOnRejection() : builder;
+   }
+
     protected MessageContainer<T> sendMultipart(URI target, Message message)
             throws RejectionException,
             UnexpectedPayloadException,
@@ -145,4 +195,5 @@ public class IdsRequestBuilder<T> {
         }
         return new MessageContainer<>(header, (T) payload);
     }
+
 }

@@ -21,42 +21,35 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
-public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private URI affectedParticipant;
+    private URI operationReference;
     private Crud operation;
 
-    ParticipantRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    CommandRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     @Override
-    public ParticipantRequestBuilder<T> withPayload(Object payload){
+    public CommandRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
     @Override
-    public ParticipantRequestBuilder<T> throwOnRejection(){
+    public CommandRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
-    public ParticipantRequestBuilder<T> operationUpdate(URI affectedParticipant){
+    public CommandRequestBuilder<T> operationUpload(){
         this.operation = Crud.UPDATE;
-        this.affectedParticipant = affectedParticipant;
         return this;
     }
 
-    public ParticipantRequestBuilder<T> operationDelete(URI affectedParticipant){
-        this.operation = Crud.DELETE;
-        this.affectedParticipant = affectedParticipant;
-        return this;
-    }
-
-    public ParticipantRequestBuilder<T> operationGet(URI affectedParticipant){
-        this.operation = Crud.RECEIVE;
-        this.affectedParticipant = affectedParticipant;
+    public CommandRequestBuilder<T> operationCommand(final URI operationReference){
+        this.operationReference = operationReference;
+        this.operation = Crud.COMMAND;
         return this;
     }
 
@@ -70,17 +63,11 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
-                                .participantUpdateMessageTemplate(affectedParticipant).buildMessage();
+                        var updateMessage = requestTemplateProvider.uploadMessageTemplate().buildMessage();
                         return sendMultipart(target, updateMessage);
-                    case DELETE:
-                        var deleteMessage = notificationTemplateProvider
-                                .participantUnavailableMessageTemplate(affectedParticipant).buildMessage();
-                        return sendMultipart(target, deleteMessage);
-                    case RECEIVE:
-                        var receiveMessage = requestTemplateProvider
-                                .participantRequestMessageTemplate(affectedParticipant).buildMessage();
-                        return sendMultipart(target, receiveMessage);
+                    case COMMAND:
+                        var commandMessage = requestTemplateProvider.invokeOperationMessageTemplate(operationReference).buildMessage();
+                        return sendMultipart(target, commandMessage);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");
                 }

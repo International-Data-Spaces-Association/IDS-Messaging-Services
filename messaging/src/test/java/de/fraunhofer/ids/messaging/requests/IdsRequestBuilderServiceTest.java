@@ -100,9 +100,6 @@ class IdsRequestBuilderServiceTest {
         @MockBean
         private Connector connector;
 
-        @MockBean
-        private TemplateResolveService templateResolveService;
-
         @Bean
         public Serializer getSerializer() {
             return new Serializer();
