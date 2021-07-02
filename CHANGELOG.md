@@ -9,6 +9,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.1.1.2] 2021-07-02 - Recommended Security Update
+
+### Patch Change: Dependency Maintenance
+- Remove: org.apache.maven.plugins:maven-project-info-reports-plugin
+
 ## Version [4.1.1.1] 2021-06-21
 
 ### Patch Change: Infomodel Maintenance
