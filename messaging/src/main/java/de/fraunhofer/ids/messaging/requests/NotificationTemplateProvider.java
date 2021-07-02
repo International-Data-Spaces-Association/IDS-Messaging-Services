@@ -112,36 +112,36 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<AppAvailableMessage> appAvailableMessageTemplate(final URI affectedResource){
+    public MessageTemplate<AppAvailableMessage> appAvailableMessageTemplate(final URI affectedApp){
         return () -> new AppAvailableMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
-                ._affectedResource_(affectedResource)
+                ._affectedResource_(affectedApp)
                 .build();
     }
 
-    public MessageTemplate<AppUnavailableMessage> appUnavailableMessageTemplate(final URI affectedResource){
+    public MessageTemplate<AppUnavailableMessage> appUnavailableMessageTemplate(final URI affectedApp){
         return () -> new AppUnavailableMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
-                ._affectedResource_(affectedResource)
+                ._affectedResource_(affectedApp)
                 .build();
     }
 
-    public MessageTemplate<AppDeleteMessage> appDeleteMessageTemplate(final URI affectedResource){
+    public MessageTemplate<AppDeleteMessage> appDeleteMessageTemplate(final URI affectedApp){
         return () -> new AppDeleteMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
-                ._affectedResource_(affectedResource)
+                ._affectedResource_(affectedApp)
                 .build();
     }
 
