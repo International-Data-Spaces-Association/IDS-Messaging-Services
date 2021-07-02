@@ -1,5 +1,6 @@
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import de.fraunhofer.iais.eis.util.TypedLiteral;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -21,45 +22,40 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
-public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class ParticipantCertificateRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private URI affectedParticipant;
     private Crud operation;
+    private URI affectedParticipant;
+    private TypedLiteral revocationReason;
 
-    ParticipantRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    ParticipantCertificateRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     @Override
-    public ParticipantRequestBuilder<T> withPayload(Object payload){
+    public ParticipantCertificateRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
     @Override
-    public ParticipantRequestBuilder<T> throwOnRejection(){
+    public ParticipantCertificateRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
-    public ParticipantRequestBuilder<T> operationUpdate(URI affectedParticipant){
+    public ParticipantCertificateRequestBuilder<T> operationUpdate(URI affectedParticipant){
         this.operation = Crud.UPDATE;
         this.affectedParticipant = affectedParticipant;
         return this;
     }
 
-    public ParticipantRequestBuilder<T> operationDelete(URI affectedParticipant){
+    public ParticipantCertificateRequestBuilder<T> operationDelete(URI affectedParticipant, TypedLiteral revocationReason){
         this.operation = Crud.DELETE;
         this.affectedParticipant = affectedParticipant;
+        this.revocationReason = revocationReason;
         return this;
     }
-
-    public ParticipantRequestBuilder<T> operationGet(URI affectedParticipant){
-        this.operation = Crud.RECEIVE;
-        this.affectedParticipant = affectedParticipant;
-        return this;
-    }
-
     @Override
     public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
         switch (protocolType) {
@@ -71,16 +67,12 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
                 switch (operation) {
                     case UPDATE:
                         var updateMessage = notificationTemplateProvider
-                                .participantUpdateMessageTemplate(affectedParticipant).buildMessage();
+                                .participantCertificateGrantedMessageTemplate(affectedParticipant).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
                         var deleteMessage = notificationTemplateProvider
-                                .participantUnavailableMessageTemplate(affectedParticipant).buildMessage();
+                                .participantCertificateRevokedMessageTemplate(affectedParticipant, revocationReason).buildMessage();
                         return sendMultipart(target, deleteMessage);
-                    case RECEIVE:
-                        var receiveMessage = requestTemplateProvider
-                                .participantRequestMessageTemplate(affectedParticipant).buildMessage();
-                        return sendMultipart(target, receiveMessage);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");
                 }

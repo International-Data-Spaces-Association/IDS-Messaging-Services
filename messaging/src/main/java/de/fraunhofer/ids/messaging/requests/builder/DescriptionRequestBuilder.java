@@ -21,42 +21,30 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
-public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private URI affectedParticipant;
     private Crud operation;
+    private URI requestedElement;
 
-    ParticipantRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    DescriptionRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     @Override
-    public ParticipantRequestBuilder<T> withPayload(Object payload){
+    public DescriptionRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
     @Override
-    public ParticipantRequestBuilder<T> throwOnRejection(){
+    public DescriptionRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
-    public ParticipantRequestBuilder<T> operationUpdate(URI affectedParticipant){
-        this.operation = Crud.UPDATE;
-        this.affectedParticipant = affectedParticipant;
-        return this;
-    }
-
-    public ParticipantRequestBuilder<T> operationDelete(URI affectedParticipant){
-        this.operation = Crud.DELETE;
-        this.affectedParticipant = affectedParticipant;
-        return this;
-    }
-
-    public ParticipantRequestBuilder<T> operationGet(URI affectedParticipant){
+    public DescriptionRequestBuilder<T> operationGet(URI requestedElement){
         this.operation = Crud.RECEIVE;
-        this.affectedParticipant = affectedParticipant;
+        this.requestedElement = requestedElement;
         return this;
     }
 
@@ -68,19 +56,12 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
             case LDP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
-                switch (operation) {
-                    case UPDATE:
-                        var updateMessage = notificationTemplateProvider
-                                .participantUpdateMessageTemplate(affectedParticipant).buildMessage();
-                        return sendMultipart(target, updateMessage);
-                    case DELETE:
-                        var deleteMessage = notificationTemplateProvider
-                                .participantUnavailableMessageTemplate(affectedParticipant).buildMessage();
-                        return sendMultipart(target, deleteMessage);
+                switch (operation){
                     case RECEIVE:
-                        var receiveMessage = requestTemplateProvider
-                                .participantRequestMessageTemplate(affectedParticipant).buildMessage();
-                        return sendMultipart(target, receiveMessage);
+                        //build and send artifact request message
+                        var message = requestTemplateProvider.descriptionRequestMessageTemplate(requestedElement)
+                                .buildMessage();
+                        return sendMultipart(target, message);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");
                 }
@@ -88,4 +69,5 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
                 throw new UnsupportedOperationException("Unsupported Protocol!");
         }
     }
+
 }

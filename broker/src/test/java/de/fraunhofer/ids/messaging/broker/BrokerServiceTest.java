@@ -32,11 +32,9 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
-import de.fraunhofer.ids.messaging.requests.TemplateResolveService;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -118,9 +116,6 @@ class BrokerServiceTest {
 
         @MockBean
         private Connector connector;
-
-        @MockBean
-        private TemplateResolveService templateResolveService;
 
         @Bean
         public NotificationTemplateProvider getNotificationTemplateProvider(){
