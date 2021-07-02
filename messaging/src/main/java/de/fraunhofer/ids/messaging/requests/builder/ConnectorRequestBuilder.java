@@ -61,7 +61,7 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case LDP:
-                throw new UnsupportedEncodingException("Not yet implemented Protocol!");
+                throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
@@ -76,7 +76,7 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
                         throw new UnsupportedOperationException("Unsupported Operation!");
                 }
             default:
-                throw new UnsupportedEncodingException("Unsupported Protocol!");
+                throw new UnsupportedOperationException("Unsupported Protocol!");
         }
     }
 }
