@@ -6,4 +6,5 @@ public enum Crud {
     DISABLE,
     DELETE,
     UPDATE,
+    REGISTER
 }

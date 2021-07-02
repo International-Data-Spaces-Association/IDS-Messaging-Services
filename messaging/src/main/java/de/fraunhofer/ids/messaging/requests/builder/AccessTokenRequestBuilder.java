@@ -21,76 +21,46 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
-public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>{
+public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private URI affectedApp;
     private Crud operation;
 
-    AppRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    AccessTokenRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     @Override
-    public AppRequestBuilder<T> withPayload(final Object payload) {
+    public AccessTokenRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
     @Override
-    public AppRequestBuilder<T> throwOnRejection() {
+    public AccessTokenRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
-    public AppRequestBuilder<T> operationCreate(URI affectedApp) {
-        operation = Crud.UPDATE;
-        this.affectedApp = affectedApp;
-        return this;
-    }
-
-    public AppRequestBuilder<T> operationDelete(URI affectedApp) {
-        operation = Crud.DELETE;
-        this.affectedApp = affectedApp;
-        return this;
-    }
-
-    public AppRequestBuilder<T> operationUnavailable(URI affectedApp) {
-        operation = Crud.DISABLE;
-        this.affectedApp = affectedApp;
-        return this;
-    }
-
-    public AppRequestBuilder<T> operationRegistration(URI affectedApp) {
-        operation = Crud.REGISTER;
-        this.affectedApp = affectedApp;
+    public AccessTokenRequestBuilder<T> operationGet(){
+        this.operation = Crud.RECEIVE;
         return this;
     }
 
     @Override
     public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+        //send ArtifactRequestMessage with settings:
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case LDP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
-                switch (operation) {
-                    case UPDATE:
-                        var updateMessage = notificationTemplateProvider
-                                .appAvailableMessageTemplate(affectedApp).buildMessage();
-                        return sendMultipart(target, updateMessage);
-                    case DELETE:
-                        var deleteMessage = notificationTemplateProvider
-                                .appDeleteMessageTemplate(affectedApp).buildMessage();
-                        return sendMultipart(target, deleteMessage);
-                    case DISABLE:
-                        var disableMessage = notificationTemplateProvider
-                                .appUnavailableMessageTemplate(affectedApp).buildMessage();
-                        return sendMultipart(target, disableMessage);
-                    case REGISTER:
-                        var registerMessage = requestTemplateProvider
-                                .appRegistrationRequestMessageTemplate(affectedApp).buildMessage();
-                        return sendMultipart(target, registerMessage);
+                switch (operation){
+                    case RECEIVE:
+                        //build and send artifact request message
+                        var message = requestTemplateProvider.accessTokenRequestMessageTemplate()
+                                .buildMessage();
+                        return sendMultipart(target, message);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");
                 }
@@ -98,5 +68,4 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
                 throw new UnsupportedOperationException("Unsupported Protocol!");
         }
     }
-
 }
