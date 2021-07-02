@@ -157,6 +157,18 @@ public class IdsRequestBuilder<T> {
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
+   public ContractSupplementRequestBuilder<T> subjectContractSupplement(){
+       var builder = new ContractSupplementRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+               .withPayload(protocolType);
+       return this.throwOnRejection ? builder.throwOnRejection() : builder;
+   }
+
+    public ContractOfferRequestBuilder<T> subjectContractOffer(){
+        var builder = new ContractOfferRequestBuilder<>(expectedPayload.orElse(null), protocolType, messageService, requestTemplateProvider, notificationTemplateProvider)
+                .withPayload(protocolType);
+        return this.throwOnRejection ? builder.throwOnRejection() : builder;
+    }
+
     protected MessageContainer<T> sendMultipart(URI target, Message message)
             throws RejectionException,
             UnexpectedPayloadException,
