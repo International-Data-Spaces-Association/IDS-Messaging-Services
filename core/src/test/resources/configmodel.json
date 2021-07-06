@@ -33,6 +33,22 @@
       }
     }
   },
+  "ids:connectorProxy" : [ {
+    "@type" : "ids:Proxy",
+    "@id" : "https://w3id.org/idsa/autogen/proxy/ff7ca777-3284-4940-b8b0-9530bf7cfbef",
+    "ids:proxyAuthentication" : {
+      "@type" : "ids:BasicAuthentication",
+      "@id" : "https://w3id.org/idsa/autogen/basicAuthentication/6f8232a5-e863-495b-86d6-db26e02d86db",
+      "ids:authUsername" : "user",
+      "ids:authPassword" : "pw"
+    },
+    "ids:noProxy" : [ {
+      "@id" : "https://daps.aisec.fraunhofer.de/"
+    } ],
+    "ids:proxyURI" : {
+      "@id" : "http://proxy"
+    }
+  } ],
   "ids:connectorStatus" : {
     "@id" : "idsc:CONNECTOR_OFFLINE"
   },
@@ -40,6 +56,6 @@
     "@id" : "file:///server-truststore.p12"
   },
   "ids:keyStore" : {
-    "@id" : "file:///keystore.p12"
+    "@id" : "file:///ids-keystore.p12"
   }
 }

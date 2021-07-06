@@ -9,6 +9,45 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.2.0.0] UNRELEASED
+
+### Major Change: New Exceptions
+- Added MessageBuilderException: An exception that is thrown if building an IDS-Message with the given information threw a ConstraintViolationException (catches builders RuntimeException).
+- Added SerializeException: An exception that is thrown if serializing a message using the IDS-Serializer threw an IOException. Could indicate missing required message-fields.
+- Added URISyntaxException: If the URL of the target is not a valid URI.
+- Added SendMessageException: If sending the IDS-Request returns an IOException. Recipient not reachable or other further problems.
+- Added DeserializeException: An exception that is thrown if deserializing a message using the IDS-Serializer threw an IOException. Could indicate a non-valid IDS-Message.
+- Added ShaclValidatorException: SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation.
+- Added UnknownResponseException: An exception that is thrown during converting an IDS-Response into a corresponding Object if no possible cast found. Could indicate a new unknown IDS-Message-Type. Error which is caused internally, but is passed on.
+- Added UnexpectedResponseException: An exception that is thrown after converting a Response into the corresponding Object if the received response-type is not expected as a response to the request send.
+- New Wiki-Page for exception documentation.
+
+### Added
+- Patch change: Added Maven plugin to generate Apache 2.0 license-header in files
+
+### Changes
+- Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT vs PRODUCTIVE_DEPLOYMENT
+- Patch Change: Improved error log level messages (no more plain error stack trace)
+
+### Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.1 -> 2.5.2
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.1 -> 2.5.2
+
+### Miscellaneous
+- Patch Change: Added Apache 2.0 License Header to all files
+- Patch Change: Increased Test-Coverage
+
+## Version [4.1.1.3] 2021-07-05
+
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.1.0 (released 2021-07-05)
+- Used Artifacts: java, infomodel-serializer, interaction
+
+## Version [4.1.1.2] 2021-07-02 - Recommended Security Update
+
+### Patch Change: Dependency Maintenance
+- Remove: org.apache.maven.plugins:maven-project-info-reports-plugin
+
 ## Version [4.1.1.1] 2021-06-21
 
 ### Patch Change: Infomodel Maintenance

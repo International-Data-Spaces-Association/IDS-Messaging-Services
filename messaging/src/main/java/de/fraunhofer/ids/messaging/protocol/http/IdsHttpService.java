@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.protocol.http;
 
 import java.io.IOException;
@@ -17,12 +30,13 @@ import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -66,7 +80,12 @@ public class IdsHttpService implements HttpService {
      * @throws ClaimsException if DAT of response is invalid or cannot be parsed
      */
     private Map<String, String> checkDatFromResponse(final Response response)
-            throws MultipartParseException, IOException, ClaimsException {
+            throws
+            MultipartParseException,
+            ClaimsException,
+            ShaclValidatorException,
+            DeserializeException,
+            IOException {
         //if connector is set to test deployment: ignore DAT Tokens
         final var responseString = Objects.requireNonNull(response.body()).string();
         final var multipartResponse = MultipartParser.stringToMultipart(responseString);
@@ -77,50 +96,61 @@ public class IdsHttpService implements HttpService {
                 log.info(messageString);
             }
 
-            if (!ShaclValidator.validateRdf(messageString).conforms()) {
-                throw new IOException("received message headers does not conform to IDS infomodel");
+            try {
+                //If the validation is not successful, then this throws an IOException
+                ShaclValidator.validateRdf(messageString).conforms();
+            } catch (IOException ioException) {
+                //catch IOException and throw ShaclValidatorException instead
+                throw new ShaclValidatorException("Received message header does not conform to IDS-Infomodel! Received message did not pass SHACL-Validation!");
             }
 
             if (log.isInfoEnabled()) {
-                log.info("received response passed Shacl Validation .");
+                log.info("Received response passed SHACL Validation.");
             }
         }
 
         final Map<String, Object> extraAttributes = new ConcurrentHashMap<>();
-        final var message = serializer.deserialize(messageString, Message.class);
-        final var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
-        if (payloadString != null) {
-            try {
-                final var connector = serializer.deserialize(payloadString, Connector.class);
+        try {
+            final var message = serializer.deserialize(messageString, Message.class);
+            final var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
-                if (message.getIssuerConnector().equals(connector.getId())) {
-                    extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
+            if (payloadString != null) {
+                try {
+                    final var connector = serializer.deserialize(payloadString, Connector.class);
+
+                    if (message.getIssuerConnector().equals(connector.getId())) {
+                        extraAttributes.put("securityProfile", connector.getSecurityProfile().getId());
+                    }
+
+                } catch (IOException | RiotException e) {
+                    if (log.isWarnEnabled()) {
+                        log.warn("Could not deserialize Playload " + e.getMessage());
+                        log.warn("Skipping Connector-SecurityProfile Attribute!");
+                    }
                 }
+            }
 
-            } catch (IOException | RiotException e) {
+            final var ignoreDAT = configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
+            var valid = true;
+
+            if (!ignoreDAT && !(message instanceof RejectionMessage)) {
+                valid = dapsValidator.checkDat(message.getSecurityToken(), extraAttributes);
+            }
+
+            if (!valid) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not deserialize Playload " + e.getMessage());
-                    log.warn("Skipping Connector-SecurityProfile Attribute!");
+                    log.warn("DAT of incoming response is not valid!");
                 }
-            }
-        }
 
-        final var ignoreDAT = configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT;
-        var valid = true;
-
-        if (!ignoreDAT && !(message instanceof RejectionMessage)) {
-            valid = dapsValidator.checkDat(message.getSecurityToken(), extraAttributes);
-        }
-
-        if (!valid) {
-            if (log.isWarnEnabled()) {
-                log.warn("DAT of incoming response is not valid!");
+                throw new ClaimsException("DAT of incoming response is not valid!");
             }
 
-            throw new ClaimsException("DAT of incoming response is not valid!");
+            return multipartResponse;
+        } catch (IOException ioException) {
+            //serializer.deserialize messageString thre IOException, mapping to DeserializeException
+            throw new DeserializeException(ioException);
         }
-        return multipartResponse;
     }
 
     /**
@@ -174,7 +204,7 @@ public class IdsHttpService implements HttpService {
         final var request = buildRequest(requestBody, target);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("sending request to %s", target.toString()));
+            log.debug(String.format("sending request to %s", target));
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -196,7 +226,7 @@ public class IdsHttpService implements HttpService {
         final var request = buildWithHeaders(requestBody, target, headers);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("sending request to %s", target.toString()));
+            log.debug(String.format("sending request to %s", target));
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -351,17 +381,24 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Map<String, String> sendAndCheckDat(final Request request)
-            throws IOException, ClaimsException, MultipartParseException {
+            throws
+            ClaimsException,
+            MultipartParseException,
+            SendMessageException,
+            ShaclValidatorException,
+            DeserializeException,
+            IOException {
         Response response;
 
         try {
             response = send(request);
-        } catch (IOException e) {
+        } catch (IOException ioException) {
             if (log.isErrorEnabled()) {
-                log.error("Message could not be sent!");
+                log.error("Message could not be sent! " + ioException.getMessage());
             }
 
-            throw e;
+            //throw SendMessageException instead of IOException
+            throw new SendMessageException(ioException);
         }
 
         return checkDatFromResponse(response);
@@ -372,7 +409,12 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Map<String, String> sendAndCheckDat(final RequestBody body, final URI target)
-            throws IOException, ClaimsException, MultipartParseException {
+            throws
+            IOException,
+            ClaimsException,
+            MultipartParseException,
+            DeserializeException,
+            ShaclValidatorException {
         Response response;
 
         try {
@@ -395,7 +437,12 @@ public class IdsHttpService implements HttpService {
     public Map<String, String> sendWithHeadersAndCheckDat(final RequestBody body,
                                                           final URI target,
                                                           final Map<String, String> headers)
-            throws IOException, ClaimsException, MultipartParseException {
+            throws
+            IOException,
+            ClaimsException,
+            MultipartParseException,
+            DeserializeException,
+            ShaclValidatorException {
         Response response;
 
         try {
@@ -414,12 +461,13 @@ public class IdsHttpService implements HttpService {
     /**
      * Inner class, managing timeout settings for custom HttpClients.
      */
-    @Data
+    @Getter
     @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
     private class TimeoutSettings {
-        private Duration connectTimeout;
-        private Duration readTimeout;
-        private Duration writeTimeout;
-        private Duration callTimeout;
+        Duration connectTimeout;
+        Duration readTimeout;
+        Duration writeTimeout;
+        Duration callTimeout;
     }
 }

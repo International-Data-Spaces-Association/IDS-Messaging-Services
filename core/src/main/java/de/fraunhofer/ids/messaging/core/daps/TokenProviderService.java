@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.core.daps;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +29,7 @@ import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
@@ -32,6 +46,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
     final ClientProvider      clientProvider;
     final TokenManagerService tokenManagerService;
@@ -44,17 +59,6 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
     @Value("#{${daps.key.url.kid}}")
     Map<String, String> urlKidMap;
-
-    /**
-     * @param clientProvider      the {@link ClientProvider} providing HttpClients using the current connector configuration
-     * @param tokenManagerService client to get a DAT Token from a DAPS (eg Orbiter/AISEC)
-     */
-    @Autowired
-    public TokenProviderService(final ClientProvider clientProvider,
-                                final TokenManagerService tokenManagerService) {
-        this.clientProvider = clientProvider;
-        this.tokenManagerService = tokenManagerService;
-    }
 
     /**
      * Return the DAT as a Infomodel {@link DynamicAttributeToken}.
