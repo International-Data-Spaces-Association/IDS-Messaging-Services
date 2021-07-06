@@ -158,21 +158,21 @@ public class KeyStoreManager {
         var pathString = Paths.get(location).toString();
 
         //remove leading /, \ and . from path
-        pathString = pathString.chars().dropWhile(value -> IntStream.of('\\', '/', '.').anyMatch(v -> v == value))
+        final var relativepathString = pathString.chars().dropWhile(value -> IntStream.of('\\', '/', '.').anyMatch(v -> v == value))
                                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                                .toString();
 
         if (log.isInfoEnabled()) {
-            log.info("Path: " + pathString);
+            log.info("Relative Path: " + relativepathString);
         }
 
-        final var keyStoreOnClassPath = new ClassPathResource(pathString).exists();
+        final var keyStoreOnClassPath = new ClassPathResource(relativepathString).exists();
 
         if (keyStoreOnClassPath) {
             if (log.isInfoEnabled()) {
                 log.info("Loading KeyStore from ClassPath...");
             }
-            final var is = new ClassPathResource(pathString).getInputStream();
+            final var is = new ClassPathResource(relativepathString).getInputStream();
             try {
                 store.load(is, pw);
                 is.close();
@@ -188,7 +188,7 @@ public class KeyStoreManager {
             }
             try {
                 if (log.isInfoEnabled()) {
-                    log.info(pathString);
+                    log.info("System Path: " + pathString);
                 }
                 final var fis = new FileInputStream(pathString);
                 store.load(fis, pw);
