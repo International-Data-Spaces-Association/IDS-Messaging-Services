@@ -22,42 +22,85 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * RequestBuilder for messages with subject 'participant certificate'.
+ *
+ * @param <T> Type of expected Payload.
+ */
 public class ParticipantCertificateRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private Crud operation;
     private URI affectedParticipant;
     private TypedLiteral revocationReason;
 
-    ParticipantCertificateRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    ParticipantCertificateRequestBuilder(
+            Class<T> expected,
+            ProtocolType protocolType,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantCertificateRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantCertificateRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
+    /**
+     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ParticipantCertificateGrantedMessage}.
+     *
+     * @param affectedParticipant affected participant id for message header
+     * @return this builder instance
+     */
     public ParticipantCertificateRequestBuilder<T> operationUpdate(URI affectedParticipant){
         this.operation = Crud.UPDATE;
         this.affectedParticipant = affectedParticipant;
         return this;
     }
 
+    /**
+     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ParticipantCertificateRevokedMessage}.
+     *
+     * @param affectedParticipant affected connector id for message header
+     * @param revocationReason reason why certificate was revoked
+     * @return this builder instance
+     */
     public ParticipantCertificateRequestBuilder<T> operationDelete(URI affectedParticipant, TypedLiteral revocationReason){
         this.operation = Crud.DELETE;
         this.affectedParticipant = affectedParticipant;
         this.revocationReason = revocationReason;
         return this;
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+    public MessageContainer<T> execute(URI target)throws DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            ClaimsException,
+            UnknownResponseException,
+            SendMessageException,
+            MultipartParseException,
+            IOException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");

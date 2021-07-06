@@ -22,42 +22,86 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * RequestBuilder for messages with subject 'connector certificate'.
+ *
+ * @param <T> Type of expected Payload.
+ */
 public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private Crud operation;
     private URI affectedConnector;
     private TypedLiteral revocationReason;
 
-    ConnectorCertificateRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    ConnectorCertificateRequestBuilder(
+            Class<T> expected,
+            ProtocolType protocolType,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ConnectorCertificateRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ConnectorCertificateRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
+    /**
+     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ConnectorCertificateGrantedMessage}.
+     *
+     * @param affectedConnector affected connector id for message header
+     * @return this builder instance
+     */
     public ConnectorCertificateRequestBuilder<T> operationUpdate(URI affectedConnector){
         this.operation = Crud.UPDATE;
         this.affectedConnector = affectedConnector;
         return this;
     }
 
+    /**
+     * Set the operation to DELETE: describes a {@link de.fraunhofer.iais.eis.ConnectorCertificateRevokedMessage}.
+     *
+     * @param affectedConnector affected connector id for message header
+     * @param revocationReason reason why certificate was revoked
+     * @return this builder instance
+     */
     public ConnectorCertificateRequestBuilder<T> operationDelete(URI affectedConnector, TypedLiteral revocationReason){
         this.operation = Crud.DELETE;
         this.affectedConnector = affectedConnector;
         this.revocationReason = revocationReason;
         return this;
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+    public MessageContainer<T> execute(URI target)
+            throws DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            ClaimsException,
+            UnknownResponseException,
+            SendMessageException,
+            MultipartParseException,
+            IOException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");

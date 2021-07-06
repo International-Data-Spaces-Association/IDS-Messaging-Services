@@ -24,29 +24,53 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * RequestBuilder for messages with subject 'query'.
+ *
+ * @param <T> Type of expected Payload.
+ */
 public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private Crud operation;
     private QueryLanguage queryLanguage;
     private QueryScope queryScope;
     private QueryTarget queryTarget;
 
-    QueryRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    QueryRequestBuilder(
+            Class<T> expected,
+            ProtocolType protocolType,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public QueryRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public QueryRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
+    /**
+     * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.QueryMessage}.
+     *
+     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY). See {@link QueryLanguage}
+     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors, INACTIVE connectors). See {@link QueryScope}
+     * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
+     * @return this builder instance
+     */
     public QueryRequestBuilder<T> operationSend(QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget){
         this.operation = Crud.RECEIVE;
         this.queryLanguage = queryLanguage;
@@ -55,8 +79,22 @@ public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements Exec
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+    public MessageContainer<T> execute(URI target)
+            throws DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            ClaimsException,
+            UnknownResponseException,
+            SendMessageException,
+            MultipartParseException,
+            IOException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         //send ArtifactRequestMessage with settings:
         switch (protocolType) {
             case IDSCP:

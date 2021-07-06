@@ -21,40 +21,81 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * RequestBuilder for messages with subject 'command'.
+ *
+ * @param <T> Type of expected Payload.
+ */
 public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
     private URI operationReference;
-    private Crud operation;
 
-    CommandRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    CommandRequestBuilder(
+            Class<T> expected,
+            ProtocolType protocolType,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CommandRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CommandRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
+    /**
+     * Set the operation to UPDATE: describes an {@link de.fraunhofer.iais.eis.UploadMessage}.
+     *
+     * @return this builder instance
+     */
     public CommandRequestBuilder<T> operationUpload(){
         this.operation = Crud.UPDATE;
         return this;
     }
 
+    /**
+     * Set the operation to COMMAND: describes an {@link de.fraunhofer.iais.eis.InvokeOperationMessage}.
+     *
+     * @param operationReference operation reference for message header
+     * @return this builder instance
+     */
     public CommandRequestBuilder<T> operationCommand(final URI operationReference){
         this.operationReference = operationReference;
         this.operation = Crud.COMMAND;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+    public MessageContainer<T> execute(URI target)
+            throws DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            ClaimsException,
+            UnknownResponseException,
+            SendMessageException,
+            MultipartParseException,
+            IOException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
