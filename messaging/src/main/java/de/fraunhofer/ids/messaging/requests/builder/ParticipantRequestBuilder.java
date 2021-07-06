@@ -21,47 +21,94 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * RequestBuilder for messages with subject 'participant'.
+ *
+ * @param <T> Type of expected Payload.
+ */
 public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
     private URI affectedParticipant;
-    private Crud operation;
 
-    ParticipantRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    ParticipantRequestBuilder(
+            Class<T> expected,
+            ProtocolType protocolType,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
+    /**
+     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ParticipantUpdateMessage}.
+     *
+     * @param affectedParticipant affected connector id for message header
+     * @return this builder instance
+     */
     public ParticipantRequestBuilder<T> operationUpdate(URI affectedParticipant){
         this.operation = Crud.UPDATE;
         this.affectedParticipant = affectedParticipant;
         return this;
     }
 
+    /**
+     * Set the operation to DELETE: describes a {@link de.fraunhofer.iais.eis.ParticipantUnavailableMessage}.
+     *
+     * @param affectedParticipant affected connector id for message header
+     * @return this builder instance
+     */
     public ParticipantRequestBuilder<T> operationDelete(URI affectedParticipant){
         this.operation = Crud.DELETE;
         this.affectedParticipant = affectedParticipant;
         return this;
     }
 
+    /**
+     * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.ParticipantRequestMessage}.
+     *
+     * @param affectedParticipant affected connector id for message header
+     * @return this builder instance
+     */
     public ParticipantRequestBuilder<T> operationGet(URI affectedParticipant){
         this.operation = Crud.RECEIVE;
         this.affectedParticipant = affectedParticipant;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+    public MessageContainer<T> execute(URI target)throws DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            ClaimsException,
+            UnknownResponseException,
+            SendMessageException,
+            MultipartParseException,
+            IOException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");

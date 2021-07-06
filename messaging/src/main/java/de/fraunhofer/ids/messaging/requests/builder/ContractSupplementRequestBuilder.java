@@ -21,33 +21,67 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * RequestBuilder for messages with subject 'contract supplement'.
+ *
+ * @param <T> Type of expected Payload.
+ */
 public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private Crud operation;
-
-    ContractSupplementRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    ContractSupplementRequestBuilder(
+            Class<T> expected,
+            ProtocolType protocolType,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractSupplementRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractSupplementRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
+    /**
+     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ContractSupplementMessage}.
+     *
+     * @return this builder instance
+     */
     private ContractSupplementRequestBuilder<T> operationUpdate(){
         this.operation = Crud.UPDATE;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+    public MessageContainer<T> execute(URI target)
+            throws DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            ClaimsException,
+            UnknownResponseException,
+            SendMessageException,
+            MultipartParseException,
+            IOException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");

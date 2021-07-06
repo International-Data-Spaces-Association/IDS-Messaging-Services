@@ -21,53 +21,107 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * RequestBuilder for messages with subject 'app'.
+ *
+ * @param <T> Type of expected Payload.
+ */
 public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>{
 
     private URI affectedApp;
-    private Crud operation;
 
-    AppRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    AppRequestBuilder(
+            Class<T> expected,
+            ProtocolType protocolType,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AppRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AppRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
 
+    /**
+     * Set the operation to UPDATE: describes an {@link de.fraunhofer.iais.eis.AppAvailableMessage}.
+     *
+     * @param affectedApp affected app id for message header
+     * @return this builder instance
+     */
     public AppRequestBuilder<T> operationCreate(URI affectedApp) {
         operation = Crud.UPDATE;
         this.affectedApp = affectedApp;
         return this;
     }
 
+    /**
+     * Set the operation to DELETE: describes an {@link de.fraunhofer.iais.eis.AppDeleteMessage}.
+     *
+     * @param affectedApp affected app id for message header
+     * @return this builder instance
+     */
     public AppRequestBuilder<T> operationDelete(URI affectedApp) {
         operation = Crud.DELETE;
         this.affectedApp = affectedApp;
         return this;
     }
 
+    /**
+     * Set the operation to DISABLE: describes an {@link de.fraunhofer.iais.eis.AppUnavailableMessage}.
+     *
+     * @param affectedApp affected app id for message header
+     * @return this builder instance
+     */
     public AppRequestBuilder<T> operationUnavailable(URI affectedApp) {
         operation = Crud.DISABLE;
         this.affectedApp = affectedApp;
         return this;
     }
 
+    /**
+     * Set the operation to REGISTER: describes an {@link de.fraunhofer.iais.eis.AppRegistrationRequestMessage}.
+     *
+     * @param affectedApp affected app id for message header
+     * @return this builder instance
+     */
     public AppRequestBuilder<T> operationRegistration(URI affectedApp) {
         operation = Crud.REGISTER;
         this.affectedApp = affectedApp;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+    public MessageContainer<T> execute(URI target)
+            throws DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            ClaimsException,
+            UnknownResponseException,
+            SendMessageException,
+            MultipartParseException,
+            IOException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");

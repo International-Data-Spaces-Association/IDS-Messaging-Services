@@ -21,33 +21,67 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * RequestBuilder for messages with subject 'access token'.
+ *
+ * @param <T> Type of expected Payload.
+ */
 public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
 
-    private Crud operation;
-
-    AccessTokenRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
+    AccessTokenRequestBuilder(
+            Class<T> expected,
+            ProtocolType protocolType,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
         super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AccessTokenRequestBuilder<T> withPayload(Object payload){
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AccessTokenRequestBuilder<T> throwOnRejection(){
         this.throwOnRejection = true;
         return this;
     }
 
+    /**
+     * Set the operation to RECEIVE: describes an {@link de.fraunhofer.iais.eis.AccessTokenRequestMessage}.
+     *
+     * @return this builder instance
+     */
     public AccessTokenRequestBuilder<T> operationGet(){
         this.operation = Crud.RECEIVE;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<T> execute(URI target) throws DapsTokenManagerException, ShaclValidatorException, SerializeException, ClaimsException, UnknownResponseException, SendMessageException, MultipartParseException, IOException, DeserializeException, RejectionException, UnexpectedPayloadException {
+    public MessageContainer<T> execute(URI target)
+            throws DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            ClaimsException,
+            UnknownResponseException,
+            SendMessageException,
+            MultipartParseException,
+            IOException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         //send ArtifactRequestMessage with settings:
         switch (protocolType) {
             case IDSCP:
