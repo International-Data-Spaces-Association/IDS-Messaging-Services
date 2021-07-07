@@ -3,6 +3,7 @@ package de.fraunhofer.ids.messaging.core.config.ssl.keystore;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -158,21 +159,21 @@ public class KeyStoreManager {
         var pathString = Paths.get(location).toString();
 
         //remove leading /, \ and . from path
-        pathString = pathString.chars().dropWhile(value -> IntStream.of('\\', '/', '.').anyMatch(v -> v == value))
+        final var relativepathString = pathString.chars().dropWhile(value -> IntStream.of('\\', '/', '.').anyMatch(v -> v == value))
                                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                                .toString();
 
         if (log.isInfoEnabled()) {
-            log.info("Path: " + pathString);
+            log.info("Relative Path: " + relativepathString);
         }
 
-        final var keyStoreOnClassPath = new ClassPathResource(pathString).exists();
+        final var keyStoreOnClassPath = new ClassPathResource(relativepathString).exists();
 
         if (keyStoreOnClassPath) {
             if (log.isInfoEnabled()) {
                 log.info("Loading KeyStore from ClassPath...");
             }
-            final var is = new ClassPathResource(pathString).getInputStream();
+            final var is = new ClassPathResource(relativepathString).getInputStream();
             try {
                 store.load(is, pw);
                 is.close();
@@ -188,14 +189,27 @@ public class KeyStoreManager {
             }
             try {
                 if (log.isInfoEnabled()) {
-                    log.info(pathString);
+                    log.info("System Path: " + pathString);
                 }
-                final var fis = new FileInputStream(pathString);
+
+                //try absolute path
+                final var fileOnSystemScope = new File(pathString).exists();
+
+                final FileInputStream fis;
+                if (fileOnSystemScope) {
+                    //if file at absolute path exists
+                    fis = new FileInputStream(pathString);
+                } else {
+                    //last try, relative path in system scope
+                    fis = new FileInputStream(relativepathString);
+                }
+
                 store.load(fis, pw);
                 fis.close();
+
             } catch (IOException e) {
-                if (log.isWarnEnabled()) {
-                    log.warn("Could not find keystore at system scope, aborting!");
+                if (log.isErrorEnabled()) {
+                    log.error("Could not find keystore at system scope, aborting!");
                 }
                 throw e;
             }
