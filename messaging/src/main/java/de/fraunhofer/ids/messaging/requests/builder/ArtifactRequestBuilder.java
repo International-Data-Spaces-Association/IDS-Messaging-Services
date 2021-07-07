@@ -106,18 +106,27 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArtifactRequestBuilder<T> useIDSCP() {
         this.protocolType = ProtocolType.IDSCP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArtifactRequestBuilder<T> useLDP() {
         this.protocolType = ProtocolType.LDP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArtifactRequestBuilder<T> useMultipart() {
         this.protocolType = ProtocolType.MULTIPART;

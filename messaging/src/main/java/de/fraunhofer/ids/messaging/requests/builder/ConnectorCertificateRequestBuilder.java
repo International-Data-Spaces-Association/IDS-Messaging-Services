@@ -124,18 +124,27 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ConnectorCertificateRequestBuilder<T> useIDSCP() {
         this.protocolType = ProtocolType.IDSCP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ConnectorCertificateRequestBuilder<T> useLDP() {
         this.protocolType = ProtocolType.LDP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ConnectorCertificateRequestBuilder<T> useMultipart() {
         this.protocolType = ProtocolType.MULTIPART;

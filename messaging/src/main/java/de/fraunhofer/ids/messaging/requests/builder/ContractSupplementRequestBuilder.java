@@ -100,6 +100,9 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractSupplementRequestBuilder<T> useMultipart() {
         this.protocolType = ProtocolType.MULTIPART;

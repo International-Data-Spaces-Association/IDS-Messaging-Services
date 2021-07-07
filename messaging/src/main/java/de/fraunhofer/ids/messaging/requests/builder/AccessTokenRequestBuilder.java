@@ -102,18 +102,27 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AccessTokenRequestBuilder<T> useIDSCP() {
         this.protocolType = ProtocolType.IDSCP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AccessTokenRequestBuilder<T> useLDP() {
         this.protocolType = ProtocolType.LDP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AccessTokenRequestBuilder<T> useMultipart() {
         this.protocolType = ProtocolType.MULTIPART;

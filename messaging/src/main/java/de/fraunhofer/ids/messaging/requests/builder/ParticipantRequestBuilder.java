@@ -135,18 +135,27 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantRequestBuilder<T> useIDSCP() {
         this.protocolType = ProtocolType.IDSCP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantRequestBuilder<T> useLDP() {
         this.protocolType = ProtocolType.LDP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantRequestBuilder<T> useMultipart() {
         this.protocolType = ProtocolType.MULTIPART;

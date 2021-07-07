@@ -100,18 +100,27 @@ public class ContractRequestBuilder<T> extends IdsRequestBuilder<T> implements E
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractRequestBuilder<T> useIDSCP() {
         this.protocolType = ProtocolType.IDSCP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractRequestBuilder<T> useLDP() {
         this.protocolType = ProtocolType.LDP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractRequestBuilder<T> useMultipart() {
         this.protocolType = ProtocolType.MULTIPART;

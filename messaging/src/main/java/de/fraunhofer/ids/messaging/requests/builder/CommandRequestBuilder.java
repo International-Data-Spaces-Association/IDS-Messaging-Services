@@ -116,18 +116,27 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CommandRequestBuilder<T> useIDSCP() {
         this.protocolType = ProtocolType.IDSCP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CommandRequestBuilder<T> useLDP() {
         this.protocolType = ProtocolType.LDP;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CommandRequestBuilder<T> useMultipart() {
         this.protocolType = ProtocolType.MULTIPART;
