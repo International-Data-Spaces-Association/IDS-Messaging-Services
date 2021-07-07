@@ -30,6 +30,8 @@ import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.exceptions.NoTemplateProvidedException;
+import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
+import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -58,7 +60,7 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException;
+            DeserializeException, RejectionException, UnexpectedPayloadException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -79,7 +81,7 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException;
+            DeserializeException, RejectionException, UnexpectedPayloadException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
@@ -99,7 +101,7 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException;
+            DeserializeException, RejectionException, UnexpectedPayloadException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
@@ -120,7 +122,7 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException;
+            DeserializeException, RejectionException, UnexpectedPayloadException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage} to the broker.
@@ -143,7 +145,7 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException;
+            DeserializeException, RejectionException, UnexpectedPayloadException;
 
     /**
      * Do a FullText Query on the Broker with default limit and offset.
@@ -172,7 +174,7 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException;
+            DeserializeException, RejectionException, UnexpectedPayloadException;
 
     /**
      * Do a FullText Query on the Broker with custom limit and offset.
@@ -203,5 +205,5 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException;
+            DeserializeException, RejectionException, UnexpectedPayloadException;
 }

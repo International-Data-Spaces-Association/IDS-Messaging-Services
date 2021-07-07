@@ -11,6 +11,8 @@ import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +29,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.net.URI;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
@@ -106,7 +107,7 @@ class IdsRequestBuilderServiceTest {
 
         @Bean
         public IdsRequestBuilderService getBrokerService() {
-            return new IdsRequestBuilderService(messageService);
+            return new IdsRequestBuilderService(messageService, getTemplateProvider(), null);
         }
 
         @Bean
@@ -162,21 +163,6 @@ class IdsRequestBuilderServiceTest {
                 ._correlationMessage_(
                         URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
                 .build();
-    }
-
-    @Test
-    void testUpdateSelfDescriptionAtBroker() throws Exception {
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-                .thenReturn(map);
-
-        final var result = this.requestBuilderService.newRequest()
-                                                        .useTemplate(templateProvider.descriptionRequestMessageTemplate(null))
-                                                        .throwOnRejection()
-                                                        .execute(URI.create("/"));
-        assertNotNull(result.getHeaderContainer().getIdsSecurityToken(), "Method should return a" +
-                " message");
-        assertEquals(MessageContainer.class, result.getClass(), "Method should return MessageContainer");
     }
 
 }
