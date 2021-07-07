@@ -3,6 +3,7 @@ package de.fraunhofer.ids.messaging.core.config.ssl.keystore;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -190,12 +191,25 @@ public class KeyStoreManager {
                 if (log.isInfoEnabled()) {
                     log.info("System Path: " + pathString);
                 }
-                final var fis = new FileInputStream(pathString);
+
+                //try absolute path
+                final var fileOnSystemScope = new File(pathString).exists();
+
+                final FileInputStream fis;
+                if (fileOnSystemScope) {
+                    //if file at absolute path exists
+                    fis = new FileInputStream(pathString);
+                } else {
+                    //last try, relative path in system scope
+                    fis = new FileInputStream(relativepathString);
+                }
+
                 store.load(fis, pw);
                 fis.close();
+
             } catch (IOException e) {
-                if (log.isWarnEnabled()) {
-                    log.warn("Could not find keystore at system scope, aborting!");
+                if (log.isErrorEnabled()) {
+                    log.error("Could not find keystore at system scope, aborting!");
                 }
                 throw e;
             }
