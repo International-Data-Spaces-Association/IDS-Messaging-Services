@@ -27,19 +27,18 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsAllProtocols<T, ConnectorCertificateRequestBuilder<T>> {
 
     private URI affectedConnector;
     private TypedLiteral revocationReason;
 
     ConnectorCertificateRequestBuilder(
             Class<T> expected,
-            ProtocolType protocolType,
             MessageService messageService,
             RequestTemplateProvider requestTemplateProvider,
             NotificationTemplateProvider notificationTemplateProvider
     ) {
-        super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
+        super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     /**
@@ -123,5 +122,23 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> 
             default:
                 throw new UnsupportedOperationException("Unsupported Protocol!");
         }
+    }
+
+    @Override
+    public ConnectorCertificateRequestBuilder<T> useIDSCP() {
+        this.protocolType = ProtocolType.IDSCP;
+        return this;
+    }
+
+    @Override
+    public ConnectorCertificateRequestBuilder<T> useLDP() {
+        this.protocolType = ProtocolType.LDP;
+        return this;
+    }
+
+    @Override
+    public ConnectorCertificateRequestBuilder<T> useMultipart() {
+        this.protocolType = ProtocolType.MULTIPART;
+        return this;
     }
 }

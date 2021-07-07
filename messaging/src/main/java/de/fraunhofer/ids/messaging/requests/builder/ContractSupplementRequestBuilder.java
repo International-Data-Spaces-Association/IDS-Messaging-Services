@@ -26,16 +26,15 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractSupplementRequestBuilder<T>> {
 
     ContractSupplementRequestBuilder(
             Class<T> expected,
-            ProtocolType protocolType,
             MessageService messageService,
             RequestTemplateProvider requestTemplateProvider,
             NotificationTemplateProvider notificationTemplateProvider
     ) {
-        super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
+        super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     /**
@@ -99,5 +98,11 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
             default:
                 throw new UnsupportedOperationException("Unsupported Protocol!");
         }
+    }
+
+    @Override
+    public ContractSupplementRequestBuilder<T> useMultipart() {
+        this.protocolType = ProtocolType.MULTIPART;
+        return this;
     }
 }

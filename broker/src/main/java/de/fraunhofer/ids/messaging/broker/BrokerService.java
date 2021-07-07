@@ -104,9 +104,10 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest(ProtocolType.MULTIPART)
+        return requestBuilderService.newRequest()
                 .withPayload(resource)
                 .subjectResource()
+                .useMultipart()
                 .operationDelete(resource.getId())
                 .execute(brokerURI);
     }
@@ -127,9 +128,10 @@ public class BrokerService extends InfrastructureService
             DeserializeException, RejectionException, UnexpectedPayloadException {
 
         logBuildingHeader();
-        return requestBuilderService.newRequest(ProtocolType.MULTIPART)
+        return requestBuilderService.newRequest()
                 .withPayload(resource)
                 .subjectResource()
+                .useMultipart()
                 .operationUpdate(resource.getId())
                 .execute(brokerURI);
     }
@@ -149,9 +151,10 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest(ProtocolType.MULTIPART)
+        return requestBuilderService.newRequest()
                 .withPayload(container.getConnector())
                 .subjectConnector()
+                .useMultipart()
                 .operationDelete(container.getConnector().getId())
                 .execute(brokerURI);
     }
@@ -171,9 +174,10 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest(ProtocolType.MULTIPART)
+        return requestBuilderService.newRequest()
                 .withPayload(container.getConnector())
                 .subjectConnector()
+                .useMultipart()
                 .operationUpdate(container.getConnector().getId())
                 .execute(brokerURI);
     }
@@ -198,9 +202,10 @@ public class BrokerService extends InfrastructureService
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
         return requestBuilderService
-                .newRequest(ProtocolType.MULTIPART)
+                .newRequest()
                 .withPayload(query)
                 .subjectQuery()
+                .useMultipart()
                 .operationSend(queryLanguage, queryScope, queryTarget)
                 .execute(brokerURI);
     }
@@ -254,9 +259,10 @@ public class BrokerService extends InfrastructureService
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
         return requestBuilderService
-                .newRequest(ProtocolType.MULTIPART)
+                .newRequest()
                 .withPayload(payload)
                 .subjectQuery()
+                .useMultipart()
                 .operationSend(QueryLanguage.SPARQL, queryScope, queryTarget)
                 .execute(brokerURI);
     }

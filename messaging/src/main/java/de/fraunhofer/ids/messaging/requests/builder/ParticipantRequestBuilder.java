@@ -26,18 +26,17 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsAllProtocols<T, ParticipantRequestBuilder<T>> {
 
     private URI affectedParticipant;
 
     ParticipantRequestBuilder(
             Class<T> expected,
-            ProtocolType protocolType,
             MessageService messageService,
             RequestTemplateProvider requestTemplateProvider,
             NotificationTemplateProvider notificationTemplateProvider
     ) {
-        super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
+        super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     /**
@@ -134,5 +133,23 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
             default:
                 throw new UnsupportedOperationException("Unsupported Protocol!");
         }
+    }
+
+    @Override
+    public ParticipantRequestBuilder<T> useIDSCP() {
+        this.protocolType = ProtocolType.IDSCP;
+        return this;
+    }
+
+    @Override
+    public ParticipantRequestBuilder<T> useLDP() {
+        this.protocolType = ProtocolType.LDP;
+        return this;
+    }
+
+    @Override
+    public ParticipantRequestBuilder<T> useMultipart() {
+        this.protocolType = ProtocolType.MULTIPART;
+        return this;
     }
 }
