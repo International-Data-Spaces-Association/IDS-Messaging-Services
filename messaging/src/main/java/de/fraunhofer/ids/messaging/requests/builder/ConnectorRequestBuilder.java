@@ -26,7 +26,7 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsAllProtocols<T, ConnectorRequestBuilder<T>> {
+public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ConnectorRequestBuilder<T>> {
 
     private URI affectedConnector;
 
@@ -120,23 +120,23 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ConnectorRequestBuilder<T> useIDSCP() {
-        this.protocolType = ProtocolType.IDSCP;
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ConnectorRequestBuilder<T> useLDP() {
-        this.protocolType = ProtocolType.LDP;
-        return this;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ConnectorRequestBuilder<T> useIDSCP() {
+//        this.protocolType = ProtocolType.IDSCP;
+//        return this;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ConnectorRequestBuilder<T> useLDP() {
+//        this.protocolType = ProtocolType.LDP;
+//        return this;
+//    }
 
     /**
      * {@inheritDoc}

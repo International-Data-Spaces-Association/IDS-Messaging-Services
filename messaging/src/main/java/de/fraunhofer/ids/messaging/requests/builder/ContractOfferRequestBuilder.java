@@ -26,7 +26,7 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsAllProtocols<T, ContractOfferRequestBuilder<T>> {
+public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractOfferRequestBuilder<T>> {
 
     ContractOfferRequestBuilder(
             Class<T> expected,
@@ -100,23 +100,23 @@ public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T> impleme
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ContractOfferRequestBuilder<T> useIDSCP() {
-        this.protocolType = ProtocolType.IDSCP;
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ContractOfferRequestBuilder<T> useLDP() {
-        this.protocolType = ProtocolType.LDP;
-        return this;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ContractOfferRequestBuilder<T> useIDSCP() {
+//        this.protocolType = ProtocolType.IDSCP;
+//        return this;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ContractOfferRequestBuilder<T> useLDP() {
+//        this.protocolType = ProtocolType.LDP;
+//        return this;
+//    }
 
     /**
      * {@inheritDoc}

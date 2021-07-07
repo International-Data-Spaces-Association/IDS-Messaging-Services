@@ -29,7 +29,7 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsAllProtocols<T, QueryRequestBuilder<T>> {
+public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, QueryRequestBuilder<T>> {
 
     private QueryLanguage queryLanguage;
     private QueryScope queryScope;
@@ -116,23 +116,23 @@ public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements Exec
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public QueryRequestBuilder<T> useIDSCP() {
-        this.protocolType = ProtocolType.IDSCP;
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public QueryRequestBuilder<T> useLDP() {
-        this.protocolType = ProtocolType.LDP;
-        return this;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public QueryRequestBuilder<T> useIDSCP() {
+//        this.protocolType = ProtocolType.IDSCP;
+//        return this;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public QueryRequestBuilder<T> useLDP() {
+//        this.protocolType = ProtocolType.LDP;
+//        return this;
+//    }
 
     /**
      * {@inheritDoc}

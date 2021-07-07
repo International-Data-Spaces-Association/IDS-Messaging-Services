@@ -26,7 +26,7 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsAllProtocols<T, DescriptionRequestBuilder<T>> {
+public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, DescriptionRequestBuilder<T>> {
 
     private URI requestedElement;
 
@@ -105,23 +105,23 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DescriptionRequestBuilder<T> useIDSCP() {
-        this.protocolType = ProtocolType.IDSCP;
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DescriptionRequestBuilder<T> useLDP() {
-        this.protocolType = ProtocolType.LDP;
-        return this;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public DescriptionRequestBuilder<T> useIDSCP() {
+//        this.protocolType = ProtocolType.IDSCP;
+//        return this;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public DescriptionRequestBuilder<T> useLDP() {
+//        this.protocolType = ProtocolType.LDP;
+//        return this;
+//    }
 
     /**
      * {@inheritDoc}
