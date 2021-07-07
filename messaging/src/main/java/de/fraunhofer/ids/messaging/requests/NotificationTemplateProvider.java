@@ -2,6 +2,7 @@ package de.fraunhofer.ids.messaging.requests;
 
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.util.TypedLiteral;
+import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
@@ -207,13 +208,15 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<LogMessage> logMessageTemplate(){
+    public MessageTemplate<LogMessage> logMessageTemplate(final URI clearingHouseUrl){
         return () -> new LogMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
+                ._recipientConnector_(
+                        Util.asList(clearingHouseUrl))
                 .build();
     }
 }

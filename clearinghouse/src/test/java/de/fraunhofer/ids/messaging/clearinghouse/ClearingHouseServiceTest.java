@@ -17,20 +17,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.fraunhofer.iais.eis.BaseConnectorBuilder;
-import de.fraunhofer.iais.eis.ConfigurationModel;
-import de.fraunhofer.iais.eis.Connector;
-import de.fraunhofer.iais.eis.ConnectorDeployMode;
-import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
-import de.fraunhofer.iais.eis.DynamicAttributeToken;
-import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
-import de.fraunhofer.iais.eis.MessageProcessedNotificationMessageBuilder;
-import de.fraunhofer.iais.eis.QueryLanguage;
-import de.fraunhofer.iais.eis.QueryScope;
-import de.fraunhofer.iais.eis.QueryTarget;
-import de.fraunhofer.iais.eis.ResultMessageBuilder;
-import de.fraunhofer.iais.eis.SecurityProfile;
-import de.fraunhofer.iais.eis.TokenFormat;
+import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
@@ -43,6 +30,9 @@ import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.requests.MessageTemplate;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.MultipartBody;
@@ -52,6 +42,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -93,6 +84,12 @@ class ClearingHouseServiceTest {
     @MockBean
     private MultipartResponseConverter multipartResponseConverter;
 
+    @MockBean
+    private NotificationTemplateProvider notificationTemplateProvider;
+
+    @MockBean
+    private RequestTemplateProvider requestTemplateProvider;
+
     @Autowired
     private IDSClearingHouseService idsClearingHouseService;
 
@@ -123,7 +120,25 @@ class ClearingHouseServiceTest {
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsTokenProvider.getDAT()).thenReturn(fakeToken);
-
+        MessageTemplate logMsg = () -> new LogMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._modelVersion_(configurationContainer.getConnector().getOutboundModelVersion())
+                ._issuerConnector_(configurationContainer.getConnector().getId())
+                ._senderAgent_(configurationContainer.getConnector().getId())
+                ._securityToken_(dapsTokenProvider.getDAT())
+                .build();
+        MessageTemplate queryMsg = () -> new QueryMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._modelVersion_(configurationContainer.getConnector().getOutboundModelVersion())
+                ._issuerConnector_(configurationContainer.getConnector().getId())
+                ._senderAgent_(configurationContainer.getConnector().getId())
+                ._securityToken_(dapsTokenProvider.getDAT())
+                ._queryLanguage_(QueryLanguage.SPARQL)
+                ._queryScope_(QueryScope.ALL)
+                ._recipientScope_(QueryTarget.CLEARING_HOUSE)
+                .build();
+        Mockito.when(notificationTemplateProvider.logMessageTemplate(Mockito.any())).thenReturn(logMsg);
+        Mockito.when(requestTemplateProvider.queryMessageTemplate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(queryMsg);
     }
 
     @Test

@@ -41,6 +41,8 @@ import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -62,6 +64,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
 
     IdsHttpService idsHttpService;
+    NotificationTemplateProvider notificationTemplateProvider;
+    RequestTemplateProvider requestTemplateProvider;
 
     @NonFinal
     @Value("${clearinghouse.url}")
@@ -78,9 +82,13 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     public ClearingHouseService(final ConfigContainer container,
                                 final DapsTokenProvider tokenProvider,
                                 final MessageService messageService,
-                                final IdsHttpService idsHttpService) {
+                                final IdsHttpService idsHttpService,
+                                final NotificationTemplateProvider notificationTemplateProvider,
+                                final RequestTemplateProvider requestTemplateProvider) {
         super(container, tokenProvider, messageService);
         this.idsHttpService = idsHttpService;
+        this.notificationTemplateProvider = notificationTemplateProvider;
+        this.requestTemplateProvider = requestTemplateProvider;
     }
 
     /**
@@ -121,12 +129,11 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             DeserializeException,
             ShaclValidatorException,
             SerializeException,
-            MessageBuilderException,
             UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
-                MessageBuilder.buildLogMessage(container, tokenProvider, clearingHouseUrl),
+                notificationTemplateProvider.logMessageTemplate(new URI(clearingHouseUrl)).buildMessage(),
                 serializer.serialize(messageToLog),
                 MediaType.parse("application/json"));
 
@@ -157,14 +164,11 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             DeserializeException,
             ShaclValidatorException,
             SerializeException,
-            MessageBuilderException,
             UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
-                MessageBuilder.buildQueryMessage(
-                        queryLanguage, queryScope, queryTarget, container,
-                        tokenProvider),
+                requestTemplateProvider.queryMessageTemplate(queryLanguage, queryScope, queryTarget).buildMessage(),
                 query,
                 MediaType.parse("text/plain")
         );
