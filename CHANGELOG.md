@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.1.1.4] UNRELEASED
+## Version [4.1.1.4] 2021-07-07
 
 ### Changes
 - Patch change: KeyStoreManager: look up absolute path at system scope
