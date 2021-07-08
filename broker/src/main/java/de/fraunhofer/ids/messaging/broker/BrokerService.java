@@ -5,15 +5,25 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.DynamicAttributeToken;
+import de.fraunhofer.iais.eis.QueryLanguage;
+import de.fraunhofer.iais.eis.QueryScope;
+import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.iais.eis.Resource;
+import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.daps.*;
-import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
+import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
+import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +41,8 @@ import org.springframework.stereotype.Component;
 public class BrokerService extends InfrastructureService
         implements IDSBrokerService {
 
+    static int DEFAULT_LIMIT = 50;
+    static int DEFAULT_OFFSET = 0;
     /**
      * BrokerService constructor.
      * @param container the ConfigContainer
@@ -177,6 +189,63 @@ public class BrokerService extends InfrastructureService
                 queryScope,
                 queryTarget);
         final var messageAndPayload = new GenericMessageAndPayload(header, null);
+        final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
+
+        return expectResultMAP(response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResultMAP fullTextSearchBroker(final URI brokerURI,
+                                          final String searchTerm,
+                                          final QueryScope queryScope,
+                                          final QueryTarget queryTarget)
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException,
+            IOException,
+            MultipartParseException,
+            ClaimsException {
+        return fullTextSearchBroker(brokerURI,
+                                    searchTerm,
+                                    queryScope,
+                                    queryTarget,
+                                    DEFAULT_LIMIT,
+                                    DEFAULT_OFFSET);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResultMAP fullTextSearchBroker(final URI brokerURI,
+                                          final String searchTerm,
+                                          final QueryScope queryScope,
+                                          final QueryTarget queryTarget,
+                                          final int limit,
+                                          final int offset )
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException,
+            IOException,
+            MultipartParseException,
+            ClaimsException {
+        var securityToken = getDat();
+        var header = MessageBuilder
+                .buildQueryMessage(securityToken,
+                                   container.getConnector(),
+                                   QueryLanguage.SPARQL,
+                                   queryScope,
+                                   queryTarget);
+
+        final var payload = String.format(
+                FullTextQueryTemplate.FULL_TEXT_QUERY,
+                searchTerm, limit, offset);
+        final var messageAndPayload = new GenericMessageAndPayload(header, payload);
         final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
 
         return expectResultMAP(response);

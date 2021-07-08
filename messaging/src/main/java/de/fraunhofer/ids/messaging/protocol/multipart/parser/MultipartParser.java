@@ -1,4 +1,4 @@
-package de.fraunhofer.ids.messaging.core.util;
+package de.fraunhofer.ids.messaging.protocol.multipart.parser;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

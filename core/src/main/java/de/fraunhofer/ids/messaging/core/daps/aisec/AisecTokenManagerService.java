@@ -92,10 +92,6 @@ public class AisecTokenManagerService implements TokenManagerService {
 
             final var jws = getRequestToken(targetAudience, privateKey, connectorUUID);
 
-            if (log.isInfoEnabled()) {
-                log.info("Request token: " + jws);
-            }
-
             // build form body to embed client assertion into post request
             final var formBody = getFormBody(jws);
 
@@ -106,8 +102,8 @@ public class AisecTokenManagerService implements TokenManagerService {
             final var client = clientProvider.getClient();
             final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Sending request to %s", dapsUrl));
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Sending request to DAPS: %s", dapsUrl));
             }
 
             final var jwtResponse = sendRequestToDAPS(client, request);
@@ -115,10 +111,6 @@ public class AisecTokenManagerService implements TokenManagerService {
             checkEmptyDAPSResponse(responseBody); //can throw exception
 
             final var jwtString = responseBody.string();
-
-            if (log.isInfoEnabled()) {
-                log.info("Response body of token request:\n{}", jwtString);
-            }
 
             dynamicAttributeToken = getDAT(jwtString);
         } catch (IOException e) {
@@ -138,14 +130,13 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @throws ConnectorMissingCertExtensionException forwarded to the connector developer if AKI or SKI of Certificate are not valid or missing
      */
     private void handleConnectorMissingCertExtensionException() throws ConnectorMissingCertExtensionException {
-        final var error = "DAPS Token Manager Service - Certificate of the Connector is missing aki/ski extensions!";
-
-        if (log.isErrorEnabled()) {
-            log.error(error);
-        }
+        final var error = "[DAPS Token Manager Service] Mandatorily required information of the connector certificate is missing (AKI/SKI)!";
 
         if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+            printProductiveDeploymentError(error);
             throw new ConnectorMissingCertExtensionException(error);
+        } else {
+            printTestDeploymentWarning(error);
         }
     }
 
@@ -156,14 +147,13 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @throws DapsEmptyResponseException forwarded exception to the connector developer if DAPS returned an empty response
      */
     private void handleDapsEmptyResponseException(final DapsEmptyResponseException e) throws DapsEmptyResponseException {
-        final var error = String.format("DAPS Token Manager Service - Empty DAPS Response, something went wrong: %s", e.getMessage());
-
-        if (log.isErrorEnabled()) {
-            log.error(error);
-        }
+        final var error = String.format("[DAPS Token Manager Service] Unusable answer from DAPS: Possible empty DAPS-Response, something went wrong at DAPS: %s", e.getMessage());
 
         if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+            printProductiveDeploymentError(error);
             throw new DapsEmptyResponseException(error);
+        } else {
+            printTestDeploymentWarning(error);
         }
     }
 
@@ -174,14 +164,28 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @throws DapsConnectionException mapped exception, thworn if connection to DAPS failed
      */
     private void handleIOException(final IOException e) throws DapsConnectionException {
-        final var error = String.format("DAPS Token Manager Service - Error retrieving token and connecting to DAPS: %s", e.getMessage());
-
-        if (log.isErrorEnabled()) {
-            log.error(error);
-        }
+        final var error = String.format("[DAPS Token Manager Service] Error connecting to DAPS (possibly currently not reachable or wrong DAPS-URL): %s", e.getMessage());
 
         if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+            printProductiveDeploymentError(error);
             throw new DapsConnectionException(error);
+        } else {
+            printTestDeploymentWarning(error);
+        }
+    }
+
+    private void printTestDeploymentWarning(final String error) {
+        if (log.isWarnEnabled()) {
+            log.warn(error);
+            log.warn("[DAPS Token Manager Service] Since the connector is in TEST_DEPLOYMENT the IDS-Message is now sent without a valid DAT.");
+            log.warn("[DAPS Token Manager Service] If the connector is switched to PRODUCTIVE_DEPLOYMENT, no message without valid DAT will be sent at this point anymore!");
+        }
+    }
+
+    private void printProductiveDeploymentError(final String error) {
+        if (log.isErrorEnabled()) {
+            log.error(error);
+            log.error("[DAPS Token Manager Service] Since the connector is not in TEST_DEPLOYMENT and no DAT could be loaded from DAPS, no IDS-Message is sent.");
         }
     }
 
@@ -193,13 +197,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     private String getDAT(final String jwtString) {
         final var jsonObject = new JSONObject(jwtString);
-        final var dynamicAttributeToken = jsonObject.getString("access_token");
-
-        if (log.isInfoEnabled()) {
-            log.info("Dynamic Attribute Token: " + dynamicAttributeToken);
-        }
-
-        return dynamicAttributeToken;
+        return jsonObject.getString("access_token");
     }
 
     /**

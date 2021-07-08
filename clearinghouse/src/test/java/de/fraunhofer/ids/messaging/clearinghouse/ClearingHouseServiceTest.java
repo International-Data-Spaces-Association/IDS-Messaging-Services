@@ -24,7 +24,7 @@ import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
 import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
-import de.fraunhofer.ids.messaging.core.util.MultipartDatapart;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
