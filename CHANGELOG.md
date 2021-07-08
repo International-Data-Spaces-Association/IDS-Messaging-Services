@@ -37,6 +37,11 @@ All notable changes to this project will be documented in this file.
 - Patch Change: Added Apache 2.0 License Header to all files
 - Patch Change: Increased Test-Coverage
 
+## Version [4.1.1.4] 2021-07-07
+
+### Changes
+- Patch change: KeyStoreManager: look up absolute path at system scope
+
 ## Version [4.1.1.3] 2021-07-05
 
 ### Patch Change: Infomodel Maintenance
