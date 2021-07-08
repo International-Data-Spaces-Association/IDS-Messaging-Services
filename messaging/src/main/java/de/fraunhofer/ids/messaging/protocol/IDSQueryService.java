@@ -6,9 +6,16 @@ import java.net.URI;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.*;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.MessageContainer;
+import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
+import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.NonNull;
 
 public interface IDSQueryService {
@@ -28,16 +35,19 @@ public interface IDSQueryService {
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Response.
      */
-    ResultMAP query( @NonNull URI targetURI,
-                     @NonNull String query,
-                     @NonNull QueryLanguage queryLanguage,
-                     @NonNull QueryScope queryScope,
-                     @NonNull QueryTarget queryTarget )
+    MessageContainer<Object> query( @NonNull URI targetURI,
+                                    @NonNull String query,
+                                    @NonNull QueryLanguage queryLanguage,
+                                    @NonNull QueryScope queryScope,
+                                    @NonNull QueryTarget queryTarget )
             throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
-            ClaimsException;
+            ClaimsException, ShaclValidatorException, SerializeException,
+            UnknownResponseException, SendMessageException,
+            DeserializeException, RejectionException,
+            UnexpectedPayloadException;
     /**
      * Do a FullText Query on the Infrastructure Component with default limit and offset.
      *
@@ -53,17 +63,17 @@ public interface IDSQueryService {
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Response.
      */
-    ResultMAP fullTextSearch( URI targetURI,
-                              String searchTerm,
-                              QueryScope queryScope,
-                              QueryTarget queryTarget )
+    MessageContainer<Object> boundFullTextSearch( URI targetURI,
+                                             String searchTerm,
+                                             QueryScope queryScope,
+                                             QueryTarget queryTarget )
             throws
-            ConnectorMissingCertExtensionException,
-            DapsConnectionException,
-            DapsEmptyResponseException,
             IOException,
             MultipartParseException,
-            ClaimsException;
+            ClaimsException, DapsTokenManagerException, ShaclValidatorException,
+            SerializeException, UnknownResponseException, SendMessageException,
+            DeserializeException, RejectionException,
+            UnexpectedPayloadException;
 
     /**
      * Do a FullText Query on the Infrastructure Component with custom limit and offset.
@@ -82,17 +92,17 @@ public interface IDSQueryService {
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Response.
      */
-    ResultMAP fullTextSearch( URI targetURI,
-                              String searchTerm,
-                              QueryScope queryScope,
-                              QueryTarget queryTarget,
-                              int limit,
-                              int offset )
+    MessageContainer<Object> fullTextSearch( URI targetURI,
+                                             String searchTerm,
+                                             QueryScope queryScope,
+                                             QueryTarget queryTarget,
+                                             int limit,
+                                             int offset )
             throws
-            ConnectorMissingCertExtensionException,
-            DapsConnectionException,
-            DapsEmptyResponseException,
             IOException,
             MultipartParseException,
-            ClaimsException;
+            ClaimsException, DapsTokenManagerException, ShaclValidatorException,
+            SerializeException, UnknownResponseException, SendMessageException,
+            DeserializeException, RejectionException,
+            UnexpectedPayloadException;
 }

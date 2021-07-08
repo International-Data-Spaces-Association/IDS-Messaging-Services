@@ -13,14 +13,29 @@
  */
 package de.fraunhofer.ids.messaging.requests;
 
+import java.io.IOException;
+import java.net.URI;
+
 import de.fraunhofer.iais.eis.RejectionMessage;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
+import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +44,31 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 public abstract class InfrastructureService  {
-    ConfigContainer   container;
-    DapsTokenProvider tokenProvider;
-    MessageService messageService;
+    ConfigContainer          container;
+    DapsTokenProvider        tokenProvider;
+    MessageService           messageService;
+    IdsRequestBuilderService requestBuilderService;
+
+    public MessageContainer<?> requestSelfDescription(@NonNull final URI uri) throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
+        logBuildingHeader();
+        return requestBuilderService.newRequest()
+                                    .subjectDescription()
+                                    .useMultipart()
+                                    .operationGet(null)
+                                    .execute(uri);
+
+    }
 
     /**
      * Check if incoming response if of expected type, throw an IOException with information, if it is not.
@@ -65,6 +102,14 @@ public abstract class InfrastructureService  {
                         response.getMessage().getClass().toString(), expectedType.getSimpleName()
                 )
         );
+    }
+    /**
+     * Log info about starting to build the header.
+     */
+    protected void logBuildingHeader() {
+        if (log.isDebugEnabled()) {
+            log.debug("Building message header");
+        }
     }
 
 }

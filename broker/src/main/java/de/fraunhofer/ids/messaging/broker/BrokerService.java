@@ -13,11 +13,13 @@
  */
 package de.fraunhofer.ids.messaging.broker;
 
+import java.io.IOException;
+import java.net.URI;
+
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -29,15 +31,9 @@ import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
-import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
-import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
-import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
-import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
-import de.fraunhofer.ids.messaging.requests.enums.Crud;
-import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
-import de.fraunhofer.ids.messaging.requests.enums.Subject;
-import de.fraunhofer.ids.messaging.requests.exceptions.NoTemplateProvidedException;
+import de.fraunhofer.ids.messaging.requests.QueryService;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.AccessLevel;
@@ -45,9 +41,6 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.net.URI;
 
 /**
  * Broker Communication Controller. Generates appropriate ids multipart messages and sends them to the broker
@@ -57,14 +50,9 @@ import java.net.URI;
 @Slf4j
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class BrokerService extends InfrastructureService
+public class BrokerService extends QueryService
         implements IDSBrokerService {
 
-    static int DEFAULT_LIMIT = 50;
-    static int DEFAULT_OFFSET = 0;
-
-    NotificationTemplateProvider notificationTemplateProvider;
-    RequestTemplateProvider requestTemplateProvider;
     IdsRequestBuilderService requestBuilderService;
 
     /**
@@ -73,18 +61,12 @@ public class BrokerService extends InfrastructureService
      * @param tokenProvider the DapsTokenProvider
      * @param messageService the MessageService
      * @param idsRequestBuilderService service to send request messages
-     * @param templateProvider provider for notification message templates
-     * @param requestTemplateProvider provider for request message templates
      */
     public BrokerService(final ConfigContainer container,
                          final DapsTokenProvider tokenProvider,
                          final MessageService messageService,
-                         final IdsRequestBuilderService idsRequestBuilderService,
-                         final NotificationTemplateProvider templateProvider,
-                         final RequestTemplateProvider requestTemplateProvider) {
-        super(container, tokenProvider, messageService);
-        this.notificationTemplateProvider = templateProvider;
-        this.requestTemplateProvider = requestTemplateProvider;
+                         final IdsRequestBuilderService idsRequestBuilderService) {
+        super(container, tokenProvider, messageService, idsRequestBuilderService);
         this.requestBuilderService = idsRequestBuilderService;
     }
 
@@ -200,14 +182,7 @@ public class BrokerService extends InfrastructureService
             UnknownResponseException,
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
-        logBuildingHeader();
-        return requestBuilderService
-                .newRequest()
-                .withPayload(query)
-                .subjectQuery()
-                .useMultipart()
-                .operationSend(queryLanguage, queryScope, queryTarget)
-                .execute(brokerURI);
+        return query( brokerURI, query, queryLanguage, queryScope, queryTarget);
     }
 
     /**
@@ -227,12 +202,10 @@ public class BrokerService extends InfrastructureService
             UnknownResponseException,
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
-        return fullTextSearchBroker(brokerURI,
+        return boundFullTextSearch(brokerURI,
                                     searchTerm,
                                     queryScope,
-                                    queryTarget,
-                                    DEFAULT_LIMIT,
-                                    DEFAULT_OFFSET);
+                                    queryTarget);
     }
 
     /**
@@ -255,24 +228,14 @@ public class BrokerService extends InfrastructureService
             UnknownResponseException,
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
-        final var payload = String.format(
-                FullTextQueryTemplate.FULL_TEXT_QUERY,
-                searchTerm, limit, offset);
-        return requestBuilderService
-                .newRequest()
-                .withPayload(payload)
-                .subjectQuery()
-                .useMultipart()
-                .operationSend(QueryLanguage.SPARQL, queryScope, queryTarget)
-                .execute(brokerURI);
+        return fullTextSearch(brokerURI,
+                                    searchTerm,
+                                    queryScope,
+                                    queryTarget,
+                                    limit,
+                                    offset);
     }
 
-    /**
-     * Log info about starting to build the header.
-     */
-    private void logBuildingHeader() {
-        if (log.isDebugEnabled()) {
-            log.debug("Building message header");
-        }
-    }
+
+
 }
