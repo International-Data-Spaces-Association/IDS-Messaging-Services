@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class VocolService extends QueryService {
+public class VocolService extends QueryService implements IDSVocolService{
     IdsRequestBuilderService requestBuilderService;
     /**
      * QueryService constructor.

@@ -13,12 +13,13 @@ import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.IDSInfrastructureService;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.NonNull;
 
-public interface IDSQueryService {
+public interface IDSQueryService extends IDSInfrastructureService {
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage} to the Infrastructure Component.
      *
