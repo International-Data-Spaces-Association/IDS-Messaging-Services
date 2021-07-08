@@ -26,16 +26,15 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, LogRequestBuilder<T>> {
 
     LogRequestBuilder(
             Class<T> expected,
-            ProtocolType protocolType,
             MessageService messageService,
             RequestTemplateProvider requestTemplateProvider,
             NotificationTemplateProvider notificationTemplateProvider
     ) {
-        super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
+        super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     /**
@@ -100,5 +99,32 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
             default:
                 throw new UnsupportedOperationException("Unsupported Protocol!");
         }
+    }
+
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public LogRequestBuilder<T> useIDSCP() {
+//        this.protocolType = ProtocolType.IDSCP;
+//        return this;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public LogRequestBuilder<T> useLDP() {
+//        this.protocolType = ProtocolType.LDP;
+//        return this;
+//    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LogRequestBuilder<T> useMultipart() {
+        this.protocolType = ProtocolType.MULTIPART;
+        return this;
     }
 }

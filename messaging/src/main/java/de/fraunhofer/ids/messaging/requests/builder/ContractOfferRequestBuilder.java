@@ -26,10 +26,15 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractOfferRequestBuilder<T>> {
 
-    ContractOfferRequestBuilder(Class<T> expected, ProtocolType protocolType, MessageService messageService, RequestTemplateProvider requestTemplateProvider, NotificationTemplateProvider notificationTemplateProvider) {
-        super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
+    ContractOfferRequestBuilder(
+            Class<T> expected,
+            MessageService messageService,
+            RequestTemplateProvider requestTemplateProvider,
+            NotificationTemplateProvider notificationTemplateProvider
+    ) {
+        super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     /**
@@ -95,4 +100,30 @@ public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T> impleme
         }
     }
 
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ContractOfferRequestBuilder<T> useIDSCP() {
+//        this.protocolType = ProtocolType.IDSCP;
+//        return this;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ContractOfferRequestBuilder<T> useLDP() {
+//        this.protocolType = ProtocolType.LDP;
+//        return this;
+//    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ContractOfferRequestBuilder<T> useMultipart() {
+        this.protocolType = ProtocolType.MULTIPART;
+        return this;
+    }
 }

@@ -26,18 +26,17 @@ import java.util.Optional;
  *
  * @param <T> Type of expected Payload.
  */
-public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T> {
+public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ResourceRequestBuilder<T>> {
 
     private URI affectedResource;
 
     ResourceRequestBuilder(
             Class<T> expected,
-            ProtocolType protocolType,
             MessageService messageService,
             RequestTemplateProvider requestTemplateProvider,
             NotificationTemplateProvider notificationTemplateProvider
     ) {
-        super(expected, protocolType, messageService, requestTemplateProvider, notificationTemplateProvider);
+        super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
     /**
@@ -121,4 +120,30 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
         }
     }
 
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ResourceRequestBuilder<T> useIDSCP() {
+//        this.protocolType = ProtocolType.IDSCP;
+//        return this;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ResourceRequestBuilder<T> useLDP() {
+//        this.protocolType = ProtocolType.LDP;
+//        return this;
+//    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResourceRequestBuilder<T> useMultipart() {
+        this.protocolType = ProtocolType.MULTIPART;
+        return this;
+    }
 }

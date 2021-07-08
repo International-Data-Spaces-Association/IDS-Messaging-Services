@@ -131,9 +131,9 @@ class InfrastructureServiceTest {
         Mockito.when(clientProvider.getClient()).thenReturn(new OkHttpClient());
         Mockito.when(provider.getDAT()).thenReturn(
                 new DynamicAttributeTokenBuilder()
-                ._tokenValue_("string")
-                ._tokenFormat_(TokenFormat.JWT)
-                .build()
+                        ._tokenValue_("string")
+                        ._tokenFormat_(TokenFormat.JWT)
+                        .build()
         );
 
         final var infrastructureService = Mockito.mock(
