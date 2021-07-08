@@ -1,7 +1,19 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.broker;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 import de.fraunhofer.iais.eis.*;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
@@ -14,11 +26,14 @@ import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,13 +46,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 
 @ExtendWith(SpringExtension.class)
-//@SpringBootTest( webEnvironment= SpringBootTest.WebEnvironment.NONE )
-//@EnableConfigurationProperties(value = ConfigProperties.class)
 @ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
 class BrokerServiceTest {
@@ -62,8 +76,6 @@ class BrokerServiceTest {
 
     @Autowired
     private MessageService messageService;
-
-    private MockWebServer mockWebServer;
 
     @Autowired
     private BrokerService brokerService;
@@ -105,13 +117,27 @@ class BrokerServiceTest {
         private Connector connector;
 
         @Bean
+        public NotificationTemplateProvider getNotificationTemplateProvider(){
+            return new NotificationTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+
+        @Bean RequestTemplateProvider getRequestTemplateProvider(){
+            return new RequestTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+
+        @Bean
+        public IdsRequestBuilderService getIdsRequestBuilderService(){
+            return new IdsRequestBuilderService(messageService, getRequestTemplateProvider(), getNotificationTemplateProvider());
+        }
+
+        @Bean
         public Serializer getSerializer() {
             return new Serializer();
         }
 
         @Bean
         public BrokerService getBrokerService() {
-            return new BrokerService(configurationContainer, dapsTokenProvider, messageService);
+            return new BrokerService(configurationContainer, dapsTokenProvider, messageService, getIdsRequestBuilderService());
         }
     }
 
@@ -173,8 +199,8 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.updateSelfDescriptionAtBroker(URI.create("/"));
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
 
@@ -185,8 +211,8 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.removeResourceFromBroker(URI.create("/"), new ResourceBuilder().build());
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
     @Test
@@ -196,8 +222,8 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var  result = this.brokerService.updateResourceAtBroker(URI.create("/"), new ResourceBuilder().build());
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
     @Test
@@ -207,41 +233,8 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.unregisterAtBroker(URI.create("/"));
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
-    }
-
-    @Test
-    void testUpdateSelfDescriptionAtBrokers() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-        final var list = new ArrayList<URI>();
-        list.add(URI.create("/"));
-        list.add(URI.create("/"));
-
-
-        final var result = this.brokerService.updateSelfDescriptionAtBrokers(list);
-
-        assertNotNull(result.get(0).getMessage(),"Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.get(0).getClass(), "Method should return MessageProcessedNotificationMessage");
-        assertFalse(result.get(0).getPayload().isPresent(),"Payload should be empty for MessageProcessedNotificationMAPs");
-        assertNotNull(result.get(1).getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.get(1).getClass(), "Method should return MessageProcessedNotificationMessage");
-        assertFalse(result.get(1).getPayload().isPresent(),"Payload should be empty for MessageProcessedNotificationMAPs");
-    }
-
-    @Test
-    void testEmptyList() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-
-        final var result = this.brokerService.updateSelfDescriptionAtBrokers(
-                new ArrayList<>());
-
-
-        assertEquals(new ArrayList<MessageProcessedNotificationMAP>(), result, "Should return empty list when no URIs are passed");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
     @Test
@@ -252,11 +245,9 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.queryBroker(URI.create("/"), "",QueryLanguage.SPARQL,QueryScope.ALL,QueryTarget.BROKER);
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(ResultMAP.class, result.getClass(), "Method should return ResultMap");
-        assertTrue(result.getPayload().isPresent(),"ResultMAP should have payload");
-        assertNotNull(result.getPayload().get(),"ResultMAP should have payload");
-
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(ResultMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return ResultMessage");
+        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
     }
 
     @Test
@@ -266,11 +257,31 @@ class BrokerServiceTest {
                .thenReturn(map);
 
         final var result = this.brokerService.fullTextSearchBroker(URI.create("/"), "", QueryScope.ALL, QueryTarget.BROKER);
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(ResultMAP.class, result.getClass(), "Method should return ResultMap");
-        assertTrue(result.getPayload().isPresent(),"ResultMAP should have payload");
-        assertNotNull(result.getPayload().get(),"ResultMAP should have payload");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(ResultMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return ResultMessage");
+        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
+    }
+    @Test
+    void testRequestDescription() throws Exception{
+        final var descriptionMessage = new DescriptionResponseMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._issuerConnector_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._senderAgent_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._securityToken_(this.fakeToken)
+                ._modelVersion_("4.0.0")
+                ._correlationMessage_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                .build();
+        final MessageAndPayload map = new DescriptionResponseMAP(descriptionMessage, "This is the Payload");
+        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
+               .thenReturn(map);
 
+        final var result = this.brokerService.requestSelfDescription(URI.create("/"));
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(DescriptionResponseMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return DescriptionResponseMessage");
+        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
     }
 
 }

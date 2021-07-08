@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.endpoint;
 
 import javax.servlet.ServletException;
@@ -17,6 +30,7 @@ import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
@@ -128,13 +142,13 @@ public class MessageController {
             }
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
-                log.error("Error during pre-processing with a PreDispatchingFilter!", e);
+                log.error("Error during pre-processing with a PreDispatchingFilter! " + e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(createDefaultErrorMessage(RejectionReason.BAD_PARAMETERS,
                                                                  String.format("Error during preprocessing: %s",
                                                                                e.getMessage())));
-        } catch (IOException e) {
+        } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("incoming message could not be parsed!");
                 log.warn(e.getMessage(), e);
@@ -212,21 +226,6 @@ public class MessageController {
             }
             return null;
         }
-    }
-
-    /**
-     * @param message incoming infomodel message
-     * @return true if infomodel version is supported
-     */
-    private boolean checkInboundVersion(final Message message) {
-        final var inboundList = configContainer.getConfigurationModel()
-                .getConnectorDescription()
-                .getInboundModelVersion();
-
-        return inboundList.stream()
-                .map(version -> checkInfomodelContainment(message.getModelVersion(), version))
-                .reduce(Boolean::logicalOr)
-                .orElse(false);
     }
 
     /**

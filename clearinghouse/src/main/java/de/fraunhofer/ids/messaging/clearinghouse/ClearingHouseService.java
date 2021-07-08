@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.clearinghouse;
 
 import java.io.IOException;
@@ -11,17 +24,24 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.InfrastructureService;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -56,11 +76,12 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     @Value("${clearinghouse.log.endpoint:/messages/log}")
     String logEndpoint;
 
-    public ClearingHouseService(final ConfigContainer container,
-                                final DapsTokenProvider tokenProvider,
-                                final MessageService messageService,
-                                final IdsHttpService idsHttpService) {
-        super(container, tokenProvider, messageService);
+    public ClearingHouseService( final ConfigContainer container,
+                                 final DapsTokenProvider tokenProvider,
+                                 final MessageService messageService,
+                                 final IdsHttpService idsHttpService,
+                                 final IdsRequestBuilderService idsRequestBuilderService ) {
+        super(container, tokenProvider, messageService, idsRequestBuilderService);
         this.idsHttpService = idsHttpService;
     }
 
@@ -73,7 +94,13 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             ClaimsException,
             MultipartParseException,
             URISyntaxException,
-            IOException {
+            IOException,
+            UnknownResponseException,
+            DeserializeException,
+            UnexpectedResponseException,
+            ShaclValidatorException,
+            SerializeException,
+            MessageBuilderException {
         //log message under some random processId
         final var pid = Math.abs(secureRandom.nextInt());
 
@@ -91,7 +118,13 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             URISyntaxException,
             IOException,
             ClaimsException,
-            MultipartParseException {
+            MultipartParseException,
+            UnknownResponseException,
+            DeserializeException,
+            ShaclValidatorException,
+            SerializeException,
+            MessageBuilderException,
+            UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
@@ -102,7 +135,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
         //set some random id for message
         final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + logEndpoint + "/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
-        return expectMessageProcessedNotificationMAP(map);
+        return expectMapOfTypeT(map, MessageProcessedNotificationMAP.class);
     }
 
 
@@ -121,7 +154,13 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             URISyntaxException,
             ClaimsException,
             MultipartParseException,
-            IOException {
+            IOException,
+            UnknownResponseException,
+            DeserializeException,
+            ShaclValidatorException,
+            SerializeException,
+            MessageBuilderException,
+            UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
@@ -141,7 +180,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
         final var response = idsHttpService.sendAndCheckDat(body, targetURI);
         final var map = multipartResponseConverter.convertResponse(response);
-        return expectResultMAP(map);
+        return expectMapOfTypeT(map, ResultMAP.class);
 
     }
 
@@ -152,47 +191,53 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
      *
      * @return built MultipartBody
      *
-     * @throws IOException when headerMessage cannot be serialized
+     * @throws SerializeException when headerMessage cannot be serialized
      */
     private MultipartBody buildMultipartWithInternalHeaders(final Message headerMessage,
                                                             final String payloadContent,
                                                             final MediaType payloadType)
-            throws IOException {
+            throws SerializeException {
+        try {
+            final var bodyBuilder = new MultipartBody.Builder();
 
-        final var bodyBuilder = new MultipartBody.Builder();
-
-        //OkHttp does not support setting Content Type on Multipart Parts directly on creation, workaround
-        //Create Header for header Part of IDS Multipart Message
-        final var headerHeader = new Headers.Builder()
-                .add("Content-Disposition: form-data; name=\"header\"")
-                .build();
-
-        //Create RequestBody for header Part of IDS Multipart Message (with json content-type)
-        final var headerBody = RequestBody.create(
-                serializer.serialize(headerMessage),
-                MediaType.parse("application/json+ld"));
-
-        //Create header Part of Multipart Message
-        final var header = MultipartBody.Part.create(headerHeader, headerBody);
-        bodyBuilder.addPart(header);
-
-        if (payloadContent != null && !payloadContent.isBlank())  {
-            //Create Header for payload Part of IDS Multipart Message
-            final var payloadHeader = new Headers.Builder()
-                    .add("Content-Disposition: form-data; name=\"payload\"")
+            //OkHttp does not support setting Content Type on Multipart Parts directly on creation, workaround
+            //Create Header for header Part of IDS Multipart Message
+            final var headerHeader = new Headers.Builder()
+                    .add("Content-Disposition: form-data; name=\"header\"")
                     .build();
 
-            //Create RequestBody for payload Part of IDS Multipart Message (with json content-type)
-            final var payloadBody = RequestBody.create(payloadContent, payloadType);
+            //Create RequestBody for header Part of IDS Multipart Message (with json content-type)
+            final var headerBody = RequestBody.create(
+                    serializer.serialize(headerMessage),
+                    MediaType.parse("application/json+ld"));
 
-            //Create payload Part of Multipart Message
-            final var payload = MultipartBody.Part.create(payloadHeader, payloadBody);
-            bodyBuilder.addPart(payload);
+            //Create header Part of Multipart Message
+            final var header =
+                    MultipartBody.Part.create(headerHeader, headerBody);
+            bodyBuilder.addPart(header);
+
+            if (payloadContent != null && !payloadContent.isBlank()) {
+                //Create Header for payload Part of IDS Multipart Message
+                final var payloadHeader = new Headers.Builder()
+                        .add("Content-Disposition: form-data; name=\"payload\"")
+                        .build();
+
+                //Create RequestBody for payload Part of IDS Multipart Message (with json content-type)
+                final var payloadBody =
+                        RequestBody.create(payloadContent, payloadType);
+
+                //Create payload Part of Multipart Message
+                final var payload =
+                        MultipartBody.Part.create(payloadHeader, payloadBody);
+                bodyBuilder.addPart(payload);
+            }
+            //Build IDS Multipart Message
+            return bodyBuilder.setType(
+                    Objects.requireNonNull(
+                            MediaType.parse("multipart/form-data")
+                    )).build();
+        } catch (IOException ioException) {
+            throw new SerializeException(ioException);
         }
-        //Build IDS Multipart Message
-        return bodyBuilder.setType(
-                Objects.requireNonNull(
-                        MediaType.parse("multipart/form-data")
-                )).build();
     }
 }

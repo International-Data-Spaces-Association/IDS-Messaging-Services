@@ -1,10 +1,28 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.protocol;
 
 import java.io.IOException;
 import java.net.URI;
 
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
@@ -55,7 +73,14 @@ public class MessageService {
     public MessageAndPayload<?, ?> sendIdsMessage(final MessageAndPayload<?, ?> messageAndPayload,
                                                   final URI target,
                                                   final ProtocolType protocolType)
-            throws MultipartParseException, ClaimsException, IOException {
+            throws
+            MultipartParseException,
+            ClaimsException,
+            UnknownResponseException,
+            DeserializeException,
+            SerializeException,
+            IOException,
+            SendMessageException, ShaclValidatorException {
 
         final var payloadOptional = messageAndPayload.getPayload();
         var payloadString = "";
@@ -64,7 +89,12 @@ public class MessageService {
             final var payload = payloadOptional.get();
 
             if (!(payload instanceof String)) {
-                payloadString = serializer.serialize(payload);
+                try {
+                    payloadString = serializer.serialize(payload);
+                } catch (IOException ioException) {
+                    //Map Serializer-IOException to SerializeException
+                    throw new SerializeException(ioException);
+                }
             } else {
                 payloadString = (String) payload;
             }
@@ -105,7 +135,15 @@ public class MessageService {
      * @throws IOException             DAPS or target could not be reached
      */
     public MessageAndPayload<?, ?> sendIdsMessage(final MessageAndPayload<?, ?> messageAndPayload, final URI target)
-            throws MultipartParseException, ClaimsException, IOException {
+            throws
+            MultipartParseException,
+            ClaimsException,
+            IOException,
+            UnknownResponseException,
+            DeserializeException,
+            SerializeException,
+            ShaclValidatorException,
+            SendMessageException {
         return sendIdsMessage(messageAndPayload, target, ProtocolType.MULTIPART);
     }
 }
