@@ -30,6 +30,7 @@
         <module>clearinghouse</module>
         <module>broker</module>
         <module>vocol</module>
+        <module>paris</module>
     </modules>
 
     <properties>

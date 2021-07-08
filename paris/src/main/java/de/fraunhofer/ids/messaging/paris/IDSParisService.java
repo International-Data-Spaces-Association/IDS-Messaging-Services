@@ -4,11 +4,17 @@ import java.io.IOException;
 import java.net.URI;
 
 import de.fraunhofer.iais.eis.Participant;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ParticipantNotificationMAP;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.MessageContainer;
+import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
+import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
 public interface IDSParisService {
     /**
@@ -27,14 +33,21 @@ public interface IDSParisService {
      * @throws DapsTokenManagerException if no DAT for sending the message could
      * be received.
      */
-    MessageProcessedNotificationMAP updateParticipantAtParIS(
+    MessageContainer<?> updateParticipantAtParIS(
             URI parisURI,
             Participant participant )
             throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException;
+            IOException,
+            ShaclValidatorException,
+            SerializeException,
+            RejectionException,
+            UnknownResponseException,
+            SendMessageException,
+            UnexpectedPayloadException,
+            DeserializeException;
 
     /**
      * @param parisURI URI of the ParIS
@@ -49,13 +62,22 @@ public interface IDSParisService {
      * and payload.
      * @throws IOException if message could not be sent or Serializer could not
      * parse RDF to Java Object.
+     * @return
      */
-    MessageProcessedNotificationMAP unregisterAtParIS(
+    MessageContainer<?> unregisterAtParIS(
             URI parisURI, URI participantURI)
-            throws DapsTokenManagerException,
+            throws
+            DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException;
+            IOException,
+            ShaclValidatorException,
+            SerializeException,
+            RejectionException,
+            UnknownResponseException,
+            SendMessageException,
+            UnexpectedPayloadException,
+            DeserializeException;
 
     /**
      *
@@ -74,13 +96,15 @@ public interface IDSParisService {
      * @throws IOException if message could not be sent or Serializer could not
      * parse RDF to Java Object.
      */
-    ParticipantNotificationMAP requestParticipant(
+    MessageContainer<Object> requestParticipant(
             URI parisURI, URI participantUri)
             throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException;
+            IOException, ShaclValidatorException, SerializeException,
+            RejectionException, UnknownResponseException, SendMessageException,
+            UnexpectedPayloadException, DeserializeException;
 
 
 

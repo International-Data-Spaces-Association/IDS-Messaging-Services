@@ -4,18 +4,22 @@ import java.io.IOException;
 import java.net.URI;
 
 import de.fraunhofer.iais.eis.Participant;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ParticipantNotificationMAP;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.InfrastructureService;
+import de.fraunhofer.ids.messaging.requests.MessageContainer;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
+import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -31,38 +35,47 @@ import org.springframework.stereotype.Component;
 public class ParisService extends InfrastructureService
         implements IDSParisService {
 
+    IdsRequestBuilderService requestBuilderService;
+
     /**
      * @param container      the ConfigContainer
      * @param tokenProvider  the DapsTokenProvider
      * @param messageService the MessageService
+     * @param idsRequestBuilderService service to send request messages
      */
     public ParisService( final ConfigContainer container,
                          final DapsTokenProvider tokenProvider,
-                         final MessageService messageService ) {
-        super(container, tokenProvider, messageService);
+                         final MessageService messageService,
+                         final IdsRequestBuilderService idsRequestBuilderService) {
+        super(container, tokenProvider, messageService, idsRequestBuilderService);
+        this.requestBuilderService = idsRequestBuilderService;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP updateParticipantAtParIS(
+    public MessageContainer<?> updateParticipantAtParIS(
             final URI parisURI, final Participant participant )
             throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException {
-
-        final var securityToken = tokenProvider.getDAT();
-        final var header = MessageBuilder.buildParticipantUpdateMessage(
-                securityToken,container.getConnector(),participant.getId());
-
-        final var messageAndPayload =
-                new GenericMessageAndPayload(header, participant);
-        final var response =
-                messageService.sendIdsMessage(messageAndPayload, parisURI);
-        return super.expectMessageProcessedNotificationMAP(response);
+            IOException,
+            ShaclValidatorException,
+            SerializeException,
+            RejectionException,
+            UnknownResponseException,
+            SendMessageException,
+            UnexpectedPayloadException,
+            DeserializeException {
+        logBuildingHeader();
+        return requestBuilderService.newRequest()
+                                    .withPayload(participant)
+                                    .subjectParticipant()
+                                    .useMultipart()
+                                    .operationUpdate(participant.getId())
+                                    .execute(parisURI);
     }
 
 
@@ -70,59 +83,54 @@ public class ParisService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP unregisterAtParIS(
+    public MessageContainer<?> unregisterAtParIS(
             final URI parisURI, final URI participantUri )
             throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException {
-        final var securityToken = tokenProvider.getDAT();
-        final var header = MessageBuilder.buildParticipantUnavailableMessage(
-                securityToken,
-                container.getConnector(), participantUri);
-
-        final var messageAndPayload = new GenericMessageAndPayload(header);
-        final var response =
-                messageService.sendIdsMessage(messageAndPayload, parisURI);
-        return super.expectMessageProcessedNotificationMAP(response);
+            IOException,
+            ShaclValidatorException,
+            SerializeException,
+            RejectionException,
+            UnknownResponseException,
+            SendMessageException,
+            UnexpectedPayloadException,
+            DeserializeException {
+        logBuildingHeader();
+        return requestBuilderService.newRequest()
+                                    .subjectParticipant()
+                                    .useMultipart()
+                                    .operationDelete(participantUri)
+                                    .execute(parisURI);
     }
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
-    public ParticipantNotificationMAP requestParticipant(
+    public MessageContainer<Object> requestParticipant(
             final URI parisURI, final URI participantUri )
             throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException {
-        final var response =
-                super.requestSelfDescription(parisURI, participantUri);
-        return expectParticipant(response);
+            IOException,
+            ShaclValidatorException,
+            SerializeException,
+            RejectionException,
+            UnknownResponseException,
+            SendMessageException,
+            UnexpectedPayloadException,
+            DeserializeException {
+        logBuildingHeader();
+        return requestBuilderService.newRequest()
+                                    .subjectParticipant()
+                                    .useMultipart()
+                                    .operationGet(participantUri)
+                                    .execute(parisURI);
 
     }
 
-    /**
-     * @param response ParticipantNotificationMAP as return by
-     *                 {@link MessageService}
-     *
-     * @return ParticipantNotificationMAP with parsed {@link Participant}
-     *
-     * @throws IOException if payload cannot be parsed.
-     */
-    private ParticipantNotificationMAP expectParticipant(
-            final DescriptionResponseMAP response ) throws IOException {
-        if( response.getPayload().isPresent() ) {
-            final var payload = response.getPayload().get();
-            final var participant =
-                    new Serializer().deserialize(payload, Participant.class);
-            return new ParticipantNotificationMAP(response.getMessage(),
-                                                  participant);
-        } else {
-            throw new IOException("no Participant was returned");
-        }
-    }
 }

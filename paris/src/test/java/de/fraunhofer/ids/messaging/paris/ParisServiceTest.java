@@ -8,7 +8,6 @@ import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.TypedLiteral;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
 import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
@@ -18,9 +17,10 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ParticipantNotificationMAP;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,8 +33,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith( SpringExtension.class)
@@ -63,8 +63,6 @@ class ParisServiceTest {
     @Autowired
     private MessageService messageService;
 
-    private MockWebServer mockWebServer;
-
     @Autowired
     private ParisService parisService;
 
@@ -78,8 +76,6 @@ class ParisServiceTest {
 
     @Configuration
     static class TestContextConfiguration {
-        @MockBean
-        private KeyStoreManager keyStoreManager;
 
         @MockBean
         private ConfigurationModel configurationModel;
@@ -106,13 +102,28 @@ class ParisServiceTest {
         private Connector connector;
 
         @Bean
+        public NotificationTemplateProvider getNotificationTemplateProvider(){
+            return new NotificationTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+
+        @Bean
+        RequestTemplateProvider getRequestTemplateProvider(){
+            return new RequestTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+
+        @Bean
+        public IdsRequestBuilderService getIdsRequestBuilderService(){
+            return new IdsRequestBuilderService(messageService, getRequestTemplateProvider(), getNotificationTemplateProvider());
+        }
+
+        @Bean
         public Serializer getSerializer() {
             return new Serializer();
         }
 
         @Bean
-        public ParisService getBrokerService() {
-            return new ParisService(configurationContainer, dapsTokenProvider, messageService);
+        public ParisService getParisService() {
+            return new ParisService(configurationContainer, dapsTokenProvider, messageService, getIdsRequestBuilderService());
         }
     }
 
@@ -193,8 +204,8 @@ class ParisServiceTest {
 
 
         final var result = this.parisService.updateParticipantAtParIS(URI.create("/"), participant);
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
 
@@ -204,9 +215,8 @@ class ParisServiceTest {
         Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
                .thenReturn(map);
         final var result = this.parisService.requestParticipant(URI.create("/"), URI.create("/"));
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(ParticipantNotificationMAP.class, result.getClass(), "Method should return ParticipantNotificationMAP");
-        assertEquals(ParticipantImpl.class, result.getPayload().get().getClass(), "Payload should be Participant");
+        assertTrue(DescriptionResponseMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return DescriptionResponse");
+        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
     }
 
     @Test
@@ -217,8 +227,8 @@ class ParisServiceTest {
 
 
         final var result = this.parisService.unregisterAtParIS(URI.create("/"), participant.getId());
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
     }
 
 }
