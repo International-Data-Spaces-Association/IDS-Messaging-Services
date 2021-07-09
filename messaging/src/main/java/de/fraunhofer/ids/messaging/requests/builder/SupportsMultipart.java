@@ -13,10 +13,8 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
-import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
-
 /**
- * Used for Builders which support Multipart Protocol
+ * Used for Builders which support Multipart Protocol.
  *
  * @param <T> Expected Return type of Request Builder
  * @param <S> The RequestBuilder returned by the internal method

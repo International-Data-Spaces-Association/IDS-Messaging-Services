@@ -44,11 +44,10 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
     private URI requestedArtifact;
 
     ArtifactRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -56,7 +55,7 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * {@inheritDoc}
      */
     @Override
-    public ArtifactRequestBuilder<T> withPayload(Object payload){
+    public ArtifactRequestBuilder<T> withPayload(Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -65,7 +64,7 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * {@inheritDoc}
      */
     @Override
-    public ArtifactRequestBuilder<T> throwOnRejection(){
+    public ArtifactRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -76,7 +75,7 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * @param requestedArtifact requested artifact id for message header
      * @return this builder instance
      */
-    public ArtifactRequestBuilder<T> operationGet(URI requestedArtifact){
+    public ArtifactRequestBuilder<T> operationGet(final URI requestedArtifact) {
         this.operation = Crud.RECEIVE;
         this.requestedArtifact = requestedArtifact;
         return this;
@@ -86,7 +85,7 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
@@ -105,7 +104,7 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
             case LDP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
-                switch (operation){
+                switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
                         var message = requestTemplateProvider.artifactRequestMessageTemplate(requestedArtifact)

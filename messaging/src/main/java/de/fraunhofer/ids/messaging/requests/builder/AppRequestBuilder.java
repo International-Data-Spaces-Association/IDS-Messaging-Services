@@ -44,11 +44,10 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     private URI affectedApp;
 
     AppRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -76,7 +75,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * @param affectedApp affected app id for message header
      * @return this builder instance
      */
-    public AppRequestBuilder<T> operationCreate(URI affectedApp) {
+    public AppRequestBuilder<T> operationCreate(final URI affectedApp) {
         operation = Crud.UPDATE;
         this.affectedApp = affectedApp;
         return this;
@@ -100,7 +99,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * @param affectedApp affected app id for message header
      * @return this builder instance
      */
-    public AppRequestBuilder<T> operationUnavailable(URI affectedApp) {
+    public AppRequestBuilder<T> operationUnavailable(final URI affectedApp) {
         operation = Crud.DISABLE;
         this.affectedApp = affectedApp;
         return this;
@@ -112,7 +111,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * @param affectedApp affected app id for message header
      * @return this builder instance
      */
-    public AppRequestBuilder<T> operationRegistration(URI affectedApp) {
+    public AppRequestBuilder<T> operationRegistration(final URI affectedApp) {
         operation = Crud.REGISTER;
         this.affectedApp = affectedApp;
         return this;
@@ -122,7 +121,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,

@@ -44,11 +44,10 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
     private URI operationReference;
 
     CommandRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -56,7 +55,7 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
      * {@inheritDoc}
      */
     @Override
-    public CommandRequestBuilder<T> withPayload(Object payload){
+    public CommandRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -65,7 +64,7 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
      * {@inheritDoc}
      */
     @Override
-    public CommandRequestBuilder<T> throwOnRejection(){
+    public CommandRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -75,7 +74,7 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
      *
      * @return this builder instance
      */
-    public CommandRequestBuilder<T> operationUpload(){
+    public CommandRequestBuilder<T> operationUpload() {
         this.operation = Crud.UPDATE;
         return this;
     }
@@ -86,7 +85,7 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
      * @param operationReference operation reference for message header
      * @return this builder instance
      */
-    public CommandRequestBuilder<T> operationCommand(final URI operationReference){
+    public CommandRequestBuilder<T> operationCommand(final URI operationReference) {
         this.operationReference = operationReference;
         this.operation = Crud.COMMAND;
         return this;
@@ -96,7 +95,7 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,

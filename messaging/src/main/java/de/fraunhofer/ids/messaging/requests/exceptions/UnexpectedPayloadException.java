@@ -17,15 +17,17 @@ import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import lombok.Getter;
 
 @Getter
-public class UnexpectedPayloadException extends IdsRequestException{
+public class UnexpectedPayloadException extends IdsRequestException {
 
     private final MessageContainer<?> messageContainer;
 
-    public UnexpectedPayloadException(MessageContainer<?> messageContainer){super();
+    public UnexpectedPayloadException(final MessageContainer<?> messageContainer) {
+        super();
         this.messageContainer = messageContainer;
     }
 
-    public UnexpectedPayloadException(String message, MessageContainer<?> messageContainer){super(message);
+    public UnexpectedPayloadException(final String message, final MessageContainer<?> messageContainer) {
+        super(message);
         this.messageContainer = messageContainer;
     }
 }

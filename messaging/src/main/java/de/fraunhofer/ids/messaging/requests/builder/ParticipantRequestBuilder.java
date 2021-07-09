@@ -44,11 +44,10 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
     private URI affectedParticipant;
 
     ParticipantRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -56,7 +55,7 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public ParticipantRequestBuilder<T> withPayload(Object payload){
+    public ParticipantRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -65,7 +64,7 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public ParticipantRequestBuilder<T> throwOnRejection(){
+    public ParticipantRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -76,7 +75,7 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * @param affectedParticipant affected connector id for message header
      * @return this builder instance
      */
-    public ParticipantRequestBuilder<T> operationUpdate(URI affectedParticipant){
+    public ParticipantRequestBuilder<T> operationUpdate(final URI affectedParticipant) {
         this.operation = Crud.UPDATE;
         this.affectedParticipant = affectedParticipant;
         return this;
@@ -88,7 +87,7 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * @param affectedParticipant affected connector id for message header
      * @return this builder instance
      */
-    public ParticipantRequestBuilder<T> operationDelete(URI affectedParticipant){
+    public ParticipantRequestBuilder<T> operationDelete(final URI affectedParticipant) {
         this.operation = Crud.DELETE;
         this.affectedParticipant = affectedParticipant;
         return this;
@@ -100,7 +99,7 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * @param affectedParticipant affected connector id for message header
      * @return this builder instance
      */
-    public ParticipantRequestBuilder<T> operationGet(URI affectedParticipant){
+    public ParticipantRequestBuilder<T> operationGet(final URI affectedParticipant) {
         this.operation = Crud.RECEIVE;
         this.affectedParticipant = affectedParticipant;
         return this;
@@ -110,7 +109,7 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)throws DapsTokenManagerException,
+    public MessageContainer<T> execute(final URI target)throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
             ClaimsException,

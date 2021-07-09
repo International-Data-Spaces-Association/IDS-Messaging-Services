@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Class containing IDS Header Fields
+ * Class containing IDS Header Fields.
  */
 @AllArgsConstructor
 @Getter

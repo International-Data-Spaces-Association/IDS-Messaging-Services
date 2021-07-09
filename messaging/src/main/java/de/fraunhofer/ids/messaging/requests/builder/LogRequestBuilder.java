@@ -44,11 +44,10 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     URI clearingHouseUrl;
 
     LogRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -56,7 +55,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * {@inheritDoc}
      */
     @Override
-    public LogRequestBuilder<T> withPayload(Object payload){
+    public LogRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -65,7 +64,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * {@inheritDoc}
      */
     @Override
-    public LogRequestBuilder<T> throwOnRejection(){
+    public LogRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -75,7 +74,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      *
      * @return this builder instance
      */
-    public LogRequestBuilder<T> operationUpdate(final URI clearingHouseUrl){
+    public LogRequestBuilder<T> operationUpdate(final URI clearingHouseUrl) {
         this.operation = Crud.UPDATE;
         this.clearingHouseUrl = clearingHouseUrl;
         return this;
@@ -85,7 +84,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
@@ -103,7 +102,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
             case LDP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
-                switch (operation){
+                switch (operation) {
                     case UPDATE:
                         //build and send artifact request message
                         var message = notificationTemplateProvider.logMessageTemplate(clearingHouseUrl)

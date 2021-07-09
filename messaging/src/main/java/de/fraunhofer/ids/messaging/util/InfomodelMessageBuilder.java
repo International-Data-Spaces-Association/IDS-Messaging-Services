@@ -48,7 +48,7 @@ public final class InfomodelMessageBuilder {
             builder.setType(MultipartBody.FORM);
             builder.addFormDataPart(MultipartDatapart.HEADER.toString(),
                                     SERIALIZER.serialize(header));
-        } catch(IOException ioException) {
+        } catch (IOException ioException) {
             throw new SerializeException(ioException);
         }
     }

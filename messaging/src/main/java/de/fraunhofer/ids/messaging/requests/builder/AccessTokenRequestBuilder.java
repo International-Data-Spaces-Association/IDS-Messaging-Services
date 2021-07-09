@@ -42,11 +42,10 @@ import java.util.Optional;
 public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, AccessTokenRequestBuilder<T>> {
 
     AccessTokenRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -54,7 +53,7 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public AccessTokenRequestBuilder<T> withPayload(Object payload){
+    public AccessTokenRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -63,7 +62,7 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public AccessTokenRequestBuilder<T> throwOnRejection(){
+    public AccessTokenRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -73,7 +72,7 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
      *
      * @return this builder instance
      */
-    public AccessTokenRequestBuilder<T> operationGet(){
+    public AccessTokenRequestBuilder<T> operationGet() {
         this.operation = Crud.RECEIVE;
         return this;
     }
@@ -82,7 +81,7 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
@@ -101,7 +100,7 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
             case LDP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
-                switch (operation){
+                switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
                         var message = requestTemplateProvider.accessTokenRequestMessageTemplate()

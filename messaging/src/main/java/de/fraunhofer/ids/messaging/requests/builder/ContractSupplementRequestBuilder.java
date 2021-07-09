@@ -42,11 +42,10 @@ import java.util.Optional;
 public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractSupplementRequestBuilder<T>> {
 
     ContractSupplementRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -54,7 +53,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
      * {@inheritDoc}
      */
     @Override
-    public ContractSupplementRequestBuilder<T> withPayload(Object payload){
+    public ContractSupplementRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -63,7 +62,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
      * {@inheritDoc}
      */
     @Override
-    public ContractSupplementRequestBuilder<T> throwOnRejection(){
+    public ContractSupplementRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -73,7 +72,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
      *
      * @return this builder instance
      */
-    private ContractSupplementRequestBuilder<T> operationUpdate(){
+    private ContractSupplementRequestBuilder<T> operationUpdate() {
         this.operation = Crud.UPDATE;
         return this;
     }
@@ -82,7 +81,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,

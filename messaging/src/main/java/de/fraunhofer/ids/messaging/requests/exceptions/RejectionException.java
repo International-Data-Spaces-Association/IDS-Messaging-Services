@@ -17,11 +17,17 @@ import de.fraunhofer.iais.eis.RejectionReason;
 import lombok.Getter;
 
 @Getter
-public class RejectionException extends IdsRequestException{
+public class RejectionException extends IdsRequestException {
 
     private RejectionReason rejectionReason;
 
-    public RejectionException(RejectionReason rejectionReason){super(); this.rejectionReason = rejectionReason;}
+    public RejectionException(final RejectionReason rejectionReason) {
+        super();
+        this.rejectionReason = rejectionReason;
+    }
 
-    public RejectionException(String message, RejectionReason rejectionReason){super(message); this.rejectionReason = rejectionReason;}
+    public RejectionException(final String message, final RejectionReason rejectionReason) {
+        super(message);
+        this.rejectionReason = rejectionReason;
+    }
 }

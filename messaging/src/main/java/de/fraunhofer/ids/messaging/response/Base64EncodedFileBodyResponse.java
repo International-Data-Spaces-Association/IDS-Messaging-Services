@@ -97,7 +97,7 @@ public class Base64EncodedFileBodyResponse<T extends Message> implements Message
             multiMap.put(MultipartDatapart.PAYLOAD.toString(), payload);
 
             return multiMap;
-        } catch(IOException ioException) {
+        } catch (IOException ioException) {
             throw new SerializeException(ioException);
         }
     }

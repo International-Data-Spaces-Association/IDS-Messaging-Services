@@ -44,11 +44,10 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
     private URI affectedResource;
 
     ResourceRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -56,7 +55,7 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * {@inheritDoc}
      */
     @Override
-    public ResourceRequestBuilder<T> withPayload(Object payload){
+    public ResourceRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -65,7 +64,7 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * {@inheritDoc}
      */
     @Override
-    public ResourceRequestBuilder<T> throwOnRejection(){
+    public ResourceRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -76,7 +75,7 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * @param affectedResource affected resource id for message header
      * @return this builder instance
      */
-    public ResourceRequestBuilder<T> operationUpdate(URI affectedResource){
+    public ResourceRequestBuilder<T> operationUpdate(final URI affectedResource) {
         this.operation = Crud.UPDATE;
         this.affectedResource = affectedResource;
         return this;
@@ -88,7 +87,7 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * @param affectedResource affected resource id for message header
      * @return this builder instance
      */
-    public ResourceRequestBuilder<T> operationDelete(URI affectedResource){
+    public ResourceRequestBuilder<T> operationDelete(final URI affectedResource) {
         this.operation = Crud.DELETE;
         this.affectedResource = affectedResource;
         return this;
@@ -98,7 +97,7 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
