@@ -16,22 +16,27 @@ package de.fraunhofer.ids.messaging.dispatcher;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilter;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterResult;
+import de.fraunhofer.ids.messaging.handler.message.MessageAndClaimsHandler;
 import de.fraunhofer.ids.messaging.handler.message.MessageHandler;
 import de.fraunhofer.ids.messaging.handler.message.MessageHandlerException;
 import de.fraunhofer.ids.messaging.handler.message.MessagePayloadInputstream;
 import de.fraunhofer.ids.messaging.handler.request.RequestMessageHandler;
 import de.fraunhofer.ids.messaging.response.ErrorResponse;
 import de.fraunhofer.ids.messaging.response.MessageResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -66,28 +71,6 @@ public class MessageDispatcher {
         this.configContainer = configContainer;
         this.dapsValidator = dapsValidator;
         this.preDispatchingFilters = new LinkedList<>();
-
-        registerDatVerificationFilter(configContainer);
-    }
-
-
-    /**
-     * Incoming messages are checked for a valid DAT token.
-     *
-     * @param configurationContainer Configuration
-     */
-    private void registerDatVerificationFilter(final ConfigContainer configurationContainer) {
-        //add DAT verification as PreDispatchingFilter
-        registerPreDispatchingAction(in -> {
-            if (configurationContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT) {
-                return PreDispatchingFilterResult.successResult("ConnectorDeployMode is Test. Skipping Token verification!");
-            }
-            final var verified = dapsValidator.checkDat(in.getSecurityToken());
-            return PreDispatchingFilterResult.builder()
-                    .withSuccess(verified)
-                    .withMessage(String.format("Token verification result is: %s", verified))
-                    .build();
-        });
     }
 
     /**
@@ -114,6 +97,25 @@ public class MessageDispatcher {
             throws PreDispatchingFilterException {
         final var connectorId = configContainer.getConnector().getId();
         final var modelVersion = configContainer.getConnector().getOutboundModelVersion();
+
+        //check dat and cache claims
+        Optional<Jws<Claims>> optionalClaimsJws = Optional.empty();
+        if (configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.PRODUCTIVE_DEPLOYMENT) {
+            try {
+                final var claims = dapsValidator.getClaims(header.getSecurityToken());
+                optionalClaimsJws = Optional.ofNullable(claims);
+                if(!dapsValidator.checkClaims(claims, null)){
+                    return ErrorResponse.withDefaultHeader(
+                            RejectionReason.NOT_AUTHORIZED, "DAT could not be verified!", connectorId,
+                            modelVersion, header.getId());
+                }
+            } catch (ClaimsException e) {
+                return ErrorResponse.withDefaultHeader(
+                        RejectionReason.NOT_AUTHORIZED, "Claims of DAT could not be parsed!", connectorId,
+                        modelVersion, header.getId());
+            }
+        }
+
 
         //apply all preDispatchingFilters to the message
         for (final var preDispatchingFilter : this.preDispatchingFilters) {
@@ -156,8 +158,11 @@ public class MessageDispatcher {
             //if an handler exists, let the handle handle the message and return its response
             try {
                 final var handler = (MessageHandler<R>) resolvedHandler.get();
-
-                return handler.handleMessage(header, new MessagePayloadInputstream(payload, objectMapper));
+                if(handler instanceof MessageAndClaimsHandler){
+                    return ((MessageAndClaimsHandler) handler).handleMessage(header, new MessagePayloadInputstream(payload, objectMapper), optionalClaimsJws);
+                }else{
+                    return handler.handleMessage(header, new MessagePayloadInputstream(payload, objectMapper));
+                }
             } catch (MessageHandlerException e) {
                 if (log.isDebugEnabled()) {
                     log.debug("The message handler threw an exception!");

@@ -15,6 +15,10 @@ package de.fraunhofer.ids.messaging.handler.message;
 
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.messaging.response.MessageResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+
+import java.util.Optional;
 
 public interface MessageHandler<T extends Message> {
 
