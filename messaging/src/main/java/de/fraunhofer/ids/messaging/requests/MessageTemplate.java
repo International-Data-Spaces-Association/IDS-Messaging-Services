@@ -11,20 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol.multipart;
-
-import java.util.Optional;
+package de.fraunhofer.ids.messaging.requests;
 
 import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.ids.messaging.common.SerializeException;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 
-public interface MessageAndPayload<M extends Message, T> {
-
-    M getMessage();
-    Optional<T> getPayload();
+@FunctionalInterface
+public interface MessageTemplate<T extends Message> {
 
     /**
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * Build the message defined by this template.
+     *
+     * @return built message by template
+     * @throws DapsTokenManagerException when no DAT for Message can be received
      */
-    SerializedPayload serializePayload() throws SerializeException;
+    T buildMessage() throws DapsTokenManagerException;
 }

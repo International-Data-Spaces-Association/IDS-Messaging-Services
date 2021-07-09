@@ -11,18 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.core.daps.customvalidation;
+package de.fraunhofer.ids.messaging.requests.exceptions;
 
-/**
- * Exception which is thrown by {@link DatValidationRule} evaluation.
- */
-public class ValidationRuleException extends Exception {
+import de.fraunhofer.ids.messaging.requests.MessageContainer;
+import lombok.Getter;
 
-    public ValidationRuleException() {
+@Getter
+public class UnexpectedPayloadException extends IdsRequestException {
+
+    private final MessageContainer<?> messageContainer;
+
+    public UnexpectedPayloadException(final MessageContainer<?> messageContainer) {
         super();
+        this.messageContainer = messageContainer;
     }
 
-    public ValidationRuleException(final String message) {
+    public UnexpectedPayloadException(final String message, final MessageContainer<?> messageContainer) {
         super(message);
+        this.messageContainer = messageContainer;
     }
 }

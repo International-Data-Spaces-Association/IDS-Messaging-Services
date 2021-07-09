@@ -11,11 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.broker;
+package de.fraunhofer.ids.messaging.requests;
 
 import java.net.URI;
 
-import de.fraunhofer.iais.eis.*;
+import de.fraunhofer.iais.eis.BaseConnectorBuilder;
+import de.fraunhofer.iais.eis.ConfigurationModel;
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
+import de.fraunhofer.iais.eis.DynamicAttributeToken;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.MessageProcessedNotificationMessage;
+import de.fraunhofer.iais.eis.MessageProcessedNotificationMessageBuilder;
+import de.fraunhofer.iais.eis.ResultMessage;
+import de.fraunhofer.iais.eis.ResultMessageBuilder;
+import de.fraunhofer.iais.eis.SecurityProfile;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -25,17 +37,10 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
-import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
-import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
-import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +51,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-
-
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { BrokerServiceTest.TestContextConfiguration.class})
+@ContextConfiguration(classes = { IdsRequestBuilderServiceTest.TestContextConfiguration.class})
 @AutoConfigureMockMvc
-class BrokerServiceTest {
+class IdsRequestBuilderServiceTest {
 
     @Autowired
     private  Connector connector;
@@ -76,17 +77,19 @@ class BrokerServiceTest {
     @Autowired
     private MessageService messageService;
 
-    private MockWebServer mockWebServer;
+    @Autowired
+    private IdsRequestBuilderService requestBuilderService;
 
     @Autowired
-    private BrokerService brokerService;
+    private RequestTemplateProvider templateProvider;
+
+    private MockWebServer mockWebServer;
 
     private DynamicAttributeToken fakeToken;
 
     private MessageProcessedNotificationMessage notificationMessage;
 
     private ResultMessage resultMessage;
-
 
     @Configuration
     static class TestContextConfiguration {
@@ -118,30 +121,20 @@ class BrokerServiceTest {
         private Connector connector;
 
         @Bean
-        public NotificationTemplateProvider getNotificationTemplateProvider(){
-            return new NotificationTemplateProvider(configurationContainer, dapsTokenProvider);
-        }
-
-        @Bean RequestTemplateProvider getRequestTemplateProvider(){
-            return new RequestTemplateProvider(configurationContainer, dapsTokenProvider);
-        }
-
-        @Bean
-        public IdsRequestBuilderService getIdsRequestBuilderService(){
-            return new IdsRequestBuilderService(messageService, getRequestTemplateProvider(), getNotificationTemplateProvider());
-        }
-
-        @Bean
         public Serializer getSerializer() {
             return new Serializer();
         }
 
         @Bean
-        public BrokerService getBrokerService() {
-            return new BrokerService(configurationContainer, dapsTokenProvider, messageService, getIdsRequestBuilderService(), getNotificationTemplateProvider(), getRequestTemplateProvider());
+        public IdsRequestBuilderService getBrokerService() {
+            return new IdsRequestBuilderService(messageService, getTemplateProvider(), null);
+        }
+
+        @Bean
+        public RequestTemplateProvider getTemplateProvider() {
+            return new RequestTemplateProvider(configurationContainer, dapsTokenProvider);
         }
     }
-
 
     @BeforeEach
     public void setUp() throws Exception{
@@ -190,77 +183,6 @@ class BrokerServiceTest {
                 ._correlationMessage_(
                         URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
                 .build();
-    }
-
-    @Test
-    void testUpdateSelfDescriptionAtBroker() throws Exception {
-
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-
-        final var result = this.brokerService.updateSelfDescriptionAtBroker(URI.create("/"));
-        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
-        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
-    }
-
-
-    @Test
-    void testRemoveResourceFromBroker() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-
-        final var result = this.brokerService.removeResourceFromBroker(URI.create("/"), new ResourceBuilder().build());
-        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
-        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
-    }
-
-    @Test
-    void testUpdateResourceAtBroker() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-
-        final var  result = this.brokerService.updateResourceAtBroker(URI.create("/"), new ResourceBuilder().build());
-        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
-        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
-    }
-
-    @Test
-    void testUnregisterAtBroker() throws Exception{
-        final MessageAndPayload map = new MessageProcessedNotificationMAP(notificationMessage);
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-
-        final var result = this.brokerService.unregisterAtBroker(URI.create("/"));
-        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
-        assertTrue(MessageProcessedNotificationMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return MessageProcessedNotificationMessage");
-    }
-
-    @Test
-    void testQueryBroker() throws Exception{
-
-        final MessageAndPayload map = new ResultMAP(resultMessage, "This is the QueryResult");
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-
-        final var result = this.brokerService.queryBroker(URI.create("/"), "",QueryLanguage.SPARQL,QueryScope.ALL,QueryTarget.BROKER);
-        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
-        assertTrue(ResultMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return ResultMessage");
-        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
-    }
-
-    @Test
-    void testFtSearchBroker() throws Exception{
-        final MessageAndPayload map = new ResultMAP(resultMessage, "This is the QueryResult");
-        Mockito.when(messageService.sendIdsMessage(any(GenericMessageAndPayload.class), any(URI.class)))
-               .thenReturn(map);
-
-        final var result = this.brokerService.fullTextSearchBroker(URI.create("/"), "", QueryScope.ALL, QueryTarget.BROKER);
-        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
-        assertTrue(ResultMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return ResultMessage");
-        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
     }
 
 }

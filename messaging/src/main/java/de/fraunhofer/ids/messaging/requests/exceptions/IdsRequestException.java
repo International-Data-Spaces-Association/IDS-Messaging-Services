@@ -11,20 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol.multipart;
+package de.fraunhofer.ids.messaging.requests.exceptions;
 
-import java.util.Optional;
+public class IdsRequestException extends Exception {
 
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.ids.messaging.common.SerializeException;
+    public IdsRequestException() { }
 
-public interface MessageAndPayload<M extends Message, T> {
-
-    M getMessage();
-    Optional<T> getPayload();
-
-    /**
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
-     */
-    SerializedPayload serializePayload() throws SerializeException;
+    public IdsRequestException(final String message){
+        super(message);
+    }
 }

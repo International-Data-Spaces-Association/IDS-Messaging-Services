@@ -11,20 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol.multipart;
+package de.fraunhofer.ids.messaging.requests.builder;
 
-import java.util.Optional;
-
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.ids.messaging.common.SerializeException;
-
-public interface MessageAndPayload<M extends Message, T> {
-
-    M getMessage();
-    Optional<T> getPayload();
-
-    /**
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
-     */
-    SerializedPayload serializePayload() throws SerializeException;
+/**
+ * Combining interface for protocol support. Used when builder supports all 3 protocols.
+ *
+ * @param <T> Expected Return type of Request Builder
+ * @param <S> The RequestBuilder returned by the internal method
+ */
+public interface SupportsAllProtocols<T, S extends IdsRequestBuilder<T> & ExecutableBuilder<T>>
+        extends SupportsMultipart<T, S>, SupportsLDP<T, S>, SupportsIDSCP<T, S> {
 }

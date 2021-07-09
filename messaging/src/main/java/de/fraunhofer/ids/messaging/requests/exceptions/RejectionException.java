@@ -11,20 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol.multipart;
+package de.fraunhofer.ids.messaging.requests.exceptions;
 
-import java.util.Optional;
+import de.fraunhofer.iais.eis.RejectionReason;
+import lombok.Getter;
 
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.ids.messaging.common.SerializeException;
+@Getter
+public class RejectionException extends IdsRequestException {
 
-public interface MessageAndPayload<M extends Message, T> {
+    private RejectionReason rejectionReason;
 
-    M getMessage();
-    Optional<T> getPayload();
+    public RejectionException(final RejectionReason rejectionReason) {
+        super();
+        this.rejectionReason = rejectionReason;
+    }
 
-    /**
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
-     */
-    SerializedPayload serializePayload() throws SerializeException;
+    public RejectionException(final String message, final RejectionReason rejectionReason) {
+        super(message);
+        this.rejectionReason = rejectionReason;
+    }
 }

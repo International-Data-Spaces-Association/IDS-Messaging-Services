@@ -13,42 +13,37 @@
  */
 package de.fraunhofer.ids.messaging.broker;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
-import de.fraunhofer.ids.messaging.common.MessageBuilderException;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
-import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
-import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.protocol.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
-import de.fraunhofer.ids.messaging.common.SerializeException;
-import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.InfrastructureService;
+import de.fraunhofer.ids.messaging.requests.MessageContainer;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
+import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * Broker Communication Controller. Generates appropriate ids multipart messages and sends them to the broker
@@ -58,242 +53,176 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class BrokerService extends InfrastructureService implements IDSBrokerService {
+public class BrokerService extends InfrastructureService
+        implements IDSBrokerService {
 
     static int DEFAULT_LIMIT = 50;
     static int DEFAULT_OFFSET = 0;
+
+    NotificationTemplateProvider notificationTemplateProvider;
+    RequestTemplateProvider requestTemplateProvider;
+    IdsRequestBuilderService requestBuilderService;
+
     /**
      * BrokerService constructor.
      * @param container the ConfigContainer
      * @param tokenProvider the DapsTokenProvider
      * @param messageService the MessageService
+     * @param idsRequestBuilderService service to send request messages
+     * @param templateProvider provider for notification message templates
+     * @param requestTemplateProvider provider for request message templates
      */
     public BrokerService(final ConfigContainer container,
                          final DapsTokenProvider tokenProvider,
-                         final MessageService messageService) {
+                         final MessageService messageService,
+                         final IdsRequestBuilderService idsRequestBuilderService,
+                         final NotificationTemplateProvider templateProvider,
+                         final RequestTemplateProvider requestTemplateProvider) {
         super(container, tokenProvider, messageService);
+        this.notificationTemplateProvider = templateProvider;
+        this.requestTemplateProvider = requestTemplateProvider;
+        this.requestBuilderService = idsRequestBuilderService;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP removeResourceFromBroker(@NonNull final URI brokerURI,
-                                                                    @NonNull final Resource resource)
-            throws
+    public MessageContainer<?> removeResourceFromBroker(@NonNull final URI brokerURI,
+                                                        @NonNull final Resource resource) throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            SerializeException,
             ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
             SendMessageException,
-            MessageBuilderException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
+        logBuildingHeader();
+        return requestBuilderService.newRequest()
+                .withPayload(resource)
+                .subjectResource()
+                .useMultipart()
+                .operationDelete(resource.getId())
+                .execute(brokerURI);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MessageContainer<?> updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource) throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException, RejectionException, UnexpectedPayloadException {
 
         logBuildingHeader();
-
-        final var securityToken = getDat();
-        final var header = MessageBuilder.buildResourceUnavailableMessage(
-                securityToken,
-                container.getConnector(),
-                resource);
-
-        final var messageAndPayload = new GenericMessageAndPayload(header);
-        final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
-
-        return expectMessageProcessedNotificationMAP(response);
-
+        return requestBuilderService.newRequest()
+                .withPayload(resource)
+                .subjectResource()
+                .useMultipart()
+                .operationUpdate(resource.getId())
+                .execute(brokerURI);
     }
 
     /**
      * {@inheritDoc}
-     *
-     * @return
      */
     @Override
-    public MessageProcessedNotificationMAP updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource)
-            throws
-            IOException,
+    public MessageContainer<?> unregisterAtBroker(@NonNull final URI brokerURI)
+            throws IOException,
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            SerializeException,
             ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
             SendMessageException,
-            MessageBuilderException {
-
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-
-        final var securityToken = getDat();
-
-        final var header = MessageBuilder.buildResourceUpdateMessage(
-                securityToken,
-                container.getConnector(),
-                resource);
-
-        final var messageAndPayload = new GenericMessageAndPayload(header, resource);
-        final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
-
-        return expectMessageProcessedNotificationMAP(response);
+        return requestBuilderService.newRequest()
+                .withPayload(container.getConnector())
+                .subjectConnector()
+                .useMultipart()
+                .operationDelete(container.getConnector().getId())
+                .execute(brokerURI);
     }
 
     /**
      * {@inheritDoc}
-     *
-     * @return
      */
     @Override
-    public MessageProcessedNotificationMAP unregisterAtBroker(@NonNull final URI brokerURI)
-            throws
+    public MessageContainer<?> updateSelfDescriptionAtBroker(@NonNull final URI brokerURI) throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            SerializeException,
             ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
             SendMessageException,
-            MessageBuilderException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-
-        final var securityToken = getDat();
-        final var header = MessageBuilder.buildUnavailableMessage(securityToken, container.getConnector());
-        final var payload = container.getConnector();
-        final var messageAndPayload = new GenericMessageAndPayload(header, payload);
-        final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
-
-        return expectMessageProcessedNotificationMAP(response);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return
-     */
-    @Override
-    public MessageProcessedNotificationMAP updateSelfDescriptionAtBroker(@NonNull final URI brokerURI)
-            throws
-            IOException,
-            DapsTokenManagerException,
-            MultipartParseException,
-            ClaimsException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            SerializeException,
-            ShaclValidatorException,
-            SendMessageException,
-            MessageBuilderException {
-        logBuildingHeader();
-
-        final var securityToken = getDat();
-        final var header = MessageBuilder.buildUpdateMessage(securityToken, container.getConnector());
-        final var payload = container.getConnector();
-        final var messageAndPayload = new GenericMessageAndPayload(header, payload);
-        final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
-
-        return expectMessageProcessedNotificationMAP(response);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param brokerURIs
-     */
-    @Override
-    public List<MessageProcessedNotificationMAP> updateSelfDescriptionAtBrokers(@NonNull final List<URI> brokerURIs)
-            throws
-            IOException,
-            DeserializeException,
-            ShaclValidatorException,
-            UnexpectedResponseException,
-            SerializeException,
-            DapsTokenManagerException,
-            MultipartParseException,
-            ClaimsException,
-            SendMessageException,
-            UnknownResponseException,
-            MessageBuilderException {
-        final ArrayList<MessageProcessedNotificationMAP> responses = new ArrayList<>();
-
-        for (final var uri : brokerURIs) {
-            final var response = updateSelfDescriptionAtBroker(uri);
-
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Received response from %s", uri));
-            }
-            responses.add(response);
-        }
-        return responses;
+        return requestBuilderService.newRequest()
+                .withPayload(container.getConnector())
+                .subjectConnector()
+                .useMultipart()
+                .operationUpdate(container.getConnector().getId())
+                .execute(brokerURI);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResultMAP queryBroker(@NonNull final URI brokerURI,
+    public MessageContainer<?> queryBroker(@NonNull final URI brokerURI,
                                  @NonNull final String query,
                                  @NonNull final QueryLanguage queryLanguage,
                                  @NonNull final QueryScope queryScope,
                                  @NonNull final QueryTarget queryTarget)
-            throws
-            IOException,
+            throws IOException,
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            SerializeException,
             ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
             SendMessageException,
-            MessageBuilderException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-
-        final var securityToken = getDat();
-        final var header = MessageBuilder.buildQueryMessage(
-                securityToken,
-                container.getConnector(),
-                queryLanguage,
-                queryScope,
-                queryTarget);
-        final var messageAndPayload = new GenericMessageAndPayload(header, null);
-        final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
-
-        return expectResultMAP(response);
+        return requestBuilderService
+                .newRequest()
+                .withPayload(query)
+                .subjectQuery()
+                .useMultipart()
+                .operationSend(queryLanguage, queryScope, queryTarget)
+                .execute(brokerURI);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResultMAP fullTextSearchBroker(final URI brokerURI,
+    public MessageContainer<?> fullTextSearchBroker(final URI brokerURI,
                                           final String searchTerm,
                                           final QueryScope queryScope,
                                           final QueryTarget queryTarget)
-            throws
-            ConnectorMissingCertExtensionException,
-            DapsConnectionException,
-            DapsEmptyResponseException,
+            throws DapsTokenManagerException,
             IOException,
             MultipartParseException,
             ClaimsException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            SerializeException,
             ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
             SendMessageException,
-            MessageBuilderException {
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -306,54 +235,32 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
      * {@inheritDoc}
      */
     @Override
-    public ResultMAP fullTextSearchBroker(final URI brokerURI,
+    public MessageContainer<?> fullTextSearchBroker(final URI brokerURI,
                                           final String searchTerm,
                                           final QueryScope queryScope,
                                           final QueryTarget queryTarget,
                                           final int limit,
                                           final int offset)
             throws
-            ConnectorMissingCertExtensionException,
-            DapsConnectionException,
-            DapsEmptyResponseException,
+            DapsTokenManagerException,
             IOException,
             MultipartParseException,
             ClaimsException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            SerializeException,
             ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
             SendMessageException,
-            MessageBuilderException {
-        final var securityToken = getDat();
-        final var header = MessageBuilder
-                .buildQueryMessage(securityToken,
-                                   container.getConnector(),
-                                   QueryLanguage.SPARQL,
-                                   queryScope,
-                                   queryTarget);
-
+            DeserializeException, RejectionException, UnexpectedPayloadException {
         final var payload = String.format(
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
-        final var messageAndPayload = new GenericMessageAndPayload(header, payload);
-        final var response = messageService.sendIdsMessage(messageAndPayload, brokerURI);
-
-        return expectResultMAP(response);
-    }
-
-    /**
-     * Get a new DAT from the DAPS.
-     *
-     * @return DAT, returned by the DAPS for the Connector
-     * @throws ConnectorMissingCertExtensionException Something went wrong with the Certificate of the Connector
-     * @throws DapsConnectionException                The DAPS is not reachable (wrong URL, network problems..)
-     * @throws DapsEmptyResponseException             The DAPS didn't return the expected response (maybe DAPS internal Problem?)
-     */
-    private DynamicAttributeToken getDat()
-            throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
-        return tokenProvider.getDAT();
+        return requestBuilderService
+                .newRequest()
+                .withPayload(payload)
+                .subjectQuery()
+                .useMultipart()
+                .operationSend(QueryLanguage.SPARQL, queryScope, queryTarget)
+                .execute(brokerURI);
     }
 
     /**

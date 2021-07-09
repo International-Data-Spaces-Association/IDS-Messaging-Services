@@ -11,20 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol.multipart;
+package de.fraunhofer.ids.messaging.requests.builder;
 
-import java.util.Optional;
-
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.ids.messaging.common.SerializeException;
-
-public interface MessageAndPayload<M extends Message, T> {
-
-    M getMessage();
-    Optional<T> getPayload();
+/**
+ * Used for Builders which support IDSCP Protocol.
+ *
+ * @param <T> Expected Return type of Request Builder
+ * @param <S> The RequestBuilder returned by the internal method
+ */
+@FunctionalInterface
+public interface SupportsIDSCP<T, S extends IdsRequestBuilder<T> & ExecutableBuilder<T>> {
 
     /**
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * @return same builder instance (or specific subtype when supported operations are different) with protocol set to IDSCP.
      */
-    SerializedPayload serializePayload() throws SerializeException;
+    S useIDSCP();
+
 }

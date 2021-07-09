@@ -52,7 +52,7 @@ public class GenericMessageAndPayload implements MessageAndPayload<Message, Obje
         if (Objects.nonNull(payload)) {
             try {
                 serializedPayload = new SerializedPayload(new Serializer().serialize(payload).getBytes(), "application/ld+json");
-            } catch(IOException ioException) {
+            } catch (IOException ioException) {
                 throw new SerializeException(ioException);
             }
         } else {

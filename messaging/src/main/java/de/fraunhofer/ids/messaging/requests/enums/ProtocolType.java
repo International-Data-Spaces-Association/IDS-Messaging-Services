@@ -11,20 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.protocol.multipart;
+package de.fraunhofer.ids.messaging.requests.enums;
 
-import java.util.Optional;
-
-import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.ids.messaging.common.SerializeException;
-
-public interface MessageAndPayload<M extends Message, T> {
-
-    M getMessage();
-    Optional<T> getPayload();
-
-    /**
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
-     */
-    SerializedPayload serializePayload() throws SerializeException;
+public enum ProtocolType {
+    LDP,
+    MULTIPART,
+    IDSCP
 }
