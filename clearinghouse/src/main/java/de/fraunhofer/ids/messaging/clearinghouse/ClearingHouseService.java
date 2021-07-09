@@ -42,6 +42,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -83,8 +84,9 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
                                 final MessageService messageService,
                                 final IdsHttpService idsHttpService,
                                 final NotificationTemplateProvider notificationTemplateProvider,
-                                final RequestTemplateProvider requestTemplateProvider) {
-        super(container, tokenProvider, messageService);
+                                final RequestTemplateProvider requestTemplateProvider,
+                                final IdsRequestBuilderService idsRequestBuilderService) {
+        super(container, tokenProvider, messageService, idsRequestBuilderService);
         this.idsHttpService = idsHttpService;
         this.notificationTemplateProvider = notificationTemplateProvider;
         this.requestTemplateProvider = requestTemplateProvider;

@@ -78,7 +78,7 @@ public class BrokerService extends InfrastructureService
                          final IdsRequestBuilderService idsRequestBuilderService,
                          final NotificationTemplateProvider templateProvider,
                          final RequestTemplateProvider requestTemplateProvider) {
-        super(container, tokenProvider, messageService);
+        super(container, tokenProvider, messageService, idsRequestBuilderService);
         this.notificationTemplateProvider = templateProvider;
         this.requestTemplateProvider = requestTemplateProvider;
         this.requestBuilderService = idsRequestBuilderService;
@@ -261,14 +261,5 @@ public class BrokerService extends InfrastructureService
                 .useMultipart()
                 .operationSend(QueryLanguage.SPARQL, queryScope, queryTarget)
                 .execute(brokerURI);
-    }
-
-    /**
-     * Log info about starting to build the header.
-     */
-    private void logBuildingHeader() {
-        if (log.isDebugEnabled()) {
-            log.debug("Building message header");
-        }
     }
 }

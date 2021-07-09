@@ -111,13 +111,10 @@ public abstract class InfrastructureService  {
                 )
         );
     }
-    /**
-     * Log info about starting to build the header.
-     */
+
     protected void logBuildingHeader() {
         if (log.isDebugEnabled()) {
             log.debug("Building message header");
         }
     }
-
 }
