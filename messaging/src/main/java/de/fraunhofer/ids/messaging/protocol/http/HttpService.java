@@ -18,12 +18,8 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
 
-import de.fraunhofer.ids.messaging.common.MessageBuilderException;
-import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
-import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import okhttp3.Request;
 import okhttp3.RequestBody;

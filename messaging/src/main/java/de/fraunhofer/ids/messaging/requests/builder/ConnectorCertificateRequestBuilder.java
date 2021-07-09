@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.requests.builder;
 
 import de.fraunhofer.iais.eis.util.TypedLiteral;
@@ -33,11 +46,10 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> 
     private TypedLiteral revocationReason;
 
     ConnectorCertificateRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -45,7 +57,7 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> 
      * {@inheritDoc}
      */
     @Override
-    public ConnectorCertificateRequestBuilder<T> withPayload(Object payload){
+    public ConnectorCertificateRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -54,7 +66,7 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> 
      * {@inheritDoc}
      */
     @Override
-    public ConnectorCertificateRequestBuilder<T> throwOnRejection(){
+    public ConnectorCertificateRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -65,7 +77,7 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> 
      * @param affectedConnector affected connector id for message header
      * @return this builder instance
      */
-    public ConnectorCertificateRequestBuilder<T> operationUpdate(URI affectedConnector){
+    public ConnectorCertificateRequestBuilder<T> operationUpdate(final URI affectedConnector) {
         this.operation = Crud.UPDATE;
         this.affectedConnector = affectedConnector;
         return this;
@@ -78,7 +90,7 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> 
      * @param revocationReason reason why certificate was revoked
      * @return this builder instance
      */
-    public ConnectorCertificateRequestBuilder<T> operationDelete(URI affectedConnector, TypedLiteral revocationReason){
+    public ConnectorCertificateRequestBuilder<T> operationDelete(final URI affectedConnector, final TypedLiteral revocationReason) {
         this.operation = Crud.DELETE;
         this.affectedConnector = affectedConnector;
         this.revocationReason = revocationReason;
@@ -89,7 +101,7 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T> 
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,

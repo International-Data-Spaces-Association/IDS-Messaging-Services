@@ -16,7 +16,6 @@ package de.fraunhofer.ids.messaging.requests.builder;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
-import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.requests.builder;
 
 import de.fraunhofer.ids.messaging.common.DeserializeException;
@@ -31,11 +44,10 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
     private URI affectedConnector;
 
     ConnectorRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -43,7 +55,7 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
      * {@inheritDoc}
      */
     @Override
-    public ConnectorRequestBuilder<T> withPayload(Object payload){
+    public ConnectorRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -52,7 +64,7 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
      * {@inheritDoc}
      */
     @Override
-    public ConnectorRequestBuilder<T> throwOnRejection(){
+    public ConnectorRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -63,7 +75,7 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
      * @param affectedConnector affected connector id for message header
      * @return this builder instance
      */
-    public ConnectorRequestBuilder<T> operationUpdate(URI affectedConnector){
+    public ConnectorRequestBuilder<T> operationUpdate(final URI affectedConnector) {
         this.operation = Crud.UPDATE;
         this.affectedConnector = affectedConnector;
         return this;
@@ -75,7 +87,7 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
      * @param affectedConnector affected connector id for message header
      * @return this builder instance
      */
-    public ConnectorRequestBuilder<T> operationDelete(URI affectedConnector){
+    public ConnectorRequestBuilder<T> operationDelete(final URI affectedConnector) {
         this.operation = Crud.DELETE;
         this.affectedConnector = affectedConnector;
         return this;
@@ -85,7 +97,7 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,

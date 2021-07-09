@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.requests.builder;
 
 import de.fraunhofer.ids.messaging.common.DeserializeException;
@@ -29,11 +42,10 @@ import java.util.Optional;
 public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractSupplementRequestBuilder<T>> {
 
     ContractSupplementRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -41,7 +53,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
      * {@inheritDoc}
      */
     @Override
-    public ContractSupplementRequestBuilder<T> withPayload(Object payload){
+    public ContractSupplementRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -50,7 +62,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
      * {@inheritDoc}
      */
     @Override
-    public ContractSupplementRequestBuilder<T> throwOnRejection(){
+    public ContractSupplementRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -60,7 +72,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
      *
      * @return this builder instance
      */
-    private ContractSupplementRequestBuilder<T> operationUpdate(){
+    private ContractSupplementRequestBuilder<T> operationUpdate() {
         this.operation = Crud.UPDATE;
         return this;
     }
@@ -69,7 +81,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,

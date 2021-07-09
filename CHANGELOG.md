@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 
 ## Version [4.2.0.0] UNRELEASED
 
+### Major Change: MessageContainer
+- Services now return MessageContainer, instead of xyzMAP tied to a specific expected response
+  - allows access to headerContainer (all header info in via getter), underlyingMessage (as infomodel message), receivedPayload and if the response is a RejectionMessage the rejectionReason
+
 ### Major Change: New Exceptions
 - Added MessageBuilderException: An exception that is thrown if building an IDS-Message with the given information threw a ConstraintViolationException (catches builders RuntimeException).
 - Added SerializeException: An exception that is thrown if serializing a message using the IDS-Serializer threw an IOException. Could indicate missing required message-fields.

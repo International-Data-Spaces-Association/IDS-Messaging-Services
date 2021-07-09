@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.requests.builder;
 
 import de.fraunhofer.ids.messaging.common.DeserializeException;
@@ -31,11 +44,10 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
     private URI requestedElement;
 
     DescriptionRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -43,7 +55,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public DescriptionRequestBuilder<T> withPayload(Object payload){
+    public DescriptionRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -52,7 +64,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public DescriptionRequestBuilder<T> throwOnRejection(){
+    public DescriptionRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -63,7 +75,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * @param requestedElement requested element id for message header (null => selfdescription)
      * @return this builder instance
      */
-    public DescriptionRequestBuilder<T> operationGet(URI requestedElement){
+    public DescriptionRequestBuilder<T> operationGet(final URI requestedElement) {
         this.operation = Crud.RECEIVE;
         this.requestedElement = requestedElement;
         return this;
@@ -73,7 +85,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
@@ -91,7 +103,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
             case LDP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
-                switch (operation){
+                switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
                         var message = requestTemplateProvider.descriptionRequestMessageTemplate(requestedElement)

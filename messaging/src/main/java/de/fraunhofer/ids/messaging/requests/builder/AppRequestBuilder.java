@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.requests.builder;
 
 import de.fraunhofer.ids.messaging.common.DeserializeException;
@@ -31,11 +44,10 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     private URI affectedApp;
 
     AppRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -63,7 +75,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * @param affectedApp affected app id for message header
      * @return this builder instance
      */
-    public AppRequestBuilder<T> operationCreate(URI affectedApp) {
+    public AppRequestBuilder<T> operationCreate(final URI affectedApp) {
         operation = Crud.UPDATE;
         this.affectedApp = affectedApp;
         return this;
@@ -75,7 +87,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * @param affectedApp affected app id for message header
      * @return this builder instance
      */
-    public AppRequestBuilder<T> operationDelete(URI affectedApp) {
+    public AppRequestBuilder<T> operationDelete(final URI affectedApp) {
         operation = Crud.DELETE;
         this.affectedApp = affectedApp;
         return this;
@@ -87,7 +99,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * @param affectedApp affected app id for message header
      * @return this builder instance
      */
-    public AppRequestBuilder<T> operationUnavailable(URI affectedApp) {
+    public AppRequestBuilder<T> operationUnavailable(final URI affectedApp) {
         operation = Crud.DISABLE;
         this.affectedApp = affectedApp;
         return this;
@@ -99,7 +111,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * @param affectedApp affected app id for message header
      * @return this builder instance
      */
-    public AppRequestBuilder<T> operationRegistration(URI affectedApp) {
+    public AppRequestBuilder<T> operationRegistration(final URI affectedApp) {
         operation = Crud.REGISTER;
         this.affectedApp = affectedApp;
         return this;
@@ -109,7 +121,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,

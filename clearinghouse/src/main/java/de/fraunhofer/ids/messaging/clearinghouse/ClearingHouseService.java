@@ -24,24 +24,24 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.messaging.common.DeserializeException;
-import de.fraunhofer.ids.messaging.common.MessageBuilderException;
-import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
+import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
-import de.fraunhofer.ids.messaging.requests.InfrastructureService;
-import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -63,6 +63,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
 
     IdsHttpService idsHttpService;
+    NotificationTemplateProvider notificationTemplateProvider;
+    RequestTemplateProvider requestTemplateProvider;
 
     @NonFinal
     @Value("${clearinghouse.url}")
@@ -76,13 +78,16 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
     @Value("${clearinghouse.log.endpoint:/messages/log}")
     String logEndpoint;
 
-    public ClearingHouseService( final ConfigContainer container,
-                                 final DapsTokenProvider tokenProvider,
-                                 final MessageService messageService,
-                                 final IdsHttpService idsHttpService,
-                                 final IdsRequestBuilderService idsRequestBuilderService ) {
-        super(container, tokenProvider, messageService, idsRequestBuilderService);
+    public ClearingHouseService(final ConfigContainer container,
+                                final DapsTokenProvider tokenProvider,
+                                final MessageService messageService,
+                                final IdsHttpService idsHttpService,
+                                final NotificationTemplateProvider notificationTemplateProvider,
+                                final RequestTemplateProvider requestTemplateProvider) {
+        super(container, tokenProvider, messageService);
         this.idsHttpService = idsHttpService;
+        this.notificationTemplateProvider = notificationTemplateProvider;
+        this.requestTemplateProvider = requestTemplateProvider;
     }
 
     /**
@@ -99,8 +104,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             DeserializeException,
             UnexpectedResponseException,
             ShaclValidatorException,
-            SerializeException,
-            MessageBuilderException {
+            SerializeException {
         //log message under some random processId
         final var pid = Math.abs(secureRandom.nextInt());
 
@@ -123,12 +127,11 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             DeserializeException,
             ShaclValidatorException,
             SerializeException,
-            MessageBuilderException,
             UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
-                MessageBuilder.buildLogMessage(container, tokenProvider, clearingHouseUrl),
+                notificationTemplateProvider.logMessageTemplate(new URI(clearingHouseUrl)).buildMessage(),
                 serializer.serialize(messageToLog),
                 MediaType.parse("application/json"));
 
@@ -159,14 +162,11 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             DeserializeException,
             ShaclValidatorException,
             SerializeException,
-            MessageBuilderException,
             UnexpectedResponseException {
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
-                MessageBuilder.buildQueryMessage(
-                        queryLanguage, queryScope, queryTarget, container,
-                        tokenProvider),
+                requestTemplateProvider.queryMessageTemplate(queryLanguage, queryScope, queryTarget).buildMessage(),
                 query,
                 MediaType.parse("text/plain")
         );

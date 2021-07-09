@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.requests.builder;
 
 import de.fraunhofer.ids.messaging.common.DeserializeException;
@@ -28,12 +41,13 @@ import java.util.Optional;
  */
 public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, LogRequestBuilder<T>> {
 
+    URI clearingHouseUrl;
+
     LogRequestBuilder(
-            Class<T> expected,
-            MessageService messageService,
-            RequestTemplateProvider requestTemplateProvider,
-            NotificationTemplateProvider notificationTemplateProvider
-    ) {
+            final Class<T> expected,
+            final MessageService messageService,
+            final RequestTemplateProvider requestTemplateProvider,
+            final NotificationTemplateProvider notificationTemplateProvider) {
         super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
     }
 
@@ -41,7 +55,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * {@inheritDoc}
      */
     @Override
-    public LogRequestBuilder<T> withPayload(Object payload){
+    public LogRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -50,7 +64,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * {@inheritDoc}
      */
     @Override
-    public LogRequestBuilder<T> throwOnRejection(){
+    public LogRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
         return this;
     }
@@ -60,8 +74,9 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      *
      * @return this builder instance
      */
-    public LogRequestBuilder<T> operationUpdate(){
+    public LogRequestBuilder<T> operationUpdate(final URI clearingHouseUrl) {
         this.operation = Crud.UPDATE;
+        this.clearingHouseUrl = clearingHouseUrl;
         return this;
     }
 
@@ -69,7 +84,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
@@ -87,10 +102,10 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
             case LDP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
-                switch (operation){
+                switch (operation) {
                     case UPDATE:
                         //build and send artifact request message
-                        var message = notificationTemplateProvider.logMessageTemplate()
+                        var message = notificationTemplateProvider.logMessageTemplate(clearingHouseUrl)
                                 .buildMessage();
                         return sendMultipart(target, message);
                     default:

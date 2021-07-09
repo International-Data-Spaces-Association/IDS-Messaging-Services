@@ -1,6 +1,41 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.fraunhofer.ids.messaging.requests;
 
-import de.fraunhofer.iais.eis.*;
+import java.net.URI;
+
+import de.fraunhofer.iais.eis.AccessTokenRequestMessage;
+import de.fraunhofer.iais.eis.AccessTokenRequestMessageBuilder;
+import de.fraunhofer.iais.eis.AppRegistrationRequestMessage;
+import de.fraunhofer.iais.eis.AppRegistrationRequestMessageBuilder;
+import de.fraunhofer.iais.eis.ArtifactRequestMessage;
+import de.fraunhofer.iais.eis.ArtifactRequestMessageBuilder;
+import de.fraunhofer.iais.eis.ContractRequestMessage;
+import de.fraunhofer.iais.eis.ContractRequestMessageBuilder;
+import de.fraunhofer.iais.eis.DescriptionRequestMessage;
+import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
+import de.fraunhofer.iais.eis.InvokeOperationMessage;
+import de.fraunhofer.iais.eis.InvokeOperationMessageBuilder;
+import de.fraunhofer.iais.eis.ParticipantRequestMessage;
+import de.fraunhofer.iais.eis.ParticipantRequestMessageBuilder;
+import de.fraunhofer.iais.eis.QueryLanguage;
+import de.fraunhofer.iais.eis.QueryMessage;
+import de.fraunhofer.iais.eis.QueryMessageBuilder;
+import de.fraunhofer.iais.eis.QueryScope;
+import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.iais.eis.UploadMessage;
+import de.fraunhofer.iais.eis.UploadMessageBuilder;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
@@ -9,8 +44,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.net.URI;
 
 @Slf4j
 @RequiredArgsConstructor

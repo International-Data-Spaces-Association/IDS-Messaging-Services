@@ -16,13 +16,7 @@ package de.fraunhofer.ids.messaging.protocol.multipart;
 import java.util.Optional;
 
 import de.fraunhofer.iais.eis.Message;
-import de.fraunhofer.ids.messaging.common.DeserializeException;
-import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
-import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
-import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 
 public interface MessageAndPayload<M extends Message, T> {
 
