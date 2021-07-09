@@ -3,12 +3,17 @@ package de.fraunhofer.ids.framework.appstore;
 import java.io.IOException;
 import java.net.URI;
 
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
-import de.fraunhofer.ids.messaging.core.util.MultipartParseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactResponseMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.InfrastructurePayloadMAP;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResourceMAP;
+import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
+import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
+import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.MessageContainer;
+import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
+import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
 
 /**
@@ -28,12 +33,15 @@ public interface IDSAppStoreService {
      * @throws DapsTokenManagerException if no DAT for sending the message could be received.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      */
-    ResourceMAP requestAppDescription( URI appStoreURI, URI app)
+    MessageContainer<Object> requestAppDescription( URI appStoreURI, URI app)
             throws
             ClaimsException,
             MultipartParseException,
             IOException,
-            DapsTokenManagerException;
+            DapsTokenManagerException, ShaclValidatorException,
+            SerializeException, UnknownResponseException, SendMessageException,
+            DeserializeException, RejectionException,
+            UnexpectedPayloadException;
     /**
      * @param appStoreURI URI of the App Store to be used
      *
@@ -44,12 +52,15 @@ public interface IDSAppStoreService {
      * @throws DapsTokenManagerException if no DAT for sending the message could be received.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      */
-    InfrastructurePayloadMAP requestAppStoreDescription( URI appStoreURI)
+    MessageContainer<Object> requestAppStoreDescription( URI appStoreURI)
             throws
             ClaimsException,
-            MultipartParseException,
             IOException,
-            DapsTokenManagerException;
+            DapsTokenManagerException, MultipartParseException,
+            ShaclValidatorException, SerializeException,
+            UnknownResponseException, SendMessageException,
+            DeserializeException, RejectionException,
+            UnexpectedPayloadException;
     /**
      * @param appStoreURI URI of the App Store to be used
      * @param app  URI of the requested app
@@ -61,12 +72,15 @@ public interface IDSAppStoreService {
      * @throws DapsTokenManagerException if no DAT for sending the message could be received.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      */
-    ArtifactResponseMAP requestAppArtifact(URI appStoreURI, URI app)
+    MessageContainer<Object> requestAppArtifact( URI appStoreURI, URI app)
             throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException;
+            IOException, ShaclValidatorException, SerializeException,
+            UnknownResponseException, SendMessageException,
+            DeserializeException, RejectionException,
+            UnexpectedPayloadException;
 }
 
 

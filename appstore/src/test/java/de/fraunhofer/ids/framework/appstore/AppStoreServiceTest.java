@@ -13,9 +13,13 @@ import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.*;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ArtifactResponseMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.DescriptionResponseMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +32,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith( SpringExtension.class)
@@ -37,7 +41,7 @@ import static org.mockito.ArgumentMatchers.any;
 @AutoConfigureMockMvc
 class AppStoreServiceTest  {
     @Autowired
-    private Connector connector;
+    private  Connector connector;
 
     @Autowired
     private ConfigurationModel configurationModel;
@@ -57,15 +61,15 @@ class AppStoreServiceTest  {
     @Autowired
     private MessageService messageService;
 
-    private MockWebServer mockWebServer;
-
     @Autowired
     private AppStoreService appStoreService;
 
     private DynamicAttributeToken fakeToken;
 
-    private AppStore appStore;
+    private MessageProcessedNotificationMessage notificationMessage;
 
+    private ResultMessage resultMessage;
+    private AppStore appStore;
 
 
     @Configuration
@@ -98,19 +102,34 @@ class AppStoreServiceTest  {
         private Connector connector;
 
         @Bean
+        public NotificationTemplateProvider getNotificationTemplateProvider(){
+            return new NotificationTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+
+        @Bean
+        RequestTemplateProvider getRequestTemplateProvider(){
+            return new RequestTemplateProvider(configurationContainer, dapsTokenProvider);
+        }
+
+        @Bean
+        public IdsRequestBuilderService getIdsRequestBuilderService(){
+            return new IdsRequestBuilderService(messageService, getRequestTemplateProvider(), getNotificationTemplateProvider());
+        }
+
+        @Bean
         public Serializer getSerializer() {
             return new Serializer();
         }
 
         @Bean
-        public AppStoreService getAppStoreService() {
-            return new AppStoreService(configurationContainer, dapsTokenProvider, messageService);
+        public AppStoreService getBrokerService() {
+            return new AppStoreService(configurationContainer, dapsTokenProvider, messageService, getIdsRequestBuilderService());
         }
     }
 
 
     @BeforeEach
-    void setUp() throws Exception{
+    public void setUp() throws Exception{
         this.fakeToken = new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)
                 ._tokenValue_("fake Token")
@@ -126,14 +145,6 @@ class AppStoreServiceTest  {
                 ._maintainer_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
                 ._hasDefaultEndpoint_(endpoint)
                 .build();
-        appStore = new AppStoreBuilder()
-                ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
-                ._outboundModelVersion_("4.0.0")
-                ._inboundModelVersion_(Util.asList("4.0.0"))
-                ._curator_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
-                ._maintainer_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
-                ._hasDefaultEndpoint_(endpoint)
-                .build();
         Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
         Mockito.when(configurationContainer.getConfigurationModel()).thenReturn(configurationModel);
         Mockito.when(configurationModel.getConnectorDeployMode()).thenReturn(ConnectorDeployMode.TEST_DEPLOYMENT);
@@ -142,7 +153,40 @@ class AppStoreServiceTest  {
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsValidator.checkDat(fakeToken)).thenReturn(true);
         Mockito.when(dapsTokenProvider.getDAT()).thenReturn(fakeToken);
+        appStore = new AppStoreBuilder()
+                ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
+                ._outboundModelVersion_("4.0.0")
+                ._inboundModelVersion_(Util.asList("4.0.0"))
+                ._curator_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._maintainer_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._hasDefaultEndpoint_(endpoint)
+                .build();
+        this.notificationMessage = new MessageProcessedNotificationMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._issuerConnector_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._senderAgent_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._securityToken_(this.fakeToken)
+                ._modelVersion_("4.0.0")
+                ._correlationMessage_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                .build();
+        this.resultMessage = new ResultMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._issuerConnector_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._senderAgent_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                ._securityToken_(this.fakeToken)
+                ._modelVersion_("4.0.0")
+                ._correlationMessage_(
+                        URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
+                .build();
     }
+
+
+
 
     @Test
      void testRequestAppStoreDescription() throws Exception{
@@ -162,8 +206,9 @@ class AppStoreServiceTest  {
                .thenReturn(map);
 
         final var result = this.appStoreService.requestAppStoreDescription(URI.create("/"));
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(InfrastructurePayloadMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(DescriptionResponseMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return DescriptionResponseMessage");
+        assertNotNull(result.getReceivedPayload(), "DescriptionResponseMessage should have a payload");
     }
 
     @Test
@@ -184,8 +229,9 @@ class AppStoreServiceTest  {
                .thenReturn(map);
 
         final var result = this.appStoreService.requestAppDescription(URI.create("/"), URI.create("/"));
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(ResourceMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(DescriptionResponseMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return DescriptionResponseMessage");
+        assertNotNull(result.getReceivedPayload(), "DescriptionResponseMessage should have a payload");
     }
 
     @Test
@@ -206,7 +252,8 @@ class AppStoreServiceTest  {
                .thenReturn(map);
 
         final var result = this.appStoreService.requestAppArtifact(URI.create("/"), URI.create("/"));
-        assertNotNull(result.getMessage(), "Method should return a message");
-        assertEquals(ArtifactResponseMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
+        assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
+        assertTrue(ArtifactResponseMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return ArtifactResponseMessage");
+        assertNotNull(result.getReceivedPayload(), "ArtifactResponseMessage should have a payload");
     }
 }

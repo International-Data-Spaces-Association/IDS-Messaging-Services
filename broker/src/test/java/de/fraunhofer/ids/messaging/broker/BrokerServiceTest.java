@@ -281,7 +281,7 @@ class BrokerServiceTest {
         final var result = this.brokerService.requestSelfDescription(URI.create("/"));
         assertNotNull(result.getUnderlyingMessage(), "Method should return a message");
         assertTrue(DescriptionResponseMessage.class.isAssignableFrom(result.getUnderlyingMessage().getClass()), "Method should return DescriptionResponseMessage");
-        assertNotNull(result.getReceivedPayload(), "ResultMessage should have a payload");
+        assertNotNull(result.getReceivedPayload(), "DescriptionResponseMessage should have a payload");
     }
 
 }
