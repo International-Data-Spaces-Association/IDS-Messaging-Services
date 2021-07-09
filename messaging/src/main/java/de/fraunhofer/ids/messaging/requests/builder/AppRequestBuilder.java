@@ -87,7 +87,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
      * @param affectedApp affected app id for message header
      * @return this builder instance
      */
-    public AppRequestBuilder<T> operationDelete(URI affectedApp) {
+    public AppRequestBuilder<T> operationDelete(final URI affectedApp) {
         operation = Crud.DELETE;
         this.affectedApp = affectedApp;
         return this;

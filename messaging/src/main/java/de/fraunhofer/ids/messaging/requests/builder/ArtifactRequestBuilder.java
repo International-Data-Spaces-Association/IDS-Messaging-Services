@@ -55,7 +55,7 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
      * {@inheritDoc}
      */
     @Override
-    public ArtifactRequestBuilder<T> withPayload(Object payload) {
+    public ArtifactRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }

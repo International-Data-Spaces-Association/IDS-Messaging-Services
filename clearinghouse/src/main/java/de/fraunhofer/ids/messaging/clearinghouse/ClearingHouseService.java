@@ -24,7 +24,6 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
@@ -105,8 +104,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
             DeserializeException,
             UnexpectedResponseException,
             ShaclValidatorException,
-            SerializeException,
-            MessageBuilderException {
+            SerializeException {
         //log message under some random processId
         final var pid = Math.abs(secureRandom.nextInt());
 

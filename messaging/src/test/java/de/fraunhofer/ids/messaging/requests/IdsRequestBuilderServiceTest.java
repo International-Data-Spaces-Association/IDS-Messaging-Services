@@ -13,23 +13,34 @@
  */
 package de.fraunhofer.ids.messaging.requests;
 
-import de.fraunhofer.iais.eis.*;
+import java.net.URI;
+
+import de.fraunhofer.iais.eis.BaseConnectorBuilder;
+import de.fraunhofer.iais.eis.ConfigurationModel;
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
+import de.fraunhofer.iais.eis.ConnectorEndpointBuilder;
+import de.fraunhofer.iais.eis.DynamicAttributeToken;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.MessageProcessedNotificationMessage;
+import de.fraunhofer.iais.eis.MessageProcessedNotificationMessageBuilder;
+import de.fraunhofer.iais.eis.ResultMessage;
+import de.fraunhofer.iais.eis.ResultMessageBuilder;
+import de.fraunhofer.iais.eis.SecurityProfile;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.iais.eis.util.Util;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
-import de.fraunhofer.ids.messaging.core.daps.*;
+import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
+import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
+import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
-import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.GenericMessageAndPayload;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
-import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +50,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.net.URI;
-
-import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { IdsRequestBuilderServiceTest.TestContextConfiguration.class})

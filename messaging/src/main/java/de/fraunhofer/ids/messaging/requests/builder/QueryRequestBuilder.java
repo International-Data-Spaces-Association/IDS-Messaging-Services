@@ -96,7 +96,7 @@ public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements Exec
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(URI target)
+    public MessageContainer<T> execute(final URI target)
             throws DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
