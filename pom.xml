@@ -31,6 +31,7 @@
         <module>broker</module>
         <module>vocol</module>
         <module>paris</module>
+        <module>appstore</module>
     </modules>
 
     <properties>
