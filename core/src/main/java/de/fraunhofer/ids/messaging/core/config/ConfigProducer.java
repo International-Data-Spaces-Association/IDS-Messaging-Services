@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
@@ -55,7 +56,7 @@ public class ConfigProducer {
      *
      * @param properties the {@link ConfigProperties} parsed from an application.properties file
      */
-    public ConfigProducer(final ConfigProperties properties) {
+    public ConfigProducer(final ConfigProperties properties, Optional<ConfigProducerInterceptor> optInterceptor) {
         try {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Loading configuration from %s", properties.getPath()));
@@ -87,6 +88,10 @@ public class ConfigProducer {
             }
             clientProvider = new ClientProvider(configContainer);
             configContainer.setClientProvider(clientProvider);
+
+            optInterceptor.ifPresent(
+                    interceptor -> interceptor.perform(configContainer)
+            );
 
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
