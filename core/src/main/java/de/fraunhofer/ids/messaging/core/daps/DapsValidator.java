@@ -81,6 +81,11 @@ public class DapsValidator {
         throw new ClaimsException("No given signing Key could validate JWT!");
     }
 
+    /**
+     * @param token incoming DAT token
+     * @return claims extracted from the DAT
+     * @throws ClaimsException if token cannot be parsed using a DAPS public key
+     */
     public Jws<Claims> getClaims(final DynamicAttributeToken token) throws ClaimsException {
         Jws<Claims> claims;
         final var keys = keyProvider.providePublicKeys();
@@ -93,6 +98,13 @@ public class DapsValidator {
         }
     }
 
+    /**
+     * Check the claims of the DAT
+     *
+     * @param claims JWS claims of DAT Token
+     * @param extraAttributes extra attributes to be checked
+     * @return true, if claims are valid
+     */
     public boolean checkClaims(final Jws<Claims> claims, final Map<String, Object> extraAttributes){
         if (extraAttributes != null && extraAttributes.containsKey("securityProfile")) {
             try {

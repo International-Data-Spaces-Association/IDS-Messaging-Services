@@ -98,7 +98,7 @@ public class MessageDispatcher {
         final var connectorId = configContainer.getConnector().getId();
         final var modelVersion = configContainer.getConnector().getOutboundModelVersion();
 
-        //check dat and cache claims
+        //check dat and save token claims
         Optional<Jws<Claims>> optionalClaimsJws = Optional.empty();
         if (configContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.PRODUCTIVE_DEPLOYMENT) {
             try {
@@ -154,11 +154,11 @@ public class MessageDispatcher {
 
         // Checks if revolvedHandler is not null
         if (resolvedHandler.isPresent()) {
-
             //if an handler exists, let the handle handle the message and return its response
             try {
                 final var handler = (MessageHandler<R>) resolvedHandler.get();
                 if(handler instanceof MessageAndClaimsHandler){
+                    //for MessageAndClaims handlers, also pass parsed DAT claims
                     return ((MessageAndClaimsHandler) handler).handleMessage(header, new MessagePayloadInputstream(payload, objectMapper), optionalClaimsJws);
                 }else{
                     return handler.handleMessage(header, new MessagePayloadInputstream(payload, objectMapper));
