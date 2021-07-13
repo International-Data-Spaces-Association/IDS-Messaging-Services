@@ -111,7 +111,7 @@ class MessageDispatcherTest {
         assertEquals("request", requestResponse.getErrorMessage()); //use error message to check which handler got the message
 
         final var notificationResponse = (ErrorResponse) dispatcher.process(notMsg, null);
-        assertEquals("notification", notificationResponse.getErrorMessage()); //use error message to check which handler got the message
+        assertEquals("Error while handling the request!", notificationResponse.getErrorMessage()); //use error message to check which handler got the message
     }
 
     private NotificationMessage buildNotificationMessage() {
