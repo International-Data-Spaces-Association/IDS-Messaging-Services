@@ -139,7 +139,7 @@ public class ParisService extends InfrastructureService
             DeserializeException {
         logBuildingHeader();
         return requestBuilderService.newRequest()
-                                    .subjectParticipant()
+                                    .subjectDescription()
                                     .useMultipart()
                                     .operationGet(participantUri)
                                     .execute(parisURI);
