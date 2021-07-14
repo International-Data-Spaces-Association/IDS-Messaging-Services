@@ -182,7 +182,7 @@ public class BrokerService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<?> queryBroker(@NonNull final URI brokerURI,
+    public MessageContainer<String> queryBroker(@NonNull final URI brokerURI,
                                  @NonNull final String query,
                                  @NonNull final QueryLanguage queryLanguage,
                                  @NonNull final QueryScope queryScope,
@@ -198,7 +198,7 @@ public class BrokerService extends InfrastructureService
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
         return requestBuilderService
-                .newRequest()
+                .newRequestExpectingType(String.class)
                 .withPayload(query)
                 .subjectQuery()
                 .useMultipart()
@@ -210,7 +210,7 @@ public class BrokerService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<?> fullTextSearchBroker(final URI brokerURI,
+    public MessageContainer<String> fullTextSearchBroker(final URI brokerURI,
                                           final String searchTerm,
                                           final QueryScope queryScope,
                                           final QueryTarget queryTarget)
@@ -235,7 +235,7 @@ public class BrokerService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<?> fullTextSearchBroker(final URI brokerURI,
+    public MessageContainer<String> fullTextSearchBroker(final URI brokerURI,
                                           final String searchTerm,
                                           final QueryScope queryScope,
                                           final QueryTarget queryTarget,
@@ -255,7 +255,7 @@ public class BrokerService extends InfrastructureService
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
         return requestBuilderService
-                .newRequest()
+                .newRequestExpectingType(String.class)
                 .withPayload(payload)
                 .subjectQuery()
                 .useMultipart()

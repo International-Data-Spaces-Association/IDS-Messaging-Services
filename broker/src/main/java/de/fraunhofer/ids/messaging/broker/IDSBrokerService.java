@@ -135,7 +135,7 @@ public interface IDSBrokerService {
      * @return the brokers response to the query request
      * @throws IOException if the built message could not be serialized
      */
-    MessageContainer<?> queryBroker(URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
+    MessageContainer<String> queryBroker(URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
             throws IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -162,7 +162,7 @@ public interface IDSBrokerService {
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
      */
-    MessageContainer<?> fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
+    MessageContainer<String> fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
                                    QueryTarget queryTarget)
             throws
             DapsTokenManagerException,
@@ -193,7 +193,7 @@ public interface IDSBrokerService {
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
      */
-    MessageContainer<?> fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
+    MessageContainer<String> fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
                                    QueryTarget queryTarget, int limit, int offset)
             throws
             DapsTokenManagerException,
