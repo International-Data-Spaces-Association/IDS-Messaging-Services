@@ -16,7 +16,7 @@ package de.fraunhofer.ids.messaging.core.config;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 
 /**
- * Intercepts ConfigProducer and loads own configuration (e.g from a DB instead of config.json file)
+ * Intercepts ConfigProducer and loads own configuration (e.g from a DB instead of config.json file).
  */
 public interface PreConfigProducerInterceptor {
 

@@ -33,7 +33,7 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
     @Override
     public ConfigurationModel perform(ConfigProperties properties) throws ConfigProducerInterceptorException {
         try {
-            if(log.isInfoEnabled()) {
+            if (log.isInfoEnabled()) {
                 log.info("intecepting loading of configuration!");
             }
             var config = loadConfig(properties);

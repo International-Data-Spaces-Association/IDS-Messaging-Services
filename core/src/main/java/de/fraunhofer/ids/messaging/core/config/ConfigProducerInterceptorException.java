@@ -14,27 +14,29 @@
 package de.fraunhofer.ids.messaging.core.config;
 
 /**
- * Exception thrown on failure by ConfigProducerInterceptors
+ * Exception thrown on failure by ConfigProducerInterceptors.
  */
-public class ConfigProducerInterceptorException extends Exception{
+public class ConfigProducerInterceptorException extends Exception {
 
     public ConfigProducerInterceptorException() {
     }
 
-    public ConfigProducerInterceptorException(String message) {
+    public ConfigProducerInterceptorException(final String message) {
         super(message);
     }
 
-    public ConfigProducerInterceptorException(String message, Throwable cause) {
+    public ConfigProducerInterceptorException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public ConfigProducerInterceptorException(Throwable cause) {
+    public ConfigProducerInterceptorException(final Throwable cause) {
         super(cause);
     }
 
-    public ConfigProducerInterceptorException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public ConfigProducerInterceptorException(final String message,
+                                              final Throwable cause,
+                                              final boolean enableSuppression,
+                                              final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
-
 }

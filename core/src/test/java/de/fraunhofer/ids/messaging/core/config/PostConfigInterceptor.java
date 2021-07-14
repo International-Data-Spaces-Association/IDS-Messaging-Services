@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
 public class PostConfigInterceptor implements PostConfigProducerInterceptor {
 
     @Override
-    public void perform(ConfigContainer configContainer) {
-        if(log.isInfoEnabled()){
+    public void perform(final ConfigContainer configContainer) {
+        if (log.isInfoEnabled()) {
             log.info("modifying configuration using interceptor interface");
         }
         var conf = configContainer.getConfigurationModel();

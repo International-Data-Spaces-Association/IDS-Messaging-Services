@@ -62,15 +62,15 @@ public class ConfigProducer {
 
         ConfigurationModel configModel = null;
 
-        if(preInterceptor.isPresent()){
+        if (preInterceptor.isPresent()) {
             try {
                 configModel = preInterceptor.get().perform(properties);
             } catch (ConfigProducerInterceptorException e) {
-                if(log.isErrorEnabled()) {
+                if (log.isErrorEnabled()) {
                     log.error("PreConfigProducerInterceptor failed! " + e.getMessage());
                 }
             }
-        }else{
+        } else {
             try {
                 configModel = loadConfig(properties);
                 if (log.isInfoEnabled()) {
@@ -83,7 +83,7 @@ public class ConfigProducer {
             }
         }
 
-        if(configModel != null) {
+        if (configModel != null) {
             try {
                 if (log.isInfoEnabled()) {
                     log.info("Initializing KeyStoreManager");
@@ -125,7 +125,7 @@ public class ConfigProducer {
         }
     }
 
-    private ConfigurationModel loadConfig(ConfigProperties properties) throws IOException {
+    private ConfigurationModel loadConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
             log.debug(String.format("Loading configuration from %s", properties.getPath()));
         }
