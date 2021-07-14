@@ -13,18 +13,19 @@
  */
 package de.fraunhofer.ids.messaging.core.config;
 
-/**
- * Interceptor, allowing to perform an action on the configContainer,
- * right after it was created in the {@link ConfigProducer}.
- */
-public interface ConfigProducerInterceptor {
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-    /**
-     * Perform a custom action on the generated configuration.
-     *
-     * @param configContainer container managing configuration, connector and clientprovider
-     */
-    void perform(ConfigContainer configContainer);
+@Component
+@Slf4j
+public class ConfigInterceptor implements ConfigProducerInterceptor {
 
+    @Override
+    public void perform(ConfigContainer configContainer) {
+        if(log.isInfoEnabled()){
+            log.info("modifying configuration using interceptor interface");
+        }
+        var conf = configContainer.getConfigurationModel();
+        conf.setProperty("modified", true);
+    }
 }
-
