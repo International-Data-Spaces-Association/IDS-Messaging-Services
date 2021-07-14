@@ -99,13 +99,13 @@ public class DapsValidator {
     }
 
     /**
-     * Check the claims of the DAT
+     * Check the claims of the DAT.
      *
      * @param claims JWS claims of DAT Token
      * @param extraAttributes extra attributes to be checked
      * @return true, if claims are valid
      */
-    public boolean checkClaims(final Jws<Claims> claims, final Map<String, Object> extraAttributes){
+    public boolean checkClaims(final Jws<Claims> claims, final Map<String, Object> extraAttributes) {
         if (extraAttributes != null && extraAttributes.containsKey("securityProfile")) {
             try {
                 verifySecurityProfile(claims.getBody().get("securityProfile", String.class),

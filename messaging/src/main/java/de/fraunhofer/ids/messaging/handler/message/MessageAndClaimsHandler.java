@@ -21,11 +21,11 @@ import io.jsonwebtoken.Jws;
 import java.util.Optional;
 
 /**
- * MessageHandler, also passing DAT Claims for additional checks
+ * MessageHandler, also passing DAT Claims for additional checks.
  *
  * @param <T> Type of Message accepted by handler
  */
-public interface MessageAndClaimsHandler<T extends Message> extends MessageHandler<T>{
+public interface MessageAndClaimsHandler<T extends Message> extends MessageHandler<T> {
 
     /**
      * {@inheritDoc}

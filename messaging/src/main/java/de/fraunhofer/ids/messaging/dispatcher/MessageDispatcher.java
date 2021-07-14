@@ -27,7 +27,6 @@ import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilter;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
-import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterResult;
 import de.fraunhofer.ids.messaging.handler.message.MessageAndClaimsHandler;
 import de.fraunhofer.ids.messaging.handler.message.MessageHandler;
 import de.fraunhofer.ids.messaging.handler.message.MessageHandlerException;
@@ -104,7 +103,7 @@ public class MessageDispatcher {
             try {
                 final var claims = dapsValidator.getClaims(header.getSecurityToken());
                 optionalClaimsJws = Optional.ofNullable(claims);
-                if(!dapsValidator.checkClaims(claims, null)){
+                if (!dapsValidator.checkClaims(claims, null)) {
                     return ErrorResponse.withDefaultHeader(
                             RejectionReason.NOT_AUTHORIZED, "DAT could not be verified!", connectorId,
                             modelVersion, header.getId());
@@ -157,10 +156,10 @@ public class MessageDispatcher {
             //if an handler exists, let the handle handle the message and return its response
             try {
                 final var handler = (MessageHandler<R>) resolvedHandler.get();
-                if(handler instanceof MessageAndClaimsHandler){
+                if (handler instanceof MessageAndClaimsHandler) {
                     //for MessageAndClaims handlers, also pass parsed DAT claims
                     return ((MessageAndClaimsHandler) handler).handleMessage(header, new MessagePayloadInputstream(payload, objectMapper), optionalClaimsJws);
-                }else{
+                } else {
                     return handler.handleMessage(header, new MessagePayloadInputstream(payload, objectMapper));
                 }
             } catch (MessageHandlerException e) {

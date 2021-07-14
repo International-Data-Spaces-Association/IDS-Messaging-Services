@@ -17,7 +17,7 @@ public class IdsRequestException extends Exception {
 
     public IdsRequestException() { }
 
-    public IdsRequestException(final String message){
+    public IdsRequestException(final String message) {
         super(message);
     }
 }
