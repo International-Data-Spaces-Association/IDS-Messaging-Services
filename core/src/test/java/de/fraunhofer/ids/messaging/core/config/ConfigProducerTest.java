@@ -60,6 +60,7 @@ class ConfigProducerTest {
         assertNotNull(configContainer.getKeyStoreManager().getTrustManager());
         //should be set, when configinterceptor sets it
         assertNotNull(configContainer.getConfigurationModel().getProperties().get("modified"));
+        assertNotNull(configContainer.getConfigurationModel().getProperties().get("preInterceptor"));
         assertDoesNotThrow(() -> configContainer.updateConfiguration(configModel));
     }
 
