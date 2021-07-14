@@ -31,6 +31,7 @@ With this version we switch to the verions-format of semantic versioning. In pri
 ### Added
 - Patch change: Added Maven plugin to generate Apache 2.0 license-header in files
 - Minor change: New feature, Token-Claims can now be accessed
+- Minor change: New feature, the ConfigProducer can now be intercepted by the Connector-Developer (Pre and Post)
 
 ### Changes
 - Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT vs PRODUCTIVE_DEPLOYMENT
