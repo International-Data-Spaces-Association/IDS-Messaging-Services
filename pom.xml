@@ -32,7 +32,7 @@
     </modules>
 
     <properties>
-        <revision>4.2.0.0</revision>
+        <revision>2.0.0-SNAPSHOT</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>

@@ -82,7 +82,7 @@ public class MessageContainer<T> {
      *
      * @return true, if this container saves a RejectionMessage.
      */
-    private boolean isRejection() {
+    public boolean isRejection() {
         return rejectionReason.isPresent();
     }
 
@@ -91,7 +91,7 @@ public class MessageContainer<T> {
      *
      * @return message ID
      */
-    private URI getMessageID() {
+    public URI getMessageID() {
         return underlyingMessage.getId();
     }
 
