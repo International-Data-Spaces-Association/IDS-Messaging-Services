@@ -13,19 +13,19 @@
  */
 package de.fraunhofer.ids.messaging.core.config;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+/**
+ * Interceptor, allowing to perform an action on the configContainer,
+ * right after it was created in the {@link ConfigProducer}.
+ */
+public interface PostConfigProducerInterceptor {
 
-@Component
-@Slf4j
-public class ConfigInterceptor implements ConfigProducerInterceptor {
+    /**
+     * Perform a custom action on the generated configuration.
+     *
+     * @param configContainer container managing configuration, connector and clientprovider
+     * @throws ConfigProducerInterceptorException if an internal error occurs
+     */
+    void perform(ConfigContainer configContainer) throws ConfigProducerInterceptorException;
 
-    @Override
-    public void perform(ConfigContainer configContainer) {
-        if(log.isInfoEnabled()){
-            log.info("modifying configuration using interceptor interface");
-        }
-        var conf = configContainer.getConfigurationModel();
-        conf.setProperty("modified", true);
-    }
 }
+

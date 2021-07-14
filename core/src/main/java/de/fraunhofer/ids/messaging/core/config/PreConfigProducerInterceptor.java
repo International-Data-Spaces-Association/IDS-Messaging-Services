@@ -13,18 +13,20 @@
  */
 package de.fraunhofer.ids.messaging.core.config;
 
+import de.fraunhofer.iais.eis.ConfigurationModel;
+
 /**
- * Interceptor, allowing to perform an action on the configContainer,
- * right after it was created in the {@link ConfigProducer}.
+ * Intercepts ConfigProducer and loads own configuration (e.g from a DB instead of config.json file)
  */
-public interface ConfigProducerInterceptor {
+public interface PreConfigProducerInterceptor {
 
     /**
-     * Perform a custom action on the generated configuration.
+     * Load or build a ConfigurationModel and return it (will be used by ConfigProducer to generate Key/Truststore and ConfigContainer).
      *
-     * @param configContainer container managing configuration, connector and clientprovider
+     * @param properties configproperties of ConfigProducer
+     * @return loaded ConfigurationModel
+     * @throws ConfigProducerInterceptorException if loading a configuration failed
      */
-    void perform(ConfigContainer configContainer);
+    ConfigurationModel perform(ConfigProperties properties) throws ConfigProducerInterceptorException;
 
 }
-
