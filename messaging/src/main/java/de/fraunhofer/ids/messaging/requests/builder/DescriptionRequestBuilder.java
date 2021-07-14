@@ -72,7 +72,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
     /**
      * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.DescriptionRequestMessage}.
      *
-     * @param requestedElement requested element id for message header (null => selfdescription)
+     * @param requestedElement requested element id for message header (null is selfdescription)
      * @return this builder instance
      */
     public DescriptionRequestBuilder<T> operationGet(final URI requestedElement) {
