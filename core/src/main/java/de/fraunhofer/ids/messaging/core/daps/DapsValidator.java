@@ -82,30 +82,34 @@ public class DapsValidator {
     }
 
     /**
-     * Check a given DAT considering additional attributes from the message payload.
-     *
-     * @param token           {@link DynamicAttributeToken} of an incoming Message
-     * @param extraAttributes additional Attributes from the Message Payload
-     * @return true if DAT is valid
+     * @param token incoming DAT token
+     * @return claims extracted from the DAT
+     * @throws ClaimsException if token cannot be parsed using a DAPS public key
      */
-    public boolean checkDat(final DynamicAttributeToken token, final Map<String, Object> extraAttributes) {
+    public Jws<Claims> getClaims(final DynamicAttributeToken token) throws ClaimsException {
         Jws<Claims> claims;
         final var keys = keyProvider.providePublicKeys();
 
         try {
             claims = getClaims(token, keys);
+            return claims;
         } catch (ClaimsException | ExpiredJwtException e) {
-            return false;
+            throw e;
         }
+    }
 
-        if (claims == null) {
-            return false;
-        }
-
+    /**
+     * Check the claims of the DAT.
+     *
+     * @param claims JWS claims of DAT Token
+     * @param extraAttributes extra attributes to be checked
+     * @return true, if claims are valid
+     */
+    public boolean checkClaims(final Jws<Claims> claims, final Map<String, Object> extraAttributes) {
         if (extraAttributes != null && extraAttributes.containsKey("securityProfile")) {
             try {
                 verifySecurityProfile(claims.getBody().get("securityProfile", String.class),
-                                      extraAttributes.get("securityProfile").toString());
+                        extraAttributes.get("securityProfile").toString());
             } catch (ClaimsException e) {
                 if (log.isWarnEnabled()) {
                     log.warn("Security profile does not match Selfdescription");
@@ -121,6 +125,27 @@ public class DapsValidator {
             }
             return false;
         }
+    }
+
+    /**
+     * Check a given DAT considering additional attributes from the message payload.
+     *
+     * @param token           {@link DynamicAttributeToken} of an incoming Message
+     * @param extraAttributes additional Attributes from the Message Payload
+     * @return true if DAT is valid
+     */
+    public boolean checkDat(final DynamicAttributeToken token, final Map<String, Object> extraAttributes) {
+        Jws<Claims> claims;
+        try {
+            claims = getClaims(token);
+        } catch (ClaimsException | ExpiredJwtException e) {
+            return false;
+        }
+        if (claims == null) {
+            return false;
+        }
+
+        return checkClaims(claims, extraAttributes);
     }
 
     /**
