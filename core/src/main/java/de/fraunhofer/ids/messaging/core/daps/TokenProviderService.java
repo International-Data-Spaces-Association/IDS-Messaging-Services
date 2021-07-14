@@ -46,7 +46,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
     final ClientProvider      clientProvider;
     final TokenManagerService tokenManagerService;
@@ -59,6 +58,13 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
     @Value("#{${daps.key.url.kid}}")
     Map<String, String> urlKidMap;
+
+    @Autowired
+    public TokenProviderService(final ClientProvider clientProvider,
+                                final TokenManagerService tokenManagerService) {
+        this.clientProvider = clientProvider;
+        this.tokenManagerService = tokenManagerService;
+    }
 
     /**
      * Return the DAT as a Infomodel {@link DynamicAttributeToken}.
