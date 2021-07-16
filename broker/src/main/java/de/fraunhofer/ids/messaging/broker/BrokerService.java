@@ -101,7 +101,6 @@ public class BrokerService extends InfrastructureService
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
         return requestBuilderService.newRequest()
-                .withPayload(resource)
                 .subjectResource()
                 .useMultipart()
                 .operationDelete(resource.getId())
@@ -148,7 +147,6 @@ public class BrokerService extends InfrastructureService
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
         return requestBuilderService.newRequest()
-                .withPayload(container.getConnector())
                 .subjectConnector()
                 .useMultipart()
                 .operationDelete(container.getConnector().getId())
