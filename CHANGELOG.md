@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [2.0.0] UNRELEASED
+## Version [2.0.0] 2021-07-16
 With this version we switch to the versions-format of semantic versioning. In principle, only the first version-number position is omitted compared to the previous versions.
 
 ### Major Change: MessageContainer
