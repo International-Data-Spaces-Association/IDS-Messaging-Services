@@ -9,6 +9,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [2.0.1] UNRELEASED
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework:spring-core 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-tx 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-web 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-test 5.3.8 -> 5.3.9
+
 ## Version [2.0.0] 2021-07-16
 With this version we switch to the versions-format of semantic versioning. In principle, only the first version-number position is omitted compared to the previous versions.
 
