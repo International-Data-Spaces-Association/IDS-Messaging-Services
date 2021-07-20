@@ -32,7 +32,7 @@
     </modules>
 
     <properties>
-        <revision>2.0.0</revision>
+        <revision>2.0.1</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -164,7 +164,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>5.3.8</version>
+            <version>5.3.9</version>
             <scope>test</scope>
         </dependency>
 
@@ -173,7 +173,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.3.8</version>
+            <version>5.3.9</version>
         </dependency>
 
         <!-- Java Mapping of the IDS Information Model Ontology -->
