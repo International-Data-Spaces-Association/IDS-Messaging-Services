@@ -234,11 +234,11 @@ public class BrokerService extends InfrastructureService
      */
     @Override
     public MessageContainer<String> fullTextSearchBroker(final URI brokerURI,
-                                          final String searchTerm,
-                                          final QueryScope queryScope,
-                                          final QueryTarget queryTarget,
-                                          final int limit,
-                                          final int offset)
+                                                         String searchTerm,
+                                                         final QueryScope queryScope,
+                                                         final QueryTarget queryTarget,
+                                                         final int limit,
+                                                         final int offset)
             throws
             DapsTokenManagerException,
             IOException,
@@ -249,6 +249,17 @@ public class BrokerService extends InfrastructureService
             UnknownResponseException,
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
+
+        //Check whether the search term has already been entered in
+        //quotation marks, if so, these must be removed
+        if (searchTerm.length() >= 2) {
+            final var firstChar = searchTerm.charAt(0);
+            final var lastChar = searchTerm.charAt(searchTerm.length() - 1);
+            if (firstChar == '"' && lastChar == '"') {
+                searchTerm = searchTerm.substring(1, searchTerm.length() - 1);
+            }
+        }
+
         final var payload = String.format(
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
