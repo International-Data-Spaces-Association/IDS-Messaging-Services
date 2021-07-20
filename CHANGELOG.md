@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [2.0.1] UNRELEASED
+## Version [2.0.1] 2021-07-20
 
 ### Changes
 - Patch Change: If the search term for the fulltext broker search is already passed in quotes, these are now removed and the adjusted search termn is passed to the query template.
