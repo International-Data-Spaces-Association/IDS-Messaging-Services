@@ -9,7 +9,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [2.0.1] UNRELEASED
+## Version [3.0.0] UNRELEASED
+
+### Major Change: Dependency Infomodel Artifacts 4.1.1
+- The update of the infomodel artifacts to version 4.1.1 may result in breaking changes for the connector developers.
+One of the possible breaking changes is that all lists are now initialized as empty ArrayList.
+For a complete changelog of artifacts, see: https://github.com/International-Data-Spaces-Association/Java-Representation-of-IDS-Information-Model/blob/main/Changelog.md
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework:spring-core 5.3.8 -> 5.3.9
