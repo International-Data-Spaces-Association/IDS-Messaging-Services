@@ -27,4 +27,13 @@ public class SendMessageException extends Exception {
     public SendMessageException(final Throwable cause) {
         super(cause);
     }
+
+    /**
+     * If request cannot be sent by builder.
+     *
+     * @param message Error message for the exception
+     */
+    public SendMessageException(final String message) {
+        super(message);
+    }
 }
