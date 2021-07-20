@@ -267,7 +267,7 @@ public class IdsRequestBuilder<T> {
      * @throws SerializeException when the payload cannot be serialized
      * @throws ClaimsException when DAT of response is not valid
      * @throws UnknownResponseException when type of response is not known
-     * @throws SendMessageException when an IOException is thrown by the httpclient when sending the message
+     * @throws SendMessageException when Message cannot be sent, because of missing fields or an error in the underlying httpclient
      * @throws MultipartParseException when the response cannot be parsed as multipart
      * @throws IOException when some other error happens while sending the message
      * @throws DeserializeException when response cannot be deserialized
