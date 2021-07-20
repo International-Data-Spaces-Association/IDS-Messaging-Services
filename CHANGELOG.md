@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version [2.0.1] UNRELEASED
 
+### Changes
+- Patch Change: If the search term for the fulltext broker search is already passed in quotes, these are now removed and the adjusted search termn is passed to the query template.
+
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework:spring-core 5.3.8 -> 5.3.9
 - Upgrade: org.springframework:spring-tx 5.3.8 -> 5.3.9
