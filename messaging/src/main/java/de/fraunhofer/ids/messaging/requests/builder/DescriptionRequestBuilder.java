@@ -72,7 +72,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
     /**
      * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.DescriptionRequestMessage}.
      *
-     * @param requestedElement requested element id for message header (null => selfdescription)
+     * @param requestedElement requested element id for message header (null is selfdescription)
      * @return this builder instance
      */
     public DescriptionRequestBuilder<T> operationGet(final URI requestedElement) {
@@ -97,6 +97,14 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");

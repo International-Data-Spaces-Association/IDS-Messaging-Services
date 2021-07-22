@@ -97,7 +97,7 @@ public class IdsRequestBuilder<T> {
      */
     public ArtifactRequestBuilder<T> subjectArtifact() {
         var builder = new ArtifactRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -107,7 +107,8 @@ public class IdsRequestBuilder<T> {
      * @return an ConnectorRequestBuilder with current information of this builder
      */
     public ConnectorRequestBuilder<T> subjectConnector() {
-        var builder = new ConnectorRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider);
+        var builder = new ConnectorRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
+            .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -117,7 +118,8 @@ public class IdsRequestBuilder<T> {
      * @return an ResourceRequestBuilder with current information of this builder
      */
     public ResourceRequestBuilder<T> subjectResource() {
-        var builder = new ResourceRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider);
+        var builder = new ResourceRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -128,7 +130,7 @@ public class IdsRequestBuilder<T> {
      */
     public QueryRequestBuilder<T> subjectQuery() {
         var builder = new QueryRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -139,7 +141,7 @@ public class IdsRequestBuilder<T> {
      */
     public ParticipantRequestBuilder<T> subjectParticipant() {
         var builder = new ParticipantRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -150,7 +152,7 @@ public class IdsRequestBuilder<T> {
      */
     public AppRequestBuilder<T> subjectApp() {
         var builder = new AppRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -161,7 +163,7 @@ public class IdsRequestBuilder<T> {
      */
     public DescriptionRequestBuilder<T> subjectDescription() {
         var builder = new DescriptionRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -172,7 +174,7 @@ public class IdsRequestBuilder<T> {
      */
     public LogRequestBuilder<T> subjectLog() {
         var builder = new LogRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -183,7 +185,7 @@ public class IdsRequestBuilder<T> {
      */
     public ConnectorCertificateRequestBuilder<T> subjectConnectorCertificate() {
         var builder = new ConnectorCertificateRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -194,7 +196,7 @@ public class IdsRequestBuilder<T> {
      */
    public ParticipantCertificateRequestBuilder<T> subjectParticipantCertificate() {
        var builder = new ParticipantCertificateRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-               .withPayload(protocolType);
+               .withPayload(optPayload.orElse(null));
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
@@ -205,7 +207,7 @@ public class IdsRequestBuilder<T> {
      */
    public ContractRequestBuilder<T> subjectContract() {
        var builder = new ContractRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-               .withPayload(protocolType);
+               .withPayload(optPayload.orElse(null));
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
@@ -216,7 +218,7 @@ public class IdsRequestBuilder<T> {
      */
    public CommandRequestBuilder<T> subjectCommand() {
        var builder = new CommandRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-               .withPayload(protocolType);
+               .withPayload(optPayload.orElse(null));
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
@@ -227,7 +229,7 @@ public class IdsRequestBuilder<T> {
      */
    public ContractSupplementRequestBuilder<T> subjectContractSupplement() {
        var builder = new ContractSupplementRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-               .withPayload(protocolType);
+               .withPayload(optPayload.orElse(null));
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
@@ -238,7 +240,7 @@ public class IdsRequestBuilder<T> {
      */
     public ContractOfferRequestBuilder<T> subjectContractOffer() {
         var builder = new ContractOfferRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -249,7 +251,7 @@ public class IdsRequestBuilder<T> {
      */
     public AccessTokenRequestBuilder<T> subjectAccessToken() {
         var builder = new AccessTokenRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
@@ -265,7 +267,7 @@ public class IdsRequestBuilder<T> {
      * @throws SerializeException when the payload cannot be serialized
      * @throws ClaimsException when DAT of response is not valid
      * @throws UnknownResponseException when type of response is not known
-     * @throws SendMessageException when an IOException is thrown by the httpclient when sending the message
+     * @throws SendMessageException when Message cannot be sent, because of missing fields or an error in the underlying httpclient
      * @throws MultipartParseException when the response cannot be parsed as multipart
      * @throws IOException when some other error happens while sending the message
      * @throws DeserializeException when response cannot be deserialized

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
@@ -55,52 +56,87 @@ public class ConfigProducer {
      *
      * @param properties the {@link ConfigProperties} parsed from an application.properties file
      */
-    public ConfigProducer(final ConfigProperties properties) {
-        try {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Loading configuration from %s", properties.getPath()));
-            }
+    public ConfigProducer(final ConfigProperties properties,
+                          Optional<PreConfigProducerInterceptor> preInterceptor,
+                          Optional<PostConfigProducerInterceptor> postInterceptor) {
 
-            final var config = getConfiguration(properties);
+        ConfigurationModel configModel = null;
 
-            if (log.isInfoEnabled()) {
-                log.info("Importing configuration from file");
+        if (preInterceptor.isPresent()) {
+            try {
+                configModel = preInterceptor.get().perform(properties);
+            } catch (ConfigProducerInterceptorException e) {
+                if (log.isErrorEnabled()) {
+                    log.error("PreConfigProducerInterceptor failed! " + e.getMessage());
+                }
             }
-
-            final var configModel = SERIALIZER.deserialize(config, ConfigurationModel.class);
-
-            if (log.isInfoEnabled()) {
-                //initialize the KeyStoreManager with Key and Truststore locations in the ConfigurationModel
-                log.info("Initializing KeyStoreManager");
-            }
-            final var manager = new KeyStoreManager(configModel, properties.getKeyStorePassword().toCharArray(),
-                                              properties.getTrustStorePassword().toCharArray(),
-                                              properties.getKeyAlias());
-
-            if (log.isInfoEnabled()) {
-                log.info("Imported existing configuration from file.");
-            }
-            configContainer = new ConfigContainer(configModel, manager);
-
-            if (log.isInfoEnabled()) {
-                log.info("Creating ClientProvider");
-            }
-            clientProvider = new ClientProvider(configContainer);
-            configContainer.setClientProvider(clientProvider);
-
-        } catch (IOException e) {
-            if (log.isErrorEnabled()) {
-                log.error("Configuration cannot be parsed! " + e.getMessage());
-            }
-        } catch (KeyStoreManagerInitializationException e) {
-            if (log.isErrorEnabled()) {
-                log.error("KeyStoreManager could not be initialized! " + e.getMessage());
-            }
-        } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            if (log.isErrorEnabled()) {
-                log.error("ClientProvider could not be initialized! " + e.getMessage());
+        } else {
+            try {
+                configModel = loadConfig(properties);
+                if (log.isInfoEnabled()) {
+                    log.info("Imported existing configuration from file.");
+                }
+            } catch (IOException e) {
+                if (log.isErrorEnabled()) {
+                    log.error("Configuration cannot be parsed! " + e.getMessage());
+                }
             }
         }
+
+        if (configModel != null) {
+            try {
+                if (log.isInfoEnabled()) {
+                    log.info("Initializing KeyStoreManager");
+                }
+                //initialize the KeyStoreManager with Key and Truststore locations in the ConfigurationModel
+                final var manager = new KeyStoreManager(configModel, properties.getKeyStorePassword().toCharArray(),
+                        properties.getTrustStorePassword().toCharArray(),
+                        properties.getKeyAlias());
+
+                configContainer = new ConfigContainer(configModel, manager);
+
+                if (log.isInfoEnabled()) {
+                    log.info("Creating ClientProvider");
+                }
+                clientProvider = new ClientProvider(configContainer);
+                configContainer.setClientProvider(clientProvider);
+
+                postInterceptor.ifPresent(
+                        interceptor -> {
+                            try {
+                                interceptor.perform(configContainer);
+                            } catch (ConfigProducerInterceptorException e) {
+                                if (log.isErrorEnabled()) {
+                                    log.error("PreConfigProducerInterceptor failed! " + e.getMessage());
+                                }
+                            }
+                        }
+                );
+
+            } catch (KeyStoreManagerInitializationException e) {
+                if (log.isErrorEnabled()) {
+                    log.error("KeyStoreManager could not be initialized! " + e.getMessage());
+                }
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                if (log.isErrorEnabled()) {
+                    log.error("ClientProvider could not be initialized! " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private ConfigurationModel loadConfig(final ConfigProperties properties) throws IOException {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Loading configuration from %s", properties.getPath()));
+        }
+
+        final var config = getConfiguration(properties);
+
+        if (log.isInfoEnabled()) {
+            log.info("Importing configuration from file");
+        }
+
+        return SERIALIZER.deserialize(config, ConfigurationModel.class);
     }
 
     private String getConfiguration(final ConfigProperties properties) throws IOException {

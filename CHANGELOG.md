@@ -9,7 +9,26 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.2.0.0] UNRELEASED
+## Version [3.0.0] 2021-07-20
+
+### Major Change: Dependency Infomodel Artifacts 4.1.1
+- The update of the infomodel artifacts to version 4.1.1 may result in breaking changes for the connector developers.
+One of the possible breaking changes is that all lists are now initialized as empty ArrayList.
+For a complete changelog of artifacts, see: https://github.com/International-Data-Spaces-Association/Java-Representation-of-IDS-Information-Model/blob/main/Changelog.md
+
+## Version [2.0.1] 2021-07-20
+
+### Changes
+- Patch Change: If the search term for the fulltext broker search is already passed in quotes, these are now removed and the adjusted search termn is passed to the query template.
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework:spring-core 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-tx 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-web 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-test 5.3.8 -> 5.3.9
+
+## Version [2.0.0] 2021-07-16
+With this version we switch to the versions-format of semantic versioning. In principle, only the first version-number position is omitted compared to the previous versions.
 
 ### Major Change: MessageContainer
 - Services now return MessageContainer, instead of xyzMAP tied to a specific expected response
@@ -28,6 +47,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Patch change: Added Maven plugin to generate Apache 2.0 license-header in files
+- Minor change: New feature, Token-Claims can now be accessed
+- Minor change: New feature, the ConfigProducer can now be intercepted by the Connector-Developer (Pre and Post)
 
 ### Changes
 - Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT vs PRODUCTIVE_DEPLOYMENT

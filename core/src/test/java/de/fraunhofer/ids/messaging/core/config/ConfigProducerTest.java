@@ -31,17 +31,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SpringBootTest(classes = TestSpringApp.class)
 @TestPropertySource(locations = "classpath:application.properties")
 class ConfigProducerTest {
-    //TODO check through .p12 files in test resources, replace everything there with localhost certificates just for testing
 
     @Autowired
     ConfigContainer configContainer;
@@ -62,6 +58,9 @@ class ConfigProducerTest {
         assertNotNull(clientProvider.getClient());
         assertNotNull(configContainer.getKeyStoreManager().getCert());
         assertNotNull(configContainer.getKeyStoreManager().getTrustManager());
+        //should be set, when configinterceptor sets it
+        assertNotNull(configContainer.getConfigurationModel().getProperties().get("modified"));
+        assertNotNull(configContainer.getConfigurationModel().getProperties().get("preInterceptor"));
         assertDoesNotThrow(() -> configContainer.updateConfiguration(configModel));
     }
 

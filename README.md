@@ -17,11 +17,7 @@ All participants of IDS-based data ecosystems must be able to communicate with e
 
 ## Overview: Versioning
 
-Due to the importance of the Infomodel-Java-Artifacts used in the IDS-Messaging-Services, the IDS-Messaging-Services follow an extended semantic versioning syntax for version numbering. The version number of the IDS-Messaging-Services artifacts is composed of 4 digits. The first digit of the version number is reserved for specifying the major version of the Infomodel-Java-Artifacts used. The digits 2 to 4 of the version number correspond to the actual versioning of the IDS-Messaging-Service artifact and follows the SemanticVersioning system.
-
-The scheme is explained using the following example:
-
-**4.1.0.0** = Infomodel-Java-Artifacts Major Version 4 + IDS-Messaging-Services Semantic-Versioning 1.0.0
+The IDS-Messaging-Service follows the SemanticVersioning system.
 
 ## Overview: IDS-Infomodel-Artifacts
 
@@ -29,9 +25,9 @@ The following IDS-Infomodel-Artifacts are used as dependencies.
 
 | Group | Artifact | Version |
 | ------ | ------ | ------ | 
-| de.fraunhofer.iais.eis.ids.infomodel | java | 4.1.0 |
-| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.1.0 |
-| de.fraunhofer.iais.eis.ids | interaction | 4.1.0 |
+| de.fraunhofer.iais.eis.ids.infomodel | java | 4.1.1 |
+| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.1.1 |
+| de.fraunhofer.iais.eis.ids | interaction | 4.1.1 |
 
 ## Overview: Supported IDS-Message protocols
 

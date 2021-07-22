@@ -11,13 +11,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.requests.exceptions;
+package de.fraunhofer.ids.messaging.core.config;
 
-public class IdsRequestException extends Exception {
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-    public IdsRequestException() { }
+@Component
+@Slf4j
+public class PostConfigInterceptor implements PostConfigProducerInterceptor {
 
-    public IdsRequestException(final String message) {
-        super(message);
+    @Override
+    public void perform(final ConfigContainer configContainer) {
+        if (log.isInfoEnabled()) {
+            log.info("modifying configuration using interceptor interface");
+        }
+        var conf = configContainer.getConfigurationModel();
+        conf.setProperty("modified", true);
     }
 }
