@@ -41,4 +41,17 @@ public interface IDSInfrastructureService {
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException;
+
+    MessageContainer<?> requestSelfDescription( @NonNull URI uri, @NonNull URI requestedElement ) throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 }
