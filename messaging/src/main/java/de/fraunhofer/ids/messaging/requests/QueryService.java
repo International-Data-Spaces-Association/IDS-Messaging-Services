@@ -19,7 +19,7 @@ import java.net.URI;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
-import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
+import de.fraunhofer.ids.messaging.util.FullTextQueryTemplate;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -61,7 +61,7 @@ public class QueryService extends InfrastructureService implements
      * @return
      */
     @Override
-    public MessageContainer<Object> query( @NonNull final URI targetURI,
+    public MessageContainer<String> query( @NonNull final URI targetURI,
                                            @NonNull final String query,
                                            @NonNull final QueryLanguage queryLanguage,
                                            @NonNull final QueryScope queryScope,
@@ -79,7 +79,7 @@ public class QueryService extends InfrastructureService implements
             UnexpectedPayloadException {
         super.logBuildingHeader();
         return requestBuilderService
-                .newRequest()
+                .newRequestExpectingType(String.class)
                 .withPayload(query)
                 .subjectQuery()
                 .useMultipart()
@@ -92,7 +92,7 @@ public class QueryService extends InfrastructureService implements
      * @return
      */
     @Override
-    public MessageContainer<Object> boundFullTextSearch( final URI targetURI,
+    public MessageContainer<String> boundFullTextSearch( final URI targetURI,
                                                     final String searchTerm,
                                                     final QueryScope queryScope,
                                                     final QueryTarget queryTarget )
@@ -118,8 +118,8 @@ public class QueryService extends InfrastructureService implements
      * @return
      */
     @Override
-    public MessageContainer<Object> fullTextSearch( final URI targetURI,
-                                                    final String searchTerm,
+    public MessageContainer<String> fullTextSearch( final URI targetURI,
+                                                    String searchTerm,
                                                     final QueryScope queryScope,
                                                     final QueryTarget queryTarget,
                                                     final int limit,
@@ -136,16 +136,26 @@ public class QueryService extends InfrastructureService implements
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+
+        //Check whether the search term has already been entered in
+        //quotation marks, if so, these must be removed
+        if (searchTerm.length() >= 2) {
+            final var firstChar = searchTerm.charAt(0);
+            final var lastChar = searchTerm.charAt(searchTerm.length() - 1);
+            if (firstChar == '"' && lastChar == '"') {
+                searchTerm = searchTerm.substring(1, searchTerm.length() - 1);
+            }
+        }
+
         final var payload = String.format(
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
                 searchTerm, limit, offset);
         return requestBuilderService
-                .newRequest()
+                .newRequestExpectingType(String.class)
                 .withPayload(payload)
                 .subjectQuery()
                 .useMultipart()
                 .operationSend(QueryLanguage.SPARQL, queryScope, queryTarget)
                 .execute(targetURI);
     }
-
 }

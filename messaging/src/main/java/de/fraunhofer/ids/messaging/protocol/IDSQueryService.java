@@ -49,7 +49,7 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Response.
      */
-    MessageContainer<Object> query( @NonNull URI targetURI,
+    MessageContainer<String> query( @NonNull URI targetURI,
                                     @NonNull String query,
                                     @NonNull QueryLanguage queryLanguage,
                                     @NonNull QueryScope queryScope,
@@ -77,7 +77,7 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Response.
      */
-    MessageContainer<Object> boundFullTextSearch( URI targetURI,
+    MessageContainer<String> boundFullTextSearch( URI targetURI,
                                              String searchTerm,
                                              QueryScope queryScope,
                                              QueryTarget queryTarget )
@@ -106,7 +106,7 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating the DAT from the Response.
      */
-    MessageContainer<Object> fullTextSearch( URI targetURI,
+    MessageContainer<String> fullTextSearch( URI targetURI,
                                              String searchTerm,
                                              QueryScope queryScope,
                                              QueryTarget queryTarget,

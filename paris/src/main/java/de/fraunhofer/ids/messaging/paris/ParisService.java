@@ -151,5 +151,4 @@ public class ParisService extends InfrastructureService
                 .execute(parisURI);
 
     }
-
 }

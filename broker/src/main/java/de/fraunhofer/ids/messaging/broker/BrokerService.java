@@ -17,7 +17,6 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -29,11 +28,12 @@ import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.QueryService;
+import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
-import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
-import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.AccessLevel;
@@ -62,6 +62,7 @@ public class BrokerService extends InfrastructureService
     NotificationTemplateProvider notificationTemplateProvider;
     RequestTemplateProvider requestTemplateProvider;
     IdsRequestBuilderService requestBuilderService;
+    QueryService queryService;
 
     /**
      * BrokerService constructor.
@@ -82,6 +83,12 @@ public class BrokerService extends InfrastructureService
         this.notificationTemplateProvider = templateProvider;
         this.requestTemplateProvider = requestTemplateProvider;
         this.requestBuilderService = idsRequestBuilderService;
+
+        queryService = new QueryService(
+                container,
+                tokenProvider,
+                messageService,
+                idsRequestBuilderService);
     }
 
     /**
@@ -194,14 +201,8 @@ public class BrokerService extends InfrastructureService
             UnknownResponseException,
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
-        logBuildingHeader();
-        return requestBuilderService
-                .newRequestExpectingType(String.class)
-                .withPayload(query)
-                .subjectQuery()
-                .useMultipart()
-                .operationSend(queryLanguage, queryScope, queryTarget)
-                .execute(brokerURI);
+        return queryService
+                .query(brokerURI, query, queryLanguage, queryScope, queryTarget);
     }
 
     /**
@@ -234,7 +235,7 @@ public class BrokerService extends InfrastructureService
      */
     @Override
     public MessageContainer<String> fullTextSearchBroker(final URI brokerURI,
-                                                         String searchTerm,
+                                                         final String searchTerm,
                                                          final QueryScope queryScope,
                                                          final QueryTarget queryTarget,
                                                          final int limit,
@@ -249,26 +250,8 @@ public class BrokerService extends InfrastructureService
             UnknownResponseException,
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
-
-        //Check whether the search term has already been entered in
-        //quotation marks, if so, these must be removed
-        if (searchTerm.length() >= 2) {
-            final var firstChar = searchTerm.charAt(0);
-            final var lastChar = searchTerm.charAt(searchTerm.length() - 1);
-            if (firstChar == '"' && lastChar == '"') {
-                searchTerm = searchTerm.substring(1, searchTerm.length() - 1);
-            }
-        }
-
-        final var payload = String.format(
-                FullTextQueryTemplate.FULL_TEXT_QUERY,
-                searchTerm, limit, offset);
-        return requestBuilderService
-                .newRequestExpectingType(String.class)
-                .withPayload(payload)
-                .subjectQuery()
-                .useMultipart()
-                .operationSend(QueryLanguage.SPARQL, queryScope, queryTarget)
-                .execute(brokerURI);
+        return queryService
+                .fullTextSearch(brokerURI, searchTerm, queryScope,
+                                queryTarget, limit, offset);
     }
 }
