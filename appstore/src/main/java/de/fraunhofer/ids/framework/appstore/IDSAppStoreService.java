@@ -41,12 +41,14 @@ public interface IDSAppStoreService {
      *
      * @return Response MAP with the SelfDescription in the payload as an AppStore
      *
-     * @throws MultipartParseException if response could not be parsed to header and payload.@throws ClaimsException
-     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws MultipartParseException if response could not be parsed to
+     * header and payload.@throws ClaimsException
+     * @throws IOException if message could not be sent
+     * or Serializer could not parse RDF to Java Object.
      * @throws DapsTokenManagerException if no DAT for sending the message could be received.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      */
-    MessageContainer<Object> requestAppDescription( URI appStoreURI, URI app)
+    MessageContainer<Object> requestAppDescription(URI appStoreURI, URI app)
             throws
             ClaimsException,
             MultipartParseException,
@@ -60,12 +62,14 @@ public interface IDSAppStoreService {
      *
      * @return Response MAP with the SelfDescription in the payload as AppResource
      *
-     * @throws MultipartParseException if response could not be parsed to header and payload.@throws ClaimsException
-     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws MultipartParseException if response could not be parsed to
+     * header and payload.@throws ClaimsException
+     * @throws IOException if message could not be sent or Serializer
+     * could not parse RDF to Java Object.
      * @throws DapsTokenManagerException if no DAT for sending the message could be received.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      */
-    MessageContainer<Object> requestAppStoreDescription( URI appStoreURI)
+    MessageContainer<Object> requestAppStoreDescription(URI appStoreURI)
             throws
             ClaimsException,
             IOException,
@@ -80,12 +84,14 @@ public interface IDSAppStoreService {
      *
      * @return Response MAP with the SelfDescription in the payload as String
      *
-     * @throws MultipartParseException if response could not be parsed to header and payload.@throws ClaimsException
-     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
+     * @throws MultipartParseException if response could not be parsed
+     * to header and payload.@throws ClaimsException
+     * @throws IOException if message could not be sent or
+     * Serializer could not parse RDF to Java Object.
      * @throws DapsTokenManagerException if no DAT for sending the message could be received.
      * @throws ClaimsException if DAT of incoming message could not be validated.
      */
-    MessageContainer<Object> requestAppArtifact( URI appStoreURI, URI app)
+    MessageContainer<Object> requestAppArtifact(URI appStoreURI, URI app)
             throws
             DapsTokenManagerException,
             ClaimsException,

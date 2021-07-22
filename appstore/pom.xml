@@ -25,7 +25,6 @@
         <version>${revision}</version>
     </parent>
 
-
     <artifactId>appstore</artifactId>
     <packaging>jar</packaging>
 
@@ -38,7 +37,7 @@
     </licenses>
 
     <dependencies>
-        <!-- IDS-Framework Messaging-Module Dependency -->
+        <!-- IDS-Messaging-Services Dependency -->
         <dependency>
             <groupId>de.fraunhofer.ids.messaging</groupId>
             <artifactId>messaging</artifactId>
@@ -46,16 +45,4 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-project-info-reports-plugin -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.1.1</version>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>

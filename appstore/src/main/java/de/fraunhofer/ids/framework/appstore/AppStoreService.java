@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * Generates  ids multipart messages and sends them to the App Store
+ * Generates  ids multipart messages and sends them to the App Store.
  */
 @Slf4j
 @Service
@@ -46,6 +46,9 @@ import org.springframework.stereotype.Service;
 public class AppStoreService extends InfrastructureService
         implements IDSAppStoreService {
 
+    /**
+     * The IdsRequestBuilderService.
+     */
     IdsRequestBuilderService requestBuilderService;
 
     /**
@@ -67,10 +70,9 @@ public class AppStoreService extends InfrastructureService
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
-    public MessageContainer<Object> requestAppStoreDescription( final URI appStoreURI )
+    public MessageContainer<Object> requestAppStoreDescription(final URI appStoreURI)
             throws
             IOException,
             DapsTokenManagerException,
@@ -91,8 +93,11 @@ public class AppStoreService extends InfrastructureService
                                     .execute(appStoreURI);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<Object> requestAppDescription( final URI appStoreURI, final URI app )
+    public MessageContainer<Object> requestAppDescription(final URI appStoreURI, final URI app)
             throws
             IOException,
             DapsTokenManagerException,
@@ -114,8 +119,11 @@ public class AppStoreService extends InfrastructureService
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MessageContainer<Object> requestAppArtifact( final URI appStoreURI, final URI app )
+    public MessageContainer<Object> requestAppArtifact(final URI appStoreURI, final URI app)
             throws
             IOException,
             DapsTokenManagerException,
