@@ -37,9 +37,19 @@ import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.NonNull;
 
+/**
+ * Service class to build Query-Messages (e.g. for Broker and Vocol).
+ */
 public class QueryService extends InfrastructureService implements
         IDSQueryService {
+    /**
+     * The default limit for the query.
+     */
     static int DEFAULT_LIMIT = 50;
+
+    /**
+     * The default offset for the query.
+     */
     static int DEFAULT_OFFSET = 0;
 
     /**
@@ -47,12 +57,13 @@ public class QueryService extends InfrastructureService implements
      * @param container the ConfigContainer
      * @param tokenProvider the DapsTokenProvider
      * @param messageService the MessageService
+     * @param idsRequestBuilderService the IdsRequestBuilderService
      */
     public QueryService(
-            ConfigContainer container,
-            DapsTokenProvider tokenProvider,
-            MessageService messageService,
-            IdsRequestBuilderService idsRequestBuilderService) {
+            final ConfigContainer container,
+            final DapsTokenProvider tokenProvider,
+            final MessageService messageService,
+            final IdsRequestBuilderService idsRequestBuilderService) {
         super(container, tokenProvider, messageService, idsRequestBuilderService);
     }
 
@@ -61,11 +72,11 @@ public class QueryService extends InfrastructureService implements
      * @return
      */
     @Override
-    public MessageContainer<String> query( @NonNull final URI targetURI,
-                                           @NonNull final String query,
-                                           @NonNull final QueryLanguage queryLanguage,
-                                           @NonNull final QueryScope queryScope,
-                                           @NonNull final QueryTarget queryTarget )
+    public MessageContainer<String> query(@NonNull final URI targetURI,
+                                          @NonNull final String query,
+                                          @NonNull final QueryLanguage queryLanguage,
+                                          @NonNull final QueryScope queryScope,
+                                          @NonNull final QueryTarget queryTarget)
             throws IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -92,10 +103,10 @@ public class QueryService extends InfrastructureService implements
      * @return
      */
     @Override
-    public MessageContainer<String> boundFullTextSearch( final URI targetURI,
+    public MessageContainer<String> boundFullTextSearch(final URI targetURI,
                                                     final String searchTerm,
                                                     final QueryScope queryScope,
-                                                    final QueryTarget queryTarget )
+                                                    final QueryTarget queryTarget)
             throws DapsTokenManagerException,
             IOException,
             MultipartParseException,
@@ -118,12 +129,12 @@ public class QueryService extends InfrastructureService implements
      * @return
      */
     @Override
-    public MessageContainer<String> fullTextSearch( final URI targetURI,
-                                                    String searchTerm,
-                                                    final QueryScope queryScope,
-                                                    final QueryTarget queryTarget,
-                                                    final int limit,
-                                                    final int offset )
+    public MessageContainer<String> fullTextSearch(final URI targetURI,
+                                                   String searchTerm,
+                                                   final QueryScope queryScope,
+                                                   final QueryTarget queryTarget,
+                                                   final int limit,
+                                                   final int offset)
             throws
             DapsTokenManagerException,
             IOException,
