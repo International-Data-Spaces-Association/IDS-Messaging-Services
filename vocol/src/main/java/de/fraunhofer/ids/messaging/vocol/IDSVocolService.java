@@ -15,5 +15,8 @@ package de.fraunhofer.ids.messaging.vocol;
 
 import de.fraunhofer.ids.messaging.protocol.IDSQueryService;
 
+/**
+ * Interface for service classes for Vocol communication.
+ */
 public interface IDSVocolService extends IDSQueryService {
 }

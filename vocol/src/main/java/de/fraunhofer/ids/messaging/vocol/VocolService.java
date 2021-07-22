@@ -18,26 +18,31 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.requests.QueryService;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+/**
+ * Vocol Communication Controller.
+ */
 @Slf4j
 @Component
-public class VocolService extends QueryService implements IDSVocolService{
-    IdsRequestBuilderService requestBuilderService;
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class VocolService extends QueryService implements IDSVocolService {
     /**
      * QueryService constructor.
      *
      * @param container      the ConfigContainer
      * @param tokenProvider  the DapsTokenProvider
      * @param messageService the MessageService
+     * @param idsRequestBuilderService  the idsRequestBuilderService
      */
     public VocolService(
-            ConfigContainer container,
-            DapsTokenProvider tokenProvider,
-            MessageService messageService,
-            IdsRequestBuilderService idsRequestBuilderService ) {
+            final ConfigContainer container,
+            final DapsTokenProvider tokenProvider,
+            final MessageService messageService,
+            final IdsRequestBuilderService idsRequestBuilderService) {
         super(container, tokenProvider, messageService, idsRequestBuilderService);
-        this.requestBuilderService = idsRequestBuilderService;
     }
 }
