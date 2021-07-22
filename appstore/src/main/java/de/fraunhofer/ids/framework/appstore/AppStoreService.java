@@ -114,7 +114,7 @@ public class AppStoreService extends InfrastructureService
         return requestBuilderService.newRequest()
                                     .subjectDescription()
                                     .useMultipart()
-                                    .operationGet(null)
+                                    .operationGet(app)
                                     .execute(appStoreURI);
 
     }
