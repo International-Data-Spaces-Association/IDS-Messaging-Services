@@ -44,10 +44,13 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@FieldDefaults( makeFinal = true, level = AccessLevel.PRIVATE )
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ParisService extends InfrastructureService
         implements IDSParisService {
 
+    /**
+     * The IdsRequestBuilderService.
+     */
     IdsRequestBuilderService requestBuilderService;
 
     /**
@@ -56,10 +59,10 @@ public class ParisService extends InfrastructureService
      * @param messageService the MessageService
      * @param idsRequestBuilderService service to send request messages
      */
-    public ParisService( final ConfigContainer container,
-                         final DapsTokenProvider tokenProvider,
-                         final MessageService messageService,
-                         final IdsRequestBuilderService idsRequestBuilderService) {
+    public ParisService(final ConfigContainer container,
+                        final DapsTokenProvider tokenProvider,
+                        final MessageService messageService,
+                        final IdsRequestBuilderService idsRequestBuilderService) {
         super(container, tokenProvider, messageService, idsRequestBuilderService);
         this.requestBuilderService = idsRequestBuilderService;
     }
@@ -69,7 +72,7 @@ public class ParisService extends InfrastructureService
      */
     @Override
     public MessageContainer<?> updateParticipantAtParIS(
-            final URI parisURI, final Participant participant )
+            final URI parisURI, final Participant participant)
             throws
             DapsTokenManagerException,
             ClaimsException,
@@ -83,12 +86,13 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .withPayload(participant)
-                                    .subjectParticipant()
-                                    .useMultipart()
-                                    .operationUpdate(participant.getId())
-                                    .execute(parisURI);
+        return requestBuilderService
+                .newRequest()
+                .withPayload(participant)
+                .subjectParticipant()
+                .useMultipart()
+                .operationUpdate(participant.getId())
+                .execute(parisURI);
     }
 
 
@@ -97,7 +101,7 @@ public class ParisService extends InfrastructureService
      */
     @Override
     public MessageContainer<?> unregisterAtParIS(
-            final URI parisURI, final URI participantUri )
+            final URI parisURI, final URI participantUri)
             throws
             DapsTokenManagerException,
             ClaimsException,
@@ -111,11 +115,12 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .subjectParticipant()
-                                    .useMultipart()
-                                    .operationDelete(participantUri)
-                                    .execute(parisURI);
+        return requestBuilderService
+                .newRequest()
+                .subjectParticipant()
+                .useMultipart()
+                .operationDelete(participantUri)
+                .execute(parisURI);
     }
 
     /**
@@ -124,7 +129,7 @@ public class ParisService extends InfrastructureService
      */
     @Override
     public MessageContainer<Object> requestParticipant(
-            final URI parisURI, final URI participantUri )
+            final URI parisURI, final URI participantUri)
             throws
             DapsTokenManagerException,
             ClaimsException,
@@ -138,11 +143,12 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .subjectDescription()
-                                    .useMultipart()
-                                    .operationGet(participantUri)
-                                    .execute(parisURI);
+        return requestBuilderService
+                .newRequest()
+                .subjectDescription()
+                .useMultipart()
+                .operationGet(participantUri)
+                .execute(parisURI);
 
     }
 

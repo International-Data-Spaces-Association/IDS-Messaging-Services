@@ -29,15 +29,17 @@ import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
+/**
+ * Interface for service classes for ParIS communication.
+ */
 public interface IDSParisService {
     /**
      * Create or Update {@link Participant}
      * at {@link de.fraunhofer.iais.eis.ParIS}.
+     *
      * @param parisURI URI of the ParIS
      * @param participant {@link Participant} to be created or updated
-     *
      * @return MessageProcessedNotification in Message and Payload object
-     *
      * @throws ClaimsException if DAT of incoming message could not be validated.
      * @throws MultipartParseException if response could not be parsed to header
      * and payload.
@@ -48,7 +50,7 @@ public interface IDSParisService {
      */
     MessageContainer<?> updateParticipantAtParIS(
             URI parisURI,
-            Participant participant )
+            Participant participant)
             throws
             DapsTokenManagerException,
             ClaimsException,
@@ -63,11 +65,10 @@ public interface IDSParisService {
             DeserializeException;
 
     /**
+     * Unregister the connector at the ParIS.
+     *
      * @param parisURI URI of the ParIS
-     * @param participantURI URI of the {@ link Participant} to be unregistered
-     *
-     * @return MessageProcessedNotification in Message and Payload object
-     *
+     * @param participantURI URI of the {@link Participant} to be unregistered
      * @throws DapsTokenManagerException if no DAT for sending the message could
      * be received.
      * @throws ClaimsException if DAT of incoming message could not be validated.
@@ -75,7 +76,7 @@ public interface IDSParisService {
      * and payload.
      * @throws IOException if message could not be sent or Serializer could not
      * parse RDF to Java Object.
-     * @return
+     * @return The MessageContainer.
      */
     MessageContainer<?> unregisterAtParIS(
             URI parisURI, URI participantURI)
@@ -98,9 +99,6 @@ public interface IDSParisService {
      *
      * @param parisURI URI of the {@link de.fraunhofer.iais.eis.ParIS}
      * @param participantUri URI of the {@link Participant} to be requested
-     *
-     * @return Description Response Message and requested Participant
-     *
      * @throws DapsTokenManagerException if no DAT for sending the message could
      * be received.
      * @throws ClaimsException if DAT of incoming message could not be validated.
@@ -108,6 +106,7 @@ public interface IDSParisService {
      * and payload.
      * @throws IOException if message could not be sent or Serializer could not
      * parse RDF to Java Object.
+     * @return The MessageContainer.
      */
     MessageContainer<Object> requestParticipant(
             URI parisURI, URI participantUri)
@@ -115,11 +114,12 @@ public interface IDSParisService {
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException, ShaclValidatorException, SerializeException,
-            RejectionException, UnknownResponseException, SendMessageException,
-            UnexpectedPayloadException, DeserializeException;
-
-
-
-
+            IOException,
+            ShaclValidatorException,
+            SerializeException,
+            RejectionException,
+            UnknownResponseException,
+            SendMessageException,
+            UnexpectedPayloadException,
+            DeserializeException;
 }

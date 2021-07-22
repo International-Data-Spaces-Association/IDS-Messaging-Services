@@ -25,7 +25,6 @@
         <version>${revision}</version>
     </parent>
 
-
     <artifactId>paris</artifactId>
     <packaging>jar</packaging>
 
@@ -46,17 +45,6 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-project-info-reports-plugin -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.1.2</version>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <build>
         <plugins>
