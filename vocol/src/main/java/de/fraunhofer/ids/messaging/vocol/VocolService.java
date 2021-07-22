@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class VocolService extends QueryService implements IDSVocolService {
     /**
-     * QueryService constructor.
+     * VocolService constructor.
      *
      * @param container      the ConfigContainer
      * @param tokenProvider  the DapsTokenProvider
