@@ -11,12 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.requests;
+package de.fraunhofer.ids.framework.appstore;
 
 import java.io.IOException;
 import java.net.URI;
 
-import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -24,32 +23,57 @@ import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
-import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
-import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.InfrastructureService;
+import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+/**
+ * Generates  ids multipart messages and sends them to the App Store.
+ */
 @Slf4j
-@RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
-public abstract class InfrastructureService  {
-    ConfigContainer          container;
-    DapsTokenProvider        tokenProvider;
-    MessageService           messageService;
+@Service
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class AppStoreService extends InfrastructureService
+        implements IDSAppStoreService {
+
+    /**
+     * The IdsRequestBuilderService.
+     */
     IdsRequestBuilderService requestBuilderService;
 
-    public MessageContainer<?> requestSelfDescription(@NonNull final URI uri) throws
+    /**
+     * Creates the IDSAppStore Communication controller.
+     *
+     * @param container      Configuration container
+     * @param tokenProvider  providing DAT Token for RequestMessage
+     * @param messageService providing Messaging functionality
+     * @param idsRequestBuilderService service to send request messages
+     */
+    public AppStoreService(
+            final ConfigContainer container,
+            final DapsTokenProvider tokenProvider,
+            final MessageService messageService,
+            final IdsRequestBuilderService idsRequestBuilderService) {
+        super(container, tokenProvider, messageService, idsRequestBuilderService);
+        this.requestBuilderService = idsRequestBuilderService;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MessageContainer<Object> requestAppStoreDescription(final URI appStoreURI)
+            throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -66,11 +90,15 @@ public abstract class InfrastructureService  {
                                     .subjectDescription()
                                     .useMultipart()
                                     .operationGet(null)
-                                    .execute(uri);
-
+                                    .execute(appStoreURI);
     }
 
-    public MessageContainer<?> requestSelfDescription(@NonNull final URI uri, URI requestedElement) throws
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MessageContainer<Object> requestAppDescription(final URI appStoreURI, final URI app)
+            throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -86,48 +114,33 @@ public abstract class InfrastructureService  {
         return requestBuilderService.newRequest()
                                     .subjectDescription()
                                     .useMultipart()
-                                    .operationGet(requestedElement)
-                                    .execute(uri);
+                                    .operationGet(app)
+                                    .execute(appStoreURI);
 
     }
 
     /**
-     * Check if incoming response if of expected type, throw an IOException with information, if it is not.
-     *
-     * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
-     * @param expectedType Expected type response MAP should have
-     * @param <T> expected Type as generic
-     * @return {@link MessageAndPayload object specialized to the expected Message}
-     * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
+     * {@inheritDoc}
      */
-    protected <T extends MessageAndPayload<?, ?>> T expectMapOfTypeT(
-            final MessageAndPayload<?, ?> response,
-            final Class<T> expectedType) throws UnexpectedResponseException {
-
-        if (expectedType.isAssignableFrom(response.getClass())) {
-            return expectedType.cast(response);
-        }
-
-        if (response instanceof RejectionMAP) {
-            final var rejectionMessage = (RejectionMessage) response.getMessage();
-            throw new UnexpectedResponseException(
-                    String.format(
-                            "Message rejected by target with following Reason: %s",
-                            rejectionMessage.getRejectionReason()
-                    )
-            );
-        }
-        throw new UnexpectedResponseException(
-                String.format(
-                        "Unexpected Message of type %s was returned, expected Message of type %s",
-                        response.getMessage().getClass().toString(), expectedType.getSimpleName()
-                )
-        );
-    }
-
-    protected void logBuildingHeader() {
-        if (log.isDebugEnabled()) {
-            log.debug("Building message header");
-        }
+    @Override
+    public MessageContainer<Object> requestAppArtifact(final URI appStoreURI, final URI app)
+            throws
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ClaimsException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
+        logBuildingHeader();
+        return requestBuilderService.newRequest()
+                                    .subjectArtifact()
+                                    .useMultipart()
+                                    .operationGet(app)
+                                    .execute(appStoreURI);
     }
 }

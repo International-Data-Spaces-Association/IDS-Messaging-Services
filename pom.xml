@@ -29,10 +29,13 @@
         <module>messaging</module>
         <module>clearinghouse</module>
         <module>broker</module>
+        <module>vocol</module>
+        <module>paris</module>
+        <module>appstore</module>
     </modules>
 
     <properties>
-        <revision>3.0.0</revision>
+        <revision>3.1.0</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>

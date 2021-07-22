@@ -11,14 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.broker.util;
+package de.fraunhofer.ids.messaging.vocol;
 
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.UtilityClass;
+import de.fraunhofer.ids.messaging.protocol.IDSQueryService;
 
-@UtilityClass
-@FieldDefaults(makeFinal = true)
-public class FullTextQueryTemplate {
-    public static String FULL_TEXT_QUERY =
-            de.fraunhofer.ids.messaging.util.FullTextQueryTemplate.FULL_TEXT_QUERY;
+/**
+ * Interface for service classes for Vocol communication.
+ */
+public interface IDSVocolService extends IDSQueryService {
 }
