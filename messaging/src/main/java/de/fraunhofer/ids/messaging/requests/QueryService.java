@@ -69,7 +69,6 @@ public class QueryService extends InfrastructureService implements
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public MessageContainer<String> query(@NonNull final URI targetURI,
@@ -100,7 +99,6 @@ public class QueryService extends InfrastructureService implements
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public MessageContainer<String> boundFullTextSearch(final URI targetURI,
@@ -126,7 +124,6 @@ public class QueryService extends InfrastructureService implements
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public MessageContainer<String> fullTextSearch(final URI targetURI,
