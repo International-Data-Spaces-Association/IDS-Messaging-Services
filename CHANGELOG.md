@@ -9,6 +9,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [3.1.0] UNRELEASED
+
+### Added
+- Service-Module for AppStore communication (AppStoreService)
+- Service-Module for ParIS communication (ParisService)
+- Service-Module for Vocol communication (VocolService)
+
+### Changes
+- The BrokerService now internally uses the Messaging-Module QueryService for building Query-Messages.
+
 ## Version [3.0.0] 2021-07-20
 
 ### Major Change: Dependency Infomodel Artifacts 4.1.1
