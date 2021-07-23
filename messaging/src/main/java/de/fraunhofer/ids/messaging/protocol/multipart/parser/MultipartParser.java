@@ -81,7 +81,7 @@ public final class MultipartParser implements UploadContext {
             }
 
             return resultMap;
-        } catch(FileUploadException e) {
+        } catch (FileUploadException e) {
             throw new MultipartParseException(
                     "Could not parse given String:\n" + postBody, e);
         }

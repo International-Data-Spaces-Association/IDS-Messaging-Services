@@ -45,12 +45,12 @@ public class QueryService extends InfrastructureService implements
     /**
      * The default limit for the query.
      */
-    static int DEFAULT_LIMIT = 50;
+    private static final int DEFAULT_LIMIT = 50;
 
     /**
      * The default offset for the query.
      */
-    static int DEFAULT_OFFSET = 0;
+    private static final int DEFAULT_OFFSET = 0;
 
     /**
      * QueryService constructor.
