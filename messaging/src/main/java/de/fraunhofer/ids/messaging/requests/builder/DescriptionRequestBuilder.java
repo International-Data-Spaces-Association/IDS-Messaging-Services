@@ -101,7 +101,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T>
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -117,7 +117,7 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T>
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider
+                        final var message = requestTemplateProvider
                                 .descriptionRequestMessageTemplate(
                                         requestedElement)
                                 .buildMessage();

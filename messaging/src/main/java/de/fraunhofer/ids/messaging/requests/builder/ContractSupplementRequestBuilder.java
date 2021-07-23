@@ -97,7 +97,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T>
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -112,7 +112,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T>
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
+                        final var updateMessage = notificationTemplateProvider
                                 .contractSupplementMessageTemplate().buildMessage();
                         return sendMultipart(target, updateMessage);
                     default:

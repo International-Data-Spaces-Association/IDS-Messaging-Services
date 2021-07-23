@@ -96,7 +96,7 @@ public class IdsRequestBuilder<T> {
      * @return an ArtifactRequestBuilder with current information of this builder
      */
     public ArtifactRequestBuilder<T> subjectArtifact() {
-        var builder = new ArtifactRequestBuilder<>(expectedPayload.orElse(null),
+        final var builder = new ArtifactRequestBuilder<>(expectedPayload.orElse(null),
                    messageService,
                    requestTemplateProvider,
                    notificationTemplateProvider)
@@ -110,7 +110,7 @@ public class IdsRequestBuilder<T> {
      * @return an ConnectorRequestBuilder with current information of this builder
      */
     public ConnectorRequestBuilder<T> subjectConnector() {
-        var builder =
+        final var builder =
                 new ConnectorRequestBuilder<>(expectedPayload.orElse(null),
                   messageService,
                   requestTemplateProvider,
@@ -125,7 +125,7 @@ public class IdsRequestBuilder<T> {
      * @return an ResourceRequestBuilder with current information of this builder
      */
     public ResourceRequestBuilder<T> subjectResource() {
-        var builder = new ResourceRequestBuilder<>(expectedPayload.orElse(null),
+        final var builder = new ResourceRequestBuilder<>(expectedPayload.orElse(null),
                    messageService,
                    requestTemplateProvider,
                    notificationTemplateProvider)
@@ -139,7 +139,7 @@ public class IdsRequestBuilder<T> {
      * @return an QueryRequestBuilder with current information of this builder
      */
     public QueryRequestBuilder<T> subjectQuery() {
-        var builder = new QueryRequestBuilder<>(expectedPayload.orElse(null),
+        final var builder = new QueryRequestBuilder<>(expectedPayload.orElse(null),
                     messageService,
                     requestTemplateProvider,
                     notificationTemplateProvider)
@@ -153,7 +153,7 @@ public class IdsRequestBuilder<T> {
      * @return an ParticipantRequestBuilder with current information of this builder
      */
     public ParticipantRequestBuilder<T> subjectParticipant() {
-        var builder =
+        final var builder =
                 new ParticipantRequestBuilder<>(expectedPayload.orElse(null),
                     messageService,
                     requestTemplateProvider,
@@ -168,7 +168,7 @@ public class IdsRequestBuilder<T> {
      * @return an AppRequestBuilder with current information of this builder
      */
     public AppRequestBuilder<T> subjectApp() {
-        var builder = new AppRequestBuilder<>(expectedPayload.orElse(null),
+        final var builder = new AppRequestBuilder<>(expectedPayload.orElse(null),
                   messageService,
                   requestTemplateProvider,
                   notificationTemplateProvider)
@@ -182,7 +182,7 @@ public class IdsRequestBuilder<T> {
      * @return an DescriptionRequestBuilder with current information of this builder
      */
     public DescriptionRequestBuilder<T> subjectDescription() {
-        var builder =
+        final var builder =
                 new DescriptionRequestBuilder<>(expectedPayload.orElse(null),
                     messageService,
                     requestTemplateProvider,
@@ -197,7 +197,7 @@ public class IdsRequestBuilder<T> {
      * @return an LogRequestBuilder with current information of this builder
      */
     public LogRequestBuilder<T> subjectLog() {
-        var builder = new LogRequestBuilder<>(expectedPayload.orElse(null),
+        final var builder = new LogRequestBuilder<>(expectedPayload.orElse(null),
                   messageService,
                   requestTemplateProvider,
                   notificationTemplateProvider)
@@ -211,7 +211,7 @@ public class IdsRequestBuilder<T> {
      * @return an ConnectorCertificateRequestBuilder with current information of this builder
      */
     public ConnectorCertificateRequestBuilder<T> subjectConnectorCertificate() {
-        var builder = new ConnectorCertificateRequestBuilder<>(
+        final var builder = new ConnectorCertificateRequestBuilder<>(
                     expectedPayload.orElse(null),
                     messageService,
                     requestTemplateProvider,
@@ -226,7 +226,7 @@ public class IdsRequestBuilder<T> {
      * @return an ParticipantCertificateRequestBuilder with current information of this builder
      */
    public ParticipantCertificateRequestBuilder<T> subjectParticipantCertificate() {
-       var builder = new ParticipantCertificateRequestBuilder<>(
+       final var builder = new ParticipantCertificateRequestBuilder<>(
                    expectedPayload.orElse(null),
                    messageService,
                    requestTemplateProvider,
@@ -241,7 +241,7 @@ public class IdsRequestBuilder<T> {
      * @return an ContractRequestBuilder with current information of this builder
      */
    public ContractRequestBuilder<T> subjectContract() {
-       var builder = new ContractRequestBuilder<>(expectedPayload.orElse(null),
+       final var builder = new ContractRequestBuilder<>(expectedPayload.orElse(null),
                                                   messageService,
                                                   requestTemplateProvider,
                                                   notificationTemplateProvider)
@@ -255,7 +255,7 @@ public class IdsRequestBuilder<T> {
      * @return an CommandRequestBuilder with current information of this builder
      */
    public CommandRequestBuilder<T> subjectCommand() {
-       var builder = new CommandRequestBuilder<>(expectedPayload.orElse(null),
+       final var builder = new CommandRequestBuilder<>(expectedPayload.orElse(null),
                                                  messageService,
                                                  requestTemplateProvider,
                                                  notificationTemplateProvider)
@@ -269,7 +269,7 @@ public class IdsRequestBuilder<T> {
      * @return an ContractSupplementRequestBuilder with current information of this builder
      */
    public ContractSupplementRequestBuilder<T> subjectContractSupplement() {
-       var builder = new ContractSupplementRequestBuilder<>(
+       final var builder = new ContractSupplementRequestBuilder<>(
                expectedPayload.orElse(null),
                messageService,
                requestTemplateProvider,
@@ -284,7 +284,7 @@ public class IdsRequestBuilder<T> {
      * @return an ContractOfferRequestBuilder with current information of this builder
      */
     public ContractOfferRequestBuilder<T> subjectContractOffer() {
-        var builder =
+        final var builder =
                 new ContractOfferRequestBuilder<>(expectedPayload.orElse(null),
                                                   messageService,
                                                   requestTemplateProvider,
@@ -299,7 +299,7 @@ public class IdsRequestBuilder<T> {
      * @return an AccessTokenRequestBuilder with current information of this builder
      */
     public AccessTokenRequestBuilder<T> subjectAccessToken() {
-        var builder =
+        final var builder =
                 new AccessTokenRequestBuilder<>(expectedPayload.orElse(null),
                                                 messageService,
                                                 requestTemplateProvider,
@@ -342,8 +342,8 @@ public class IdsRequestBuilder<T> {
         final var messageAndPayload =
                 new GenericMessageAndPayload(message, optPayload.orElse(null));
         final var response = messageService.sendIdsMessage(messageAndPayload, target);
-        var header = response.getMessage();
-        var payload = response.getPayload().orElse(null);
+        final var header = response.getMessage();
+        final var payload = response.getPayload().orElse(null);
         if (throwOnRejection) {
             if (header instanceof RejectionMessage) {
                 throw new RejectionException(

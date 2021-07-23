@@ -97,7 +97,7 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T>
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -114,7 +114,8 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T>
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider.accessTokenRequestMessageTemplate()
+                        final var message = requestTemplateProvider
+                                .accessTokenRequestMessageTemplate()
                                 .buildMessage();
                         return sendMultipart(target, message);
                     default:

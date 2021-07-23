@@ -114,7 +114,7 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -129,11 +129,11 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
+                        final var updateMessage = notificationTemplateProvider
                                 .connectorUpdateMessageTemplate(affectedConnector).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
-                        var deleteMessage = notificationTemplateProvider
+                        final var deleteMessage = notificationTemplateProvider
                                 .connectorUnavailableMessageTemplate(
                                         affectedConnector).buildMessage();
                         return sendMultipart(target, deleteMessage);

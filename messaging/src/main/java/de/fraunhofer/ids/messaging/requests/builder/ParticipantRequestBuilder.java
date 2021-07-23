@@ -134,7 +134,7 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -151,17 +151,17 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
+                        final var updateMessage = notificationTemplateProvider
                                 .participantUpdateMessageTemplate(
                                         affectedParticipant).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
-                        var deleteMessage = notificationTemplateProvider
+                        final var deleteMessage = notificationTemplateProvider
                                 .participantUnavailableMessageTemplate(
                                         affectedParticipant).buildMessage();
                         return sendMultipart(target, deleteMessage);
                     case RECEIVE:
-                        var receiveMessage = requestTemplateProvider
+                        final var receiveMessage = requestTemplateProvider
                                 .participantRequestMessageTemplate(
                                         affectedParticipant).buildMessage();
                         return sendMultipart(target, receiveMessage);

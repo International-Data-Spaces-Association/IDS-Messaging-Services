@@ -99,7 +99,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -115,7 +115,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements
                 switch (operation) {
                     case UPDATE:
                         //build and send artifact request message
-                        var message = notificationTemplateProvider
+                        final var message = notificationTemplateProvider
                                 .logMessageTemplate(clearingHouseUrl)
                                 .buildMessage();
                         return sendMultipart(target, message);

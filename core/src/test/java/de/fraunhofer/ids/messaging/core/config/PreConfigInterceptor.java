@@ -36,7 +36,7 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
             if (log.isInfoEnabled()) {
                 log.info("intecepting loading of configuration!");
             }
-            var config = loadConfig(properties);
+            final var config = loadConfig(properties);
             config.setProperty("preInterceptor", true);
             return config;
         } catch (IOException e) {

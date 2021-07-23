@@ -102,7 +102,7 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements
             UnexpectedPayloadException {
         //send ArtifactRequestMessage with settings:
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -118,7 +118,7 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider
+                        final var message = requestTemplateProvider
                             .artifactRequestMessageTemplate(
                                     requestedArtifact)
                             .buildMessage();

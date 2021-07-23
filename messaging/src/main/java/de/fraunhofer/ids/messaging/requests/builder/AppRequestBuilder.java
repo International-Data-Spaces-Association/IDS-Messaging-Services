@@ -138,7 +138,7 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -153,19 +153,19 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
+                        final var updateMessage = notificationTemplateProvider
                                 .appAvailableMessageTemplate(affectedApp).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
-                        var deleteMessage = notificationTemplateProvider
+                        final var deleteMessage = notificationTemplateProvider
                                 .appDeleteMessageTemplate(affectedApp).buildMessage();
                         return sendMultipart(target, deleteMessage);
                     case DISABLE:
-                        var disableMessage = notificationTemplateProvider
+                        final var disableMessage = notificationTemplateProvider
                                 .appUnavailableMessageTemplate(affectedApp).buildMessage();
                         return sendMultipart(target, disableMessage);
                     case REGISTER:
-                        var registerMessage = requestTemplateProvider
+                        final var registerMessage = requestTemplateProvider
                                 .appRegistrationRequestMessageTemplate(affectedApp).buildMessage();
                         return sendMultipart(target, registerMessage);
                     default:

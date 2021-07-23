@@ -170,9 +170,9 @@ public class ClientProvider {
                     }
 
                     //else use proxy with ProxyConfig
-                    var proxyAddress = proxyConfiguration.getProxyURI();
-                    var proxyHost = proxyAddress.getHost();
-                    int proxyPort = proxyAddress.getPort();
+                    final var proxyAddress = proxyConfiguration.getProxyURI();
+                    final var proxyHost = proxyAddress.getHost();
+                    final int proxyPort = proxyAddress.getPort();
 
                     if (log.isInfoEnabled()) {
                         log.info("Address: " + proxyHost + " ,Port: " + proxyPort);
@@ -215,7 +215,7 @@ public class ClientProvider {
             }
 
             final Authenticator proxyAuthenticator = (route, response) -> {
-                var credential = Credentials.basic(proxyConfiguration
+                final var credential = Credentials.basic(proxyConfiguration
                                                        .getProxyAuthentication()
                                                        .getAuthUsername(),
                                                    proxyConfiguration

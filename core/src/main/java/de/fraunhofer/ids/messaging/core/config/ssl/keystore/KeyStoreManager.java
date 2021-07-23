@@ -190,7 +190,7 @@ public class KeyStoreManager {
             return null;
         }
 
-        var pathString = Paths.get(location).toString();
+        final var pathString = Paths.get(location).toString();
 
         //remove leading /, \ and . from path
         final var relativepathString = pathString.chars().dropWhile(
