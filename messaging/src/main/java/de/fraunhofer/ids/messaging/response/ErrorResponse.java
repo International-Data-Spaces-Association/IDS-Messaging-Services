@@ -70,11 +70,15 @@ public class ErrorResponse implements MessageResponse {
      * @return an instance of ErrorResponse with the given parameters
      */
     public static ErrorResponse withDefaultHeader(
-            final RejectionReason rejectionReason, final String errorMessage,
-            final URI connectorId, final String modelVersion,
-            URI messageId) {
+            final RejectionReason rejectionReason,
+            final String errorMessage,
+            final URI connectorId,
+            final String modelVersion,
+            final URI messageId) {
+
+        var builderMessageId = messageId;
         if (messageId == null) {
-            messageId = URI.create("https://INVALID");
+            builderMessageId = URI.create("https://INVALID");
         }
 
         final var rejectionMessage = new RejectionMessageBuilder()
@@ -83,7 +87,7 @@ public class ErrorResponse implements MessageResponse {
                                 ._tokenFormat_(TokenFormat.JWT)
                                 ._tokenValue_("rejected!")
                                 .build())
-                ._correlationMessage_(messageId)
+                ._correlationMessage_(builderMessageId)
                 ._senderAgent_(connectorId)
                 ._issuerConnector_(connectorId)
                 ._modelVersion_(modelVersion)

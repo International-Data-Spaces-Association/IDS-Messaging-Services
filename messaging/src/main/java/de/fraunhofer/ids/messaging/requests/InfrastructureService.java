@@ -71,7 +71,7 @@ public abstract class InfrastructureService  {
     }
 
     public MessageContainer<?> requestSelfDescription(@NonNull final URI uri,
-                                                      URI requestedElement)
+                                                      final URI requestedElement)
             throws
             IOException,
             DapsTokenManagerException,
