@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class InfomodelMessageBuilderTest {
 
     @Test
-    public void testBuildMessage() throws IOException, SerializeException {
+    void testBuildMessage() throws IOException, SerializeException {
         assertNotNull(InfomodelMessageBuilder.messageWithFile(buildArtifactRequestMessage(), File.createTempFile("temp", "file"), MediaType.parse("image/jpeg")));
         assertNotNull(InfomodelMessageBuilder.messageWithString(buildArtifactRequestMessage(), "String payload!"));
     }

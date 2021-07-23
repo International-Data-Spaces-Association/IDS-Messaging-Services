@@ -14,10 +14,10 @@
 package de.fraunhofer.ids.messaging.broker.util;
 
 public final class FullTextQueryTemplate {
+    public static final String FULL_TEXT_QUERY =
+            de.fraunhofer.ids.messaging.util.FullTextQueryTemplate.FULL_TEXT_QUERY;
+
     private FullTextQueryTemplate() {
         // Nothing to do here.
     }
-
-    public static final String FULL_TEXT_QUERY =
-            de.fraunhofer.ids.messaging.util.FullTextQueryTemplate.FULL_TEXT_QUERY;
 }

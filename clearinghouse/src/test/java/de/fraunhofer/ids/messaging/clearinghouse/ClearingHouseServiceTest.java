@@ -14,8 +14,8 @@
 package de.fraunhofer.ids.messaging.clearinghouse;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import de.fraunhofer.iais.eis.BaseConnectorBuilder;
 import de.fraunhofer.iais.eis.ConfigurationModel;
@@ -168,7 +168,7 @@ class ClearingHouseServiceTest {
                 ._correlationMessage_(
                         URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
                 .build();
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new ConcurrentHashMap<>();
         map.put(MultipartDatapart.HEADER.toString(), message.toRdf());
         map.put(MultipartDatapart.PAYLOAD.toString(), "");
         Mockito.when(idsHttpService.sendAndCheckDat(any(MultipartBody.class),any(URI.class)))
@@ -195,7 +195,7 @@ class ClearingHouseServiceTest {
                 ._correlationMessage_(
                         URI.create("https://w3id.org/idsa/autogen/baseConnector/691b3a17-0e91-4a5a-9d9a-5627772222e9"))
                 .build();
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new ConcurrentHashMap<>();
         map.put(MultipartDatapart.HEADER.toString(), message.toRdf());
         map.put(MultipartDatapart.PAYLOAD.toString(), "");
         Mockito.when(idsHttpService.sendAndCheckDat(any(MultipartBody.class),any(URI.class)))

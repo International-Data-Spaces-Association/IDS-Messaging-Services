@@ -46,7 +46,7 @@ public class AppStoreService extends InfrastructureService
     /**
      * The IdsRequestBuilderService.
      */
-    private final IdsRequestBuilderService requestBuilderService;
+    private final IdsRequestBuilderService idsRequestBuilderService;
 
     /**
      * Creates the IDSAppStore Communication controller.
@@ -62,7 +62,7 @@ public class AppStoreService extends InfrastructureService
             final MessageService messageService,
             final IdsRequestBuilderService idsRequestBuilderService) {
         super(container, tokenProvider, messageService, idsRequestBuilderService);
-        this.requestBuilderService = idsRequestBuilderService;
+        this.idsRequestBuilderService = idsRequestBuilderService;
     }
 
     /**
@@ -83,11 +83,11 @@ public class AppStoreService extends InfrastructureService
             RejectionException,
             UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .subjectDescription()
-                                    .useMultipart()
-                                    .operationGet(null)
-                                    .execute(appStoreURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectDescription()
+                                       .useMultipart()
+                                       .operationGet(null)
+                                       .execute(appStoreURI);
     }
 
     /**
@@ -108,11 +108,11 @@ public class AppStoreService extends InfrastructureService
             RejectionException,
             UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .subjectDescription()
-                                    .useMultipart()
-                                    .operationGet(app)
-                                    .execute(appStoreURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectDescription()
+                                       .useMultipart()
+                                       .operationGet(app)
+                                       .execute(appStoreURI);
 
     }
 
@@ -134,10 +134,10 @@ public class AppStoreService extends InfrastructureService
             RejectionException,
             UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .subjectArtifact()
-                                    .useMultipart()
-                                    .operationGet(app)
-                                    .execute(appStoreURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectArtifact()
+                                       .useMultipart()
+                                       .operationGet(app)
+                                       .execute(appStoreURI);
     }
 }

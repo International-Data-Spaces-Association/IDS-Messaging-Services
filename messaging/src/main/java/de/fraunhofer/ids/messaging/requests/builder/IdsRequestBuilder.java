@@ -344,13 +344,11 @@ public class IdsRequestBuilder<T> {
         final var response = messageService.sendIdsMessage(messageAndPayload, target);
         final var header = response.getMessage();
         final var payload = response.getPayload().orElse(null);
-        if (throwOnRejection) {
-            if (header instanceof RejectionMessage) {
-                throw new RejectionException(
-                        String.format("Message was Rejected! Reason: %s", payload),
-                        ((RejectionMessage) header).getRejectionReason()
-                );
-            }
+        if (throwOnRejection && header instanceof RejectionMessage) {
+            throw new RejectionException(
+                    String.format("Message was Rejected! Reason: %s", payload),
+                    ((RejectionMessage) header).getRejectionReason()
+            );
         }
         if (expectedPayload.isPresent()) {
             if (payload == null || !expectedPayload.get().isAssignableFrom(payload.getClass())) {

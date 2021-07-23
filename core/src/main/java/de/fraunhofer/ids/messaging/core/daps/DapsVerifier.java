@@ -28,15 +28,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public final class DapsVerifier {
-    private DapsVerifier() {
-        //Nothing to do here.
-    }
-
     /**
      * Custom DAT validation rules, which are checked additionally to the default checks.
      */
     @SuppressWarnings("FieldMayBeFinal")
     private static List<DatValidationRule> datValidationRules = new ArrayList<>();
+
+    private DapsVerifier() {
+        //Nothing to do here.
+    }
 
     /**
      * Add a custom validation rule to check the DAT.

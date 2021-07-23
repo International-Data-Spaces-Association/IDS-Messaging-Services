@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class RequestUtilsTest {
     @Test
-    public void testRequestUtils() {
+    void testRequestUtils() {
         final var req = new Request.Builder()
                 .post(RequestBody.create("String", MediaType.parse("text/plain")))
                 .url("http://example.com")

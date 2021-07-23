@@ -48,7 +48,7 @@ public class ParisService extends InfrastructureService
     /**
      * The IdsRequestBuilderService.
      */
-    private final IdsRequestBuilderService requestBuilderService;
+    private final IdsRequestBuilderService idsRequestBuilderService;
 
     /**
      * @param container      the ConfigContainer
@@ -61,7 +61,7 @@ public class ParisService extends InfrastructureService
                         final MessageService messageService,
                         final IdsRequestBuilderService idsRequestBuilderService) {
         super(container, tokenProvider, messageService, idsRequestBuilderService);
-        this.requestBuilderService = idsRequestBuilderService;
+        this.idsRequestBuilderService = idsRequestBuilderService;
     }
 
     /**
@@ -83,7 +83,7 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService
+        return idsRequestBuilderService
                 .newRequest()
                 .withPayload(participant)
                 .subjectParticipant()
@@ -112,7 +112,7 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService
+        return idsRequestBuilderService
                 .newRequest()
                 .subjectParticipant()
                 .useMultipart()
@@ -140,7 +140,7 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService
+        return idsRequestBuilderService
                 .newRequest()
                 .subjectDescription()
                 .useMultipart()

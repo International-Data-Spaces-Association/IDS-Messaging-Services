@@ -58,7 +58,7 @@ public class BrokerService extends InfrastructureService
 
     private final NotificationTemplateProvider notificationTemplateProvider;
     private final RequestTemplateProvider requestTemplateProvider;
-    private final IdsRequestBuilderService requestBuilderService;
+    private final IdsRequestBuilderService idsRequestBuilderService;
     private final QueryService queryService;
 
     /**
@@ -79,7 +79,7 @@ public class BrokerService extends InfrastructureService
         super(container, tokenProvider, messageService, idsRequestBuilderService);
         this.notificationTemplateProvider = templateProvider;
         this.requestTemplateProvider = requestTemplateProvider;
-        this.requestBuilderService = idsRequestBuilderService;
+        this.idsRequestBuilderService = idsRequestBuilderService;
 
         queryService = new QueryService(
                 container,
@@ -107,11 +107,11 @@ public class BrokerService extends InfrastructureService
             RejectionException,
             UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                .subjectResource()
-                .useMultipart()
-                .operationDelete(resource.getId())
-                .execute(brokerURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectResource()
+                                       .useMultipart()
+                                       .operationDelete(resource.getId())
+                                       .execute(brokerURI);
     }
 
     /**
@@ -134,12 +134,12 @@ public class BrokerService extends InfrastructureService
             UnexpectedPayloadException {
 
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                .withPayload(resource)
-                .subjectResource()
-                .useMultipart()
-                .operationUpdate(resource.getId())
-                .execute(brokerURI);
+        return idsRequestBuilderService.newRequest()
+                                       .withPayload(resource)
+                                       .subjectResource()
+                                       .useMultipart()
+                                       .operationUpdate(resource.getId())
+                                       .execute(brokerURI);
     }
 
     /**
@@ -157,11 +157,11 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                .subjectConnector()
-                .useMultipart()
-                .operationDelete(container.getConnector().getId())
-                .execute(brokerURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectConnector()
+                                       .useMultipart()
+                                       .operationDelete(container.getConnector().getId())
+                                       .execute(brokerURI);
     }
 
     /**
@@ -179,12 +179,12 @@ public class BrokerService extends InfrastructureService
             SendMessageException,
             DeserializeException, RejectionException, UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                .withPayload(container.getConnector())
-                .subjectConnector()
-                .useMultipart()
-                .operationUpdate(container.getConnector().getId())
-                .execute(brokerURI);
+        return idsRequestBuilderService.newRequest()
+                                       .withPayload(container.getConnector())
+                                       .subjectConnector()
+                                       .useMultipart()
+                                       .operationUpdate(container.getConnector().getId())
+                                       .execute(brokerURI);
     }
 
     /**

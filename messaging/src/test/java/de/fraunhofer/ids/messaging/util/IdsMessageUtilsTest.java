@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class IdsMessageUtilsTest {
 
     @Test
-    public void testUtils(){
+    void testUtils(){
         final var connector = new BaseConnectorBuilder()
                 ._curator_(URI.create("http://curator"))
                 ._hasDefaultEndpoint_(new ConnectorEndpointBuilder()._accessURL_(URI.create("http://localhost")).build())

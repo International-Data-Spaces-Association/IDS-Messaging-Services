@@ -324,7 +324,9 @@ public class IdsHttpService implements HttpService {
         }
 
         headers.keySet().forEach(key -> {
-            log.debug(String.format("adding header part (%s,%s)", key, headers.get(key)));
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("adding header part (%s,%s)", key, headers.get(key)));
+            }
             builder.addHeader(key, headers.get(key));
         });
 
