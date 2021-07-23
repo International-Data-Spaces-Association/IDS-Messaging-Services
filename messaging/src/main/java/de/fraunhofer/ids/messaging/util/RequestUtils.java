@@ -26,6 +26,10 @@ import okio.Buffer;
 
 @Slf4j
 public final class RequestUtils {
+    private RequestUtils() {
+        //Nothing to do here.
+    }
+
     /**
      * A util class that prints okhttp Requests.
      *

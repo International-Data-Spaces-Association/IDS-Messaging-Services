@@ -114,8 +114,8 @@ public class MultipartResponseConverter {
                 messageAndPayload
                     = getDescriptionResponseMessage(responseHeader,
                                                     responsePayload);
-            } else if (responseHeader instanceof
-                                      MessageProcessedNotificationMessage) {
+            } else if (responseHeader
+                    instanceof MessageProcessedNotificationMessage) {
                 messageAndPayload
                     = getMessageProcessedNotificationMessage(responseHeader);
             } else if (responseHeader instanceof RejectionMessage) {
@@ -152,8 +152,8 @@ public class MultipartResponseConverter {
                 messageAndPayload
                     = getParticipantUpdateMessage(responseHeader,
                                                   responsePayload);
-            } else if (responseHeader instanceof
-                                      ParticipantUnavailableMessage) {
+            } else if (responseHeader
+                    instanceof ParticipantUnavailableMessage) {
                 messageAndPayload
                     = getParticipantUnavailableMessage(responseHeader);
             } else if (responseHeader instanceof ParticipantRequestMessage) {
@@ -349,7 +349,7 @@ public class MultipartResponseConverter {
     private MessageAndPayload<?, ?> getRejectionMessage(
             final Message responseHeader,
             final String responsePayload) {
-        if(responseHeader instanceof ContractRejectionMessage) {
+        if (responseHeader instanceof ContractRejectionMessage) {
             return new ContractRejectionMAP(
                     (ContractRejectionMessage) responseHeader);
         } else {

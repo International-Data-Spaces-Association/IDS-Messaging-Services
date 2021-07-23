@@ -59,8 +59,8 @@ public class ConfigProducer {
      * @param properties the {@link ConfigProperties} parsed from an application.properties file
      */
     public ConfigProducer(final ConfigProperties properties,
-                          Optional<PreConfigProducerInterceptor> preInterceptor,
-                          Optional<PostConfigProducerInterceptor> postInterceptor) {
+                          final Optional<PreConfigProducerInterceptor> preInterceptor,
+                          final Optional<PostConfigProducerInterceptor> postInterceptor) {
 
         ConfigurationModel configModel = null;
 
