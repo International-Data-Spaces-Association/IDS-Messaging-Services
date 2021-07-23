@@ -18,16 +18,13 @@ import java.util.Optional;
 import de.fraunhofer.iais.eis.ResultMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ResultMAP implements MessageAndPayload<ResultMessage, String> {
 
-    ResultMessage resultMessage;
-    String        queryResult;
+    private final ResultMessage resultMessage;
+    private final String        queryResult;
 
     /**
      * {@inheritDoc}

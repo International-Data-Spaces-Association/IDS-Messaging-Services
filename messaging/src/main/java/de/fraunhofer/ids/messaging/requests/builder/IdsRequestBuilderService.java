@@ -16,9 +16,7 @@ package de.fraunhofer.ids.messaging.requests.builder;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +24,16 @@ import org.springframework.stereotype.Service;
  * Service for building and sending ids requests.
  */
 @Slf4j
-@RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
+@RequiredArgsConstructor
 public class IdsRequestBuilderService {
 
     /**
      * {@link MessageService} used for sending messages.
      */
-    MessageService messageService;
-    RequestTemplateProvider requestTemplateProvider;
-    NotificationTemplateProvider notificationTemplateProvider;
+    private final MessageService messageService;
+    private final RequestTemplateProvider requestTemplateProvider;
+    private final NotificationTemplateProvider notificationTemplateProvider;
 
     /**
      * Get a requestbuilder, expecting no specific payload type.

@@ -34,12 +34,9 @@ import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -57,17 +54,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class IdsHttpService implements HttpService {
-    ClientProvider provider;
-    DapsValidator dapsValidator;
-    ConfigContainer configContainer;
-    Serializer serializer;
+    private final ClientProvider provider;
+    private final DapsValidator dapsValidator;
+    private final ConfigContainer configContainer;
+    private final Serializer serializer;
 
-    @NonFinal
     private TimeoutSettings timeoutSettings;
 
-    @NonFinal
     @Value("#{new Boolean('${shacl.validation:false}')}")
     private Boolean shaclValidation;
 
@@ -482,11 +476,10 @@ public class IdsHttpService implements HttpService {
      */
     @Getter
     @AllArgsConstructor
-    @FieldDefaults(level = AccessLevel.PRIVATE)
     private class TimeoutSettings {
-        Duration connectTimeout;
-        Duration readTimeout;
-        Duration writeTimeout;
-        Duration callTimeout;
+        private Duration connectTimeout;
+        private Duration readTimeout;
+        private Duration writeTimeout;
+        private Duration callTimeout;
     }
 }

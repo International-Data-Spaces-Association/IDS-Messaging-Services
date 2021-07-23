@@ -39,20 +39,16 @@ import de.fraunhofer.iais.eis.UploadMessageBuilder;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class RequestTemplateProvider {
-
-    ConfigContainer container;
-    DapsTokenProvider tokenProvider;
+    private final ConfigContainer container;
+    private final DapsTokenProvider tokenProvider;
 
     /**
      * Template for DescriptionRequestMessages.

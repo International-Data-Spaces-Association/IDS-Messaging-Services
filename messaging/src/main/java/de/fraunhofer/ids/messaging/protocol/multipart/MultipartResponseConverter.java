@@ -63,9 +63,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.mapping.RejectionMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResourceMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,9 +72,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @Slf4j
 @NoArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MultipartResponseConverter {
-    Serializer serializer = new Serializer();
+    private final Serializer serializer = new Serializer();
 
     /**
      * Converts a Response into a corresponding MessageAndPayload Object.

@@ -39,9 +39,7 @@ import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
-import lombok.AccessLevel;
 import lombok.NonNull;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -52,17 +50,16 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BrokerService extends InfrastructureService
         implements IDSBrokerService {
 
-    static int DEFAULT_LIMIT = 50;
-    static int DEFAULT_OFFSET = 0;
+    private static final int DEFAULT_LIMIT = 50;
+    private static final int DEFAULT_OFFSET = 0;
 
-    NotificationTemplateProvider notificationTemplateProvider;
-    RequestTemplateProvider requestTemplateProvider;
-    IdsRequestBuilderService requestBuilderService;
-    QueryService queryService;
+    private final NotificationTemplateProvider notificationTemplateProvider;
+    private final RequestTemplateProvider requestTemplateProvider;
+    private final IdsRequestBuilderService requestBuilderService;
+    private final QueryService queryService;
 
     /**
      * BrokerService constructor.

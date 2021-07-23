@@ -32,8 +32,6 @@ import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -42,14 +40,13 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AppStoreService extends InfrastructureService
         implements IDSAppStoreService {
 
     /**
      * The IdsRequestBuilderService.
      */
-    IdsRequestBuilderService requestBuilderService;
+    private final IdsRequestBuilderService requestBuilderService;
 
     /**
      * Creates the IDSAppStore Communication controller.

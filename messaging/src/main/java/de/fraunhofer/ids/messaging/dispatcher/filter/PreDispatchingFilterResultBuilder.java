@@ -13,19 +13,16 @@
  */
 package de.fraunhofer.ids.messaging.dispatcher.filter;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 /**
  * Builder class for PreDispatchingFilterResults.
  */
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PreDispatchingFilterResultBuilder {
-    Throwable error;
-    boolean   success;
-    String    message;
+    private Throwable error;
+    private boolean   success;
+    private String    message;
 
     /**
      * Error message of the PreDispatchingFilter.

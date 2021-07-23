@@ -43,9 +43,6 @@ import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -56,29 +53,26 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ClearingHouseService extends InfrastructureService
         implements IDSClearingHouseService {
 
-    Serializer   serializer   = new Serializer();
-    SecureRandom secureRandom = new SecureRandom();
-    MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
+    private final Serializer   serializer   = new Serializer();
+    private final SecureRandom secureRandom = new SecureRandom();
+    private final MultipartResponseConverter multipartResponseConverter
+            = new MultipartResponseConverter();
 
-    IdsHttpService idsHttpService;
-    NotificationTemplateProvider notificationTemplateProvider;
-    RequestTemplateProvider requestTemplateProvider;
+    private final IdsHttpService idsHttpService;
+    private final NotificationTemplateProvider notificationTemplateProvider;
+    private final RequestTemplateProvider requestTemplateProvider;
 
-    @NonFinal
     @Value("${clearinghouse.url}")
-    String clearingHouseUrl;
+    private String clearingHouseUrl;
 
-    @NonFinal
     @Value("${clearinghouse.query.endpoint:/messages/query}")
-    String queryEndpoint;
+    private String queryEndpoint;
 
-    @NonFinal
     @Value("${clearinghouse.log.endpoint:/messages/log}")
-    String logEndpoint;
+    private String logEndpoint;
 
     public ClearingHouseService(final ConfigContainer container,
                                 final DapsTokenProvider tokenProvider,

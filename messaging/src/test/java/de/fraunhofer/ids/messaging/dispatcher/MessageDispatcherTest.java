@@ -43,8 +43,6 @@ import de.fraunhofer.ids.messaging.handler.message.MessageHandler;
 import de.fraunhofer.ids.messaging.handler.request.RequestMessageHandlerService;
 import de.fraunhofer.ids.messaging.response.ErrorResponse;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -60,36 +58,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WebMvcTest
 @ExtendWith(SpringExtension.class)
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @TestPropertySource(properties = { "shacl.validation=false" })
 @ContextConfiguration(classes = {RequestMessageHandlerService.class, MessageDispatcherProvider.class, MessageDispatcherTest.TestContextConfiguration.class})
 class MessageDispatcherTest {
     @Autowired
-    MessageDispatcherProvider messageDispatcherProvider;
+    private MessageDispatcherProvider messageDispatcherProvider;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    de.fraunhofer.ids.messaging.handler.request.RequestMessageHandler requestMessageHandler;
+    private de.fraunhofer.ids.messaging.handler.request.RequestMessageHandler requestMessageHandler;
 
     @MockBean
-    DapsPublicKeyProvider publicKeyProvider;
+    private DapsPublicKeyProvider publicKeyProvider;
 
     @MockBean
-    ConfigContainer configurationContainer;
+    private ConfigContainer configurationContainer;
 
     @MockBean
-    DapsValidator dapsValidator;
+    private DapsValidator dapsValidator;
 
     @MockBean
-    Connector connector;
+    private Connector connector;
 
     @MockBean
-    DapsTokenProvider provider;
+    private DapsTokenProvider provider;
 
     @MockBean
-    ConfigurationModel configurationModel;
+    private ConfigurationModel configurationModel;
 
     static class TestContextConfiguration {
         @Bean

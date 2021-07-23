@@ -27,10 +27,8 @@ import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -39,11 +37,9 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 @AllArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ErrorResponse implements MessageResponse {
-
-    RejectionMessage rejectionMessage;
-    String           errorMessage;
+    private final RejectionMessage rejectionMessage;
+    private final String           errorMessage;
 
     /**
      * Create an ErrorResponse with a RejectionMessage header and errorReason String payload.

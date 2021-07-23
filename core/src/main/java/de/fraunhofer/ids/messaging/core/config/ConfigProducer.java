@@ -25,8 +25,6 @@ import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManagerInitializationException;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -43,14 +41,13 @@ import org.springframework.core.io.ClassPathResource;
  */
 @Slf4j
 @Configuration
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @EnableConfigurationProperties(ConfigProperties.class)
 @ConditionalOnClass({ConfigurationModel.class, Connector.class, KeyStoreManager.class})
 public class ConfigProducer {
-    static final Serializer SERIALIZER = new Serializer();
+    private static final Serializer SERIALIZER = new Serializer();
 
-    ConfigContainer configContainer;
-    ClientProvider  clientProvider;
+    private ConfigContainer configContainer;
+    private ClientProvider  clientProvider;
 
     /**
      * Load the ConfigurationModel from the location specified in the

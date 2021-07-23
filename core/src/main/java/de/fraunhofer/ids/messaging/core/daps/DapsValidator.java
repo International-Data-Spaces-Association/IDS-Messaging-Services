@@ -23,9 +23,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -35,20 +33,19 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DapsValidator {
 
-    DapsPublicKeyProvider keyProvider;
+    private final DapsPublicKeyProvider keyProvider;
 
-    String[] baseSecProfVals =
+    private final String[] baseSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
             "idsc:BASE_SECURITY_PROFILE"};
-    String[] trustSecProfVals =
+    private final String[] trustSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
             "idsc:BASE_SECURITY_PROFILE",
             "idsc:TRUST_SECURITY_PROFILE",
             "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE"};
-    String[] plusTrustSecProfVals =
+    private final String[] plusTrustSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
             "idsc:BASE_SECURITY_PROFILE",
             "idsc:TRUST_SECURITY_PROFILE",

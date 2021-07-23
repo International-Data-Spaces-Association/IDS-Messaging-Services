@@ -34,20 +34,17 @@ import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseExcep
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
-import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 public abstract class InfrastructureService  {
-    ConfigContainer          container;
-    DapsTokenProvider        tokenProvider;
-    MessageService           messageService;
-    IdsRequestBuilderService requestBuilderService;
+    protected final ConfigContainer          container;
+    protected final DapsTokenProvider        tokenProvider;
+    protected final MessageService           messageService;
+    protected final IdsRequestBuilderService requestBuilderService;
 
     public MessageContainer<?> requestSelfDescription(@NonNull final URI uri) throws
             IOException,

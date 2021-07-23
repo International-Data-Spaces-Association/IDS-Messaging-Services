@@ -33,8 +33,6 @@ import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -44,14 +42,13 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ParisService extends InfrastructureService
         implements IDSParisService {
 
     /**
      * The IdsRequestBuilderService.
      */
-    IdsRequestBuilderService requestBuilderService;
+    private final IdsRequestBuilderService requestBuilderService;
 
     /**
      * @param container      the ConfigContainer

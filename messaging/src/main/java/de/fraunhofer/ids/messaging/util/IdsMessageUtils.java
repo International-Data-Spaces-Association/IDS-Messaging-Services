@@ -33,18 +33,19 @@ import java.util.Properties;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Methods to hash and sign. Necessary for IDS-Messages.
  */
 @Slf4j
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class IdsMessageUtils {
-    static Base64.Encoder ENCODER_64 = Base64.getEncoder();
-    static Serializer     SERIALIZER = new Serializer();
+    private static final Base64.Encoder ENCODER_64 = Base64.getEncoder();
+    private static final Serializer     SERIALIZER = new Serializer();
+
+    private IdsMessageUtils() {
+        //Nothing to do here.
+    }
 
     /**
      * Hash a value with a given MessageDigest.

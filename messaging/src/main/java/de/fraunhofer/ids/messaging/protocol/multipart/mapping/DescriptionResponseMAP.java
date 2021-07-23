@@ -18,17 +18,14 @@ import java.util.Optional;
 import de.fraunhofer.iais.eis.DescriptionResponseMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DescriptionResponseMAP
         implements MessageAndPayload<DescriptionResponseMessage, String> {
 
-    DescriptionResponseMessage message;
-    String payload;
+    private DescriptionResponseMessage message;
+    private String payload;
 
     /**
      * {@inheritDoc}

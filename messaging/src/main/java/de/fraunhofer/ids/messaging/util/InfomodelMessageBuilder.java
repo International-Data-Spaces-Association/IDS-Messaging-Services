@@ -20,8 +20,6 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -30,11 +28,10 @@ import okhttp3.RequestBody;
  * This Builder is a utility class for building OkHTTP.
  * Multipart RequestBodies with RequestMessage header and String or File payload Part
  */
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class InfomodelMessageBuilder {
-    static Serializer SERIALIZER = new Serializer();
+    private static final Serializer SERIALIZER = new Serializer();
 
-    MultipartBody.Builder builder;
+    private final MultipartBody.Builder builder;
 
     /**
      * Internal builder used by the static methods.

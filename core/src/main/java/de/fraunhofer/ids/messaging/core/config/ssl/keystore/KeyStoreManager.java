@@ -35,10 +35,8 @@ import java.util.stream.IntStream;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.ClassPathResource;
@@ -48,21 +46,20 @@ import org.springframework.core.io.ClassPathResource;
  */
 @Slf4j
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class KeyStoreManager {
 
     @Setter
-    TrustStoreManager trustStoreManager = new TrustStoreManager();
+    private TrustStoreManager trustStoreManager = new TrustStoreManager();
 
-    ConfigurationModel configurationModel;
-    KeyStore           keyStore;
-    char[]             keyStorePw;
-    String             keyAlias;
-    KeyStore           trustStore;
-    char[]             trustStorePw;
-    PrivateKey         privateKey;
-    Certificate        cert;
-    X509TrustManager   trustManager;
+    private ConfigurationModel configurationModel;
+    private KeyStore           keyStore;
+    private char[]             keyStorePw;
+    private String             keyAlias;
+    private KeyStore           trustStore;
+    private char[]             trustStorePw;
+    private PrivateKey         privateKey;
+    private Certificate        cert;
+    private X509TrustManager   trustManager;
 
     /**
      * Build the KeyStoreManager from the given configuration.

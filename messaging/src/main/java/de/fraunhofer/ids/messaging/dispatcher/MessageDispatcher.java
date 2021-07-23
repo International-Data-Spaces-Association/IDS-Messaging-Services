@@ -36,8 +36,6 @@ import de.fraunhofer.ids.messaging.response.ErrorResponse;
 import de.fraunhofer.ids.messaging.response.MessageResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -48,13 +46,12 @@ import lombok.extern.slf4j.Slf4j;
  * the results returned by the MessageHandlers.
  */
 @Slf4j
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessageDispatcher {
-    ObjectMapper               objectMapper;
-    List<PreDispatchingFilter> preDispatchingFilters;
-    RequestMessageHandler      requestMessageHandler;
-    ConfigContainer            configContainer;
-    DapsValidator              dapsValidator;
+    private final ObjectMapper               objectMapper;
+    private final List<PreDispatchingFilter> preDispatchingFilters;
+    private final RequestMessageHandler      requestMessageHandler;
+    private final ConfigContainer            configContainer;
+    private final DapsValidator              dapsValidator;
 
     /**
      * Create a MessageDispatcher.

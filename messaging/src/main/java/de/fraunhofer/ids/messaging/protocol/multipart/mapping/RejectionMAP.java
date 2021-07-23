@@ -18,23 +18,19 @@ import java.util.Optional;
 import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RejectionMAP implements MessageAndPayload<RejectionMessage, String> {
-
     @Getter
     @NonNull
-    RejectionMessage message;
+    private RejectionMessage message;
 
-    String payload;
+    private String payload;
 
     /**
      * {@inheritDoc}

@@ -18,22 +18,19 @@ import java.io.InputStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
 
 /**
  * Implementation of {@link MessagePayload} interface.
  * Can parse payload from JSON and return the resulting inputstream.
  */
 @AllArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessagePayloadInputstream implements MessagePayload {
     @Getter
-    InputStream  underlyingInputStream;
+    private final InputStream  underlyingInputStream;
 
-    ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     /**
      * {@inheritDoc}

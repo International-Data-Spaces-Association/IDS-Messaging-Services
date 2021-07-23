@@ -13,17 +13,14 @@
  */
 package de.fraunhofer.ids.messaging.protocol.multipart.parser;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public enum MultipartDatapart {
     HEADER("header"),
     PAYLOAD("payload");
 
-    String name;
+    private final String name;
 
     /**
      * One way to get the Name of the enum-item.
