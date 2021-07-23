@@ -14,11 +14,13 @@
 package de.fraunhofer.ids.messaging.broker.util;
 
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
 @FieldDefaults(makeFinal = true)
-public class FullTextQueryTemplate {
+public final class FullTextQueryTemplate {
+    private FullTextQueryTemplate() {
+        // Nothing to do here.
+    }
+
     public static String FULL_TEXT_QUERY =
             de.fraunhofer.ids.messaging.util.FullTextQueryTemplate.FULL_TEXT_QUERY;
 }
