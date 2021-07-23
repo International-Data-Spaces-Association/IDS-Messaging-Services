@@ -40,14 +40,21 @@ public class DapsValidator {
 
     DapsPublicKeyProvider keyProvider;
 
-    String[] baseSecProfVals = {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE"};
+    String[] baseSecProfVals =
+            {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
+            "idsc:BASE_SECURITY_PROFILE"};
     String[] trustSecProfVals =
-            {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
-                    "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE"};
+            {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
+            "idsc:BASE_SECURITY_PROFILE",
+            "idsc:TRUST_SECURITY_PROFILE",
+            "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE"};
     String[] plusTrustSecProfVals =
-            {"idsc:BASE_CONNECTOR_SECURITY_PROFILE", "idsc:BASE_SECURITY_PROFILE", "idsc:TRUST_SECURITY_PROFILE",
-                    "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE", "idsc:TRUST_PLUS_SECURITY_PROFILE",
-                    "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE"};
+            {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
+            "idsc:BASE_SECURITY_PROFILE",
+            "idsc:TRUST_SECURITY_PROFILE",
+            "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE",
+            "idsc:TRUST_PLUS_SECURITY_PROFILE",
+            "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE"};
 
     /**
      * Extract the Claims from the Dat token of a message, given the Message and a signingKey.
@@ -57,7 +64,8 @@ public class DapsValidator {
      * @return the Claims of the messages DAT Token, when it can be signed with the given key
      * @throws ClaimsException if Token cannot be signed with the given key
      */
-    public static Jws<Claims> getClaims(final DynamicAttributeToken token, final List<Key> signingKeys)
+    public static Jws<Claims> getClaims(final DynamicAttributeToken token,
+                                        final List<Key> signingKeys)
             throws ClaimsException {
 
         final var tokenValue = token.getTokenValue();
@@ -105,7 +113,8 @@ public class DapsValidator {
      * @param extraAttributes extra attributes to be checked
      * @return true, if claims are valid
      */
-    public boolean checkClaims(final Jws<Claims> claims, final Map<String, Object> extraAttributes) {
+    public boolean checkClaims(final Jws<Claims> claims,
+                               final Map<String, Object> extraAttributes) {
         if (extraAttributes != null && extraAttributes.containsKey("securityProfile")) {
             try {
                 verifySecurityProfile(claims.getBody().get("securityProfile", String.class),
@@ -134,7 +143,8 @@ public class DapsValidator {
      * @param extraAttributes additional Attributes from the Message Payload
      * @return true if DAT is valid
      */
-    public boolean checkDat(final DynamicAttributeToken token, final Map<String, Object> extraAttributes) {
+    public boolean checkDat(final DynamicAttributeToken token,
+                            final Map<String, Object> extraAttributes) {
         Jws<Claims> claims;
         try {
             claims = getClaims(token);
@@ -159,19 +169,24 @@ public class DapsValidator {
     }
 
     /**
-     * Verifies that the {@link de.fraunhofer.iais.eis.SecurityProfile} in the token is  same as in the Selfdescription.
+     * Verifies that the {@link de.fraunhofer.iais.eis.SecurityProfile}
+     * in the token is  same as in the Selfdescription.
      *
      * @param registered the SecurityProfile ID  in token
      * @param given      the SecurityProfile ID in Selfdescription
      * @throws ClaimsException if SecurityProfiles do not match
      */
-    private void verifySecurityProfile(final String registered, final String given) throws ClaimsException {
-        //Replace full URIs (if present) by prefixed values. This simplifies the potential number of values these strings can have
+    private void verifySecurityProfile(final String registered,
+                                       final String given)
+            throws ClaimsException {
+        //Replace full URIs (if present) by prefixed values.
+        //This simplifies the potential number of values these strings can have
         var adjustedRegistered = registered;
         var adjustedGiven = given;
 
         if (registered == null) {
-            throw new ClaimsException("Security profile violation. No security profile given in DAT!");
+            throw new ClaimsException("Security profile violation."
+                  + " No security profile given in DAT!");
         }
 
         if (registered.startsWith("https://w3id.org/idsa/code/")) {
@@ -202,7 +217,8 @@ public class DapsValidator {
 
         if (!Arrays.asList(includedProfiles).contains(adjustedGiven)) {
             throw new ClaimsException(
-                    "Security profile violation. Registered security profile at DAPS is:  " + registered
+                    "Security profile violation. Registered security profile"
+                    + " at DAPS is:  " + registered
                     + ", but the given security profile is: " + given);
         }
     }

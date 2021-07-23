@@ -28,11 +28,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ConfigProperties {
 
     /**
-     * Path to a configuration File (JsonLD representation of a {@link de.fraunhofer.iais.eis.ConfigurationModel}.
+     * Path to a configuration File (JsonLD representation of
+     * a {@link de.fraunhofer.iais.eis.ConfigurationModel}.
      */
     String path;
     /**
-     * Password for the IDSKeystore configured in the {@link de.fraunhofer.iais.eis.ConfigurationModel} keyStore field.
+     * Password for the IDSKeystore configured in the
+     * {@link de.fraunhofer.iais.eis.ConfigurationModel} keyStore field.
      */
     String keyStorePassword;
     /**
@@ -40,7 +42,8 @@ public class ConfigProperties {
      */
     String keyAlias;
     /**
-     * Password for the IDSTruststore configured in the {@link de.fraunhofer.iais.eis.ConfigurationModel} trustStore field.
+     * Password for the IDSTruststore configured in the
+     * {@link de.fraunhofer.iais.eis.ConfigurationModel} trustStore field.
      */
     String trustStorePassword;
 }

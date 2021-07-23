@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'connector'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ConnectorRequestBuilder<T>> {
+public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, ConnectorRequestBuilder<T>> {
 
     private URI affectedConnector;
 
@@ -70,7 +72,8 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage}.
+     * Set the operation to UPDATE: describes a
+     * {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage}.
      *
      * @param affectedConnector affected connector id for message header
      * @return this builder instance
@@ -82,7 +85,8 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
     }
 
     /**
-     * Set the operation to DELETE: describes a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage}.
+     * Set the operation to DELETE: describes a
+     * {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage}.
      *
      * @param affectedConnector affected connector id for message header
      * @return this builder instance
@@ -130,7 +134,8 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
                         return sendMultipart(target, updateMessage);
                     case DELETE:
                         var deleteMessage = notificationTemplateProvider
-                                .connectorUnavailableMessageTemplate(affectedConnector).buildMessage();
+                                .connectorUnavailableMessageTemplate(
+                                        affectedConnector).buildMessage();
                         return sendMultipart(target, deleteMessage);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");

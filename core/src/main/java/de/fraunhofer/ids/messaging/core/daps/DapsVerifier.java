@@ -76,7 +76,8 @@ public class DapsVerifier {
                 throw new ClaimsException("The token is outdated.");
             }
 
-            if (toVerify.getExpiration().before(toVerify.getIssuedAt()) || new Date().before(toVerify.getIssuedAt())) {
+            if (toVerify.getExpiration().before(toVerify.getIssuedAt())
+               || new Date().before(toVerify.getIssuedAt())) {
                 throw new ClaimsException("The token's issued time (iat) is invalid");
             }
 
@@ -95,17 +96,27 @@ public class DapsVerifier {
                         if (!result.isSuccess()) {
                             //if a rule fails, reject token
                             if (log.isWarnEnabled()) {
-                                log.warn(String.format("Custom DAT validation rule failed! Message: %s", result.getMessage()));
+                                log.warn(String.format(
+                                    "Custom DAT validation rule failed!"
+                                    + " Message: %s",
+                                    result.getMessage()));
                             }
 
-                            throw new ClaimsException(String.format("Custom Rule failed! Message: %s", result.getMessage()));
+                            throw new ClaimsException(String.format(
+                                    "Custom Rule failed! Message: %s",
+                                    result.getMessage()));
                         }
                     } catch (ValidationRuleException e) {
                         //if a rule throws an exception, log exception and reject token
                         if (log.isErrorEnabled()) {
-                            log.error("Exception thrown by custom DAT validation rule! " + e.getMessage());
+                            log.error(
+                                "Exception thrown by custom DAT"
+                                + " validation rule! "
+                                + e.getMessage());
                         }
-                        throw new ClaimsException(String.format("Custom Rule threw Exception! Message: %s", e.getMessage()));
+                        throw new ClaimsException(String.format(
+                            "Custom Rule threw Exception! Message: %s",
+                            e.getMessage()));
                     }
                 }
             }

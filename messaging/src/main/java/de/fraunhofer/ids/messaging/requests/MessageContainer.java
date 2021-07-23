@@ -24,7 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Container holding ids header fields, the underlying IDS message they were parsed from and the message payload.
+ * Container holding ids header fields, the underlying IDS message
+ * they were parsed from and the message payload.
  *
  * @param <T> Type of payload
  */
@@ -73,7 +74,8 @@ public class MessageContainer<T> {
      * @param payload incoming message payload
      */
     public MessageContainer(final Map<String, String> headers, final T payload) {
-        //TODO build headerContainer from httpHeaders given in header map (used for incoming IDS_LDP messages)
+        //TODO build headerContainer from httpHeaders given
+        // in header map (used for incoming IDS_LDP messages)
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 

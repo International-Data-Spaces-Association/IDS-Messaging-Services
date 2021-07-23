@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'app'.
  *
  * @param <T> Type of expected Payload.
  */
-public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, AppRequestBuilder<T>> {
+public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, AppRequestBuilder<T>> {
 
     private URI affectedApp;
 
@@ -94,7 +96,8 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     }
 
     /**
-     * Set the operation to DISABLE: describes an {@link de.fraunhofer.iais.eis.AppUnavailableMessage}.
+     * Set the operation to DISABLE: describes an
+     * {@link de.fraunhofer.iais.eis.AppUnavailableMessage}.
      *
      * @param affectedApp affected app id for message header
      * @return this builder instance
@@ -106,7 +109,8 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     }
 
     /**
-     * Set the operation to REGISTER: describes an {@link de.fraunhofer.iais.eis.AppRegistrationRequestMessage}.
+     * Set the operation to REGISTER: describes an
+     * {@link de.fraunhofer.iais.eis.AppRegistrationRequestMessage}.
      *
      * @param affectedApp affected app id for message header
      * @return this builder instance

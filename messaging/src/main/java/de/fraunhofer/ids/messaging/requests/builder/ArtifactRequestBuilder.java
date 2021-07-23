@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'artifact'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ArtifactRequestBuilder<T>> {
+public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, ArtifactRequestBuilder<T>> {
 
     private URI requestedArtifact;
 
@@ -70,7 +72,8 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
     }
 
     /**
-     * Set the operation to RECEIVE: describes an {@link de.fraunhofer.iais.eis.ArtifactRequestMessage}.
+     * Set the operation to RECEIVE: describes an
+     * {@link de.fraunhofer.iais.eis.ArtifactRequestMessage}.
      *
      * @param requestedArtifact requested artifact id for message header
      * @return this builder instance
@@ -115,8 +118,10 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements E
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider.artifactRequestMessageTemplate(requestedArtifact)
-                                .buildMessage();
+                        var message = requestTemplateProvider
+                            .artifactRequestMessageTemplate(
+                                    requestedArtifact)
+                            .buildMessage();
                         return sendMultipart(target, message);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");

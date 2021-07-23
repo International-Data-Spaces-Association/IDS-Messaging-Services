@@ -22,7 +22,8 @@ import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 import lombok.Getter;
 
 
-public abstract class AbstractContractMAP<M extends Message, C extends Contract> implements MessageAndPayload<Message, Contract> {
+public abstract class AbstractContractMAP<M extends Message, C extends Contract>
+        implements MessageAndPayload<Message, Contract> {
 
     @Getter
     M message;
@@ -36,6 +37,8 @@ public abstract class AbstractContractMAP<M extends Message, C extends Contract>
 
     @Override
     public SerializedPayload serializePayload() {
-        return new SerializedPayload(payload.toRdf().getBytes(), "application/ld+json", payload.getId().toString());
+        return new SerializedPayload(payload.toRdf().getBytes(),
+                                     "application/ld+json",
+                                     payload.getId().toString());
     }
 }

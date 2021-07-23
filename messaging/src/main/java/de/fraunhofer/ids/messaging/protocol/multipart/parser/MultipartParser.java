@@ -38,16 +38,19 @@ public final class MultipartParser implements UploadContext {
     Map<String, String> parameters = new ConcurrentHashMap<>();
 
     /**
-     * Constructor for the MultipartStringParser used internally to parse a multipart response to a Map<Partname, MessagePart>.
+     * Constructor for the MultipartStringParser used internally
+     * to parse a multipart response to a Map<Partname, MessagePart>.
      *
      * @param postBody a multipart response body as string
      * @throws FileUploadException if there are problems reading/parsing the postBody.
      */
-    private MultipartParser(final String postBody) throws FileUploadException, MultipartParseException {
+    private MultipartParser(final String postBody)
+            throws FileUploadException, MultipartParseException {
         this.postBody = postBody;
 
         if (postBody.length() <= 2 || postBody.indexOf('\n') <= 2)  {
-            throw new MultipartParseException("String could not be parsed, could not find a boundary!");
+            throw new MultipartParseException(
+                    "String could not be parsed, could not find a boundary!");
         }
 
         this.boundary = postBody.substring(2, postBody.indexOf('\n')).trim();
@@ -70,17 +73,20 @@ public final class MultipartParser implements UploadContext {
      * @return a Map from partname on content
      * @throws MultipartParseException if there are problems reading/parsing the postBody.
      */
-    public static Map<String, String> stringToMultipart(final String postBody) throws MultipartParseException {
+    public static Map<String, String> stringToMultipart(final String postBody)
+            throws MultipartParseException {
         try {
             final var resultMap = new MultipartParser(postBody).getParameters();
 
             if (resultMap.keySet().isEmpty()) {
-                throw new MultipartParseException("Could not parse Multipart! No parts found!");
+                throw new MultipartParseException(
+                        "Could not parse Multipart! No parts found!");
             }
 
             return resultMap;
-        } catch (FileUploadException e) {
-            throw new MultipartParseException("Could not parse given String:\n" + postBody, e);
+        } catch(FileUploadException e) {
+            throw new MultipartParseException(
+                    "Could not parse given String:\n" + postBody, e);
         }
     }
 

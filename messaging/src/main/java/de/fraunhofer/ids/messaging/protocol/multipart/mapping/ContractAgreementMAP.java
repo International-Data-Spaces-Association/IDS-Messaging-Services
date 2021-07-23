@@ -20,7 +20,8 @@ import de.fraunhofer.iais.eis.ContractAgreement;
 import de.fraunhofer.iais.eis.ContractAgreementMessage;
 
 
-public class ContractAgreementMAP extends AbstractContractMAP<ContractAgreementMessage, ContractAgreement> {
+public class ContractAgreementMAP
+        extends AbstractContractMAP<ContractAgreementMessage, ContractAgreement> {
 
     public ContractAgreementMAP(final ContractAgreementMessage contractAgreementMessage,
                                 final ContractAgreement payload) {

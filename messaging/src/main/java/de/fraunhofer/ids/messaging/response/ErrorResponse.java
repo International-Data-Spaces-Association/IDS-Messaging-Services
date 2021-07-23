@@ -53,12 +53,14 @@ public class ErrorResponse implements MessageResponse {
      *
      * @return an instance of ErrorResponse with the given parameters
      */
-    public static ErrorResponse create(final RejectionMessage rejectionMessage, final String errorReason) {
+    public static ErrorResponse create(final RejectionMessage rejectionMessage,
+                                       final String errorReason) {
         return new ErrorResponse(rejectionMessage, errorReason);
     }
 
     /**
-     * Create an ErrorResponse with Default RejectionMessage as header (only RejectionReason has to be Provided).
+     * Create an ErrorResponse with Default RejectionMessage as
+     * header (only RejectionReason has to be Provided).
      *
      * @param rejectionReason RejectionReason (why the message was rejected)
      * @param errorMessage    detailed error description
@@ -67,9 +69,10 @@ public class ErrorResponse implements MessageResponse {
      * @param messageId       id of the message being rejected (from message-header)
      * @return an instance of ErrorResponse with the given parameters
      */
-    public static ErrorResponse withDefaultHeader(final RejectionReason rejectionReason, final String errorMessage,
-                                                  final URI connectorId, final String modelVersion,
-                                                  URI messageId) {
+    public static ErrorResponse withDefaultHeader(
+            final RejectionReason rejectionReason, final String errorMessage,
+            final URI connectorId, final String modelVersion,
+            URI messageId) {
         if (messageId == null) {
             messageId = URI.create("https://INVALID");
         }
@@ -92,7 +95,8 @@ public class ErrorResponse implements MessageResponse {
     }
 
     /**
-     * Create an ErrorResponse with Default RejectionMessage as header (only RejectionReason has to be Provided).
+     * Create an ErrorResponse with Default RejectionMessage as header
+     * (only RejectionReason has to be Provided).
      *
      * @param rejectionReason RejectionReason (why the message was rejected)
      * @param errorMessage    detailed error description
@@ -100,8 +104,9 @@ public class ErrorResponse implements MessageResponse {
      * @param modelVersion    infomodelversion of the current connector
      * @return an instance of ErrorResponse with the given parameters
      */
-    public static ErrorResponse withDefaultHeader(final RejectionReason rejectionReason, final String errorMessage,
-                                                  final URI connectorId, final String modelVersion) {
+    public static ErrorResponse withDefaultHeader(
+            final RejectionReason rejectionReason, final String errorMessage,
+            final URI connectorId, final String modelVersion) {
         return withDefaultHeader(rejectionReason, errorMessage, connectorId, modelVersion, null);
     }
 
@@ -109,7 +114,8 @@ public class ErrorResponse implements MessageResponse {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> createMultipartMap(final Serializer serializer) throws SerializeException {
+    public Map<String, Object> createMultipartMap(final Serializer serializer)
+            throws SerializeException {
         try {
             final var multiMap = new LinkedHashMap<String, Object>();
             multiMap.put(MultipartDatapart.HEADER.toString(),

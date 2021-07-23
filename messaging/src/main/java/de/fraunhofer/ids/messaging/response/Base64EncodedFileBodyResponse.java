@@ -50,13 +50,15 @@ public class Base64EncodedFileBodyResponse<T extends Message> implements Message
      * @param header    header of the response (ResponseMessage or NotificationMessage)
      * @param file      file that should be returned
      * @param mediaType mediatype of the file
-     * @throws IOException if header cannot be serialized to json, or file cannot be parsed to base64 encoded string
+     * @throws IOException if header cannot be serialized to json,
+     * or file cannot be parsed to base64 encoded string
      */
     @SuppressWarnings(value = { "rawtypes", "unchecked" })
     public Base64EncodedFileBodyResponse(final T header, final File file, final MediaType mediaType)
             throws IOException {
         if (header instanceof RequestMessage) {
-            throw new IllegalStateException("Responses are only allowed using instances of ResponseMessage or NotificationMessage!");
+            throw new IllegalStateException("Responses are only allowed "
+                + "using instances of ResponseMessage or NotificationMessage!");
         }
 
         this.header = header;
@@ -77,10 +79,11 @@ public class Base64EncodedFileBodyResponse<T extends Message> implements Message
      * @param mediaType mediatype of the file
      * @param <T>       subtype of Message (ResponseMessage or NotificationMessage)
      * @return instance of Base64EncodedFileBodyResponse using given parameters
-     * @throws IOException if header cannot be serialized to json, or file cannot be parsed to base64 encoded string
+     * @throws IOException if header cannot be serialized to json, or
+     * file cannot be parsed to base64 encoded string
      */
-    public static <T extends Message> Base64EncodedFileBodyResponse<T> create(final T header, final File file,
-                                                                              final MediaType mediaType)
+    public static <T extends Message> Base64EncodedFileBodyResponse<T> create(
+            final T header, final File file, final MediaType mediaType)
             throws IOException {
         return new Base64EncodedFileBodyResponse<>(header, file, mediaType);
     }
@@ -89,7 +92,8 @@ public class Base64EncodedFileBodyResponse<T extends Message> implements Message
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> createMultipartMap(final Serializer serializer) throws SerializeException {
+    public Map<String, Object> createMultipartMap(final Serializer serializer)
+            throws SerializeException {
         try {
             final var multiMap = new LinkedHashMap<String, Object>();
             multiMap.put(MultipartDatapart.HEADER.toString(),

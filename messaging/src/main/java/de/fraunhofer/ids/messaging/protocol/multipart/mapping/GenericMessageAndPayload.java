@@ -51,7 +51,9 @@ public class GenericMessageAndPayload implements MessageAndPayload<Message, Obje
         SerializedPayload serializedPayload;
         if (Objects.nonNull(payload)) {
             try {
-                serializedPayload = new SerializedPayload(new Serializer().serialize(payload).getBytes(), "application/ld+json");
+                serializedPayload = new SerializedPayload(
+                        new Serializer().serialize(payload).getBytes(),
+                        "application/ld+json");
             } catch (IOException ioException) {
                 throw new SerializeException(ioException);
             }

@@ -57,12 +57,14 @@ public class MessageHandlerException extends Exception {
     /**
      * An exception that is thrown during message-handling of a MessageHandler.
      *
-     * @param message            Message of the Exception to be thrown
-     * @param cause              Throwable cause of the Exception
+     * @param message Message of the Exception to be thrown
+     * @param cause Throwable cause of the Exception
      * @param enableSuppression  Enable Suppression?
      * @param writableStackTrace Write to Stacktrace?
      */
-    public MessageHandlerException(final String message, final Throwable cause, final boolean enableSuppression,
+    public MessageHandlerException(final String message,
+                                   final Throwable cause,
+                                   final boolean enableSuppression,
                                    final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

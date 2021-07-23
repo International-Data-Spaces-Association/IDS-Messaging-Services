@@ -24,7 +24,8 @@ import lombok.experimental.FieldDefaults;
 
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DescriptionResponseMAP implements MessageAndPayload<DescriptionResponseMessage, String> {
+public class DescriptionResponseMAP
+        implements MessageAndPayload<DescriptionResponseMessage, String> {
 
     DescriptionResponseMessage message;
     String payload;

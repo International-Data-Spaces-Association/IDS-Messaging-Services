@@ -29,7 +29,8 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InfrastructurePayloadMAP implements MessageAndPayload<Message, InfrastructureComponent> {
+public class InfrastructurePayloadMAP
+        implements MessageAndPayload<Message, InfrastructureComponent> {
 
     @Getter
     @NotNull
@@ -46,7 +47,9 @@ public class InfrastructurePayloadMAP implements MessageAndPayload<Message, Infr
     @Override
     public SerializedPayload serializePayload() {
         if (connectorSelfDescription != null) {
-            return new SerializedPayload(connectorSelfDescription.toRdf().getBytes(), "application/ld+json");
+            return new SerializedPayload(
+                    connectorSelfDescription.toRdf().getBytes(),
+                    "application/ld+json");
         } else {
             return SerializedPayload.EMPTY;
         }

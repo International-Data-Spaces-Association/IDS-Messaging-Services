@@ -69,12 +69,15 @@ import org.springframework.stereotype.Service;
 public class NotificationTemplateProvider {
 
     ConfigContainer container;
+
     DapsTokenProvider tokenProvider;
 
-    public MessageTemplate<ConnectorUpdateMessage> connectorUpdateMessageTemplate(final URI affectedConnector) {
+    public MessageTemplate<ConnectorUpdateMessage>
+    connectorUpdateMessageTemplate(final URI affectedConnector) {
         return () -> new ConnectorUpdateMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -82,10 +85,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ConnectorUnavailableMessage> connectorUnavailableMessageTemplate(final URI affectedConnector) {
+    public MessageTemplate<ConnectorUnavailableMessage>
+    connectorUnavailableMessageTemplate(final URI affectedConnector) {
         return () -> new ConnectorUnavailableMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -93,10 +98,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ConnectorCertificateGrantedMessage> connectorCertificateGrantedMessageTemplate(final URI affectedConnector) {
+    public MessageTemplate<ConnectorCertificateGrantedMessage>
+    connectorCertificateGrantedMessageTemplate(final URI affectedConnector) {
         return () -> new ConnectorCertificateGrantedMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -104,10 +111,14 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ConnectorCertificateRevokedMessage> connectorCertificateRevokedMessageTemplate(final URI affectedConnector, final TypedLiteral revocationReason) {
+    public MessageTemplate<ConnectorCertificateRevokedMessage>
+    connectorCertificateRevokedMessageTemplate(
+            final URI affectedConnector,
+            final TypedLiteral revocationReason) {
         return () -> new ConnectorCertificateRevokedMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -116,10 +127,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ParticipantUpdateMessage> participantUpdateMessageTemplate(final URI affectedParticipant) {
+    public MessageTemplate<ParticipantUpdateMessage>
+    participantUpdateMessageTemplate(final URI affectedParticipant) {
         return () -> new ParticipantUpdateMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -127,10 +140,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ParticipantUnavailableMessage> participantUnavailableMessageTemplate(final URI affectedParticipant) {
+    public MessageTemplate<ParticipantUnavailableMessage>
+    participantUnavailableMessageTemplate(final URI affectedParticipant) {
         return () -> new ParticipantUnavailableMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -138,10 +153,13 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ParticipantCertificateGrantedMessage> participantCertificateGrantedMessageTemplate(final URI affectedParticipant) {
+    public MessageTemplate<ParticipantCertificateGrantedMessage>
+    participantCertificateGrantedMessageTemplate(
+            final URI affectedParticipant) {
         return () -> new ParticipantCertificateGrantedMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -149,10 +167,14 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ParticipantCertificateRevokedMessage> participantCertificateRevokedMessageTemplate(final URI affectedParticipant, final TypedLiteral revocationReason) {
+    public MessageTemplate<ParticipantCertificateRevokedMessage>
+    participantCertificateRevokedMessageTemplate(
+            final URI affectedParticipant,
+            final TypedLiteral revocationReason) {
         return () -> new ParticipantCertificateRevokedMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -161,10 +183,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<AppAvailableMessage> appAvailableMessageTemplate(final URI affectedApp) {
+    public MessageTemplate<AppAvailableMessage>
+    appAvailableMessageTemplate(final URI affectedApp) {
         return () -> new AppAvailableMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -172,10 +196,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<AppUnavailableMessage> appUnavailableMessageTemplate(final URI affectedApp) {
+    public MessageTemplate<AppUnavailableMessage>
+    appUnavailableMessageTemplate(final URI affectedApp) {
         return () -> new AppUnavailableMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -183,10 +209,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<AppDeleteMessage> appDeleteMessageTemplate(final URI affectedApp) {
+    public MessageTemplate<AppDeleteMessage>
+    appDeleteMessageTemplate(final URI affectedApp) {
         return () -> new AppDeleteMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -194,10 +222,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ResourceUpdateMessage> resourceUpdateMessageTemplate(final URI affectedResource) {
+    public MessageTemplate<ResourceUpdateMessage>
+    resourceUpdateMessageTemplate(final URI affectedResource) {
         return () -> new ResourceUpdateMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -205,10 +235,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ResourceUnavailableMessage> resourceUnavailableMessageTemplate(final URI affectedResource) {
+    public MessageTemplate<ResourceUnavailableMessage>
+    resourceUnavailableMessageTemplate(final URI affectedResource) {
         return () -> new ResourceUnavailableMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
@@ -216,50 +248,60 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
-    public MessageTemplate<ContractOfferMessage> contractOfferMessageTemplate() {
+    public MessageTemplate<ContractOfferMessage>
+    contractOfferMessageTemplate() {
         return () -> new ContractOfferMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
                 .build();
     }
 
-    public MessageTemplate<ContractSupplementMessage> contractSupplementMessageTemplate() {
+    public MessageTemplate<ContractSupplementMessage>
+    contractSupplementMessageTemplate() {
         return () -> new ContractSupplementMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
                 .build();
     }
 
-    public MessageTemplate<RequestInProcessMessage> requestInProcessMessageTemplate() {
+    public MessageTemplate<RequestInProcessMessage>
+    requestInProcessMessageTemplate() {
         return () -> new RequestInProcessMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
                 .build();
     }
 
-    public MessageTemplate<MessageProcessedNotificationMessage> messageProcessedNotificationMessageTemplate() {
+    public MessageTemplate<MessageProcessedNotificationMessage>
+    messageProcessedNotificationMessageTemplate() {
         return () -> new MessageProcessedNotificationMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())
                 .build();
     }
 
-    public MessageTemplate<LogMessage> logMessageTemplate(final URI clearingHouseUrl) {
+    public MessageTemplate<LogMessage>
+    logMessageTemplate(final URI clearingHouseUrl) {
         return () -> new LogMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
-                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._modelVersion_(container.getConnector()
+                                         .getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
                 ._senderAgent_(container.getConnector().getId())
                 ._securityToken_(tokenProvider.getDAT())

@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'contract offer'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractOfferRequestBuilder<T>> {
+public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>,
+        SupportsMultipart<T, ContractOfferRequestBuilder<T>> {
 
     ContractOfferRequestBuilder(
             final Class<T> expected,

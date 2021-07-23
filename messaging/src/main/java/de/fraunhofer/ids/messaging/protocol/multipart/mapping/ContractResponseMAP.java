@@ -20,7 +20,8 @@ import de.fraunhofer.iais.eis.ContractOffer;
 import de.fraunhofer.iais.eis.ContractResponseMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
-public class ContractResponseMAP extends AbstractContractMAP<ContractResponseMessage, ContractOffer> {
+public class ContractResponseMAP
+        extends AbstractContractMAP<ContractResponseMessage, ContractOffer> {
 
     public ContractResponseMAP(final ContractResponseMessage contractResponseMessage,
                                final ContractOffer payload) {
@@ -40,6 +41,8 @@ public class ContractResponseMAP extends AbstractContractMAP<ContractResponseMes
 
     @Override
     public SerializedPayload serializePayload() {
-        return new SerializedPayload(payload.toRdf().getBytes(), "application/ld+json", payload.getId().toString());
+        return new SerializedPayload(payload.toRdf().getBytes(),
+                                     "application/ld+json",
+                                     payload.getId().toString());
     }
 }

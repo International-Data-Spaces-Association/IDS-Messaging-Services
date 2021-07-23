@@ -29,7 +29,8 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
 import lombok.NonNull;
 
 public interface IDSInfrastructureService {
-    MessageContainer<?> requestSelfDescription( @NonNull URI uri ) throws
+    MessageContainer<?> requestSelfDescription(@NonNull URI uri)
+            throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -42,7 +43,9 @@ public interface IDSInfrastructureService {
             RejectionException,
             UnexpectedPayloadException;
 
-    MessageContainer<?> requestSelfDescription( @NonNull URI uri, @NonNull URI requestedElement ) throws
+    MessageContainer<?> requestSelfDescription(@NonNull URI uri,
+                                               @NonNull URI requestedElement)
+            throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,

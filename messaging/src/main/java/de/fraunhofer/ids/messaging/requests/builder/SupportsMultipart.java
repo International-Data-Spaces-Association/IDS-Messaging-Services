@@ -23,8 +23,8 @@ package de.fraunhofer.ids.messaging.requests.builder;
 public interface SupportsMultipart<T, S extends IdsRequestBuilder<T> & ExecutableBuilder<T>> {
 
     /**
-     * @return same builder instance (or specific subtype when supported operations are different) with protocol set to Multipart.
+     * @return same builder instance (or specific
+     * subtype when supported operations are different) with protocol set to Multipart.
      */
     S useMultipart();
-
 }

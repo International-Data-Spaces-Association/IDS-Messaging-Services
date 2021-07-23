@@ -29,7 +29,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @param <T> a subtype of ResponseMessage or NotificationMessage (will throw IllegalStateException if used with ResponseMessage)
+ * @param <T> a subtype of ResponseMessage or NotificationMessage
+ * (will throw IllegalStateException if used with ResponseMessage)
  */
 @Data
 @Slf4j
@@ -46,7 +47,8 @@ public class BodyResponse<T extends Message> implements MessageResponse {
      */
     public BodyResponse(final T header, final Object payload) {
         if (header instanceof RequestMessage) {
-            throw new IllegalStateException("Responses are only allowed using instances of ResponseMessage or NotificationMessage!");
+            throw new IllegalStateException("Responses are only allowed "
+                + "using instances of ResponseMessage or NotificationMessage!");
         }
 
         this.header = header;

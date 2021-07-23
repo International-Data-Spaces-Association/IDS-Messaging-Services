@@ -65,13 +65,16 @@ public class IdsMessageUtils {
      * Generate a signature over a given String value.
      *
      * @param privateSignature Signature method
-     * @param value            String to sign
-     * @param privateKey       Private Key to sign with.
+     * @param value String to sign
+     * @param privateKey Private Key to sign with.
      * @return Signature as String
      * @throws InvalidKeyException if the private key is invalid.
-     * @throws SignatureException  if the signature cannot properly be initialized.
+     * @throws SignatureException if the signature cannot
+     * properly be initialized.
      */
-    public String sign(final Signature privateSignature, final String value, final PrivateKey privateKey)
+    public String sign(final Signature privateSignature,
+                       final String value,
+                       final PrivateKey privateKey)
             throws InvalidKeyException, SignatureException {
 
         privateSignature.initSign(privateKey);
@@ -103,14 +106,18 @@ public class IdsMessageUtils {
 
         //read /main/resources/project/properties
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Trying to read Property %s from pom.xml properties", property));
+            log.debug(String.format(
+                    "Trying to read Property %s from pom.xml properties",
+                    property));
         }
 
         final var properties = new Properties();
 
         try {
             properties.load(Objects.requireNonNull(
-                            IdsMessageUtils.class.getClassLoader().getResourceAsStream("project.properties")));
+                            IdsMessageUtils.class
+                                .getClassLoader()
+                                .getResourceAsStream("project.properties")));
         } catch (IOException e) {
             if (log.isInfoEnabled()) {
                 log.info(e.getMessage());
@@ -124,7 +131,8 @@ public class IdsMessageUtils {
     /**
      * Generates a XML gregorian calendar from the current time.
      *
-     * @return XMLGregorianCalendar containing the current time stamp as {@link XMLGregorianCalendar}.
+     * @return XMLGregorianCalendar containing the current time
+     * stamp as {@link XMLGregorianCalendar}.
      */
     public XMLGregorianCalendar getGregorianNow() {
         final var calendar = new GregorianCalendar();

@@ -56,13 +56,16 @@ public final class InfomodelMessageBuilder {
     /**
      * Build a MultipartMessage with {@link Message} header and {@link File} payload.
      *
-     * @param header   the header Part of the MultipartMessage (an implementation of {@link Message})
+     * @param header   the header Part of the MultipartMessage
+     *                 (an implementation of {@link Message})
      * @param payload  the File that is added to the MultipartMessages payload
      * @param fileType the MediaType of the file
      * @return the built Message as OkHttp MultipartBody
      * @throws SerializeException if the given header cannot be serialized by the given serializer
      */
-    public static MultipartBody messageWithFile(final Message header, final File payload, final MediaType fileType)
+    public static MultipartBody messageWithFile(final Message header,
+                                                final File payload,
+                                                final MediaType fileType)
             throws SerializeException {
         final var imb = new InfomodelMessageBuilder(header);
         imb.addPayload(payload, fileType);

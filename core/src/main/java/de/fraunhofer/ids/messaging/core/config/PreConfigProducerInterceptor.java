@@ -16,17 +16,20 @@ package de.fraunhofer.ids.messaging.core.config;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 
 /**
- * Intercepts ConfigProducer and loads own configuration (e.g from a DB instead of config.json file).
+ * Intercepts ConfigProducer and loads own
+ * configuration (e.g from a DB instead of config.json file).
  */
 public interface PreConfigProducerInterceptor {
 
     /**
-     * Load or build a ConfigurationModel and return it (will be used by ConfigProducer to generate Key/Truststore and ConfigContainer).
+     * Load or build a ConfigurationModel and return
+     * it (will be used by ConfigProducer to
+     * generate Key/Truststore and ConfigContainer).
      *
      * @param properties configproperties of ConfigProducer
      * @return loaded ConfigurationModel
      * @throws ConfigProducerInterceptorException if loading a configuration failed
      */
-    ConfigurationModel perform(ConfigProperties properties) throws ConfigProducerInterceptorException;
-
+    ConfigurationModel perform(ConfigProperties properties)
+            throws ConfigProducerInterceptorException;
 }

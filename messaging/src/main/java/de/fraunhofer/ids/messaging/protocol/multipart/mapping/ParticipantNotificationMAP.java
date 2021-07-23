@@ -23,15 +23,20 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ParticipantNotificationMAP implements MessageAndPayload<Message, Participant> {
+public class ParticipantNotificationMAP
+        implements MessageAndPayload<Message, Participant> {
+
     final Message message;
+
     Participant participantSelfDescription;
 
     public ParticipantNotificationMAP(final Message message) {
         this.message = message;
     }
 
-    public ParticipantNotificationMAP(final Message message, final Participant participantSelfDescription) {
+    public ParticipantNotificationMAP(
+            final Message message,
+            final Participant participantSelfDescription) {
         this.message = message;
         this.participantSelfDescription = participantSelfDescription;
     }
@@ -49,7 +54,9 @@ public class ParticipantNotificationMAP implements MessageAndPayload<Message, Pa
     @Override
     public SerializedPayload serializePayload() {
         if (participantSelfDescription != null) {
-            return new SerializedPayload(participantSelfDescription.toRdf().getBytes(), "application/ld+json");
+            return new SerializedPayload(
+                    participantSelfDescription.toRdf().getBytes(),
+                    "application/ld+json");
         } else {
             return SerializedPayload.EMPTY;
         }

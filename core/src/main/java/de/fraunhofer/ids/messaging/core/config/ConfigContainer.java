@@ -27,7 +27,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The ConfigurationContainer wraps the current configuration with the respective key- and truststore,
+ * The ConfigurationContainer wraps the current configuration
+ * with the respective key- and truststore,
  * and manages changes of the configuration.
  */
 @Slf4j
@@ -48,7 +49,8 @@ public class ConfigContainer {
      * @param configurationModel the initial {@link ConfigurationModel} of the Connector
      * @param keyStoreManager    the KeyStoreManager, managing Key- and Truststore of the Connector
      */
-    public ConfigContainer(final ConfigurationModel configurationModel, final KeyStoreManager keyStoreManager) {
+    public ConfigContainer(final ConfigurationModel configurationModel,
+                           final KeyStoreManager keyStoreManager) {
         this.configurationModel = configurationModel;
         this.keyStoreManager = keyStoreManager;
     }
@@ -63,13 +65,16 @@ public class ConfigContainer {
     }
 
     /**
-     * Update the ConfigurationContainer with a new {@link ConfigurationModel}, rebuild the KeyStoreManager with
+     * Update the ConfigurationContainer with a new
+     * {@link ConfigurationModel}, rebuild the KeyStoreManager with
      * new Configuration in the process.
      *
      * @param configurationModel the new configurationModel that replaces the current one
-     * @throws ConfigUpdateException when the Key- and Truststore in the new Connector cannot be initialized
+     * @throws ConfigUpdateException when the Key- and Truststore
+     * in the new Connector cannot be initialized
      */
-    public void updateConfiguration(final ConfigurationModel configurationModel) throws ConfigUpdateException {
+    public void updateConfiguration(final ConfigurationModel configurationModel)
+            throws ConfigUpdateException {
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Updating the current configuration");
@@ -92,13 +97,15 @@ public class ConfigContainer {
             }
         } catch (KeyStoreManagerInitializationException e) {
             if (log.isErrorEnabled()) {
-                log.error("Configuration could not be updated! Keeping old configuration! " + e.getMessage());
+                log.error("Configuration could not be updated!"
+                    + " Keeping old configuration! " + e.getMessage());
             }
 
             throw new ConfigUpdateException(e.getMessage(), e.getCause());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             if (log.isErrorEnabled()) {
-                log.error("New Key- or Truststore could not be initialized! Keeping old configuration! " + e.getMessage());
+                log.error("New Key- or Truststore could not be initialized!"
+                    + " Keeping old configuration! " + e.getMessage());
             }
             throw new ConfigUpdateException(e.getMessage(), e.getCause());
         }
@@ -109,7 +116,8 @@ public class ConfigContainer {
      *
      * @param configurationModel the current ConfigurationModel
      * @return the newly built KeyStoreManager
-     * @throws KeyStoreManagerInitializationException when the new KeyStoreManager cannot be initialized
+     * @throws KeyStoreManagerInitializationException when the new
+     * KeyStoreManager cannot be initialized
      */
     private KeyStoreManager rebuildKeyStoreManager(final ConfigurationModel configurationModel)
             throws KeyStoreManagerInitializationException {

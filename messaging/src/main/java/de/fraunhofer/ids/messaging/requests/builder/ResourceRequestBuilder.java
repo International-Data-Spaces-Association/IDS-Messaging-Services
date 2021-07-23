@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,13 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'resource'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ResourceRequestBuilder<T>> {
+public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>, SupportsMultipart<T, ResourceRequestBuilder<T>> {
 
     private URI affectedResource;
 
@@ -70,7 +71,8 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ResourceUpdateMessage}.
+     * Set the operation to UPDATE: describes a
+     * {@link de.fraunhofer.iais.eis.ResourceUpdateMessage}.
      *
      * @param affectedResource affected resource id for message header
      * @return this builder instance
@@ -82,7 +84,8 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
     }
 
     /**
-     * Set the operation to DELETE: describes a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage}.
+     * Set the operation to DELETE: describes a
+     * {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage}.
      *
      * @param affectedResource affected resource id for message header
      * @return this builder instance
@@ -130,7 +133,8 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
                         return sendMultipart(target, updateMessage);
                     case DELETE:
                         var deleteMessage = notificationTemplateProvider
-                                .resourceUnavailableMessageTemplate(affectedResource).buildMessage();
+                                .resourceUnavailableMessageTemplate(affectedResource)
+                                .buildMessage();
                         return sendMultipart(target, deleteMessage);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");

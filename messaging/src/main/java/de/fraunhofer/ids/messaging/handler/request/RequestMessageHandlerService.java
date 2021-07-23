@@ -26,7 +26,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
- * Resolver that uses the Spring dependency injection mechanism to find the matching message handler.
+ * Resolver that uses the Spring dependency injection mechanism to
+ * find the matching message handler.
  */
 @Service
 public class RequestMessageHandlerService implements RequestMessageHandler {
@@ -51,9 +52,11 @@ public class RequestMessageHandlerService implements RequestMessageHandler {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <R extends Message> Optional<MessageHandler<R>> resolveHandler(final Class<R> messageType) {
+    public <R extends Message> Optional<MessageHandler<R>> resolveHandler(
+            final Class<R> messageType) {
         return Arrays.stream(appContext.getBeanNamesForAnnotation(SupportedMessageType.class))
-                     .flatMap(s -> Optional.ofNullable(appContext.findAnnotationOnBean(s, SupportedMessageType.class))
+                     .flatMap(s -> Optional.ofNullable(
+                             appContext.findAnnotationOnBean(s, SupportedMessageType.class))
                                            .stream().map(msg -> new Tuple<>(s, msg)))
                      .filter(t -> t.value.value().equals(messageType))
                 .<MessageHandler<R>>map(t -> appContext.getBean(t.key, MessageHandler.class))

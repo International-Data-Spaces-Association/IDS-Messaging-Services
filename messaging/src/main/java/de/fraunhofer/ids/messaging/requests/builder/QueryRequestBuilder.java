@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
@@ -33,16 +37,13 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'query'.
  *
  * @param <T> Type of expected Payload.
  */
-public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, QueryRequestBuilder<T>> {
+public class QueryRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>, SupportsMultipart<T, QueryRequestBuilder<T>> {
 
     private QueryLanguage queryLanguage;
     private QueryScope queryScope;
@@ -77,8 +78,10 @@ public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements Exec
     /**
      * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.QueryMessage}.
      *
-     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY). See {@link QueryLanguage}
-     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors, INACTIVE connectors). See {@link QueryScope}
+     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY).
+     *                      See {@link QueryLanguage}
+     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors,
+     *                      INACTIVE connectors). See {@link QueryScope}
      * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
      * @return this builder instance
      */

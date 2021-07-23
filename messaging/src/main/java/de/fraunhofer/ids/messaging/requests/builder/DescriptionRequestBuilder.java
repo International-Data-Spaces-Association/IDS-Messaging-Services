@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'description'.
  *
  * @param <T> Type of expected Payload.
  */
-public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, DescriptionRequestBuilder<T>> {
+public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>,
+        SupportsMultipart<T, DescriptionRequestBuilder<T>> {
 
     private URI requestedElement;
 
@@ -70,7 +72,8 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
     }
 
     /**
-     * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.DescriptionRequestMessage}.
+     * Set the operation to RECEIVE: describes a
+     * {@link de.fraunhofer.iais.eis.DescriptionRequestMessage}.
      *
      * @param requestedElement requested element id for message header (null is selfdescription)
      * @return this builder instance
@@ -114,7 +117,9 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider.descriptionRequestMessageTemplate(requestedElement)
+                        var message = requestTemplateProvider
+                                .descriptionRequestMessageTemplate(
+                                        requestedElement)
                                 .buildMessage();
                         return sendMultipart(target, message);
                     default:

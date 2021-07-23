@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'contract supplement'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractSupplementRequestBuilder<T>> {
+public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>,
+        SupportsMultipart<T, ContractSupplementRequestBuilder<T>> {
 
     ContractSupplementRequestBuilder(
             final Class<T> expected,
@@ -68,7 +70,8 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ContractSupplementMessage}.
+     * Set the operation to UPDATE: describes a
+     * {@link de.fraunhofer.iais.eis.ContractSupplementMessage}.
      *
      * @return this builder instance
      */

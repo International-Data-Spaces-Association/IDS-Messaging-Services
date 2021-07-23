@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'log'.
  *
  * @param <T> Type of expected Payload.
  */
-public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, LogRequestBuilder<T>> {
+public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, LogRequestBuilder<T>> {
 
     URI clearingHouseUrl;
 
@@ -113,7 +115,8 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
                 switch (operation) {
                     case UPDATE:
                         //build and send artifact request message
-                        var message = notificationTemplateProvider.logMessageTemplate(clearingHouseUrl)
+                        var message = notificationTemplateProvider
+                                .logMessageTemplate(clearingHouseUrl)
                                 .buildMessage();
                         return sendMultipart(target, message);
                     default:

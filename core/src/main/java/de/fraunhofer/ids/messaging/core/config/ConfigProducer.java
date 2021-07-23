@@ -37,7 +37,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Parse the configuration and initialize the key- and truststores specified in the {@link ConfigProperties} via
+ * Parse the configuration and initialize the key- and
+ * truststores specified in the {@link ConfigProperties} via
  * Spring application.properties.
  */
 @Slf4j
@@ -52,7 +53,8 @@ public class ConfigProducer {
     ClientProvider  clientProvider;
 
     /**
-     * Load the ConfigurationModel from the location specified in the application.properties, initialize the KeyStoreManager.
+     * Load the ConfigurationModel from the location specified in the
+     * application.properties, initialize the KeyStoreManager.
      *
      * @param properties the {@link ConfigProperties} parsed from an application.properties file
      */
@@ -88,8 +90,10 @@ public class ConfigProducer {
                 if (log.isInfoEnabled()) {
                     log.info("Initializing KeyStoreManager");
                 }
-                //initialize the KeyStoreManager with Key and Truststore locations in the ConfigurationModel
-                final var manager = new KeyStoreManager(configModel, properties.getKeyStorePassword().toCharArray(),
+                //initialize the KeyStoreManager with Key and Truststore
+                //locations in the ConfigurationModel
+                final var manager = new KeyStoreManager(configModel, properties
+                        .getKeyStorePassword().toCharArray(),
                         properties.getTrustStorePassword().toCharArray(),
                         properties.getKeyAlias());
 
@@ -107,7 +111,9 @@ public class ConfigProducer {
                                 interceptor.perform(configContainer);
                             } catch (ConfigProducerInterceptorException e) {
                                 if (log.isErrorEnabled()) {
-                                    log.error("PreConfigProducerInterceptor failed! " + e.getMessage());
+                                    log.error(
+                                        "PreConfigProducerInterceptor failed! "
+                                        + e.getMessage());
                                 }
                             }
                         }
@@ -152,7 +158,8 @@ public class ConfigProducer {
             log.info(String.format("Loading config from classpath: %s", properties.getPath()));
         }
 
-        final var configurationStream = new ClassPathResource(properties.getPath()).getInputStream();
+        final var configurationStream =
+                new ClassPathResource(properties.getPath()).getInputStream();
         final var config = IOUtils.toString(configurationStream);
         configurationStream.close();
 

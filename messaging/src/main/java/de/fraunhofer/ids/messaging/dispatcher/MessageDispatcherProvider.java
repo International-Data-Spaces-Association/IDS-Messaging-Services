@@ -30,22 +30,28 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 public class MessageDispatcherProvider {
     /**
-     * Make use of autowiring to get the parameters for the MessageDispatchers constructor and
+     * Make use of autowiring to get the parameters for the
+     * MessageDispatchers constructor and
      * create an Instance of MessageDispatcher with them.
      *
-     * @param objectMapper    for parsing objects from json
+     * @param objectMapper for parsing objects from json
      * @param configContainer container for current configuration
-     * @param resolver        resolver for finding the right handler for infomodel {@link de.fraunhofer.iais.eis.Message}
-     * @param dapsValidator   verification of DAT tokens
+     * @param resolver resolver for finding the right handler for
+     *                 infomodel {@link de.fraunhofer.iais.eis.Message}
+     * @param dapsValidator verification of DAT tokens
      *
      * @return MessageDispatcher as Spring Bean
      */
     @Bean
-    public MessageDispatcher provideMessageDispatcher(final ObjectMapper objectMapper,
-                                                      final RequestMessageHandler resolver,
-                                                      final ConfigContainer configContainer,
-                                                      final DapsValidator dapsValidator) {
+    public MessageDispatcher provideMessageDispatcher(
+            final ObjectMapper objectMapper,
+            final RequestMessageHandler resolver,
+            final ConfigContainer configContainer,
+            final DapsValidator dapsValidator) {
 
-        return new MessageDispatcher(objectMapper, resolver, configContainer, dapsValidator);
+        return new MessageDispatcher(objectMapper,
+                                     resolver,
+                                     configContainer,
+                                     dapsValidator);
     }
 }

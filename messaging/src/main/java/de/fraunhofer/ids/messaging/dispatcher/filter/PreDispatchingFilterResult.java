@@ -21,7 +21,8 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 /**
- * Result that is returned by a PreDispatchingFilter (with information about why a message was accepted or rejected).
+ * Result that is returned by a PreDispatchingFilter
+ * (with information about why a message was accepted or rejected).
  */
 @AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
