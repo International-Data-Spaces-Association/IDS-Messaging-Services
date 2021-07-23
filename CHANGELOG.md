@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter 2.5.2 -> 2.5.3
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.2 -> 2.5.3
 
 ## Version [3.0.0] 2021-07-20
 
