@@ -29,16 +29,25 @@ public class ContractResponseMAP
         this.payload = payload;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractResponseMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Contract> getPayload() {
         return Optional.of(payload);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return new SerializedPayload(payload.toRdf().getBytes(),

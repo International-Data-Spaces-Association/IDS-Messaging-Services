@@ -27,16 +27,25 @@ public class ContractRejectionMAP implements MessageAndPayload<ContractRejection
         this.contractRejectionMessage = contractRejectionMessage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractRejectionMessage getMessage() {
         return contractRejectionMessage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return SerializedPayload.EMPTY;

@@ -40,12 +40,17 @@ public class GenericMessageAndPayload implements MessageAndPayload<Message, Obje
 
     Object payload;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Object> getPayload() {
         return Optional.ofNullable(payload);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() throws SerializeException {
         SerializedPayload serializedPayload;

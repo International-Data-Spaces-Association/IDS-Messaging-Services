@@ -38,11 +38,17 @@ public class ResourceMAP implements MessageAndPayload<Message, Resource> {
         resource = r;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Resource> getPayload() {
         if (resource == null) {
@@ -52,6 +58,9 @@ public class ResourceMAP implements MessageAndPayload<Message, Resource> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         if (resource != null) {

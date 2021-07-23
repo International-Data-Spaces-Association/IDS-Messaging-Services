@@ -41,16 +41,25 @@ public class ParticipantNotificationMAP
         this.participantSelfDescription = participantSelfDescription;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Participant> getPayload() {
         return Optional.of(participantSelfDescription);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         if (participantSelfDescription != null) {

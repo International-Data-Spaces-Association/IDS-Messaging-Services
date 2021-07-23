@@ -29,12 +29,17 @@ public class ArtifactRequestMAP implements MessageAndPayload<ArtifactRequestMess
     @NonNull
     private final ArtifactRequestMessage message;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return null;

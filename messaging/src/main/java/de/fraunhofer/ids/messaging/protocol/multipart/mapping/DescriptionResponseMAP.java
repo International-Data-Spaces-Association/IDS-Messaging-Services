@@ -30,16 +30,25 @@ public class DescriptionResponseMAP
     DescriptionResponseMessage message;
     String payload;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DescriptionResponseMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<String> getPayload() {
         return Optional.of(payload);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return new SerializedPayload(payload.getBytes(), "application/ld+json");

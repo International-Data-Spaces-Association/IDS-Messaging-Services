@@ -32,11 +32,17 @@ public class QueryMAP implements MessageAndPayload<QueryMessage, String> {
 
     String queryString;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<String> getPayload() {
         return Optional.of(queryString);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return new SerializedPayload(queryString.getBytes(), "text/plain");

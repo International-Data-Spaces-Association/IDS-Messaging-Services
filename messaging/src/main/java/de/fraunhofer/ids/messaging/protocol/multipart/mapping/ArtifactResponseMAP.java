@@ -34,11 +34,17 @@ public class ArtifactResponseMAP implements MessageAndPayload<ArtifactResponseMe
 
     String payload;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<String> getPayload() {
         return Optional.of(payload);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return new SerializedPayload(payload.getBytes(), "application/ld+json");

@@ -30,11 +30,17 @@ public abstract class AbstractContractMAP<M extends Message, C extends Contract>
 
     C payload;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Contract> getPayload() {
         return Optional.of(payload);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return new SerializedPayload(payload.toRdf().getBytes(),

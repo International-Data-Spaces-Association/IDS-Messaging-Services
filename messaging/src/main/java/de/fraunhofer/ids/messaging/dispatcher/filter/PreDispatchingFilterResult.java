@@ -64,6 +64,9 @@ public class PreDispatchingFilterResult {
         return new PreDispatchingFilterResult(null, true, message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -81,6 +84,9 @@ public class PreDispatchingFilterResult {
                && Objects.equals(getMessage(), that.getMessage());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getError(), isSuccess(), getMessage());

@@ -27,16 +27,25 @@ public class DescriptionRequestMAP implements MessageAndPayload<DescriptionReque
         this.message = selfDescriptionRequest;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DescriptionRequestMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return SerializedPayload.EMPTY;

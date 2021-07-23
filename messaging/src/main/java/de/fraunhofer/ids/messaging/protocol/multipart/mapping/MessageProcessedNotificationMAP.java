@@ -29,16 +29,25 @@ public class MessageProcessedNotificationMAP
 
     MessageProcessedNotificationMessage message;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MessageProcessedNotificationMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return SerializedPayload.EMPTY;

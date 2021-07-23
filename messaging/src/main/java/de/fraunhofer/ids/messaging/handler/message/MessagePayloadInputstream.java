@@ -35,6 +35,9 @@ public class MessagePayloadInputstream implements MessagePayload {
 
     ObjectMapper objectMapper;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T readFromJSON(final Class<? extends T> targetType)
             throws DeserializeException {

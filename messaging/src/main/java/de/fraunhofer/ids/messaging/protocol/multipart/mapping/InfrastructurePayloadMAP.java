@@ -38,12 +38,17 @@ public class InfrastructurePayloadMAP
 
     InfrastructureComponent connectorSelfDescription;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<InfrastructureComponent> getPayload() {
         return Optional.ofNullable(connectorSelfDescription);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         if (connectorSelfDescription != null) {

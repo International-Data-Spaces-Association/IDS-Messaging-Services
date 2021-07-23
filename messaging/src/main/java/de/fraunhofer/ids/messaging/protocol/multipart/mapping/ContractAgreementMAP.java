@@ -29,11 +29,17 @@ public class ContractAgreementMAP
         this.payload = payload;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractAgreementMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Contract> getPayload() {
         return Optional.of(payload);

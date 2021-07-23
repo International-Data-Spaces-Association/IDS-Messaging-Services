@@ -26,16 +26,25 @@ public class ParticipantRequestMAP implements MessageAndPayload<ParticipantReque
         this.message = message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantRequestMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return SerializedPayload.EMPTY;

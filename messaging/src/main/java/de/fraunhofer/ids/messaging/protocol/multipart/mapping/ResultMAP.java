@@ -29,16 +29,25 @@ public class ResultMAP implements MessageAndPayload<ResultMessage, String> {
     ResultMessage resultMessage;
     String        queryResult;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResultMessage getMessage() {
         return resultMessage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<String> getPayload() {
         return Optional.of(queryResult);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return new SerializedPayload(queryResult.getBytes(), "text/plain");
