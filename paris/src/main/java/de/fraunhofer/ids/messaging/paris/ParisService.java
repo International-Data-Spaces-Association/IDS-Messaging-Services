@@ -33,8 +33,6 @@ import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -44,14 +42,13 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ParisService extends InfrastructureService
         implements IDSParisService {
 
     /**
      * The IdsRequestBuilderService.
      */
-    IdsRequestBuilderService requestBuilderService;
+    private final IdsRequestBuilderService idsRequestBuilderService;
 
     /**
      * @param container      the ConfigContainer
@@ -64,7 +61,7 @@ public class ParisService extends InfrastructureService
                         final MessageService messageService,
                         final IdsRequestBuilderService idsRequestBuilderService) {
         super(container, tokenProvider, messageService, idsRequestBuilderService);
-        this.requestBuilderService = idsRequestBuilderService;
+        this.idsRequestBuilderService = idsRequestBuilderService;
     }
 
     /**
@@ -86,7 +83,7 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService
+        return idsRequestBuilderService
                 .newRequest()
                 .withPayload(participant)
                 .subjectParticipant()
@@ -115,7 +112,7 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService
+        return idsRequestBuilderService
                 .newRequest()
                 .subjectParticipant()
                 .useMultipart()
@@ -143,7 +140,7 @@ public class ParisService extends InfrastructureService
             UnexpectedPayloadException,
             DeserializeException {
         logBuildingHeader();
-        return requestBuilderService
+        return idsRequestBuilderService
                 .newRequest()
                 .subjectDescription()
                 .useMultipart()

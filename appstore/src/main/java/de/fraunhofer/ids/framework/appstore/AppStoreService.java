@@ -32,8 +32,6 @@ import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -42,14 +40,13 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AppStoreService extends InfrastructureService
         implements IDSAppStoreService {
 
     /**
      * The IdsRequestBuilderService.
      */
-    IdsRequestBuilderService requestBuilderService;
+    private final IdsRequestBuilderService idsRequestBuilderService;
 
     /**
      * Creates the IDSAppStore Communication controller.
@@ -65,7 +62,7 @@ public class AppStoreService extends InfrastructureService
             final MessageService messageService,
             final IdsRequestBuilderService idsRequestBuilderService) {
         super(container, tokenProvider, messageService, idsRequestBuilderService);
-        this.requestBuilderService = idsRequestBuilderService;
+        this.idsRequestBuilderService = idsRequestBuilderService;
     }
 
     /**
@@ -86,11 +83,11 @@ public class AppStoreService extends InfrastructureService
             RejectionException,
             UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .subjectDescription()
-                                    .useMultipart()
-                                    .operationGet(null)
-                                    .execute(appStoreURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectDescription()
+                                       .useMultipart()
+                                       .operationGet(null)
+                                       .execute(appStoreURI);
     }
 
     /**
@@ -111,11 +108,11 @@ public class AppStoreService extends InfrastructureService
             RejectionException,
             UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .subjectDescription()
-                                    .useMultipart()
-                                    .operationGet(app)
-                                    .execute(appStoreURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectDescription()
+                                       .useMultipart()
+                                       .operationGet(app)
+                                       .execute(appStoreURI);
 
     }
 
@@ -137,10 +134,10 @@ public class AppStoreService extends InfrastructureService
             RejectionException,
             UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                                    .subjectArtifact()
-                                    .useMultipart()
-                                    .operationGet(app)
-                                    .execute(appStoreURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectArtifact()
+                                       .useMultipart()
+                                       .operationGet(app)
+                                       .execute(appStoreURI);
     }
 }

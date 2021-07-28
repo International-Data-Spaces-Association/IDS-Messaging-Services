@@ -33,20 +33,19 @@ import java.util.Properties;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Methods to hash and sign. Necessary for IDS-Messages.
  */
 @Slf4j
-@UtilityClass
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class IdsMessageUtils {
-    Base64.Encoder ENCODER_64 = Base64.getEncoder();
-    Serializer     SERIALIZER = new Serializer();
+public final class IdsMessageUtils {
+    private static final Base64.Encoder ENCODER_64 = Base64.getEncoder();
+    private static final Serializer     SERIALIZER = new Serializer();
+
+    private IdsMessageUtils() {
+        //Nothing to do here.
+    }
 
     /**
      * Hash a value with a given MessageDigest.
@@ -56,7 +55,7 @@ public class IdsMessageUtils {
      *
      * @return Hash value of the input String
      */
-    public String hash(final MessageDigest digest, final String value) {
+    public static String hash(final MessageDigest digest, final String value) {
         digest.update(value.getBytes());
         return ENCODER_64.encodeToString(digest.digest());
     }
@@ -65,13 +64,16 @@ public class IdsMessageUtils {
      * Generate a signature over a given String value.
      *
      * @param privateSignature Signature method
-     * @param value            String to sign
-     * @param privateKey       Private Key to sign with.
+     * @param value String to sign
+     * @param privateKey Private Key to sign with.
      * @return Signature as String
      * @throws InvalidKeyException if the private key is invalid.
-     * @throws SignatureException  if the signature cannot properly be initialized.
+     * @throws SignatureException if the signature cannot
+     * properly be initialized.
      */
-    public String sign(final Signature privateSignature, final String value, final PrivateKey privateKey)
+    public static String sign(final Signature privateSignature,
+                       final String value,
+                       final PrivateKey privateKey)
             throws InvalidKeyException, SignatureException {
 
         privateSignature.initSign(privateKey);
@@ -88,7 +90,7 @@ public class IdsMessageUtils {
      * @return elements as {@code ArrayList<T>}
      */
     @SafeVarargs
-    public <T> ArrayList<T> asList(final T... elements) {
+    public static <T> ArrayList<T> asList(final T... elements) {
         return new ArrayList<>(Arrays.asList(elements));
     }
 
@@ -99,18 +101,22 @@ public class IdsMessageUtils {
      * @param property like version, artifactID etc
      * @return the pom value
      */
-    public String getProjectProperty(final String property) {
+    public static String getProjectProperty(final String property) {
 
         //read /main/resources/project/properties
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Trying to read Property %s from pom.xml properties", property));
+            log.debug(String.format(
+                    "Trying to read Property %s from pom.xml properties",
+                    property));
         }
 
         final var properties = new Properties();
 
         try {
             properties.load(Objects.requireNonNull(
-                            IdsMessageUtils.class.getClassLoader().getResourceAsStream("project.properties")));
+                            IdsMessageUtils.class
+                                .getClassLoader()
+                                .getResourceAsStream("project.properties")));
         } catch (IOException e) {
             if (log.isInfoEnabled()) {
                 log.info(e.getMessage());
@@ -124,9 +130,10 @@ public class IdsMessageUtils {
     /**
      * Generates a XML gregorian calendar from the current time.
      *
-     * @return XMLGregorianCalendar containing the current time stamp as {@link XMLGregorianCalendar}.
+     * @return XMLGregorianCalendar containing the current time
+     * stamp as {@link XMLGregorianCalendar}.
      */
-    public XMLGregorianCalendar getGregorianNow() {
+    public static XMLGregorianCalendar getGregorianNow() {
         final var calendar = new GregorianCalendar();
         calendar.setTime(new Date());
 
@@ -147,7 +154,7 @@ public class IdsMessageUtils {
      * @return the SelfDeclaration of the configured connector
      * @throws IOException when the connector cannot be serialized
      */
-    public String buildSelfDeclaration(final ConfigurationModel model) throws IOException {
+    public static String buildSelfDeclaration(final ConfigurationModel model) throws IOException {
         return SERIALIZER.serialize(model.getConnectorDescription());
     }
 
@@ -158,7 +165,7 @@ public class IdsMessageUtils {
      * @return the SelfDeclaration of the configured connector
      * @throws IOException when the connector cannot be serialized
      */
-    public String buildSelfDeclaration(final Connector model) throws IOException {
+    public static String buildSelfDeclaration(final Connector model) throws IOException {
         return SERIALIZER.serialize(model);
     }
 }

@@ -21,28 +21,29 @@ import de.fraunhofer.ids.messaging.core.daps.customvalidation.DatValidationRule;
 import de.fraunhofer.ids.messaging.core.daps.customvalidation.ValidationRuleException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * The DefaultVerifier contains some default DAPS verification rules.
  */
 @Slf4j
-@UtilityClass
-public class DapsVerifier {
-
+public final class DapsVerifier {
     /**
      * Custom DAT validation rules, which are checked additionally to the default checks.
      */
     @SuppressWarnings("FieldMayBeFinal")
     private static List<DatValidationRule> datValidationRules = new ArrayList<>();
 
+    private DapsVerifier() {
+        //Nothing to do here.
+    }
+
     /**
      * Add a custom validation rule to check the DAT.
      *
      * @param datValidationRule {@link DatValidationRule} to add
      */
-    public void addValidationRule(final DatValidationRule datValidationRule) {
+    public static void addValidationRule(final DatValidationRule datValidationRule) {
         datValidationRules.add(datValidationRule);
     }
 
@@ -55,7 +56,7 @@ public class DapsVerifier {
      * @return true if message is valid
      * @throws ClaimsException when the claims of the DAT cannot be verified
      */
-    public boolean verify(final Jws<Claims> toVerify) throws ClaimsException {
+    public static boolean verify(final Jws<Claims> toVerify) throws ClaimsException {
         if (toVerify != null) {
             return verify(toVerify.getBody());
         }
@@ -70,13 +71,14 @@ public class DapsVerifier {
      * @return true if message is valid
      * @throws ClaimsException when the claims of the DAT cannot be verified
      */
-    public boolean verify(final Claims toVerify) throws ClaimsException {
+    public static boolean verify(final Claims toVerify) throws ClaimsException {
         try {
             if (toVerify.getExpiration().before(new Date())) {
                 throw new ClaimsException("The token is outdated.");
             }
 
-            if (toVerify.getExpiration().before(toVerify.getIssuedAt()) || new Date().before(toVerify.getIssuedAt())) {
+            if (toVerify.getExpiration().before(toVerify.getIssuedAt())
+               || new Date().before(toVerify.getIssuedAt())) {
                 throw new ClaimsException("The token's issued time (iat) is invalid");
             }
 
@@ -95,17 +97,27 @@ public class DapsVerifier {
                         if (!result.isSuccess()) {
                             //if a rule fails, reject token
                             if (log.isWarnEnabled()) {
-                                log.warn(String.format("Custom DAT validation rule failed! Message: %s", result.getMessage()));
+                                log.warn(String.format(
+                                    "Custom DAT validation rule failed!"
+                                    + " Message: %s",
+                                    result.getMessage()));
                             }
 
-                            throw new ClaimsException(String.format("Custom Rule failed! Message: %s", result.getMessage()));
+                            throw new ClaimsException(String.format(
+                                    "Custom Rule failed! Message: %s",
+                                    result.getMessage()));
                         }
                     } catch (ValidationRuleException e) {
                         //if a rule throws an exception, log exception and reject token
                         if (log.isErrorEnabled()) {
-                            log.error("Exception thrown by custom DAT validation rule! " + e.getMessage());
+                            log.error(
+                                "Exception thrown by custom DAT"
+                                + " validation rule! "
+                                + e.getMessage());
                         }
-                        throw new ClaimsException(String.format("Custom Rule threw Exception! Message: %s", e.getMessage()));
+                        throw new ClaimsException(String.format(
+                            "Custom Rule threw Exception! Message: %s",
+                            e.getMessage()));
                     }
                 }
             }

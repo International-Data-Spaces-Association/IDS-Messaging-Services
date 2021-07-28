@@ -31,12 +31,13 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
     private final static Serializer SERIALIZER = new Serializer();
 
     @Override
-    public ConfigurationModel perform(ConfigProperties properties) throws ConfigProducerInterceptorException {
+    public ConfigurationModel perform(final ConfigProperties properties)
+            throws ConfigProducerInterceptorException {
         try {
             if (log.isInfoEnabled()) {
                 log.info("intecepting loading of configuration!");
             }
-            var config = loadConfig(properties);
+            final var config = loadConfig(properties);
             config.setProperty("preInterceptor", true);
             return config;
         } catch (IOException e) {
@@ -44,7 +45,8 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
         }
     }
 
-    private ConfigurationModel loadConfig(ConfigProperties properties) throws IOException {
+    private ConfigurationModel loadConfig(final ConfigProperties properties)
+            throws IOException {
         if (log.isDebugEnabled()) {
             log.debug(String.format("Loading configuration from %s", properties.getPath()));
         }

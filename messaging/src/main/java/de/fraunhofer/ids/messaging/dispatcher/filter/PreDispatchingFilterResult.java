@@ -15,25 +15,23 @@ package de.fraunhofer.ids.messaging.dispatcher.filter;
 
 import java.util.Objects;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
 
 /**
- * Result that is returned by a PreDispatchingFilter (with information about why a message was accepted or rejected).
+ * Result that is returned by a PreDispatchingFilter
+ * (with information about why a message was accepted or rejected).
  */
 @AllArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PreDispatchingFilterResult {
     @Getter
-    Throwable error;
+    private final Throwable error;
 
     @Getter
-    boolean   success;
+    private final boolean   success;
 
     @Getter
-    String    message;
+    private final String    message;
 
     /**
      * Static method returning a builder.
@@ -63,6 +61,9 @@ public class PreDispatchingFilterResult {
         return new PreDispatchingFilterResult(null, true, message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -80,6 +81,9 @@ public class PreDispatchingFilterResult {
                && Objects.equals(getMessage(), that.getMessage());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getError(), isSuccess(), getMessage());

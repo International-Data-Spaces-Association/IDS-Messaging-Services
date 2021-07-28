@@ -34,7 +34,9 @@ public final class ResourceIDGenerator {
      */
     public static URI randomURI(final Class<?> callerClazz) {
         try {
-            return new URI(String.format("%s/%s/%s", URI_BASE, callerClazz.getSimpleName(), UUID.randomUUID()));
+            return new URI(String.format("%s/%s/%s", URI_BASE,
+                                         callerClazz.getSimpleName(),
+                                         UUID.randomUUID()));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

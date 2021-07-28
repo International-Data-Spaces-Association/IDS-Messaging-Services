@@ -22,7 +22,8 @@ import java.lang.annotation.Target;
 import de.fraunhofer.iais.eis.Message;
 
 /**
- * This annotation specifies which Type of RequestMessage can be handled by a specific MessageHandler implementation.
+ * This annotation specifies which Type of RequestMessage can be
+ *handled by a specific MessageHandler implementation.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

@@ -25,7 +25,7 @@ public class PostConfigInterceptor implements PostConfigProducerInterceptor {
         if (log.isInfoEnabled()) {
             log.info("modifying configuration using interceptor interface");
         }
-        var conf = configContainer.getConfigurationModel();
+        final var conf = configContainer.getConfigurationModel();
         conf.setProperty("modified", true);
     }
 }

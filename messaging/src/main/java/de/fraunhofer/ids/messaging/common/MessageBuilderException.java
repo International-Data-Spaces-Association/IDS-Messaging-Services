@@ -14,13 +14,17 @@
 package de.fraunhofer.ids.messaging.common;
 
 /**
- * An exception that is thrown if building an IDS-Message with the given information threw a ConstraintViolationException (catches builders RuntimeException).
+ * An exception that is thrown if building an IDS-Message with
+ * the given information threw a ConstraintViolationException
+ * (catches builders RuntimeException).
  */
 public class MessageBuilderException extends Exception {
     private static final long serialVersionUID = 42L;
 
     /**
-     * An exception that is thrown if building an IDS-Message with the given information threw a ConstraintViolationException (catches builders RuntimeException).
+     * An exception that is thrown if building an IDS-Message
+     * with the given information threw a ConstraintViolationException
+     * (catches builders RuntimeException).
      *
      * @param cause Throwable cause of the Exception
      */

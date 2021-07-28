@@ -26,7 +26,8 @@ public class UnexpectedPayloadException extends IdsRequestException {
         this.messageContainer = messageContainer;
     }
 
-    public UnexpectedPayloadException(final String message, final MessageContainer<?> messageContainer) {
+    public UnexpectedPayloadException(final String message,
+                                      final MessageContainer<?> messageContainer) {
         super(message);
         this.messageContainer = messageContainer;
     }

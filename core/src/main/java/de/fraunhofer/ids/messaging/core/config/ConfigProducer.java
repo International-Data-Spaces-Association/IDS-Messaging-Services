@@ -25,8 +25,6 @@ import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManagerInitializationException;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -37,28 +35,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Parse the configuration and initialize the key- and truststores specified in the {@link ConfigProperties} via
+ * Parse the configuration and initialize the key- and
+ * truststores specified in the {@link ConfigProperties} via
  * Spring application.properties.
  */
 @Slf4j
 @Configuration
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @EnableConfigurationProperties(ConfigProperties.class)
 @ConditionalOnClass({ConfigurationModel.class, Connector.class, KeyStoreManager.class})
 public class ConfigProducer {
-    static final Serializer SERIALIZER = new Serializer();
+    private static final Serializer SERIALIZER = new Serializer();
 
-    ConfigContainer configContainer;
-    ClientProvider  clientProvider;
+    private ConfigContainer configContainer;
+    private ClientProvider  clientProvider;
 
     /**
-     * Load the ConfigurationModel from the location specified in the application.properties, initialize the KeyStoreManager.
+     * Load the ConfigurationModel from the location specified in the
+     * application.properties, initialize the KeyStoreManager.
      *
      * @param properties the {@link ConfigProperties} parsed from an application.properties file
      */
     public ConfigProducer(final ConfigProperties properties,
-                          Optional<PreConfigProducerInterceptor> preInterceptor,
-                          Optional<PostConfigProducerInterceptor> postInterceptor) {
+                          final Optional<PreConfigProducerInterceptor> preInterceptor,
+                          final Optional<PostConfigProducerInterceptor> postInterceptor) {
 
         ConfigurationModel configModel = null;
 
@@ -88,8 +87,10 @@ public class ConfigProducer {
                 if (log.isInfoEnabled()) {
                     log.info("Initializing KeyStoreManager");
                 }
-                //initialize the KeyStoreManager with Key and Truststore locations in the ConfigurationModel
-                final var manager = new KeyStoreManager(configModel, properties.getKeyStorePassword().toCharArray(),
+                //initialize the KeyStoreManager with Key and Truststore
+                //locations in the ConfigurationModel
+                final var manager = new KeyStoreManager(configModel, properties
+                        .getKeyStorePassword().toCharArray(),
                         properties.getTrustStorePassword().toCharArray(),
                         properties.getKeyAlias());
 
@@ -107,7 +108,9 @@ public class ConfigProducer {
                                 interceptor.perform(configContainer);
                             } catch (ConfigProducerInterceptorException e) {
                                 if (log.isErrorEnabled()) {
-                                    log.error("PreConfigProducerInterceptor failed! " + e.getMessage());
+                                    log.error(
+                                        "PreConfigProducerInterceptor failed! "
+                                        + e.getMessage());
                                 }
                             }
                         }
@@ -152,7 +155,8 @@ public class ConfigProducer {
             log.info(String.format("Loading config from classpath: %s", properties.getPath()));
         }
 
-        final var configurationStream = new ClassPathResource(properties.getPath()).getInputStream();
+        final var configurationStream =
+                new ClassPathResource(properties.getPath()).getInputStream();
         final var config = IOUtils.toString(configurationStream);
         configurationStream.close();
 

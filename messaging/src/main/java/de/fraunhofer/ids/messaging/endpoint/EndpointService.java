@@ -15,8 +15,6 @@ package de.fraunhofer.ids.messaging.endpoint;
 
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,14 +28,13 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  */
 @Slf4j
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EndpointService {
-
-    MessageController            messageController;
-    RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private MessageController            messageController;
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     /**
-     * Use <code>/api/ids/data</code> and <code>/api/ids/infrastructure</code> routes as default mappings.
+     * Use <code>/api/ids/data</code> and <code>/api/ids/infrastructure</code>
+     * routes as default mappings.
      *
      * @param messageController            the {@link MessageController} which will be mapped
      * @param requestMappingHandlerMapping for managing Springs http route mappings
@@ -69,7 +66,9 @@ public class EndpointService {
         final var requestMappingInfo = getRequestMappingInfo(url);
 
         try {
-            requestMappingHandlerMapping.registerMapping(requestMappingInfo, messageController, MessageController.class
+            requestMappingHandlerMapping
+                    .registerMapping(requestMappingInfo, messageController,
+                                     MessageController.class
                     .getDeclaredMethod("handleIDSMessage", HttpServletRequest.class));
         } catch (NoSuchMethodException e) {
             if (log.isErrorEnabled()) {
@@ -81,7 +80,8 @@ public class EndpointService {
     /**
      * Remove an endpoint from the MessageController.
      *
-     * @param url the url for which the {@link MessageController} should be unmapped for (RequestMappingInfo is deleted)
+     * @param url the url for which the {@link MessageController}
+     *            should be unmapped for (RequestMappingInfo is deleted)
      */
     public void removeMapping(final String url) {
         if (log.isDebugEnabled()) {

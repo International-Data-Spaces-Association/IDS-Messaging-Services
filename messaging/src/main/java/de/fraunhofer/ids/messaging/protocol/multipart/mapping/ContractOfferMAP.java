@@ -27,11 +27,17 @@ public class ContractOfferMAP extends AbstractContractMAP<ContractOfferMessage, 
         this.payload = payload;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractOfferMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Contract> getPayload() {
         return Optional.of(payload);

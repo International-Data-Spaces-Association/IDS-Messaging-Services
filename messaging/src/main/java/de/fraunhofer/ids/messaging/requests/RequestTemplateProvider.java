@@ -39,20 +39,16 @@ import de.fraunhofer.iais.eis.UploadMessageBuilder;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
+@RequiredArgsConstructor
 public class RequestTemplateProvider {
-
-    ConfigContainer container;
-    DapsTokenProvider tokenProvider;
+    private final ConfigContainer container;
+    private final DapsTokenProvider tokenProvider;
 
     /**
      * Template for DescriptionRequestMessages.
@@ -60,7 +56,8 @@ public class RequestTemplateProvider {
      * @param requestedElement requested element ID, or null if selfdescription is requested
      * @return template to build a {@link DescriptionRequestMessage}
      */
-    public MessageTemplate<DescriptionRequestMessage> descriptionRequestMessageTemplate(final URI requestedElement) {
+    public MessageTemplate<DescriptionRequestMessage> descriptionRequestMessageTemplate(
+            final URI requestedElement) {
         return () -> new DescriptionRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -77,7 +74,8 @@ public class RequestTemplateProvider {
      * @param requestedArtifact ID of requested artifact
      * @return template to build a {@link ArtifactRequestMessage}
      */
-    public MessageTemplate<ArtifactRequestMessage> artifactRequestMessageTemplate(final URI requestedArtifact) {
+    public MessageTemplate<ArtifactRequestMessage> artifactRequestMessageTemplate(
+            final URI requestedArtifact) {
         return () -> new ArtifactRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -124,7 +122,8 @@ public class RequestTemplateProvider {
      * @param requestedParticipant ID of requested participant
      * @return template to build a {@link ParticipantRequestMessage}
      */
-    public MessageTemplate<ParticipantRequestMessage> participantRequestMessageTemplate(final URI requestedParticipant) {
+    public MessageTemplate<ParticipantRequestMessage> participantRequestMessageTemplate(
+            final URI requestedParticipant) {
         return () -> new ParticipantRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -139,12 +138,16 @@ public class RequestTemplateProvider {
     /**
      * Template for QueryMessage.
      *
-     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY). See {@link QueryLanguage}
-     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors, INACTIVE connectors). See {@link QueryScope}
+     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY).
+     *                      See {@link QueryLanguage}
+     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors,
+     *                      INACTIVE connectors). See {@link QueryScope}
      * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
      * @return template to build a {@link QueryMessage}
      */
-    public MessageTemplate<QueryMessage> queryMessageTemplate(final QueryLanguage queryLanguage, final QueryScope queryScope, final QueryTarget queryTarget) {
+    public MessageTemplate<QueryMessage> queryMessageTemplate(final QueryLanguage queryLanguage,
+                                                              final QueryScope queryScope,
+                                                              final QueryTarget queryTarget) {
         return () -> new QueryMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -178,7 +181,8 @@ public class RequestTemplateProvider {
      * @param affectedDataApp ID of affected data app
      * @return template to build a {@link AppRegistrationRequestMessage}
      */
-    public MessageTemplate<AppRegistrationRequestMessage> appRegistrationRequestMessageTemplate(final URI affectedDataApp) {
+    public MessageTemplate<AppRegistrationRequestMessage> appRegistrationRequestMessageTemplate(
+            final URI affectedDataApp) {
         return () -> new AppRegistrationRequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
@@ -195,7 +199,8 @@ public class RequestTemplateProvider {
      * @param operationReference reference of operation to execute by target connector
      * @return template to build a {@link InvokeOperationMessage}
      */
-    public MessageTemplate<InvokeOperationMessage> invokeOperationMessageTemplate(final URI operationReference) {
+    public MessageTemplate<InvokeOperationMessage> invokeOperationMessageTemplate(
+            final URI operationReference) {
         return () -> new InvokeOperationMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())

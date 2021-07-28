@@ -13,12 +13,12 @@
  */
 package de.fraunhofer.ids.messaging.handler.message;
 
+import java.util.Optional;
+
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.messaging.response.MessageResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-
-import java.util.Optional;
 
 /**
  * MessageHandler, also passing DAT Claims for additional checks.
@@ -31,7 +31,8 @@ public interface MessageAndClaimsHandler<T extends Message> extends MessageHandl
      * {@inheritDoc}
      */
     @Override
-    default MessageResponse handleMessage(T queryHeader, MessagePayload payload) throws MessageHandlerException {
+    default MessageResponse handleMessage(T queryHeader, MessagePayload payload)
+            throws MessageHandlerException {
         return handleMessage(queryHeader, payload, Optional.empty());
     }
 
@@ -42,7 +43,9 @@ public interface MessageAndClaimsHandler<T extends Message> extends MessageHandl
      * @return Response (which will be sent back to the requesting connector)
      * @throws MessageHandlerException when some error happens while handling the message
      */
-    MessageResponse handleMessage(T queryHeader, MessagePayload payload, Optional<Jws<Claims>> optionalClaimsJws) throws MessageHandlerException;
+    MessageResponse handleMessage(T queryHeader, MessagePayload payload,
+                                  Optional<Jws<Claims>> optionalClaimsJws)
+            throws MessageHandlerException;
 
 
 }

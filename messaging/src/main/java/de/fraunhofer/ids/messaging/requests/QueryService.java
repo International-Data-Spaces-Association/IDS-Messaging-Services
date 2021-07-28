@@ -45,12 +45,12 @@ public class QueryService extends InfrastructureService implements
     /**
      * The default limit for the query.
      */
-    static int DEFAULT_LIMIT = 50;
+    private static final int DEFAULT_LIMIT = 50;
 
     /**
      * The default offset for the query.
      */
-    static int DEFAULT_OFFSET = 0;
+    private static final int DEFAULT_OFFSET = 0;
 
     /**
      * QueryService constructor.
@@ -127,7 +127,7 @@ public class QueryService extends InfrastructureService implements
      */
     @Override
     public MessageContainer<String> fullTextSearch(final URI targetURI,
-                                                   String searchTerm,
+                                                   final String searchTerm,
                                                    final QueryScope queryScope,
                                                    final QueryTarget queryTarget,
                                                    final int limit,
@@ -147,17 +147,18 @@ public class QueryService extends InfrastructureService implements
 
         //Check whether the search term has already been entered in
         //quotation marks, if so, these must be removed
+        var serviceSearchTerm = searchTerm;
         if (searchTerm.length() >= 2) {
             final var firstChar = searchTerm.charAt(0);
             final var lastChar = searchTerm.charAt(searchTerm.length() - 1);
             if (firstChar == '"' && lastChar == '"') {
-                searchTerm = searchTerm.substring(1, searchTerm.length() - 1);
+                serviceSearchTerm = searchTerm.substring(1, searchTerm.length() - 1);
             }
         }
 
         final var payload = String.format(
                 FullTextQueryTemplate.FULL_TEXT_QUERY,
-                searchTerm, limit, offset);
+                serviceSearchTerm, limit, offset);
         return requestBuilderService
                 .newRequestExpectingType(String.class)
                 .withPayload(payload)

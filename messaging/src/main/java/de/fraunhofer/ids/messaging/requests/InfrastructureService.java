@@ -34,20 +34,17 @@ import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseExcep
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
-import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 public abstract class InfrastructureService  {
-    ConfigContainer          container;
-    DapsTokenProvider        tokenProvider;
-    MessageService           messageService;
-    IdsRequestBuilderService requestBuilderService;
+    protected final ConfigContainer          container;
+    protected final DapsTokenProvider        tokenProvider;
+    protected final MessageService           messageService;
+    protected final IdsRequestBuilderService requestBuilderService;
 
     public MessageContainer<?> requestSelfDescription(@NonNull final URI uri) throws
             IOException,
@@ -70,7 +67,9 @@ public abstract class InfrastructureService  {
 
     }
 
-    public MessageContainer<?> requestSelfDescription(@NonNull final URI uri, URI requestedElement) throws
+    public MessageContainer<?> requestSelfDescription(@NonNull final URI uri,
+                                                      final URI requestedElement)
+            throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -92,13 +91,15 @@ public abstract class InfrastructureService  {
     }
 
     /**
-     * Check if incoming response if of expected type, throw an IOException with information, if it is not.
+     * Check if incoming response if of expected type, throw
+     * an IOException with information, if it is not.
      *
      * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
      * @param expectedType Expected type response MAP should have
      * @param <T> expected Type as generic
      * @return {@link MessageAndPayload object specialized to the expected Message}
-     * @throws UnexpectedResponseException if a rejection message or any other unexpected message was returned.
+     * @throws UnexpectedResponseException if a rejection message or any
+     * other unexpected message was returned.
      */
     protected <T extends MessageAndPayload<?, ?>> T expectMapOfTypeT(
             final MessageAndPayload<?, ?> response,

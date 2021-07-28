@@ -14,12 +14,14 @@
 package de.fraunhofer.ids.messaging.protocol.multipart;
 
 /**
- * An exception that is thrown during converting a Response into the corresponding MessageAndPayload if no possible cast found.
+ * An exception that is thrown during converting a Response into the
+ * corresponding MessageAndPayload if no possible cast found.
  */
 public class UnknownResponseException extends Exception {
     private static final long serialVersionUID = 42L;
     /**
-     * An exception that is thrown during converting a Response into the corresponding MessageAndPayload if no possible cast found.
+     * An exception that is thrown during converting a Response into the
+     * corresponding MessageAndPayload if no possible cast found.
      *
      * @param message Message of the Exception to be thrown
      */

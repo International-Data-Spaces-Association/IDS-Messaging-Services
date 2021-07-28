@@ -18,8 +18,6 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.requests.QueryService;
 import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +26,6 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class VocolService extends QueryService implements IDSVocolService {
     /**
      * VocolService constructor.

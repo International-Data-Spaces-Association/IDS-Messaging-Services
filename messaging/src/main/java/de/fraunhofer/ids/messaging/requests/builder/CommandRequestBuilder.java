@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'command'.
  *
  * @param <T> Type of expected Payload.
  */
-public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, CommandRequestBuilder<T>> {
+public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, CommandRequestBuilder<T>> {
 
     private URI operationReference;
 
@@ -80,7 +82,8 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
     }
 
     /**
-     * Set the operation to COMMAND: describes an {@link de.fraunhofer.iais.eis.InvokeOperationMessage}.
+     * Set the operation to COMMAND: describes an
+     * {@link de.fraunhofer.iais.eis.InvokeOperationMessage}.
      *
      * @param operationReference operation reference for message header
      * @return this builder instance
@@ -108,7 +111,7 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -123,10 +126,14 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements Ex
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = requestTemplateProvider.uploadMessageTemplate().buildMessage();
+                        final var updateMessage = requestTemplateProvider
+                            .uploadMessageTemplate()
+                            .buildMessage();
                         return sendMultipart(target, updateMessage);
                     case COMMAND:
-                        var commandMessage = requestTemplateProvider.invokeOperationMessageTemplate(operationReference).buildMessage();
+                        final var commandMessage = requestTemplateProvider
+                            .invokeOperationMessageTemplate(operationReference)
+                            .buildMessage();
                         return sendMultipart(target, commandMessage);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");

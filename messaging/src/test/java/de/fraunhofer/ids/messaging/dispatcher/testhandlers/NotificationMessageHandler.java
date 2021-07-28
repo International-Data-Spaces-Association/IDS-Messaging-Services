@@ -13,14 +13,17 @@
  */
 package de.fraunhofer.ids.messaging.dispatcher.testhandlers;
 
+import java.util.Optional;
+
 import de.fraunhofer.iais.eis.NotificationMessageImpl;
-import de.fraunhofer.ids.messaging.handler.message.*;
+import de.fraunhofer.ids.messaging.handler.message.MessageAndClaimsHandler;
+import de.fraunhofer.ids.messaging.handler.message.MessageHandlerException;
+import de.fraunhofer.ids.messaging.handler.message.MessagePayload;
+import de.fraunhofer.ids.messaging.handler.message.SupportedMessageType;
 import de.fraunhofer.ids.messaging.response.MessageResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.NoArgsConstructor;
-
-import java.util.Optional;
 
 @NoArgsConstructor
 @SupportedMessageType(NotificationMessageImpl.class)

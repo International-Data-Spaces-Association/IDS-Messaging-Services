@@ -14,8 +14,6 @@
 package de.fraunhofer.ids.messaging.endpoint;
 
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +27,11 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 @WebMvcTest
 @ExtendWith(SpringExtension.class)
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @TestPropertySource(properties = { "shacl.validation=false" })
 class EndpointServiceTest {
 
     @Autowired
-    EndpointService endpointService;
+    private EndpointService endpointService;
 
     @Configuration
     static class TestContextConfiguration{

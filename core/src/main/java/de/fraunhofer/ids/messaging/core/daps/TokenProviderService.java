@@ -28,9 +28,6 @@ import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import io.jsonwebtoken.Claims;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -45,19 +42,18 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
-    final ClientProvider      clientProvider;
-    final TokenManagerService tokenManagerService;
+    private final ClientProvider      clientProvider;
+    private final TokenManagerService tokenManagerService;
 
-    String      currentJwt;
-    List<Key>   publicKeys;
+    private String      currentJwt;
+    private List<Key>   publicKeys;
 
     @Value("${daps.token.url}")
-    String dapsTokenUrl;
+    private String dapsTokenUrl;
 
     @Value("#{${daps.key.url.kid}}")
-    Map<String, String> urlKidMap;
+    private Map<String, String> urlKidMap;
 
     @Autowired
     public TokenProviderService(final ClientProvider clientProvider,
@@ -73,7 +69,10 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      */
     @Override
     public DynamicAttributeToken getDAT()
-            throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException {
         return new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)
                 ._tokenValue_(provideDapsToken())
@@ -87,7 +86,10 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      */
     @Override
     public String provideDapsToken()
-            throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException {
         if (this.currentJwt == null || isExpired(currentJwt)) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Get a new DAT Token from %s", dapsTokenUrl));
@@ -137,7 +139,8 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                 final var keySetJSON = Objects.requireNonNull(response.body()).string();
                 final var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
                 final var jsonWebKey =
-                        jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(entry.getValue()))
+                        jsonWebKeySet.getJsonWebKeys().stream()
+                                     .filter(k -> k.getKeyId().equals(entry.getValue()))
                                      .findAny()
                                      .orElse(null);
 
@@ -145,7 +148,9 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                     this.publicKeys.add(jsonWebKey.getKey());
                 } else {
                     if (log.isWarnEnabled()) {
-                        log.warn("Could not get JsonWebKey with kid " + entry.getValue() + " from received KeySet! PublicKey is null!");
+                        log.warn("Could not get JsonWebKey with kid "
+                                 + entry.getValue()
+                                 + " from received KeySet! PublicKey is null!");
                     }
                 }
             } catch (IOException e) {
@@ -167,7 +172,11 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * @return true if jwt expired
      */
     private boolean isExpired(final String jwt) {
-        final var token = new DynamicAttributeTokenBuilder()._tokenFormat_(TokenFormat.JWT)._tokenValue_(jwt).build();
+        final var token =
+                new DynamicAttributeTokenBuilder()
+                        ._tokenFormat_(TokenFormat.JWT)
+                        ._tokenValue_(jwt)
+                        .build();
 
         Claims claims;
         try {

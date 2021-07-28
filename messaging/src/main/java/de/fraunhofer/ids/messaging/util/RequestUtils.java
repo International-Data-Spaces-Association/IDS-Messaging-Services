@@ -16,7 +16,6 @@ package de.fraunhofer.ids.messaging.util;
 import java.io.IOException;
 import java.util.Objects;
 
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import okio.Buffer;
@@ -26,15 +25,18 @@ import okio.Buffer;
  */
 
 @Slf4j
-@UtilityClass
-public class RequestUtils {
+public final class RequestUtils {
+    private RequestUtils() {
+        //Nothing to do here.
+    }
+
     /**
      * A util class that prints okhttp Requests.
      *
      * @param request a okhttp Request
      * @return the request as string or an empty string
      */
-    public String printRequest(final Request request) {
+    public static String printRequest(final Request request) {
         var bufferText = "";
         try {
             final var copy = request.newBuilder().build();
@@ -58,7 +60,7 @@ public class RequestUtils {
      *
      * @param request {@link Request} to be logged
      */
-    public void logRequest(final Request request) {
+    public static void logRequest(final Request request) {
         if (log.isInfoEnabled()) {
             log.info(printRequest(request));
         }

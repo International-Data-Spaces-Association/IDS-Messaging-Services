@@ -67,15 +67,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "daps", name = "mode", havingValue = "orbiter")
 public class OrbiterTokenManagerService implements TokenManagerService {
-    public static final  int            KEYSIZE                 = 2048;
-    public static final  int            SECONDS_TO_SUBTRACT     = 10;
-    private static final String         CLIENT_REGISTRATION_URL = "https://orbiter-daps-staging.truzzt.org/api/client/create";
+    public static final int KEYSIZE = 2048;
+    public static final int SECONDS_TO_SUBTRACT = 10;
+    private static final String CLIENT_REGISTRATION_URL
+            = "https://orbiter-daps-staging.truzzt.org/api/client/create";
 
-    private final        ClientProvider clientProvider;
+    private final ClientProvider clientProvider;
 
     private X509Certificate clientCert;
-    private KeyPair         generatedKeyPair;
-    private String          id;
+    private KeyPair generatedKeyPair;
+    private String id;
 
     /**
      * Create a Client at the Orbiter DAPS, request a DAT and return it.
@@ -101,14 +102,18 @@ public class OrbiterTokenManagerService implements TokenManagerService {
             setClientId(responseJson);
             setClientCertificate(responseJson);
 
-        } catch (NoSuchAlgorithmException | OperatorCreationException | IOException | CertificateException e) {
+        } catch (NoSuchAlgorithmException
+                | OperatorCreationException
+                | IOException
+                | CertificateException e) {
             if (log.isWarnEnabled()) {
                 log.warn(e.getMessage(), e);
             }
         }
     }
 
-    private void setClientCertificate(final JSONObject responseJson) throws CertificateException {
+    private void setClientCertificate(final JSONObject responseJson)
+            throws CertificateException {
         final var responseCert = responseJson.getJSONObject("cert");
         final var responseData = responseCert.getJSONArray("data");
         var bytes = new byte[responseData.length()];
@@ -127,9 +132,12 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         id = responseJson.getString("id");
     }
 
-    private String sendCertificateRequest(final OkHttpClient client, final Request request) throws IOException {
+    private String sendCertificateRequest(final OkHttpClient client,
+                                          final Request request)
+            throws IOException {
         final var response = client.newCall(request).execute();
-        final var clientResponse = Objects.requireNonNull(response.body()).string();
+        final var clientResponse =
+                Objects.requireNonNull(response.body()).string();
 
         if (log.isInfoEnabled()) {
             log.info("Success: " + response.isSuccessful());
@@ -147,12 +155,15 @@ public class OrbiterTokenManagerService implements TokenManagerService {
 
         return new Request.Builder()
                 .url(CLIENT_REGISTRATION_URL)
-                .post(RequestBody.create(clientToCreate.toString(), MediaType.parse("application/json")))
+                .post(RequestBody.create(clientToCreate.toString(),
+                                         MediaType.parse("application/json")))
                 .build();
     }
 
-    private String getCertificateRequest(final PKCS10CertificationRequest csr) throws IOException {
-        final var pemObject = new PemObject("CERTIFICATE REQUEST", csr.getEncoded());
+    private String getCertificateRequest(final PKCS10CertificationRequest csr)
+            throws IOException {
+        final var pemObject =
+                new PemObject("CERTIFICATE REQUEST", csr.getEncoded());
         final var stringWriter = new StringWriter();
 
         final var pemWriter = new PemWriter(stringWriter);
@@ -164,7 +175,8 @@ public class OrbiterTokenManagerService implements TokenManagerService {
     }
 
     private void setKeyPair() throws NoSuchAlgorithmException {
-        final var keyPairGenerator = KeyPairGenerator.getInstance("RSA", new BouncyCastleProvider());
+        final var keyPairGenerator =
+                KeyPairGenerator.getInstance("RSA", new BouncyCastleProvider());
         keyPairGenerator.initialize(KEYSIZE, new SecureRandom());
 
         generatedKeyPair = keyPairGenerator.generateKeyPair();
@@ -174,19 +186,24 @@ public class OrbiterTokenManagerService implements TokenManagerService {
      * Generate a CSR which is sent to the Orbiter DAPS to register a Client.
      *
      * @return a generated CSR
-     * @throws OperatorCreationException when the ContentSigner cannot be created
-     * @throws IOException               when the Extensions cannot be added to the CSR
+     * @throws OperatorCreationException when the ContentSigner
+     * cannot be created
+     * @throws IOException when the Extensions cannot be added to the CSR
      */
-    private PKCS10CertificationRequest createCSR() throws IOException, OperatorCreationException {
+    private PKCS10CertificationRequest createCSR()
+            throws IOException, OperatorCreationException {
         //create csr builder with principal
         final var p10Builder = new JcaPKCS10CertificationRequestBuilder(
-                new X500Principal("C=DE, ST=Bonn, L=NRW, O=truzzt, CN=*.truzzt.org"), generatedKeyPair.getPublic());
+                new X500Principal(
+                        "C=DE, ST=Bonn, L=NRW, O=truzzt, CN=*.truzzt.org"),
+                         generatedKeyPair.getPublic());
 
         //add extensions
         final var extensionsGenerator = new ExtensionsGenerator();
 
         //basic constraints = false
-        extensionsGenerator.addExtension(Extension.basicConstraints, false, new BasicConstraints(false));
+        extensionsGenerator.addExtension(Extension.basicConstraints, false,
+                                         new BasicConstraints(false));
 
         //add subject alternative names
         final var sans = new ASN1Encodable[]{
@@ -195,13 +212,19 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         };
 
         final var sansExtension = new DERSequence(sans);
-        extensionsGenerator.addExtension(Extension.subjectAlternativeName, false, sansExtension);
+        extensionsGenerator
+                .addExtension(Extension.subjectAlternativeName,
+                              false,
+                              sansExtension);
 
-        //TODO add SKI extension (as seen in https://gitlab.truzzt.com/orbiter/daps/-/blob/master/examples/openssl-client.cnf, but currently working without it)
-        //extensionsGenerator.addExtension(Extension.subjectKeyIdentifier, true, new SubjectKeyIdentifier());
+        //TODO add SKI extension but currently working without it)
+        //extensionsGenerator.addExtension(Extension.subjectKeyIdentifier,
+        // true, new SubjectKeyIdentifier());
 
         final var extensions = extensionsGenerator.generate();
-        p10Builder.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_extensionRequest, extensions);
+        p10Builder.addAttribute(
+                PKCSObjectIdentifiers.pkcs_9_at_extensionRequest,
+                extensions);
 
         //create csBuilder for signing the request
         final var csBuilder = new JcaContentSignerBuilder("SHA256withRSA");
@@ -223,7 +246,8 @@ public class OrbiterTokenManagerService implements TokenManagerService {
 
         //register at Orbiter DAPS if this is called the first time
         if (id == null || generatedKeyPair == null || clientCert == null) {
-            //does this have to happen in the framework or should we expect a keystore provided by the user (like Aisec Daps Client)
+            //does this have to happen in the framework or should we expect
+            // a keystore provided by the user (like Aisec Daps Client)
             createClient();
         }
 
@@ -242,13 +266,19 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         }
     }
 
-    private String getDAT(final OkHttpClient client, final Request request) throws IOException {
+    private String getDAT(
+            final OkHttpClient client,
+            final Request request)
+            throws IOException {
         final var jwtResponse = client.newCall(request).execute();
-        final var responseJson = new JSONObject(Objects.requireNonNull(jwtResponse.body()).string());
+        final var responseJson = new JSONObject(
+                Objects.requireNonNull(jwtResponse.body()).string());
+
         return responseJson.getString("accessToken");
     }
 
-    private Request getRequestMessage(final String dapsUrl, final RequestBody formBody) {
+    private Request getRequestMessage(final String dapsUrl,
+                                      final RequestBody formBody) {
         return new Request.Builder()
                 .url(dapsUrl)
                 .post(formBody)
@@ -258,7 +288,8 @@ public class OrbiterTokenManagerService implements TokenManagerService {
     private RequestBody getRequestBody(final String token) {
         return new FormBody.Builder()
                 .add("grant_type", "client_assertion_type")
-                .add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
+                .add("client_assertion_type",
+                     "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
                 .add("client_assertion", token)
                 .add("scope", "idsc:IDS_CONNECTOR_ATTRIBUTES_ALL")
                 .add("client_id", id)
@@ -270,14 +301,18 @@ public class OrbiterTokenManagerService implements TokenManagerService {
                 Jwts.builder()
                     .setIssuer("localhost")
                     .setSubject(id)
-                    .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
+                    .claim("@context",
+                           "https://w3id.org/idsa/contexts/context.jsonld")
                     .claim("@type", "ids:DatRequestToken")
-                    .setExpiration(Date.from(Instant.now().plus(Duration.ofDays(1))))
+                    .setExpiration(
+                            Date.from(Instant.now().plus(Duration.ofDays(1))))
                     .setAudience("all")
-                    .setIssuedAt(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)))
-                    .setNotBefore(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
+                    .setIssuedAt(Date.from(
+                            Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)))
+                    .setNotBefore(Date.from(
+                            Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
 
-        return jwtb.signWith(SignatureAlgorithm.RS256, generatedKeyPair.getPrivate()).compact();
+        return jwtb.signWith(SignatureAlgorithm.RS256,
+                             generatedKeyPair.getPrivate()).compact();
     }
-
 }

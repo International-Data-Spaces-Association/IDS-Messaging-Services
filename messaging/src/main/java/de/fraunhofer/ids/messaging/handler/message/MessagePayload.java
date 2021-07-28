@@ -18,7 +18,8 @@ import java.io.InputStream;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 
 /**
- * Wrapper for payloads of incoming Messages. Implementation can be found in {@link MessagePayloadInputstream}.
+ * Wrapper for payloads of incoming Messages. Implementation
+ * can be found in {@link MessagePayloadInputstream}.
  */
 public interface MessagePayload {
     /**
@@ -30,7 +31,7 @@ public interface MessagePayload {
 
     /**
      * @param targetType type that should be parsed from the message
-     * @param <T>        type of the parsed object
+     * @param <T> type of the parsed object
      * @return underlying input stream parsed as targetType
      * @throws DeserializeException if underlying input stream cannot be parsed
      */

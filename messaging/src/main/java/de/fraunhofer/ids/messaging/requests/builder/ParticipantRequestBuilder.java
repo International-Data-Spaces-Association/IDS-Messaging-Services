@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'participant'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ParticipantRequestBuilder<T>> {
+public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>,
+        SupportsMultipart<T, ParticipantRequestBuilder<T>> {
 
     private URI affectedParticipant;
 
@@ -48,7 +50,10 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
             final MessageService messageService,
             final RequestTemplateProvider requestTemplateProvider,
             final NotificationTemplateProvider notificationTemplateProvider) {
-        super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
+        super(expected,
+              messageService,
+              requestTemplateProvider,
+              notificationTemplateProvider);
     }
 
     /**
@@ -70,36 +75,42 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ParticipantUpdateMessage}.
+     * Set the operation to UPDATE: describes a
+     * {@link de.fraunhofer.iais.eis.ParticipantUpdateMessage}.
      *
      * @param affectedParticipant affected connector id for message header
      * @return this builder instance
      */
-    public ParticipantRequestBuilder<T> operationUpdate(final URI affectedParticipant) {
+    public ParticipantRequestBuilder<T> operationUpdate(
+            final URI affectedParticipant) {
         this.operation = Crud.UPDATE;
         this.affectedParticipant = affectedParticipant;
         return this;
     }
 
     /**
-     * Set the operation to DELETE: describes a {@link de.fraunhofer.iais.eis.ParticipantUnavailableMessage}.
+     * Set the operation to DELETE: describes a
+     * {@link de.fraunhofer.iais.eis.ParticipantUnavailableMessage}.
      *
      * @param affectedParticipant affected connector id for message header
      * @return this builder instance
      */
-    public ParticipantRequestBuilder<T> operationDelete(final URI affectedParticipant) {
+    public ParticipantRequestBuilder<T> operationDelete(
+            final URI affectedParticipant) {
         this.operation = Crud.DELETE;
         this.affectedParticipant = affectedParticipant;
         return this;
     }
 
     /**
-     * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.ParticipantRequestMessage}.
+     * Set the operation to RECEIVE: describes a
+     * {@link de.fraunhofer.iais.eis.ParticipantRequestMessage}.
      *
      * @param affectedParticipant affected connector id for message header
      * @return this builder instance
      */
-    public ParticipantRequestBuilder<T> operationGet(final URI affectedParticipant) {
+    public ParticipantRequestBuilder<T> operationGet(
+            final URI affectedParticipant) {
         this.operation = Crud.RECEIVE;
         this.affectedParticipant = affectedParticipant;
         return this;
@@ -109,7 +120,9 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(final URI target)throws DapsTokenManagerException,
+    public MessageContainer<T> execute(final URI target)
+            throws
+            DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
             ClaimsException,
@@ -121,7 +134,7 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
             RejectionException,
             UnexpectedPayloadException {
         if (protocolType == null || operation == null) {
-            var errorMessage = String.format(
+            final var errorMessage = String.format(
                     "Could not send Message, needed Fields are null: %s%s",
                     protocolType == null ? "protocolType is null! " : "",
                     operation == null ? "operation is null! " : ""
@@ -130,28 +143,35 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T> implement
         }
         switch (protocolType) {
             case IDSCP:
-                throw new UnsupportedOperationException("Not yet implemented Protocol!");
+                throw new UnsupportedOperationException(
+                        "Not yet implemented Protocol!");
             case LDP:
-                throw new UnsupportedOperationException("Not yet implemented Protocol!");
+                throw new UnsupportedOperationException(
+                        "Not yet implemented Protocol!");
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
-                                .participantUpdateMessageTemplate(affectedParticipant).buildMessage();
+                        final var updateMessage = notificationTemplateProvider
+                                .participantUpdateMessageTemplate(
+                                        affectedParticipant).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
-                        var deleteMessage = notificationTemplateProvider
-                                .participantUnavailableMessageTemplate(affectedParticipant).buildMessage();
+                        final var deleteMessage = notificationTemplateProvider
+                                .participantUnavailableMessageTemplate(
+                                        affectedParticipant).buildMessage();
                         return sendMultipart(target, deleteMessage);
                     case RECEIVE:
-                        var receiveMessage = requestTemplateProvider
-                                .participantRequestMessageTemplate(affectedParticipant).buildMessage();
+                        final var receiveMessage = requestTemplateProvider
+                                .participantRequestMessageTemplate(
+                                        affectedParticipant).buildMessage();
                         return sendMultipart(target, receiveMessage);
                     default:
-                        throw new UnsupportedOperationException("Unsupported Operation!");
+                        throw new UnsupportedOperationException(
+                                "Unsupported Operation!");
                 }
             default:
-                throw new UnsupportedOperationException("Unsupported Protocol!");
+                throw new UnsupportedOperationException(
+                        "Unsupported Protocol!");
         }
     }
 
