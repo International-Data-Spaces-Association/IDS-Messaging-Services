@@ -41,12 +41,10 @@ Currently being worked on:
 
 Supported out-of-the-box connectivity to the following IDS-Infrastructure-Components with advanced functionality:
 - Other IDS-Connectors
-- IDS-DAPS
+- IDS-AppStore
 - IDS-Broker
 - IDS-ClearingHouse
-
-Currently being worked on advanced functionality for:
-- IDS-AppStore
+- IDS-DAPS
 - IDS-ParIS
 - IDS-VoCol
 
@@ -82,8 +80,11 @@ Modules with basic functions:
 - messaging
 
 Modules for different infrastructure components:
+- appstore
 - broker
 - clearinghouse
+- paris
+- vocol
 
 In general, the core-module artifact is the main module artifact with the configuration of the IDS-Messaging-Services. The messaging-module artifact provides all needed functionalities to send and receive IDS-Messages. The messaging-module artifact in turn holds the core-module artifact as a dependency. So it is enough to specify the messaging-module artifact in the project's pom and the functionality of the core-module artifact will be loaded automatically.
 
