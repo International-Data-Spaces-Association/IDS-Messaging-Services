@@ -29,7 +29,15 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @Slf4j
 @Service
 public class EndpointService {
-    private MessageController            messageController;
+
+    /**
+     * The MessageController.
+     */
+    private MessageController messageController;
+
+    /**
+     * The RequestMappingHandlerMapping.
+     */
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     /**

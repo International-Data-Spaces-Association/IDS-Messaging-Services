@@ -25,9 +25,15 @@ import lombok.Getter;
 public abstract class AbstractContractMAP<M extends Message, C extends Contract>
         implements MessageAndPayload<Message, Contract> {
 
+    /**
+     * The Message.
+     */
     @Getter
     M message;
 
+    /**
+     * The payload.
+     */
     C payload;
 
     /**

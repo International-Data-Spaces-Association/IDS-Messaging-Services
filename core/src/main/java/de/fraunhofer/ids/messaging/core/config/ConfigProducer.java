@@ -44,16 +44,29 @@ import org.springframework.core.io.ClassPathResource;
 @EnableConfigurationProperties(ConfigProperties.class)
 @ConditionalOnClass({ConfigurationModel.class, Connector.class, KeyStoreManager.class})
 public class ConfigProducer {
+
+    /**
+     * Infomodel serializer.
+     */
     private static final Serializer SERIALIZER = new Serializer();
 
+    /**
+     * The ConfigContainer.
+     */
     private ConfigContainer configContainer;
+
+    /**
+     * The ClientProvider.
+     */
     private ClientProvider  clientProvider;
 
     /**
      * Load the ConfigurationModel from the location specified in the
      * application.properties, initialize the KeyStoreManager.
      *
-     * @param properties the {@link ConfigProperties} parsed from an application.properties file
+     * @param properties The {@link ConfigProperties} parsed from an application.properties file.
+     * @param postInterceptor Possibility to add a post processing interceptor.
+     * @param preInterceptor Possibility to add a pre processing interceptor.
      */
     public ConfigProducer(final ConfigProperties properties,
                           final Optional<PreConfigProducerInterceptor> preInterceptor,

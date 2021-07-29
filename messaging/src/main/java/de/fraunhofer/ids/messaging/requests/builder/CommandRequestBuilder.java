@@ -43,6 +43,9 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements
         ExecutableBuilder<T>,
         SupportsMultipart<T, CommandRequestBuilder<T>> {
 
+    /**
+     * URI of the command operation.
+     */
     private URI operationReference;
 
     CommandRequestBuilder(

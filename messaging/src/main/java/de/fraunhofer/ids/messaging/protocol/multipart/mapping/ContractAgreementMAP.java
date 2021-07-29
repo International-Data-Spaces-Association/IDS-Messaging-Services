@@ -23,6 +23,11 @@ import de.fraunhofer.iais.eis.ContractAgreementMessage;
 public class ContractAgreementMAP
         extends AbstractContractMAP<ContractAgreementMessage, ContractAgreement> {
 
+    /**
+     * Constructor for ContractAgreementMAP.
+     * @param contractAgreementMessage The message.
+     * @param payload The payload.
+     */
     public ContractAgreementMAP(final ContractAgreementMessage contractAgreementMessage,
                                 final ContractAgreement payload) {
         this.message = contractAgreementMessage;

@@ -35,16 +35,30 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DapsValidator {
 
+    /**
+     * The DapsPublicKeyProvider.
+     */
     private final DapsPublicKeyProvider keyProvider;
 
+    /**
+     * Includes base certificates.
+     */
     private final String[] baseSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
             "idsc:BASE_SECURITY_PROFILE"};
+
+    /**
+     * Includes all certificates up to trust.
+     */
     private final String[] trustSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
             "idsc:BASE_SECURITY_PROFILE",
             "idsc:TRUST_SECURITY_PROFILE",
             "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE"};
+
+    /**
+     * Includes all certificates up to trust plus.
+     */
     private final String[] plusTrustSecProfVals =
             {"idsc:BASE_CONNECTOR_SECURITY_PROFILE",
             "idsc:BASE_SECURITY_PROFILE",

@@ -14,6 +14,9 @@
 package de.fraunhofer.ids.messaging.broker.util;
 
 public final class FullTextQueryTemplate {
+    /**
+     * Refers to the template for the fulltext query search.
+     */
     public static final String FULL_TEXT_QUERY =
             de.fraunhofer.ids.messaging.util.FullTextQueryTemplate.FULL_TEXT_QUERY;
 

@@ -21,8 +21,15 @@ import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
 public class ContractRejectionMAP implements MessageAndPayload<ContractRejectionMessage, Void> {
 
+    /**
+     * The ContractRejectionMessage.
+     */
     private final ContractRejectionMessage contractRejectionMessage;
 
+    /**
+     * Constructor for ContractRejectionMAP.
+     * @param contractRejectionMessage The message.
+     */
     public ContractRejectionMAP(final ContractRejectionMessage contractRejectionMessage) {
         this.contractRejectionMessage = contractRejectionMessage;
     }

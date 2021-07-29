@@ -43,6 +43,9 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T>
         implements ExecutableBuilder<T>,
         SupportsMultipart<T, DescriptionRequestBuilder<T>> {
 
+    /**
+     * URI of the requested element.
+     */
     private URI requestedElement;
 
     DescriptionRequestBuilder(

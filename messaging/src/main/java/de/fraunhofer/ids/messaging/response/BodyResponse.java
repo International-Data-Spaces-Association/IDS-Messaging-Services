@@ -34,7 +34,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class BodyResponse<T extends Message> implements MessageResponse {
+    /**
+     * The header of the response.
+     */
     private final T header;
+
+    /**
+     * The payload of the response.
+     */
     private final Object payload;
 
     /**

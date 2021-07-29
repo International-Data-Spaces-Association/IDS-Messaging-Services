@@ -21,8 +21,15 @@ import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
 public class DescriptionRequestMAP implements MessageAndPayload<DescriptionRequestMessage, Void> {
 
+    /**
+     * The DescriptionRequestMessage.
+     */
     private DescriptionRequestMessage message;
 
+    /**
+     * The constructor of DescriptionRequestMAP.
+     * @param selfDescriptionRequest The message.
+     */
     public DescriptionRequestMAP(final DescriptionRequestMessage selfDescriptionRequest) {
         this.message = selfDescriptionRequest;
     }

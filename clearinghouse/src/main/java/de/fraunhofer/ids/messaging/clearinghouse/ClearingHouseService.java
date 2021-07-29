@@ -56,24 +56,65 @@ import org.springframework.stereotype.Component;
 public class ClearingHouseService extends InfrastructureService
         implements IDSClearingHouseService {
 
+    /**
+     * The infomodel serializer.
+     */
     private final Serializer   serializer   = new Serializer();
+
+    /**
+     * SecureRandom function.
+     */
     private final SecureRandom secureRandom = new SecureRandom();
+
+    /**
+     * The MultipartResponseConverter.
+     */
     private final MultipartResponseConverter multipartResponseConverter
             = new MultipartResponseConverter();
 
+    /**
+     * The IdsHttpService.
+     */
     private final IdsHttpService idsHttpService;
+
+    /**
+     * The NotificationTemplateProvider.
+     */
     private final NotificationTemplateProvider notificationTemplateProvider;
+
+    /**
+     * The RequestTemplateProvider.
+     */
     private final RequestTemplateProvider requestTemplateProvider;
 
+    /**
+     * The base URL of the CH.
+     */
     @Value("${clearinghouse.url}")
     private String clearingHouseUrl;
 
+    /**
+     * The CH endpoint for query messages.
+     */
     @Value("${clearinghouse.query.endpoint:/messages/query}")
     private String queryEndpoint;
 
+    /**
+     * The CH endpoint for logging.
+     */
     @Value("${clearinghouse.log.endpoint:/messages/log}")
     private String logEndpoint;
 
+    /**
+     * Constructor for the ClearingHouseService.
+     * @param container The ConfigContainer.
+     * @param tokenProvider The DapsTokenProvider.
+     * @param messageService The MessageService.
+     * @param idsHttpService The IdsHttpService.
+     * @param notificationTemplateProvider The NotificationTemplateProvider.
+     * @param requestTemplateProvider The RequestTemplateProvider.
+     * @param idsRequestBuilderService The IdsRequestBuilderService.
+     */
     public ClearingHouseService(final ConfigContainer container,
                                 final DapsTokenProvider tokenProvider,
                                 final MessageService messageService,

@@ -43,6 +43,9 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements
         ExecutableBuilder<T>,
         SupportsMultipart<T, ConnectorRequestBuilder<T>> {
 
+    /**
+     * The affected connector.
+     */
     private URI affectedConnector;
 
     ConnectorRequestBuilder(

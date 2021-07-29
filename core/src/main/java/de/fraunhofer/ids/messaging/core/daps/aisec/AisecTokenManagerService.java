@@ -60,10 +60,24 @@ import static org.apache.commons.codec.binary.Hex.encodeHexString;
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "daps", name = "mode", havingValue = "aisec")
 public class AisecTokenManagerService implements TokenManagerService {
+    /**
+     * Seconds to add to the expiry date.
+     */
     public static final int ONE_DAY_IN_SECONDS  = 86_400;
+
+    /**
+     * Seconds to substract for the issued at value.
+     */
     public static final int SECONDS_TO_SUBTRACT = 10;
 
+    /**
+     * The ClientProvider.
+     */
     private final ClientProvider  clientProvider;
+
+    /**
+     * The ConfigContainer.
+     */
     private final ConfigContainer configContainer;
 
     /***

@@ -24,7 +24,14 @@ import lombok.AllArgsConstructor;
 public class DescriptionResponseMAP
         implements MessageAndPayload<DescriptionResponseMessage, String> {
 
+    /**
+     * The message.
+     */
     private DescriptionResponseMessage message;
+
+    /**
+     * The payload.
+     */
     private String payload;
 
     /**
