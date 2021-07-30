@@ -28,6 +28,9 @@ import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.NonNull;
 
+/**
+ * Interface for building selfdescription requests.
+ */
 public interface IDSInfrastructureService {
     /**
      * Interface Method to create a request for a self-description and send it.
