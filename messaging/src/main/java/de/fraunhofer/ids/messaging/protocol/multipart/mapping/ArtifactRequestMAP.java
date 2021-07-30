@@ -25,6 +25,9 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class ArtifactRequestMAP implements MessageAndPayload<ArtifactRequestMessage, Void> {
 
+    /**
+     * The ArtifactRequestMessage.
+     */
     @Getter
     @NonNull
     private final ArtifactRequestMessage message;

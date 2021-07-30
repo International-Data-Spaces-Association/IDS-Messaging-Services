@@ -19,13 +19,25 @@ import lombok.Getter;
 @Getter
 public class UnexpectedPayloadException extends IdsRequestException {
 
+    /**
+     * The MessageContainer.
+     */
     private final MessageContainer<?> messageContainer;
 
+    /**
+     * Constructor for the UnexpectedPayloadException.
+     * @param messageContainer The MessageContainer.
+     */
     public UnexpectedPayloadException(final MessageContainer<?> messageContainer) {
         super();
         this.messageContainer = messageContainer;
     }
 
+    /**
+     * Constructor for the UnexpectedPayloadException.
+     * @param message The exception message.
+     * @param messageContainer The MessageContainer.
+     */
     public UnexpectedPayloadException(final String message,
                                       final MessageContainer<?> messageContainer) {
         super(message);

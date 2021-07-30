@@ -25,20 +25,40 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class SerializedPayload {
 
+    /**
+     * Default SerializedPayload.
+     */
     public static final SerializedPayload EMPTY = new SerializedPayload();
 
+    /**
+     * The serialized payload.
+     */
     private byte[] serialization;
 
+    /**
+     * The content type.
+     */
     @Setter(AccessLevel.NONE)
     private String contentType;
 
+    /**
+     * The filename.
+     */
     private String filename;
 
-
+    /**
+     * Constructor for SerializedPayload.
+     * @param serialization The serialized payload.
+     */
     public SerializedPayload(final byte... serialization) {
         this.serialization = serialization;
     }
 
+    /**
+     * Constructor for SerializedPayload.
+     * @param serialization The serialized payload.
+     * @param contentType The content type of the payload.
+     */
     public SerializedPayload(final byte[] serialization, final String contentType) {
         this.serialization = serialization;
         this.contentType = contentType;

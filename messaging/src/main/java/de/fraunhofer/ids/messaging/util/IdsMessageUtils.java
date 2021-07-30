@@ -40,8 +40,16 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public final class IdsMessageUtils {
+
+    /**
+     * A Base64 encoder.
+     */
     private static final Base64.Encoder ENCODER_64 = Base64.getEncoder();
-    private static final Serializer     SERIALIZER = new Serializer();
+
+    /**
+     * The infomodel serializer.
+     */
+    private static final Serializer SERIALIZER = new Serializer();
 
     private IdsMessageUtils() {
         //Nothing to do here.

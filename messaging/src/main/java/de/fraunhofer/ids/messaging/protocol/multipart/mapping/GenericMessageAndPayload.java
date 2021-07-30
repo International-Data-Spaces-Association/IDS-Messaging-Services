@@ -30,10 +30,16 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class GenericMessageAndPayload implements MessageAndPayload<Message, Object> {
+    /**
+     * The message.
+     */
     @Getter
     @NotNull
     private Message message;
 
+    /**
+     * The payload.
+     */
     private Object payload;
 
     /**

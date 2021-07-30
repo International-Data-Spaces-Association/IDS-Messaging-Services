@@ -11,4 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Package includes commonly used classes.
+ */
 package de.fraunhofer.ids.messaging.common;

@@ -17,9 +17,19 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum MultipartDatapart {
+    /**
+     * Multipart header.
+     */
     HEADER("header"),
+
+    /**
+     * Multipart payload.
+     */
     PAYLOAD("payload");
 
+    /**
+     * The name of the enum.
+     */
     private final String name;
 
     /**

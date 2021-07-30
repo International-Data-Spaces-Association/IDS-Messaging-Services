@@ -53,12 +53,34 @@ import org.springframework.stereotype.Component;
 public class BrokerService extends InfrastructureService
         implements IDSBrokerService {
 
+    /**
+     * Default item limit for the query.
+     */
     private static final int DEFAULT_LIMIT = 50;
+
+    /**
+     * Default item offset for the query.
+     */
     private static final int DEFAULT_OFFSET = 0;
 
+    /**
+     * The NotificationTemplateProvider.
+     */
     private final NotificationTemplateProvider notificationTemplateProvider;
+
+    /**
+     * The RequestTemplateProvider.
+     */
     private final RequestTemplateProvider requestTemplateProvider;
+
+    /**
+     * The IdsRequestBuilderService.
+     */
     private final IdsRequestBuilderService idsRequestBuilderService;
+
+    /**
+     * The QueryService.
+     */
     private final QueryService queryService;
 
     /**

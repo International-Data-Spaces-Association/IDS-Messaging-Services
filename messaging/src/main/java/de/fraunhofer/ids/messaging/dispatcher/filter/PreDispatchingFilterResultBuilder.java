@@ -20,9 +20,21 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class PreDispatchingFilterResultBuilder {
+
+    /**
+     * Possible error to throw if not successful.
+     */
     private Throwable error;
-    private boolean   success;
-    private String    message;
+
+    /**
+     * True if filter was successful.
+     */
+    private boolean success;
+
+    /**
+     * The message.
+     */
+    private String message;
 
     /**
      * Error message of the PreDispatchingFilter.

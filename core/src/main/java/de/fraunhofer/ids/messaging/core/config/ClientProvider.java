@@ -46,8 +46,14 @@ import org.jetbrains.annotations.NotNull;
  */
 @Slf4j
 public class ClientProvider {
+    /**
+     * The ConfigContainer.
+     */
     private final ConfigContainer configContainer;
 
+    /**
+     * The OkHttpClient.
+     */
     @Getter
     private OkHttpClient client;
 

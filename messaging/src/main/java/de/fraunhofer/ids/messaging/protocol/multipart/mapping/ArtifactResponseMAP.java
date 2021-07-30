@@ -26,9 +26,15 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class ArtifactResponseMAP implements MessageAndPayload<ArtifactResponseMessage, String> {
 
+    /**
+     * The ArtifactResponseMessage.
+     */
     @Getter
     private final ArtifactResponseMessage message;
 
+    /**
+     * The payload of the ArtifactResponseMessage.
+     */
     private final String payload;
 
     /**

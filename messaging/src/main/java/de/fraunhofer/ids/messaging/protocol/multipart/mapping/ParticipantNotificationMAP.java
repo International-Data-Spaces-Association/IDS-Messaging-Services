@@ -23,14 +23,29 @@ import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 public class ParticipantNotificationMAP
         implements MessageAndPayload<Message, Participant> {
 
+    /**
+     * The message.
+     */
     private final Message message;
 
+    /**
+     * The participant self description.
+     */
     private Participant participantSelfDescription;
 
+    /**
+     * Constructor for the ParticipantNotificationMAP.
+     * @param message The message.
+     */
     public ParticipantNotificationMAP(final Message message) {
         this.message = message;
     }
 
+    /**
+     * Constructor for ParticipantNotificationMAP.
+     * @param message The message.
+     * @param participantSelfDescription The self description.
+     */
     public ParticipantNotificationMAP(
             final Message message,
             final Participant participantSelfDescription) {

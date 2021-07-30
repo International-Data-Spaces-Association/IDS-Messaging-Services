@@ -11,4 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Util enums for the messaging module.
+ */
 package de.fraunhofer.ids.messaging.requests.enums;

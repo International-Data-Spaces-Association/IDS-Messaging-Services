@@ -26,10 +26,17 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class RejectionMAP implements MessageAndPayload<RejectionMessage, String> {
+
+    /**
+     * The RejectionMessage (header).
+     */
     @Getter
     @NonNull
     private RejectionMessage message;
 
+    /**
+     * The payload of the rejection message.
+     */
     private String payload;
 
     /**

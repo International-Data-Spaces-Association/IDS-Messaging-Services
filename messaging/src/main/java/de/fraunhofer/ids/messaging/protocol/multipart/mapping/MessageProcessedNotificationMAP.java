@@ -24,6 +24,9 @@ import lombok.RequiredArgsConstructor;
 public class MessageProcessedNotificationMAP
     implements MessageAndPayload<MessageProcessedNotificationMessage, Void> {
 
+    /**
+     * The MessageProcessedNotificationMessage message.
+     */
     private final MessageProcessedNotificationMessage message;
 
     /**

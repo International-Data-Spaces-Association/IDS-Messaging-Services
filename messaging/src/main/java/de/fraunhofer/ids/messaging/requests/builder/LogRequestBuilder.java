@@ -43,6 +43,9 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements
         ExecutableBuilder<T>,
         SupportsMultipart<T, LogRequestBuilder<T>> {
 
+    /**
+     * The URI of the CH.
+     */
     URI clearingHouseUrl;
 
     LogRequestBuilder(
@@ -74,6 +77,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements
     /**
      * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.LogMessage}.
      *
+     * @param clearingHouseUrl The URL of the CH.
      * @return this builder instance
      */
     public LogRequestBuilder<T> operationUpdate(final URI clearingHouseUrl) {

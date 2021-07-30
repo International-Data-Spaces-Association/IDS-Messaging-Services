@@ -20,8 +20,16 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
 public class ParticipantRequestMAP implements MessageAndPayload<ParticipantRequestMessage, Void> {
+
+    /**
+     * The ParticipantRequestMessage.
+     */
     private ParticipantRequestMessage message;
 
+    /**
+     * Constructor for the ParticipantRequestMAP.
+     * @param message The ParticipantRequestMessage.
+     */
     public ParticipantRequestMAP(final ParticipantRequestMessage message) {
         this.message = message;
     }

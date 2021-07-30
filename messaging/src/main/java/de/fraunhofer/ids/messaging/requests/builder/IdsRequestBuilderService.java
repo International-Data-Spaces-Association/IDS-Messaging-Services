@@ -32,7 +32,15 @@ public class IdsRequestBuilderService {
      * {@link MessageService} used for sending messages.
      */
     private final MessageService messageService;
+
+    /**
+     * The RequestTemplateProvider.
+     */
     private final RequestTemplateProvider requestTemplateProvider;
+
+    /**
+     * The NotificationTemplateProvider.
+     */
     private final NotificationTemplateProvider notificationTemplateProvider;
 
     /**

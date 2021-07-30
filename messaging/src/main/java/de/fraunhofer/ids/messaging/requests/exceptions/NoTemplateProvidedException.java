@@ -15,10 +15,17 @@ package de.fraunhofer.ids.messaging.requests.exceptions;
 
 public class NoTemplateProvidedException extends IdsRequestException {
 
+    /**
+     * Constructor for NoTemplateProvidedException.
+     */
     public NoTemplateProvidedException() {
         super();
     }
 
+    /**
+     * Constructor for NoTemplateProvidedException.
+     * @param message The exception message.
+     */
     public NoTemplateProvidedException(final String message) {
         super(message);
     }

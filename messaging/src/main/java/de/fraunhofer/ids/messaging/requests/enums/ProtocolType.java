@@ -14,7 +14,18 @@
 package de.fraunhofer.ids.messaging.requests.enums;
 
 public enum ProtocolType {
+    /**
+     * ProtocolType choice: LDP (IDS-REST).
+     */
     LDP,
+
+    /**
+     * ProtocolType choice: Multipart.
+     */
     MULTIPART,
+
+    /**
+     * ProtocolType choice: IDSCP.
+     */
     IDSCP
 }

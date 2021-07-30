@@ -42,6 +42,9 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
 public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T>
         implements ExecutableBuilder<T>, SupportsMultipart<T, ResourceRequestBuilder<T>> {
 
+    /**
+     * URI of the affected resource.
+     */
     private URI affectedResource;
 
     ResourceRequestBuilder(

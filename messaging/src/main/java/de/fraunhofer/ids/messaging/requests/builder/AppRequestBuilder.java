@@ -43,6 +43,9 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
         ExecutableBuilder<T>,
         SupportsMultipart<T, AppRequestBuilder<T>> {
 
+    /**
+     * URI of the requested APP.
+     */
     private URI affectedApp;
 
     AppRequestBuilder(

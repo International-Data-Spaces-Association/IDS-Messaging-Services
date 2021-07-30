@@ -31,12 +31,21 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ConfigContainer {
+    /**
+     * The ConfigurationModel.
+     */
     @Getter
     private ConfigurationModel configurationModel;
 
+    /**
+     * The KeyStoreManager.
+     */
     @Getter
     private KeyStoreManager keyStoreManager;
 
+    /**
+     * The ClientProvider.
+     */
     @Setter
     private ClientProvider clientProvider;
 

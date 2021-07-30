@@ -47,11 +47,31 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MessageDispatcher {
-    private final ObjectMapper               objectMapper;
+
+    /**
+     * The ObjectMapper.
+     */
+    private final ObjectMapper objectMapper;
+
+    /**
+     * The PreDispatchingFilter.
+     */
     private final List<PreDispatchingFilter> preDispatchingFilters;
-    private final RequestMessageHandler      requestMessageHandler;
-    private final ConfigContainer            configContainer;
-    private final DapsValidator              dapsValidator;
+
+    /**
+     * The RequestMessageHandler.
+     */
+    private final RequestMessageHandler requestMessageHandler;
+
+    /**
+     * The ConfigContainer.
+     */
+    private final ConfigContainer configContainer;
+
+    /**
+     * The DapsValidator.
+     */
+    private final DapsValidator dapsValidator;
 
     /**
      * Create a MessageDispatcher.

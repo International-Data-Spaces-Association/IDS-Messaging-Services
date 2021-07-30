@@ -43,6 +43,9 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements
         ExecutableBuilder<T>,
         SupportsMultipart<T, ArtifactRequestBuilder<T>> {
 
+    /**
+     * URI of the requested artifact.
+     */
     private URI requestedArtifact;
 
     ArtifactRequestBuilder(

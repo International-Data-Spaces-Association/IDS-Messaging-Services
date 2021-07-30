@@ -64,9 +64,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class NotificationTemplateProvider {
+    /**
+     * The ConfigContainer.
+     */
     private final ConfigContainer container;
+
+    /**
+     * The DapsTokenProvider.
+     */
     private final DapsTokenProvider tokenProvider;
 
+    /**
+     * Template for the ConnectorUpdateMessage.
+     * @param affectedConnector URI of the affected connector.
+     * @return The Template.
+     */
     public MessageTemplate<ConnectorUpdateMessage>
     connectorUpdateMessageTemplate(final URI affectedConnector) {
         return () -> new ConnectorUpdateMessageBuilder()
@@ -80,6 +92,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ConnectorUnavailableMessage.
+     * @param affectedConnector URI of the affected connector.
+     * @return The Template.
+     */
     public MessageTemplate<ConnectorUnavailableMessage>
     connectorUnavailableMessageTemplate(final URI affectedConnector) {
         return () -> new ConnectorUnavailableMessageBuilder()
@@ -93,6 +110,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ConnectorCertificateGrantedMessage.
+     * @param affectedConnector URI of the affected connector.
+     * @return The Template.
+     */
     public MessageTemplate<ConnectorCertificateGrantedMessage>
     connectorCertificateGrantedMessageTemplate(final URI affectedConnector) {
         return () -> new ConnectorCertificateGrantedMessageBuilder()
@@ -106,6 +128,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ConnectorCertificateRevokedMessage.
+     * @param affectedConnector URI of the affected connector.
+     * @param revocationReason The reason for certificate revocation.
+     * @return The Template.
+     */
     public MessageTemplate<ConnectorCertificateRevokedMessage>
     connectorCertificateRevokedMessageTemplate(
             final URI affectedConnector,
@@ -122,6 +150,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ParticipantUpdateMessage.
+     * @param affectedParticipant URI of the affected participant.
+     * @return The Template.
+     */
     public MessageTemplate<ParticipantUpdateMessage>
     participantUpdateMessageTemplate(final URI affectedParticipant) {
         return () -> new ParticipantUpdateMessageBuilder()
@@ -135,6 +168,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ParticipantUnavailableMessage.
+     * @param affectedParticipant URI of the affected participant.
+     * @return The Template.
+     */
     public MessageTemplate<ParticipantUnavailableMessage>
     participantUnavailableMessageTemplate(final URI affectedParticipant) {
         return () -> new ParticipantUnavailableMessageBuilder()
@@ -148,6 +186,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ParticipantCertificateGrantedMessage.
+     * @param affectedParticipant URI of the affected participant.
+     * @return The Template.
+     */
     public MessageTemplate<ParticipantCertificateGrantedMessage>
     participantCertificateGrantedMessageTemplate(
             final URI affectedParticipant) {
@@ -162,6 +205,12 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ParticipantCertificateRevokedMessage.
+     * @param affectedParticipant URI of the affected participant.
+     * @param revocationReason The reason for revocation.
+     * @return The Template.
+     */
     public MessageTemplate<ParticipantCertificateRevokedMessage>
     participantCertificateRevokedMessageTemplate(
             final URI affectedParticipant,
@@ -178,6 +227,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the AppAvailableMessage.
+     * @param affectedApp URI of the affected app.
+     * @return The Template.
+     */
     public MessageTemplate<AppAvailableMessage>
     appAvailableMessageTemplate(final URI affectedApp) {
         return () -> new AppAvailableMessageBuilder()
@@ -191,6 +245,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the AppUnavailableMessage.
+     * @param affectedApp URI of the affected app.
+     * @return The Template.
+     */
     public MessageTemplate<AppUnavailableMessage>
     appUnavailableMessageTemplate(final URI affectedApp) {
         return () -> new AppUnavailableMessageBuilder()
@@ -204,6 +263,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the AppDeleteMessage.
+     * @param affectedApp URI of the affected app.
+     * @return The Template.
+     */
     public MessageTemplate<AppDeleteMessage>
     appDeleteMessageTemplate(final URI affectedApp) {
         return () -> new AppDeleteMessageBuilder()
@@ -217,6 +281,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ResourceUpdateMessage.
+     * @param affectedResource URI of the affected resource.
+     * @return The Template.
+     */
     public MessageTemplate<ResourceUpdateMessage>
     resourceUpdateMessageTemplate(final URI affectedResource) {
         return () -> new ResourceUpdateMessageBuilder()
@@ -230,6 +299,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ResourceUnavailableMessage.
+     * @param affectedResource URI of the affected resource.
+     * @return The Template.
+     */
     public MessageTemplate<ResourceUnavailableMessage>
     resourceUnavailableMessageTemplate(final URI affectedResource) {
         return () -> new ResourceUnavailableMessageBuilder()
@@ -243,6 +317,10 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ContractOfferMessage.
+     * @return The Template.
+     */
     public MessageTemplate<ContractOfferMessage>
     contractOfferMessageTemplate() {
         return () -> new ContractOfferMessageBuilder()
@@ -255,6 +333,10 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the ContractSupplementMessage.
+     * @return The Template.
+     */
     public MessageTemplate<ContractSupplementMessage>
     contractSupplementMessageTemplate() {
         return () -> new ContractSupplementMessageBuilder()
@@ -267,6 +349,10 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the RequestInProcessMessage.
+     * @return The Template.
+     */
     public MessageTemplate<RequestInProcessMessage>
     requestInProcessMessageTemplate() {
         return () -> new RequestInProcessMessageBuilder()
@@ -279,6 +365,10 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the MessageProcessedNotificationMessage.
+     * @return The Template.
+     */
     public MessageTemplate<MessageProcessedNotificationMessage>
     messageProcessedNotificationMessageTemplate() {
         return () -> new MessageProcessedNotificationMessageBuilder()
@@ -291,6 +381,11 @@ public class NotificationTemplateProvider {
                 .build();
     }
 
+    /**
+     * Template for the LogMessage.
+     * @param clearingHouseUrl The URL of the CH.
+     * @return The Template.
+     */
     public MessageTemplate<LogMessage>
     logMessageTemplate(final URI clearingHouseUrl) {
         return () -> new LogMessageBuilder()

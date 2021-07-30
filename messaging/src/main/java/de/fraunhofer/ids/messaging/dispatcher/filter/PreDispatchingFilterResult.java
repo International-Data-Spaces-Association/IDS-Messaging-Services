@@ -24,14 +24,24 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 public class PreDispatchingFilterResult {
+
+    /**
+     * Possible error message to throw if not successful.
+     */
     @Getter
     private final Throwable error;
 
+    /**
+     * Tre if filter was successful.
+     */
     @Getter
-    private final boolean   success;
+    private final boolean success;
 
+    /**
+     * The message.
+     */
     @Getter
-    private final String    message;
+    private final String message;
 
     /**
      * Static method returning a builder.

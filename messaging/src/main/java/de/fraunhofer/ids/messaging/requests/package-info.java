@@ -11,4 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Classes used for sending requests.
+ */
 package de.fraunhofer.ids.messaging.requests;

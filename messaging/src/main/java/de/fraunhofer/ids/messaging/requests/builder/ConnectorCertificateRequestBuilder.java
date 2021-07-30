@@ -44,7 +44,14 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T>
         implements ExecutableBuilder<T>,
         SupportsMultipart<T, ConnectorCertificateRequestBuilder<T>> {
 
+    /**
+     * URI of the affected connector.
+     */
     private URI affectedConnector;
+
+    /**
+     * Reason for certificate revocation.
+     */
     private TypedLiteral revocationReason;
 
     ConnectorCertificateRequestBuilder(

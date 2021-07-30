@@ -55,13 +55,35 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class IdsHttpService implements HttpService {
+
+    /**
+     * The ClientProvider.
+     */
     private final ClientProvider provider;
+
+    /**
+     * The DapsValidator.
+     */
     private final DapsValidator dapsValidator;
+
+    /**
+     * The ConfigContainer.
+     */
     private final ConfigContainer configContainer;
+
+    /**
+     * The infomodel serializer.
+     */
     private final Serializer serializer;
 
+    /**
+     * TimeoutSettings for the HttpClient.
+     */
     private TimeoutSettings timeoutSettings;
 
+    /**
+     * Used to switch SHACL validation off or on.
+     */
     @Value("#{new Boolean('${shacl.validation:false}')}")
     private Boolean shaclValidation;
 
@@ -479,9 +501,24 @@ public class IdsHttpService implements HttpService {
     @Getter
     @AllArgsConstructor
     private class TimeoutSettings {
+        /**
+         * Sets the connect timeout for the HttpClient.
+         */
         private Duration connectTimeout;
+
+        /**
+         * Sets the read timeout for the HttpClient.
+         */
         private Duration readTimeout;
+
+        /**
+         * Sets the write timeout for the HttpClient.
+         */
         private Duration writeTimeout;
+
+        /**
+         * Sets the call timeout for the HttpClient.
+         */
         private Duration callTimeout;
     }
 }

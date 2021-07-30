@@ -29,6 +29,22 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
 import lombok.NonNull;
 
 public interface IDSInfrastructureService {
+    /**
+     * Interface Method to create a request for a self-description and send it.
+     * @param uri The target URI.
+     * @return MessageContrainer with the response.
+     * @throws IOException Every other exception.
+     * @throws DapsTokenManagerException DAPS Token can not be acquired.
+     * @throws MultipartParseException Response could not be parsed.
+     * @throws ClaimsException Errors occurred while validating a DAT token.
+     * @throws ShaclValidatorException Response did not pass SHACL Validation.
+     * @throws SerializeException Serializing using the IDS-Serializer threw an IOException.
+     * @throws UnknownResponseException Could indicate a new unknown IDS-Message-Type.
+     * @throws SendMessageException Sending the IDS-Request returned an IOException.
+     * @throws DeserializeException Deserializing the response threw an IOException.
+     * @throws RejectionException Response was a RejectionMessage.
+     * @throws UnexpectedPayloadException Payload did not match the expected format.
+     */
     MessageContainer<?> requestSelfDescription(@NonNull URI uri)
             throws
             IOException,
@@ -43,6 +59,23 @@ public interface IDSInfrastructureService {
             RejectionException,
             UnexpectedPayloadException;
 
+    /**
+     * Interface Method to create a request for a self-description and send it.
+     * @param uri The target URI.
+     * @param requestedElement URI of the requested element.
+     * @return MessageContrainer with the response.
+     * @throws IOException Every other exception.
+     * @throws DapsTokenManagerException DAPS Token can not be acquired.
+     * @throws MultipartParseException Response could not be parsed.
+     * @throws ClaimsException Errors occurred while validating a DAT token.
+     * @throws ShaclValidatorException Response did not pass SHACL Validation.
+     * @throws SerializeException Serializing using the IDS-Serializer threw an IOException.
+     * @throws UnknownResponseException Could indicate a new unknown IDS-Message-Type.
+     * @throws SendMessageException Sending the IDS-Request returned an IOException.
+     * @throws DeserializeException Deserializing the response threw an IOException.
+     * @throws RejectionException Response was a RejectionMessage.
+     * @throws UnexpectedPayloadException Payload did not match the expected format.
+     */
     MessageContainer<?> requestSelfDescription(@NonNull URI uri,
                                                @NonNull URI requestedElement)
             throws

@@ -15,8 +15,15 @@ package de.fraunhofer.ids.messaging.requests.exceptions;
 
 public class IdsRequestException extends Exception {
 
+    /**
+     * Constructor for IdsRequestException without exception message and cause.
+     */
     public IdsRequestException() { }
 
+    /**
+     * Constructor for IdsRequestException with message.
+     * @param message The exception message.
+     */
     public IdsRequestException(final String message) {
         super(message);
     }

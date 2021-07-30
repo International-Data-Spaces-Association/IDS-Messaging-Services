@@ -23,6 +23,11 @@ import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 public class ContractResponseMAP
         extends AbstractContractMAP<ContractResponseMessage, ContractOffer> {
 
+    /**
+     * Constructor for ContractResponseMAP.
+     * @param contractResponseMessage The message.
+     * @param payload The payload.
+     */
     public ContractResponseMAP(final ContractResponseMessage contractResponseMessage,
                                final ContractOffer payload) {
         this.message = contractResponseMessage;

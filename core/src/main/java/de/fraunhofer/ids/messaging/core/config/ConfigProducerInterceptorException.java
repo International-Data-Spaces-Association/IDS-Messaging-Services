@@ -18,21 +18,44 @@ package de.fraunhofer.ids.messaging.core.config;
  */
 public class ConfigProducerInterceptorException extends Exception {
 
+    /**
+     * Constructor forConfigProducerInterceptorException.
+     */
     public ConfigProducerInterceptorException() {
     }
 
+    /**
+     * Exception thrown on failure by ConfigProducerInterceptors.
+     * @param message The exception message.
+     */
     public ConfigProducerInterceptorException(final String message) {
         super(message);
     }
 
+    /**
+     * Exception thrown on failure by ConfigProducerInterceptors.
+     * @param message The exception message.
+     * @param cause The exception cause.
+     */
     public ConfigProducerInterceptorException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Exception thrown on failure by ConfigProducerInterceptors.
+     * @param cause The exception cause.
+     */
     public ConfigProducerInterceptorException(final Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Exception thrown on failure by ConfigProducerInterceptors.
+     * @param message The exception message.
+     * @param cause The exception cause.
+     * @param enableSuppression Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace Whether or not the stack trace should be writable.
+     */
     public ConfigProducerInterceptorException(final String message,
                                               final Throwable cause,
                                               final boolean enableSuppression,

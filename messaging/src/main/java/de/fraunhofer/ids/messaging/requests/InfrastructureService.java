@@ -41,11 +41,30 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class InfrastructureService  {
-    protected final ConfigContainer          container;
-    protected final DapsTokenProvider        tokenProvider;
-    protected final MessageService           messageService;
+
+    /**
+     * The ConfigContainer.
+     */
+    protected final ConfigContainer container;
+
+    /**
+     * The DapsTokenProvider.
+     */
+    protected final DapsTokenProvider tokenProvider;
+
+    /**
+     * The MessageService.
+     */
+    protected final MessageService messageService;
+
+    /**
+     * The IdsRequestBuilderService.
+     */
     protected final IdsRequestBuilderService requestBuilderService;
 
+    /**
+     * {@inheritDoc}
+     */
     public MessageContainer<?> requestSelfDescription(@NonNull final URI uri) throws
             IOException,
             DapsTokenManagerException,
@@ -67,6 +86,9 @@ public abstract class InfrastructureService  {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public MessageContainer<?> requestSelfDescription(@NonNull final URI uri,
                                                       final URI requestedElement)
             throws
@@ -126,6 +148,9 @@ public abstract class InfrastructureService  {
         );
     }
 
+    /**
+     * Prints a log, that the message header is going to be build next.
+     */
     protected void logBuildingHeader() {
         if (log.isDebugEnabled()) {
             log.debug("Building message header");

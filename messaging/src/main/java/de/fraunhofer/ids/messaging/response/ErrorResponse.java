@@ -38,8 +38,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AllArgsConstructor
 public class ErrorResponse implements MessageResponse {
+    /**
+     * The message (RejectionMessage).
+     */
     private final RejectionMessage rejectionMessage;
-    private final String           errorMessage;
+
+    /**
+     * The error message.
+     */
+    private final String  errorMessage;
 
     /**
      * Create an ErrorResponse with a RejectionMessage header and errorReason String payload.

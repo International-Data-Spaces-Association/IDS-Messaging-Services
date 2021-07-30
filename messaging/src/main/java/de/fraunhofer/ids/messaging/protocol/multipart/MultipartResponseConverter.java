@@ -73,6 +73,10 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 @NoArgsConstructor
 public class MultipartResponseConverter {
+
+    /**
+     * The infomodel serializer.
+     */
     private final Serializer serializer = new Serializer();
 
     /**

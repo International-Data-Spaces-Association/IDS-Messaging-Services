@@ -50,10 +50,28 @@ import org.springframework.util.MultiValueMap;
 @Slf4j
 @Controller
 public class MessageController {
+
+    /**
+     * The MessageDispatcher.
+     */
     private final MessageDispatcher messageDispatcher;
+
+    /**
+     * The ConfigContainer.
+     */
     private final ConfigContainer   configContainer;
+
+    /**
+     * The infomodel serializer.
+     */
     private final Serializer        serializer;
 
+    /**
+     * Constructor for the MessageController.
+     * @param messageDispatcher The MessageDispatcher.
+     * @param serializer The infomodel serializer.
+     * @param configContainer The ConfigContainer.
+     */
     @Autowired
     public MessageController(final MessageDispatcher messageDispatcher,
                              final Serializer serializer,

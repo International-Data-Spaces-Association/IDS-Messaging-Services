@@ -37,7 +37,14 @@ import org.springframework.http.MediaType;
  */
 @Getter
 public class Base64EncodedFileBodyResponse<T extends Message> implements MessageResponse {
+    /**
+     * The header of the response.
+     */
     private final T header;
+
+    /**
+     * The payload of the response.
+     */
     private final HttpEntity<byte[]> payload;
 
     /**
