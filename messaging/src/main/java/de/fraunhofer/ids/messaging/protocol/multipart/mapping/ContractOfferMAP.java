@@ -19,6 +19,9 @@ import de.fraunhofer.iais.eis.Contract;
 import de.fraunhofer.iais.eis.ContractOffer;
 import de.fraunhofer.iais.eis.ContractOfferMessage;
 
+/**
+ * MAP representing the ContractOfferMessage.
+ */
 public class ContractOfferMAP extends AbstractContractMAP<ContractOfferMessage, ContractOffer> {
 
     /**

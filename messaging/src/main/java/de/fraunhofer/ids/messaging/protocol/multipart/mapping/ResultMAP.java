@@ -20,6 +20,9 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * MAP representing the ResultMessage.
+ */
 @RequiredArgsConstructor
 public class ResultMAP implements MessageAndPayload<ResultMessage, String> {
 

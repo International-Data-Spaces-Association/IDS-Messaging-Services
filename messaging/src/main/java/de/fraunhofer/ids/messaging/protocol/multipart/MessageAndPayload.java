@@ -18,6 +18,11 @@ import java.util.Optional;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 
+/**
+ * Interface for the MessageAndPayload.
+ * @param <M> The message.
+ * @param <T> The payload.
+ */
 public interface MessageAndPayload<M extends Message, T> {
 
     /**

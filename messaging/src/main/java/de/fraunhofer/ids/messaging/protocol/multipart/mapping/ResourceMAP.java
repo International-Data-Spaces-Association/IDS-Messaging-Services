@@ -20,6 +20,9 @@ import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the ResourceMAP.
+ */
 public class ResourceMAP implements MessageAndPayload<Message, Resource> {
 
     /**

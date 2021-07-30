@@ -20,6 +20,9 @@ import de.fraunhofer.iais.eis.Participant;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the ParticipantNotificationMAP.
+ */
 public class ParticipantNotificationMAP
         implements MessageAndPayload<Message, Participant> {
 

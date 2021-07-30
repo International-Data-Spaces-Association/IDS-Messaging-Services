@@ -19,6 +19,9 @@ import de.fraunhofer.iais.eis.ContractRejectionMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the ContractRejectionMessage.
+ */
 public class ContractRejectionMAP implements MessageAndPayload<ContractRejectionMessage, Void> {
 
     /**

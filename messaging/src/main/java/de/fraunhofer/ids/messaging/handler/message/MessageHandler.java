@@ -16,6 +16,10 @@ package de.fraunhofer.ids.messaging.handler.message;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.messaging.response.MessageResponse;
 
+/**
+ * Interface for implementing message handler for specific message types.
+ * @param <T>
+ */
 public interface MessageHandler<T extends Message> {
 
     /**

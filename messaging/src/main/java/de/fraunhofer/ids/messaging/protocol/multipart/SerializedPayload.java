@@ -19,6 +19,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Class providing the serialized payload.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

@@ -19,6 +19,9 @@ import de.fraunhofer.iais.eis.ParticipantRequestMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the ParticipantRequestMessage.
+ */
 public class ParticipantRequestMAP implements MessageAndPayload<ParticipantRequestMessage, Void> {
 
     /**

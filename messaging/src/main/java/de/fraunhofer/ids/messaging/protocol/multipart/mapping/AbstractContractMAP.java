@@ -21,7 +21,9 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 import lombok.Getter;
 
-
+/**
+ * Abstract MAP class representing the contract-messages.
+ */
 public abstract class AbstractContractMAP<M extends Message, C extends Contract>
         implements MessageAndPayload<Message, Contract> {
 

@@ -24,6 +24,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * MAP representing the SelfDescription.
+ */
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class InfrastructurePayloadMAP

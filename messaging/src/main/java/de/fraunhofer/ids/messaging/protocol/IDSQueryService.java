@@ -22,9 +22,6 @@ import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
-import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
-import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
@@ -36,6 +33,9 @@ import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 import lombok.NonNull;
 
+/**
+ * Interface for query services.
+ */
 public interface IDSQueryService extends IDSInfrastructureService {
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage}
@@ -51,10 +51,6 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @param queryTarget the type of IDS Components that are queried.
      *                    See {@link QueryTarget}
      * @return the response to the query request
-     * @throws ConnectorMissingCertExtensionException Exception while
-     * getting DAT from DAPS.
-     * @throws DapsConnectionException Exception while getting DAT from DAPS.
-     * @throws DapsEmptyResponseException Exception while getting DAT from DAPS.
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating
@@ -86,10 +82,6 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @param queryScope The Scope of the query.
      * @param queryTarget The target of the query.
      * @return The query result.
-     * @throws ConnectorMissingCertExtensionException Exception
-     * while getting DAT from DAPS.
-     * @throws DapsConnectionException Exception while getting DAT from DAPS.
-     * @throws DapsEmptyResponseException Exception while getting DAT from DAPS.
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating
@@ -122,10 +114,6 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @param limit Custom limit used in the query.
      * @param offset Custom offset used in the query.
      * @return The query result.
-     * @throws ConnectorMissingCertExtensionException Exception while
-     * getting DAT from DAPS.
-     * @throws DapsConnectionException Exception while getting DAT from DAPS.
-     * @throws DapsEmptyResponseException Exception while getting DAT from DAPS.
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating

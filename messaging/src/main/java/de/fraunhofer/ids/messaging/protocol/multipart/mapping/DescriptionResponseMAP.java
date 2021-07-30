@@ -20,6 +20,9 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 import lombok.AllArgsConstructor;
 
+/**
+ * MAP representing the DescriptionResponseMessage.
+ */
 @AllArgsConstructor
 public class DescriptionResponseMAP
         implements MessageAndPayload<DescriptionResponseMessage, String> {
