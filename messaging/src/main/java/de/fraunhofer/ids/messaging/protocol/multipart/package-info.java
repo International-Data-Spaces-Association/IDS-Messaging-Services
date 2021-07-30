@@ -11,4 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Package contains classes specifically for multipart functionalities.
+ */
 package de.fraunhofer.ids.messaging.protocol.multipart;
