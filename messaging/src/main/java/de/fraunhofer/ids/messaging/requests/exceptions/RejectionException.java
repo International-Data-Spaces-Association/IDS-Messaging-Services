@@ -16,6 +16,9 @@ package de.fraunhofer.ids.messaging.requests.exceptions;
 import de.fraunhofer.iais.eis.RejectionReason;
 import lombok.Getter;
 
+/**
+ * Exception which could be thrown upon receiving a rejection message.
+ */
 @Getter
 public class RejectionException extends IdsRequestException {
 

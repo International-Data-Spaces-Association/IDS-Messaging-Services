@@ -13,6 +13,9 @@
  */
 package de.fraunhofer.ids.messaging.protocol.multipart.parser;
 
+/**
+ * If the multipart message could not be parsed.
+ */
 public class MultipartParseException extends Exception {
     private static final long serialVersionUID = 42L;
 

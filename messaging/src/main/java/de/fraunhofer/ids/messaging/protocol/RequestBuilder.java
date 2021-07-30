@@ -20,6 +20,9 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import okhttp3.Request;
 
+/**
+ * Builders for request messages.
+ */
 public interface RequestBuilder {
     /**
      * @param message A Message from the IDS Infomation Model

@@ -16,6 +16,9 @@ package de.fraunhofer.ids.messaging.requests.exceptions;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import lombok.Getter;
 
+/**
+ * Exception which is thrown if payload is unexpected.
+ */
 @Getter
 public class UnexpectedPayloadException extends IdsRequestException {
 

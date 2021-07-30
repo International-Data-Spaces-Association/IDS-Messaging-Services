@@ -15,6 +15,9 @@ package de.fraunhofer.ids.messaging.protocol.multipart.parser;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Different data parts of a multipart message.
+ */
 @RequiredArgsConstructor
 public enum MultipartDatapart {
     /**
