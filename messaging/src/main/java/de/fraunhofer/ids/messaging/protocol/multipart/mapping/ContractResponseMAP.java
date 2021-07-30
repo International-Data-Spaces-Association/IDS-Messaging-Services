@@ -20,6 +20,9 @@ import de.fraunhofer.iais.eis.ContractOffer;
 import de.fraunhofer.iais.eis.ContractResponseMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the ContractResponseMessage.
+ */
 public class ContractResponseMAP
         extends AbstractContractMAP<ContractResponseMessage, ContractOffer> {
 

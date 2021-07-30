@@ -27,6 +27,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * MAP representing a generic message.
+ */
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class GenericMessageAndPayload implements MessageAndPayload<Message, Object> {

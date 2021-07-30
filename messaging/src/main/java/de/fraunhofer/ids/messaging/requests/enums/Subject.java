@@ -13,6 +13,9 @@
  */
 package de.fraunhofer.ids.messaging.requests.enums;
 
+/**
+ * All possible subject for the internal builders.
+ */
 public enum Subject {
 
     /**

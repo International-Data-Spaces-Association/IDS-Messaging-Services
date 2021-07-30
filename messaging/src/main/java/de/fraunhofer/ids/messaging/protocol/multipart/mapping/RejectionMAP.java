@@ -23,6 +23,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * MAP representing the RejectionMessage.
+ */
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class RejectionMAP implements MessageAndPayload<RejectionMessage, String> {

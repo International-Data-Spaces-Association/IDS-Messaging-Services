@@ -21,6 +21,9 @@ import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * MAP representing the QueryMessage.
+ */
 @RequiredArgsConstructor
 public class QueryMAP implements MessageAndPayload<QueryMessage, String> {
 

@@ -13,6 +13,9 @@
  */
 package de.fraunhofer.ids.messaging.util;
 
+/**
+ * Class containing the fulltext query template.
+ */
 public final class FullTextQueryTemplate {
     /**
      * Template for fulltext query search.

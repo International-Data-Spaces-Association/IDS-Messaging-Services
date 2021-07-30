@@ -38,6 +38,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Abstract infrastructureservice to request self descriptions.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public abstract class InfrastructureService  {

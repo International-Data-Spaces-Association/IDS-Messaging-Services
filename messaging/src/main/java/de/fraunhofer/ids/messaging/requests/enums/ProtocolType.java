@@ -13,6 +13,9 @@
  */
 package de.fraunhofer.ids.messaging.requests.enums;
 
+/**
+ * Supported protocol types.
+ */
 public enum ProtocolType {
     /**
      * ProtocolType choice: LDP (IDS-REST).

@@ -22,6 +22,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 
+/**
+ * MAP representing the ArtifactRequestMessage.
+ */
 @AllArgsConstructor
 public class ArtifactRequestMAP implements MessageAndPayload<ArtifactRequestMessage, Void> {
 

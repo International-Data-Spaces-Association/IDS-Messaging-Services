@@ -19,6 +19,9 @@ import de.fraunhofer.iais.eis.DescriptionRequestMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the DescriptionRequestMessage.
+ */
 public class DescriptionRequestMAP implements MessageAndPayload<DescriptionRequestMessage, Void> {
 
     /**

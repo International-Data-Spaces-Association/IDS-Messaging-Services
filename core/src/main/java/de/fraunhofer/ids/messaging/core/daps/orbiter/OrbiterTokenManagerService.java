@@ -82,7 +82,12 @@ public class OrbiterTokenManagerService implements TokenManagerService {
      * The default client registration URL.
      */
     private static final String CLIENT_REGISTRATION_URL
-            = "https://orbiter-daps-staging.truzzt.org/api/client/create";
+        = "https://orbiter-daps-staging.truzzt.org/api/client/create";
+
+    /**
+     * Used for reading all necessary bytes of the response.
+     */
+    private static final int BYTESINT = 0xFF;
 
     /**
      * The ClientProvider.
@@ -145,7 +150,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         var bytes = new byte[responseData.length()];
 
         for (var i = 0; i < responseData.length(); i++) {
-            bytes[i] = (byte) (((int) responseData.get(i)) & 0xFF);
+            bytes[i] = (byte) (((int) responseData.get(i)) & BYTESINT);
         }
 
         final var certFactory = CertificateFactory.getInstance("X.509");

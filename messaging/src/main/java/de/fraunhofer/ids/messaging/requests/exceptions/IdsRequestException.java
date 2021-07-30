@@ -13,6 +13,9 @@
  */
 package de.fraunhofer.ids.messaging.requests.exceptions;
 
+/**
+ * Exception for various cases e.g. no template found.
+ */
 public class IdsRequestException extends Exception {
 
     /**

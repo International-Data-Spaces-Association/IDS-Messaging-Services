@@ -51,6 +51,9 @@ import okhttp3.RequestBody;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Service class for communication to the ClearingHouse.
+ */
 @Slf4j
 @Component
 public class ClearingHouseService extends InfrastructureService
