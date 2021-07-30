@@ -19,6 +19,9 @@ All notable changes to this project will be documented in this file.
 ### Changes
 - The BrokerService now internally uses the Messaging-Module QueryService for building Query-Messages.
 
+### Miscellaneous
+- New Repo pipeline setup: New required checks to pass for PR - Checkstyle & License
+
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter 2.5.2 -> 2.5.3
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.2 -> 2.5.3
