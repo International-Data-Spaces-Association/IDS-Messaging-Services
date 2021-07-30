@@ -82,7 +82,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
      * The default client registration URL.
      */
     private static final String CLIENT_REGISTRATION_URL
-                                         = "https://orbiter-daps-staging.truzzt.org/api/client/create";
+        = "https://orbiter-daps-staging.truzzt.org/api/client/create";
 
     /**
      * Used for reading all necessary bytes of the response.
