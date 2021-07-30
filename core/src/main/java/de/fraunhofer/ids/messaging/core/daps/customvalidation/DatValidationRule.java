@@ -15,6 +15,9 @@ package de.fraunhofer.ids.messaging.core.daps.customvalidation;
 
 import io.jsonwebtoken.Claims;
 
+/**
+ * Interface for adding custom DAPS DAT validation rules.
+ */
 @FunctionalInterface
 public interface DatValidationRule {
     /**
