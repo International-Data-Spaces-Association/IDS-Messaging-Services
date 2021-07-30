@@ -13,6 +13,9 @@
  */
 package de.fraunhofer.ids.messaging.broker.util;
 
+/**
+ * Class links to the fulltext query template within the messaging module.
+ */
 public final class FullTextQueryTemplate {
     /**
      * Refers to the template for the fulltext query search.
