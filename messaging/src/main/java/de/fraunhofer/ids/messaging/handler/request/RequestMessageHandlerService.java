@@ -31,6 +31,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RequestMessageHandlerService implements RequestMessageHandler {
+
+    /**
+     * The ApplicationContext.
+     */
     private final ApplicationContext appContext;
 
     /**
@@ -67,7 +71,15 @@ public class RequestMessageHandlerService implements RequestMessageHandler {
     @Data
     @RequiredArgsConstructor
     private static class Tuple<K, V> {
+
+        /**
+         * Key of the tuple.
+         */
         private final K key;
+
+        /**
+         * Value of the tuple.
+         */
         private final V value;
     }
 }

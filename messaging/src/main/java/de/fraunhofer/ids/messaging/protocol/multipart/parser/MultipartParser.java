@@ -28,9 +28,20 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
  * Utility Class for parsing Multipart Maps from String responses.
  */
 public final class MultipartParser implements UploadContext {
+
+    /**
+     * The multipart body as string.
+     */
     private String postBody;
+
+    /**
+     * Boundary of the received message.
+     */
     private String boundary;
 
+    /**
+     * Parameters used to parse the response to a Map-Object.
+     */
     @Getter
     private Map<String, String> parameters = new ConcurrentHashMap<>();
 
@@ -38,8 +49,8 @@ public final class MultipartParser implements UploadContext {
      * Constructor for the MultipartStringParser used internally
      * to parse a multipart response to a Map<Partname, MessagePart>.
      *
-     * @param postBody a multipart response body as string
-     * @throws FileUploadException if there are problems reading/parsing the postBody.
+     * @param postBody A multipart response body as string.
+     * @throws FileUploadException If there are problems reading/parsing the postBody.
      */
     private MultipartParser(final String postBody)
             throws FileUploadException, MultipartParseException {
@@ -66,9 +77,9 @@ public final class MultipartParser implements UploadContext {
     /**
      * Convert a String from a multipart response to a Map with Partname/MessagePart.
      *
-     * @param postBody a multipart response body as string
-     * @return a Map from partname on content
-     * @throws MultipartParseException if there are problems reading/parsing the postBody.
+     * @param postBody A multipart response body as string.
+     * @return A Map from partname on content.
+     * @throws MultipartParseException If there are problems reading/parsing the postBody.
      */
     public static Map<String, String> stringToMultipart(final String postBody)
             throws MultipartParseException {

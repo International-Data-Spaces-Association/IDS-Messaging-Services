@@ -27,9 +27,15 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 public class MessagePayloadInputstream implements MessagePayload {
+    /**
+     * The complete raw InputStream.
+     */
     @Getter
-    private final InputStream  underlyingInputStream;
+    private final InputStream underlyingInputStream;
 
+    /**
+     * The ObjectMapper.
+     */
     private final ObjectMapper objectMapper;
 
     /**

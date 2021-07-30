@@ -28,6 +28,10 @@ import okhttp3.Request;
 
 @NoArgsConstructor
 public class MultipartRequestBuilder implements RequestBuilder {
+
+    /**
+     * The infomodel serializer.
+     */
     private static final Serializer SERIALIZER = new Serializer();
 
     /**

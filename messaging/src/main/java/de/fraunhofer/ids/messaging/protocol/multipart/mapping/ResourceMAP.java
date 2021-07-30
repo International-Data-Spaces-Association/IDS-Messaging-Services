@@ -21,14 +21,30 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
 public class ResourceMAP implements MessageAndPayload<Message, Resource> {
+
+    /**
+     * The message.
+     */
     private final Message  message;
 
+    /**
+     * The resource.
+     */
     private Resource resource;
 
+    /**
+     * Constructor for the ResourceMAP.
+     * @param m The messsage.
+     */
     public ResourceMAP(final Message m) {
         this.message = m;
     }
 
+    /**
+     * Constructor for the ResourceMAP.
+     * @param m The messsage.
+     * @param r The ressource.
+     */
     public ResourceMAP(final Message m, final Resource r) {
         this.message = m;
         resource = r;

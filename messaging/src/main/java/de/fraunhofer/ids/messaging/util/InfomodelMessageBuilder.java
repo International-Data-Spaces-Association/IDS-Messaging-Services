@@ -29,8 +29,15 @@ import okhttp3.RequestBody;
  * Multipart RequestBodies with RequestMessage header and String or File payload Part
  */
 public final class InfomodelMessageBuilder {
+
+    /**
+     * The infomodel serzializer.
+     */
     private static final Serializer SERIALIZER = new Serializer();
 
+    /**
+     * The MultipartBody builder.
+     */
     private final MultipartBody.Builder builder;
 
     /**

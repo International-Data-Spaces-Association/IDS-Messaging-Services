@@ -48,17 +48,55 @@ import org.springframework.core.io.ClassPathResource;
 @Getter
 public class KeyStoreManager {
 
+    /**
+     * The TrustStoreManager.
+     */
     @Setter
     private TrustStoreManager trustStoreManager = new TrustStoreManager();
 
+    /**
+     * The ConfigurationModel.
+     */
     private ConfigurationModel configurationModel;
+
+    /**
+     * The keystore.
+     */
     private KeyStore           keyStore;
+
+    /**
+     * The keystore password.
+     */
     private char[]             keyStorePw;
+
+    /**
+     * The alias.
+     */
     private String             keyAlias;
+
+    /**
+     * The truststore.
+     */
     private KeyStore           trustStore;
+
+    /**
+     * The truststore password.
+     */
     private char[]             trustStorePw;
+
+    /**
+     * The private key.
+     */
     private PrivateKey         privateKey;
+
+    /**
+     * The Certificate.
+     */
     private Certificate        cert;
+
+    /**
+     * The X509TrustManager.
+     */
     private X509TrustManager   trustManager;
 
     /**

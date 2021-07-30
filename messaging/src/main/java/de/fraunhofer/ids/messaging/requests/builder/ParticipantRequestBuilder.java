@@ -43,6 +43,9 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
         implements ExecutableBuilder<T>,
         SupportsMultipart<T, ParticipantRequestBuilder<T>> {
 
+    /**
+     * URI of the affected participant.
+     */
     private URI affectedParticipant;
 
     ParticipantRequestBuilder(

@@ -29,10 +29,16 @@ import org.jetbrains.annotations.NotNull;
 public class InfrastructurePayloadMAP
         implements MessageAndPayload<Message, InfrastructureComponent> {
 
+    /**
+     * The message.
+     */
     @Getter
     @NotNull
     private Message message;
 
+    /**
+     * The connector self descrition.
+     */
     private InfrastructureComponent connectorSelfDescription;
 
     /**

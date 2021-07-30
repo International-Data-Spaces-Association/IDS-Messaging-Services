@@ -23,9 +23,16 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class QueryMAP implements MessageAndPayload<QueryMessage, String> {
+
+    /**
+     * The complete query message.
+     */
     @Getter
     private final QueryMessage message;
 
+    /**
+     * The query string.
+     */
     private final String queryString;
 
     /**

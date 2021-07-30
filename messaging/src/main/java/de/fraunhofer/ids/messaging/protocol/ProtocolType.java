@@ -17,6 +17,14 @@ package de.fraunhofer.ids.messaging.protocol;
  * Supported Protocols for sending IDS messages.
  */
 public enum ProtocolType {
+
+    /**
+     * ProtocolType choice: IDS-REST (LDP).
+     */
     REST,
+
+    /**
+     * ProtocolType choice: Multipart.
+     */
     MULTIPART
 }

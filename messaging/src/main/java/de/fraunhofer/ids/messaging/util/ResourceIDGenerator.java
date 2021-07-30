@@ -21,6 +21,10 @@ import java.util.UUID;
  * Utility for generating Resource IDs for infomodel builders.
  */
 public final class ResourceIDGenerator {
+
+    /**
+     * Base autogen URL to use.
+     */
     private static final String URI_BASE = "https://w3id.org/idsa/autogen";
 
     private ResourceIDGenerator() { }

@@ -23,8 +23,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ResultMAP implements MessageAndPayload<ResultMessage, String> {
 
+    /**
+     * The ResultMessage.
+     */
     private final ResultMessage resultMessage;
-    private final String        queryResult;
+
+    /**
+     * The query result.
+     */
+    private final String queryResult;
 
     /**
      * {@inheritDoc}

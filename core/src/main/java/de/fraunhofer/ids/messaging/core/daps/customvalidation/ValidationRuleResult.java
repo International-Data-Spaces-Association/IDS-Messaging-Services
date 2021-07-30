@@ -24,7 +24,14 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class ValidationRuleResult {
 
+    /**
+     * True if validation was successful.
+     */
     private boolean success;
+
+    /**
+     * The ValidationRuleResult message.
+     */
     private String message;
 
     /**

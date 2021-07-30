@@ -45,8 +45,14 @@ public class ParticipantCertificateRequestBuilder<T>
         implements ExecutableBuilder<T>,
         SupportsMultipart<T, ParticipantCertificateRequestBuilder<T>> {
 
+    /**
+     * The affected participant.
+     */
     private URI affectedParticipant;
 
+    /**
+     * The revocation reason.
+     */
     private TypedLiteral revocationReason;
 
     ParticipantCertificateRequestBuilder(

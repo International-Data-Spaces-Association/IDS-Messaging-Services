@@ -67,15 +67,41 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "daps", name = "mode", havingValue = "orbiter")
 public class OrbiterTokenManagerService implements TokenManagerService {
+
+    /**
+     * The chosen keysize.
+     */
     public static final int KEYSIZE = 2048;
+
+    /**
+     * Seconds to subtract for issued at to avoid time problems.
+     */
     public static final int SECONDS_TO_SUBTRACT = 10;
+
+    /**
+     * The default client registration URL.
+     */
     private static final String CLIENT_REGISTRATION_URL
             = "https://orbiter-daps-staging.truzzt.org/api/client/create";
 
+    /**
+     * The ClientProvider.
+     */
     private final ClientProvider clientProvider;
 
+    /**
+     * The certifacte.
+     */
     private X509Certificate clientCert;
+
+    /**
+     * The generated keypair used.
+     */
     private KeyPair generatedKeyPair;
+
+    /**
+     * Client-ID for the request body.
+     */
     private String id;
 
     /**

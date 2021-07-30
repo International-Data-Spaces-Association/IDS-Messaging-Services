@@ -47,7 +47,15 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class RequestTemplateProvider {
+
+    /**
+     * The ConfigContainer.
+     */
     private final ConfigContainer container;
+
+    /**
+     * The DapsTokenProvider.
+     */
     private final DapsTokenProvider tokenProvider;
 
     /**

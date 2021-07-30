@@ -43,18 +43,44 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
-    private final ClientProvider      clientProvider;
+
+    /**
+     * The ClientProvider.
+     */
+    private final ClientProvider clientProvider;
+
+    /**
+     * The TokenManagerService.
+     */
     private final TokenManagerService tokenManagerService;
 
-    private String      currentJwt;
-    private List<Key>   publicKeys;
+    /**
+     * The current jwt.
+     */
+    private String currentJwt;
 
+    /**
+     * The public keys.
+     */
+    private List<Key> publicKeys;
+
+    /**
+     * The DAPS token URL.
+     */
     @Value("${daps.token.url}")
     private String dapsTokenUrl;
 
+    /**
+     * The Daps key url kid.
+     */
     @Value("#{${daps.key.url.kid}}")
     private Map<String, String> urlKidMap;
 
+    /**
+     * Constructor for TokenProviderService.
+     * @param clientProvider The ClientProvider.
+     * @param tokenManagerService The TokenManagerService.
+     */
     @Autowired
     public TokenProviderService(final ClientProvider clientProvider,
                                 final TokenManagerService tokenManagerService) {

@@ -20,11 +20,21 @@ import de.fraunhofer.ids.messaging.common.SerializeException;
 
 public interface MessageAndPayload<M extends Message, T> {
 
+    /**
+     * Get the message of the received response.
+     * @return The message.
+     */
     M getMessage();
+
+    /**
+     * Get the payload of the received response.
+     * @return The payload.
+     */
     Optional<T> getPayload();
 
     /**
      * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * @return The serzialized payload.
      */
     SerializedPayload serializePayload() throws SerializeException;
 }

@@ -41,14 +41,27 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class MessageService {
+
+    /**
+     * The IdsHttpService.
+     */
     private final IdsHttpService httpService;
 
+    /**
+     * The MultipartRequestBuilder.
+     */
     private final MultipartRequestBuilder multipartRequestBuilder
                             = new MultipartRequestBuilder();
 
+    /**
+     * The MultipartResponseConverter.
+     */
     private final MultipartResponseConverter multipartResponseConverter
                             = new MultipartResponseConverter();
 
+    /**
+     * The infomodel serializer.
+     */
     private final Serializer serializer = new Serializer();
 
     /**

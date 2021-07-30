@@ -45,8 +45,19 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
 public class QueryRequestBuilder<T> extends IdsRequestBuilder<T>
         implements ExecutableBuilder<T>, SupportsMultipart<T, QueryRequestBuilder<T>> {
 
+    /**
+     * The query language (sparql, xquery..).
+     */
     private QueryLanguage queryLanguage;
+
+    /**
+     * The query scope (active, inactive, all).
+     */
     private QueryScope queryScope;
+
+    /**
+     * The query target (all, broker..).
+     */
     private QueryTarget queryTarget;
 
     QueryRequestBuilder(

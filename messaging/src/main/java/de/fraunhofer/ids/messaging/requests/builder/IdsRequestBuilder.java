@@ -43,19 +43,53 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
  */
 public class IdsRequestBuilder<T> {
 
+    /**
+     * The MessageService.
+     */
     protected MessageService messageService;
+
+    /**
+     * The RequestTemplateProvider.
+     */
     protected RequestTemplateProvider requestTemplateProvider;
+
+    /**
+     * The NotificationTemplateProvider.
+     */
     protected NotificationTemplateProvider notificationTemplateProvider;
+
+    /**
+     * The chosen protocol type.
+     */
     protected ProtocolType protocolType;
+
+    /**
+     * The payload.
+     */
     protected Optional<Object> optPayload;
+
+    /**
+     * Expected Payload.
+     */
     protected Optional<Class<T>> expectedPayload;
+
+    /**
+     * Boolean of exception should be thrown upon receiving a RejectionMessage.
+     */
     protected boolean throwOnRejection;
+
+    /**
+     * The chosen CRUD operation.
+     */
     protected Crud operation;
 
     /**
      * IDS request, expecting payload of type 'expected'.
      *
-     * @param expected expected Type of payload
+     * @param expected Expected Type of payload.
+     * @param messageService The messageService.
+     * @param notificationTemplateProvider The NotificationTemplateProvider.
+     * @param requestTemplateProvider The RequestTemplateProvider.
      */
     IdsRequestBuilder(
             final Class<T> expected,
