@@ -183,7 +183,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
             <artifactId>java</artifactId>
-            <version>4.1.1</version>
+            <version>4.1.2</version>
         </dependency>
 
         <dependency>
