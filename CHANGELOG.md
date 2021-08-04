@@ -25,6 +25,16 @@ All notable changes to this project will be documented in this file.
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter 2.5.2 -> 2.5.3
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.2 -> 2.5.3
+- Upgrade: com.puppycrawl.tools:checkstyle 8.44 -> 8.45
+- Upgrade: de.fraunhofer.iais.eis.ids:interaction 4.1.1 -> 4.1.2
+- Upgrade: de.fraunhofer.iais.eis.ids:infomodel:java 4.1.1 -> 4.1.2
+- Upgrade: de.fraunhofer.iais.eis.ids:infomodel-serializer 4.1.1 -> 4.1.2
+- Upgrade: org.springframework.spring-webmvc 5.3.8 -> 5.3.9
+  
+### CVE Fixes: 
+
+- Exclude: commons-io 2.2 from commons-fileupload, replace with commons-io 2.11
+- Exclude: commons-compress 1.20 from interaction, replace with commons-compress 1.21
 
 ## Version [3.0.0] 2021-07-20
 
