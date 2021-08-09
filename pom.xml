@@ -55,7 +55,7 @@
     </licenses>
 
     <repositories>
-        <!-- Infomodel -->
+        <!-- Infomodel artifacts repository (java, serializer, interaction) -->
         <repository>
             <id>snapshots</id>
             <name>maven-snapshots</name>
@@ -64,6 +64,50 @@
     </repositories>
 
     <dependencies>
+        <!-- Java Mapping of the IDS Information Model Ontology -->
+        <!-- Infomodel artifact: java -->
+        <dependency>
+            <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
+            <artifactId>java</artifactId>
+            <version>4.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Infomodel artifact: serializer -->
+        <dependency>
+            <groupId>de.fraunhofer.iais.eis.ids</groupId>
+            <artifactId>infomodel-serializer</artifactId>
+            <version>4.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Infomodel artifact: interaction -->
+        <dependency>
+            <groupId>de.fraunhofer.iais.eis.ids</groupId>
+            <artifactId>interaction</artifactId>
+            <version>4.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-compress</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
         <!-- License: Apache License, Version 2.0 -->
         <dependency>
@@ -94,6 +138,8 @@
             </exclusions>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <!-- License: Apache License, Version 2.0 -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -191,54 +237,13 @@
             <version>5.3.9</version>
         </dependency>
 
-        <!-- Java Mapping of the IDS Information Model Ontology -->
-        <dependency>
-            <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
-            <artifactId>java</artifactId>
-            <version>4.1.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>de.fraunhofer.iais.eis.ids</groupId>
-            <artifactId>infomodel-serializer</artifactId>
-            <version>4.1.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>de.fraunhofer.iais.eis.ids</groupId>
-            <artifactId>interaction</artifactId>
-            <version>4.1.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.commons</groupId>
-                    <artifactId>commons-compress</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+        <!-- License: Apache License, Version 2.0 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.21</version>
         </dependency>
-
     </dependencies>
 
     <build>
