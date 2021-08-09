@@ -15,17 +15,13 @@ package de.fraunhofer.ids.messaging.core.daps.aisec;
 
 import java.io.IOException;
 import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
-import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.TokenManagerService;
@@ -39,16 +35,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-
-import static org.apache.commons.codec.binary.Hex.encodeHexString;
 
 /**
  * Manages Dynamic Attribute Tokens.
@@ -80,19 +70,6 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     private final ConfigContainer configContainer;
 
-    /***
-     * Beautyfies Hex strings and will generate a result later used to
-     * create the client id (XX:YY:ZZ).
-     *
-     * @param hexString HexString to be beautified
-     * @return beautifiedHex result
-     */
-    private static String beautifyHex(final String hexString) {
-        return Arrays.stream(hexString.split("(?<=\\G..)"))
-                     .map(s -> s + ":")
-                     .collect(Collectors.joining());
-    }
-
     /**
      * Get the DAT from the DAPS at dapsURL using the current configuration.
      *
@@ -103,9 +80,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     public String acquireToken(final String dapsUrl)
             throws
             DapsConnectionException,
-            DapsEmptyResponseException,
-            ConnectorMissingCertExtensionException {
-
+            DapsEmptyResponseException {
         final var keyStoreManager = configContainer.getKeyStoreManager();
         final var targetAudience = "idsc:IDS_CONNECTORS_ALL";
 
@@ -114,7 +89,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         // Try clause for setup phase (loading keys, building trust manager)
         try {
             final var privateKey = getPrivateKey(keyStoreManager);
-            final var connectorUUID = getConnectorUUID(keyStoreManager);
+            final var connectorUUID = keyStoreManager.getConnectorUUID();
 
             if (log.isInfoEnabled()) {
                 log.info("ConnectorUUID: " + connectorUUID);
@@ -148,32 +123,9 @@ public class AisecTokenManagerService implements TokenManagerService {
             handleIOException(e);
         } catch (DapsEmptyResponseException e) {
             handleDapsEmptyResponseException(e);
-        } catch (ConnectorMissingCertExtensionException e) {
-            handleConnectorMissingCertExtensionException();
         }
 
         return dynamicAttributeToken;
-    }
-
-    /**
-     * Handle exception if AKI or SKI of Certificate are not valid or missing.
-     *
-     * @throws ConnectorMissingCertExtensionException forwarded to the
-     * connector developer if AKI or SKI of Certificate are not
-     * valid or missing
-     */
-    private void handleConnectorMissingCertExtensionException()
-            throws ConnectorMissingCertExtensionException {
-        final var error = "Mandatorily required information of the connector "
-          + "certificate is missing (AKI/SKI)!";
-
-        if (configContainer.getConfigurationModel().getConnectorDeployMode()
-           != ConnectorDeployMode.TEST_DEPLOYMENT) {
-            printProductiveDeploymentError(error);
-            throw new ConnectorMissingCertExtensionException(error);
-        } else {
-            printTestDeploymentWarning(error);
-        }
     }
 
     /**
@@ -349,118 +301,11 @@ public class AisecTokenManagerService implements TokenManagerService {
                    .setNotBefore(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
     }
 
-    /**
-     * Generated the UUID of the Connector by giving the method only the KeyStoreManager.
-     *
-     * @param keyStoreManager The KeyStoremanager used to access the AKI and SKI of the Certificate
-     * @return The generated Connector-UUID
-     * @throws ConnectorMissingCertExtensionException Thrown if either AKI
-     * or SKI are not valid within the Connector-Certificate
-     */
-    @NotNull
-    private String getConnectorUUID(final KeyStoreManager keyStoreManager)
-            throws ConnectorMissingCertExtensionException {
-        final var certificate = getCertificate(keyStoreManager);
-        final var authorityKeyIdentifier = getCertificateAKI(certificate);
-        final var subjectKeyIdentifier = getCertificateSKI(certificate);
 
-        return generateConnectorUUID(authorityKeyIdentifier, subjectKeyIdentifier);
-    }
 
-    /**
-     * Generates the UUID of the Connector.
-     *
-     * @param authorityKeyIdentifier The Connector-Certificate AKI
-     * @param subjectKeyIdentifier   The Connector-Certificate SKI
-     * @return The generated UUID of the Connector
-     */
-    @NotNull
-    private String generateConnectorUUID(final byte[] authorityKeyIdentifier,
-                                         final byte[] subjectKeyIdentifier) {
-        final var akiResult = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
-        final var skiResult = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
 
-        return skiResult + "keyid:" + akiResult.substring(0, akiResult.length() - 1);
-    }
 
-    /**
-     * Get the SKI of the certificate.
-     *
-     * @param cert The X509Certificate-Certificate
-     * @return The SKI-KeyIdentifier of the certificate
-     * @throws ConnectorMissingCertExtensionException thrwon if SKI of certificateis empty
-     */
-    private byte[] getCertificateSKI(final X509Certificate cert)
-            throws ConnectorMissingCertExtensionException {
-        if (log.isDebugEnabled()) {
-            log.debug("Get SKI from certificate");
-        }
 
-        final var skiOid = Extension.subjectKeyIdentifier.getId();
-        final var rawSubjectKeyIdentifier = cert.getExtensionValue(skiOid);
-
-        if (rawSubjectKeyIdentifier == null) {
-            throw new ConnectorMissingCertExtensionException(
-                    "SKI of the Connector Certificate is null!");
-        }
-
-        final var ski0c = ASN1OctetString.getInstance(rawSubjectKeyIdentifier);
-        final var ski = SubjectKeyIdentifier.getInstance(ski0c.getOctets());
-
-        return ski.getKeyIdentifier();
-    }
-
-    /**
-     * Get the AKI of the certificate.
-     *
-     * @param cert The X509Certificate-Certificate
-     * @return The AKI-KeyIdentifier of the Certificate
-     * @throws ConnectorMissingCertExtensionException thrown if AKI of certificate is empty
-     */
-    private byte[] getCertificateAKI(final X509Certificate cert)
-            throws ConnectorMissingCertExtensionException {
-        if (log.isDebugEnabled()) {
-            log.debug("Get AKI from certificate");
-        }
-
-        final var akiOid = Extension.authorityKeyIdentifier.getId();
-        final var rawAuthorityKeyIdentifier = cert.getExtensionValue(akiOid);
-
-        checkEmptyRawAKI(rawAuthorityKeyIdentifier); //can throw exception
-
-        final var akiOc = ASN1OctetString.getInstance(rawAuthorityKeyIdentifier);
-        final var aki = AuthorityKeyIdentifier.getInstance(akiOc.getOctets());
-
-        return aki.getKeyIdentifier();
-    }
-
-    /**
-     * Checks if AKI is empty.
-     *
-     * @param rawAuthorityKeyIdentifier The AKI to check
-     * @throws ConnectorMissingCertExtensionException thrown if AKI of certificate is null
-     */
-    private void checkEmptyRawAKI(final byte[] rawAuthorityKeyIdentifier)
-            throws ConnectorMissingCertExtensionException {
-        if (rawAuthorityKeyIdentifier == null) {
-            throw new ConnectorMissingCertExtensionException(
-                    "AKI of the Connector Certificate is null!");
-        }
-    }
-
-    /**
-     * Getting Certificate from KeyStoreManager.
-     *
-     * @param keyStoreManager The KeyStoreManager holding the Certificate
-     * @return The Certificate of the KeyStoreManager
-     */
-    private X509Certificate getCertificate(final KeyStoreManager keyStoreManager) {
-        if (log.isDebugEnabled()) {
-            log.debug("Getting Certificate from KeyStoreManager");
-        }
-
-        return (X509Certificate) keyStoreManager.getCert();
-    }
 
     /**
      * Getting PrivateKey from KeyStoreManager.

@@ -31,15 +31,24 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
+import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.ClassPathResource;
+
+import static org.apache.commons.codec.binary.Hex.encodeHexString;
 
 /**
  * The KeyStoreManager loads the IDSKeyStore and provides the TrustManager.
@@ -100,6 +109,11 @@ public class KeyStoreManager {
     private X509TrustManager trustManager;
 
     /**
+     * The Connector UUID.
+     */
+    private String connectorUUID;
+
+    /**
      * Build the KeyStoreManager from the given configuration.
      *
      * @param configurationModel A ConfigurationModel.
@@ -127,6 +141,10 @@ public class KeyStoreManager {
                "Could not initialize Key/Truststore: password is incorrect!");
         } catch (KeyStoreException e) {
             throwKeyStoreInitException(e, "Initialization of Key- or Truststore failed!");
+        } catch (ConnectorMissingCertExtensionException e) {
+                throwKeyStoreInitException(e, "Connector UUID cannot be determined! "
+                      + "Mandatorily required information of the connector "
+                      + "certificate is missing (AKI/SKI)! ");
         }
     }
 
@@ -157,7 +175,8 @@ public class KeyStoreManager {
             IOException,
             KeyStoreException,
             UnrecoverableKeyException,
-            KeyStoreManagerInitializationException {
+            KeyStoreManagerInitializationException,
+            ConnectorMissingCertExtensionException {
         this.configurationModel = configurationModel;
         this.keyStorePw = keystorePw;
         this.trustStorePw = trustStorePw;
@@ -167,6 +186,7 @@ public class KeyStoreManager {
         createTrustStore(configurationModel, trustStorePw);
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
+        generateConnectorUUID();
     }
 
     private void initTrustManager(final char... trustStorePw)
@@ -372,5 +392,120 @@ public class KeyStoreManager {
             this.privateKey = (PrivateKey) key;
             this.cert = keyStore.getCertificate(keyAlias);
         }
+    }
+
+    /**
+     * Generated the UUID of the Connector by giving the method only the KeyStoreManager.
+     *
+     * @throws KeyStoreException Generic Keystore exception.
+     * @throws ConnectorMissingCertExtensionException Thrwon if SKI of certificateis empty.
+     */
+    public void generateConnectorUUID()
+            throws KeyStoreException, ConnectorMissingCertExtensionException {
+        final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
+        final var authorityKeyIdentifier = getCertificateAKI(certificate);
+        final var subjectKeyIdentifier = getCertificateSKI(certificate);
+
+        final var connectorUUID = generateConnectorUUID(authorityKeyIdentifier, subjectKeyIdentifier);
+
+        if (log.isInfoEnabled()) {
+            log.info("Connector UUID: " + connectorUUID);
+        }
+
+        this.connectorUUID = connectorUUID;
+    }
+
+    /**
+     * Get the SKI of the certificate.
+     *
+     * @param cert The X509Certificate-Certificate.
+     * @return The SKI-KeyIdentifier of the certificate.
+     * @throws ConnectorMissingCertExtensionException Thrwon if SKI of certificateis empty.
+     */
+    private byte[] getCertificateSKI(final X509Certificate cert)
+            throws ConnectorMissingCertExtensionException {
+        if (log.isDebugEnabled()) {
+            log.debug("Get SKI from certificate");
+        }
+
+        final var skiOid = Extension.subjectKeyIdentifier.getId();
+        final var rawSubjectKeyIdentifier = cert.getExtensionValue(skiOid);
+
+        if (rawSubjectKeyIdentifier == null) {
+            throw new ConnectorMissingCertExtensionException(
+                    "SKI of the Connector Certificate is null!");
+        }
+
+        final var ski0c = ASN1OctetString.getInstance(rawSubjectKeyIdentifier);
+        final var ski = SubjectKeyIdentifier.getInstance(ski0c.getOctets());
+
+        return ski.getKeyIdentifier();
+    }
+
+    /**
+     * Get the AKI of the certificate.
+     *
+     * @param cert The X509Certificate-Certificate.
+     * @return The AKI-KeyIdentifier of the Certificate.
+     * @throws ConnectorMissingCertExtensionException Thrown if AKI of certificate is empty.
+     */
+    private byte[] getCertificateAKI(final X509Certificate cert)
+            throws ConnectorMissingCertExtensionException {
+        if (log.isDebugEnabled()) {
+            log.debug("Get AKI from certificate");
+        }
+
+        final var akiOid = Extension.authorityKeyIdentifier.getId();
+        final var rawAuthorityKeyIdentifier = cert.getExtensionValue(akiOid);
+
+        checkEmptyRawAKI(rawAuthorityKeyIdentifier); //can throw exception
+
+        final var akiOc = ASN1OctetString.getInstance(rawAuthorityKeyIdentifier);
+        final var aki = AuthorityKeyIdentifier.getInstance(akiOc.getOctets());
+
+        return aki.getKeyIdentifier();
+    }
+
+    /**
+     * Checks if AKI is empty.
+     *
+     * @param rawAuthorityKeyIdentifier The AKI to check.
+     * @throws ConnectorMissingCertExtensionException Thrown if AKI of certificate is null.
+     */
+    private void checkEmptyRawAKI(final byte[] rawAuthorityKeyIdentifier)
+            throws ConnectorMissingCertExtensionException {
+        if (rawAuthorityKeyIdentifier == null) {
+            throw new ConnectorMissingCertExtensionException(
+                    "AKI of the Connector Certificate is null!");
+        }
+    }
+
+    /**
+     * Generates the UUID of the Connector.
+     *
+     * @param authorityKeyIdentifier The Connector-Certificate AKI.
+     * @param subjectKeyIdentifier The Connector-Certificate SKI.
+     * @return The generated UUID of the Connector.
+     */
+    @NotNull
+    private String generateConnectorUUID(final byte[] authorityKeyIdentifier,
+                                         final byte[] subjectKeyIdentifier) {
+        final var akiResult = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
+        final var skiResult = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
+
+        return skiResult + "keyid:" + akiResult.substring(0, akiResult.length() - 1);
+    }
+
+    /**
+     * Beautyfies Hex strings and will generate a result later used to
+     * create the client id (XX:YY:ZZ).
+     *
+     * @param hexString HexString to be beautified
+     * @return beautifiedHex result
+     */
+    private static String beautifyHex(final String hexString) {
+        return Arrays.stream(hexString.split("(?<=\\G..)"))
+                     .map(s -> s + ":")
+                     .collect(Collectors.joining());
     }
 }
