@@ -62,51 +62,52 @@ public class KeyStoreManager {
     /**
      * The keystore.
      */
-    private KeyStore           keyStore;
+    private KeyStore keyStore;
 
     /**
      * The keystore password.
      */
-    private char[]             keyStorePw;
+    private char[] keyStorePw;
 
     /**
      * The alias.
      */
-    private String             keyAlias;
+    private String keyAlias;
 
     /**
      * The truststore.
      */
-    private KeyStore           trustStore;
+    private KeyStore trustStore;
 
     /**
      * The truststore password.
      */
-    private char[]             trustStorePw;
+    private char[] trustStorePw;
 
     /**
      * The private key.
      */
-    private PrivateKey         privateKey;
+    private PrivateKey privateKey;
 
     /**
      * The Certificate.
      */
-    private Certificate        cert;
+    private Certificate cert;
 
     /**
      * The X509TrustManager.
      */
-    private X509TrustManager   trustManager;
+    private X509TrustManager trustManager;
 
     /**
      * Build the KeyStoreManager from the given configuration.
      *
-     * @param configurationModel a ConfigurationModel
-     * @param keystorePw         the password for the IDSKeyStore
-     * @param trustStorePw       the password for the IDSTrustStore
-     * @param keyAlias           the alias of the IDS PrivateKey
-     * @throws KeyStoreManagerInitializationException when the KeyStoreManager cannot be initialized
+     * @param configurationModel A ConfigurationModel.
+     * @param keystorePw The password for the IDSKeyStore.
+     * @param trustStorePw The password for the IDSTrustStore.
+     * @param keyAlias The alias of the IDS PrivateKey.
+     * @throws KeyStoreManagerInitializationException When the KeyStoreManager
+     * cannot be initialized.
      */
     public KeyStoreManager(final ConfigurationModel configurationModel,
                            final char[] keystorePw,
