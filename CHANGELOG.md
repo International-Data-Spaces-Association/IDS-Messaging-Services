@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [3.1.0] UNRELEASED
+## Version [3.1.0] 2021-08-09
 
 ### Infomodel Maintenance (Patch Change)
 - Used Dependency Version: 4.1.2 (released 2021-07-30)
