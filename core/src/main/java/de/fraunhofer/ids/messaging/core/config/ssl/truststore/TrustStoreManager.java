@@ -44,7 +44,8 @@ public class TrustStoreManager {
 
         if (myTrustManager != null) {
             if (log.isInfoEnabled()) {
-                log.info("Custom TrustStore specified, creating merged TrustManager with JRE-TrustManager.");
+                log.info("Custom TrustStore specified, creating merged"
+                         + " TrustManager with JRE-TrustManager.");
             }
             return createMergedTrustManager(jreTrustManager, myTrustManager);
         } else {
