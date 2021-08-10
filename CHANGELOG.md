@@ -9,6 +9,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [3.1.1] UNRELEASED
+
+### Dependency Maintenance (Patch Change)
+- Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1
+
 ## Version [3.1.0] 2021-08-09
 
 ### Infomodel Maintenance (Patch Change)
