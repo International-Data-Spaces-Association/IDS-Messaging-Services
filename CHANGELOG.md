@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 - If no valid connector certificate is available, but for example a test certificate which has no SKI and AKI infos, a default UUID is set, in which all digits are 0.
 - Default Connector UUID when using invalid certificate: 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:keyid:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
 - If no connector UUID can be determined by the KeyStoreManager, the following message is output in the logs in addition to the default connector UUID: ERROR Connector UUID could not be generated because connector certificate is missing AKI and SKI infos! Will be required for DAPS communication. Possible Reason: You are not using a connector certificate provided by the DAPS (e.g. a generic testing certificate). Using default Connector UUID instead.
-- The connector UUID can be retrieved by the connector developer at any time after initialization of the KeyStoreManager via static call **ConnectorUUIDProvider.ConnertorUUID**, which returns as a string the current connector UUID, regardless of whether it contains the default value or a valid connector UUID.
+- The connector UUID can be retrieved by the connector developer at any time after initialization of the KeyStoreManager via static call **ConnectorUUIDProvider.connertorUUID**, which returns as a string the current connector UUID, regardless of whether it contains the default value or a valid connector UUID.
 - Whether a valid connector UUID could be generated can be determined at any time via the static boolean query **ConnectorUUIDProvider.validUUID**.
 
 ### Changes (Patch change)

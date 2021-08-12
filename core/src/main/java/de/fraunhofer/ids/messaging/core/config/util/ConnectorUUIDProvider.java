@@ -14,9 +14,25 @@
 package de.fraunhofer.ids.messaging.core.config.util;
 
 public final class ConnectorUUIDProvider {
-    public static String ConnertorUUID = "00:00:00:00:00:00:00:00:00:00:00:00:"
+    /**
+     * The Connector UUID generated during the initialization of the KeyStoreManager,
+     * which is required for the connection to the DAPS. Generated using information from
+     * the connector certificate, for which AKI and SKI in the connector certificate are required
+     * for successful generation. If an invalid certificate is present, it remains with a default
+     * connector UUID, where all numbers are 0.
+     */
+    public static String connertorUUID = "00:00:00:00:00:00:00:00:00:00:00:00:"
          + "00:00:00:00:00:00:00:00:keyid:00:00:00:00:00:00:00:00:00:00:00:00:"
          + "00:00:00:00:00:00:00:00";
 
+    /**
+     * This boolean value allows to query if during the initialization of the KeyStoreManager
+     * the connector UUID could be generated successfully or if it is probably the default#
+     * connector UUID. True if connector UUID could be generated.
+     */
     public static boolean validUUID = false;
+
+    private ConnectorUUIDProvider() {
+        //Nothing to do here.
+    }
 }

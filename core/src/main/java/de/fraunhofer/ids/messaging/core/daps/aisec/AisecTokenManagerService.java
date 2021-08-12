@@ -90,7 +90,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         // Try clause for setup phase (loading keys, building trust manager)
         try {
             final var privateKey = getPrivateKey(keyStoreManager);
-            final var connectorUUID = ConnectorUUIDProvider.ConnertorUUID;
+            final var connectorUUID = ConnectorUUIDProvider.connertorUUID;
 
             if (log.isInfoEnabled()) {
                 log.info("ConnectorUUID: " + connectorUUID);

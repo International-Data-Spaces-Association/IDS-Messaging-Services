@@ -153,7 +153,7 @@ public class KeyStoreManager {
         }
 
         if (log.isInfoEnabled()) {
-            log.info("Connector UUID: " + ConnectorUUIDProvider.ConnertorUUID);
+            log.info("Connector UUID: " + ConnectorUUIDProvider.connertorUUID);
         }
     }
 
@@ -420,7 +420,7 @@ public class KeyStoreManager {
         this.connectorUUID = connectorUUID;
 
         //also make connector UUID available per getter
-        ConnectorUUIDProvider.ConnertorUUID = connectorUUID;
+        ConnectorUUIDProvider.connertorUUID = connectorUUID;
         ConnectorUUIDProvider.validUUID = true;
     }
 
