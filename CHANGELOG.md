@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ### Connector UUID accessible for connector developers (Minor Change)
 - New Feature: **ConnectorUUIDProvider.connectorUUID** now returns the Subject CN of the connector certificate, which can be understood as a unique and constant connector UUID
+- If there is no valid UUID in the connector certificate, a random UUID will be generated as connector UUID, which will be regenerated each time the KeyStoreManager is reinitialized.
 
 ### Printed Log Changes (Patch change)
 - Changes in printed warning/error logs
