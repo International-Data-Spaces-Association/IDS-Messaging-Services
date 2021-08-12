@@ -407,7 +407,7 @@ public class KeyStoreManager {
      * Generated the UUID of the Connector by giving the method only the KeyStoreManager.
      *
      * @throws KeyStoreException Generic Keystore exception.
-     * @throws ConnectorMissingCertExtensionException Thrwon if SKI of certificateis empty.
+     * @throws ConnectorMissingCertExtensionException Thrown if AKI or SKI of certificate is empty.
      */
     private void generateConnectorUUID()
             throws KeyStoreException, ConnectorMissingCertExtensionException {

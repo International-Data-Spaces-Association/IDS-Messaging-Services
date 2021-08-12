@@ -106,7 +106,6 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     @Override
     public DynamicAttributeToken getDAT()
             throws
-            ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException {
         return new DynamicAttributeTokenBuilder()
@@ -123,7 +122,6 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     @Override
     public String provideDapsToken()
             throws
-            ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException {
         if (this.currentJwt == null || isExpired(currentJwt)) {

@@ -12,8 +12,9 @@ All notable changes to this project will be documented in this file.
 ## Version [4.0.0] UNRELEASED
 
 ### Connector UUID is now accessible by connector developers (Major Change)
-- Major change: ConnectorMissingCertExtensionException is no longer thrown by the AisecTokenManagerService
+- Major change: ConnectorMissingCertExtensionException is no longer thrown by the AisecTokenManagerService and TokenProviderService
 - Background: The generation of the Connector UUID using infos from the connector certificate is now no longer located at the functionality to call the DAPS to get a new DAT, but instead now directly in the KeyStoreManager at the startup of the library.
+- The KeyStoreManager is handling the ConnectorMissingCertExtensionException internally instead.
 - Important: Since the connector UUID is generated from the SKI and AKI of the connector certificate, valid certificates from the DAPS must be used and not test certificates in order to determine a valid connector UUID.
 - If no valid connector certificate is available, but for example a test certificate which has no SKI and AKI infos, a default UUID is set, in which all digits are 0.
 - Default Connector UUID when using invalid certificate: 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:keyid:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00

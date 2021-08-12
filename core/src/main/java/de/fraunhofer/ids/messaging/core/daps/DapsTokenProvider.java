@@ -27,7 +27,6 @@ public interface DapsTokenProvider {
      * @return the Daps Token of the Connector
      */
     String provideDapsToken() throws
-            ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException;
 
@@ -37,7 +36,6 @@ public interface DapsTokenProvider {
      * @return DynamicAttributeToken from the DAPS JWT
      */
     DynamicAttributeToken getDAT() throws
-            ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException;
 }

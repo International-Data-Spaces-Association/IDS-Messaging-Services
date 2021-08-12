@@ -17,7 +17,6 @@ import java.net.URI;
 import java.time.Duration;
 
 import de.fraunhofer.iais.eis.ConnectorDeployMode;
-import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.aisec.AisecTokenManagerService;
@@ -71,7 +70,7 @@ class ConfigProducerTest {
     }
 
     @Test
-    void testProvider() throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
+    void testProvider() throws DapsConnectionException, DapsEmptyResponseException {
         final var tokenManagerService = new AisecTokenManagerService(clientProvider, configContainer);
         assertEquals("INVALID_TOKEN", tokenManagerService.acquireToken("https://daps.aisec.fraunhofer.de/v2/token"));
 
