@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file.
 ### Dependency Maintenance (Patch Change)
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1
 
+# Changes (Patch change)
+- Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occured only in TEST_DEPLOYMENT
+
 ## Version [3.1.0] 2021-08-09
 
 ### Infomodel Maintenance (Patch Change)
