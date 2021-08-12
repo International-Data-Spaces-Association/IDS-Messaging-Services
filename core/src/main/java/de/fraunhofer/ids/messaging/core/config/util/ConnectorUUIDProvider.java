@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.core.config.util;
 
+/**
+ * This class provides the retrieval of the connector UUID, which is important for the
+ * communication with the DAPS and is generated from the AKI and SKI of the connector certificate.
+ */
 public final class ConnectorUUIDProvider {
     /**
      * The Connector UUID generated during the initialization of the KeyStoreManager,
@@ -27,7 +31,7 @@ public final class ConnectorUUIDProvider {
 
     /**
      * This boolean value allows to query if during the initialization of the KeyStoreManager
-     * the connector UUID could be generated successfully or if it is probably the default#
+     * the connector UUID could be generated successfully or if it is probably the default
      * connector UUID. True if connector UUID could be generated.
      */
     public static boolean validUUID = false;

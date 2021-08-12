@@ -415,11 +415,15 @@ public class KeyStoreManager {
         final var authorityKeyIdentifier = getCertificateAKI(certificate);
         final var subjectKeyIdentifier = getCertificateSKI(certificate);
 
-        final var connectorUUID = generateConnectorUUID(authorityKeyIdentifier, subjectKeyIdentifier);
+        final var connectorUUID = generateConnectorUUID(
+                authorityKeyIdentifier,
+                subjectKeyIdentifier);
 
         this.connectorUUID = connectorUUID;
 
         //also make connector UUID available per getter
+        //if connector certificate was not valid, this code will never be reached
+        //ConnectorMissingCertExtensionException will be thrown before
         ConnectorUUIDProvider.connertorUUID = connectorUUID;
         ConnectorUUIDProvider.validUUID = true;
     }
