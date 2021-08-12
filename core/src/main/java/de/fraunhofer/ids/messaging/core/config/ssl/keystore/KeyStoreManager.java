@@ -411,9 +411,8 @@ public class KeyStoreManager {
     private void getConnectorUUID() {
         try {
             final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
-
-            X500Name x500name = new JcaX509CertificateHolder(certificate).getSubject();
-            RDN cn = x500name.getRDNs(BCStyle.CN)[0];
+            final var x500name = new JcaX509CertificateHolder(certificate).getSubject();
+            final var cn = x500name.getRDNs(BCStyle.CN)[0];
 
             ConnectorUUIDProvider.connectorUUID
                     = UUID.fromString(IETFUtils.valueToString(cn.getFirst().getValue()));
