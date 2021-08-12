@@ -9,16 +9,25 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [3.1.1] UNRELEASED
+## Version [4.0.0] UNRELEASED
 
-### Dependency Maintenance (Patch Change)
-- Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1
+### Connector UUID is now accessible by connector developers (Major Change)
+- Major change: ConnectorMissingCertExtensionException is no longer thrown by the AisecTokenManagerService
+- Background: The generation of the Connector UUID using infos from the connector certificate is now no longer located at the functionality to call the DAPS to get a new DAT, but instead now directly in the KeyStoreManager at the startup of the library.
+- Important: Since the connector UUID is generated from the SKI and AKI of the connector certificate, valid certificates from the DAPS must be used and not test certificates in order to determine a valid connector UUID.
+- If no valid connector certificate is available, but for example a test certificate which has no SKI and AKI infos, a default UUID is set, in which all digits are 0.
+- Default Connector UUID when using invalid certificate: 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:keyid:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+- If no connector UUID can be determined by the KeyStoreManager, the following message is output in the logs in addition to the default connector UUID: ERROR Connector UUID could not be generated because connector certificate is missing AKI and SKI infos! Will be required for DAPS communication. Possible Reason: You are not using a connector certificate provided by the DAPS (e.g. a generic testing certificate). Using default Connector UUID instead.
+- The connector UUID can be retrieved by the connector developer at any time after initialization of the KeyStoreManager via static call **ConnectorUUIDProvider.ConnertorUUID**, which returns as a string the current connector UUID, regardless of whether it contains the default value or a valid connector UUID.
 
 ### Changes (Patch change)
 - Changes in printed warning/error logs
   - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
   - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
   - Adjusted error message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" and appended "Are you using a valid IDS-Certificate issued by the DAPS or a testing certificate?"
+
+### Dependency Maintenance (Patch Change)
+- Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1
 
 ## Version [3.1.0] 2021-08-09
 
