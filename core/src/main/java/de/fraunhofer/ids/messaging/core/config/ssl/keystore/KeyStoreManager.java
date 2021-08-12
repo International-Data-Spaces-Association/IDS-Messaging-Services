@@ -145,15 +145,11 @@ public class KeyStoreManager {
         } catch (ConnectorMissingCertExtensionException e) {
             if (log.isErrorEnabled()) {
                 log.error("Connector UUID could not be generated because connector certificate is "
-                          + "missing AKI and SKI! Will be required for DAPS communication. "
+                          + "missing AKI or SKI! Will be required for DAPS communication. "
                           + "Possible Reason: You are not using a connector "
                           + "certificate provided by the DAPS (e.g. a generic testing "
-                          + "certificate). Using default Connector UUID instead.");
+                          + "certificate).");
             }
-        }
-
-        if (log.isInfoEnabled()) {
-            log.info("Connector UUID: " + ConnectorUUIDProvider.connectorUUID);
         }
     }
 
