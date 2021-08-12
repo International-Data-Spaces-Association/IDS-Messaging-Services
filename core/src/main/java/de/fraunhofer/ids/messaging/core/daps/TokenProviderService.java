@@ -23,10 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
+import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
@@ -55,6 +57,11 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private final TokenManagerService tokenManagerService;
 
     /**
+     * The ConfigContainer.
+     */
+    private final ConfigContainer configContainer;
+
+    /**
      * The current jwt.
      */
     private String currentJwt;
@@ -80,12 +87,15 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * Constructor for TokenProviderService.
      * @param clientProvider The ClientProvider.
      * @param tokenManagerService The TokenManagerService.
+     * @param configContainer The ConfigContainer.
      */
     @Autowired
     public TokenProviderService(final ClientProvider clientProvider,
-                                final TokenManagerService tokenManagerService) {
+                                final TokenManagerService tokenManagerService,
+                                final ConfigContainer configContainer) {
         this.clientProvider = clientProvider;
         this.tokenManagerService = tokenManagerService;
+        this.configContainer = configContainer;
     }
 
     /**
@@ -208,8 +218,10 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         try {
             claims = DapsValidator.getClaims(token, this.publicKeys).getBody();
         } catch (ClaimsException e) {
-            if (log.isWarnEnabled()) {
-                log.warn("Could not parse jwt!");
+            if (configContainer.getConfigurationModel().getConnectorDeployMode()
+                != ConnectorDeployMode.TEST_DEPLOYMENT
+                && log.isWarnEnabled()) {
+                    log.warn("Could not parse JWT! Treat JWT as having expired.");
             }
 
             return true;
