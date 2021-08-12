@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 - Changes in printed warning/error logs
   - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
   - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
-  - Log message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" is now written in connection with the KeyStoreManager and the connector UUID generation with different wording and more details and no longer at the AisecTokenManagerService  
+  - Log message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" is now written in connection with the KeyStoreManager and the connector fingerprint generation with different wording and more details and no longer at the AisecTokenManagerService  
 
 ### Dependency Maintenance (Patch Change)
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1
