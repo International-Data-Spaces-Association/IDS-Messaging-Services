@@ -91,9 +91,7 @@ public class DapsValidator {
                            .setSigningKey(signingKey)
                            .parseClaimsJws(tokenValue);
             } catch (Exception e) {
-                if (log.isErrorEnabled()) {
-                    log.error(e.getMessage());
-                }
+                //nothing to do, exception is thrown below
             }
         }
 

@@ -303,12 +303,6 @@ public class AisecTokenManagerService implements TokenManagerService {
                    .setNotBefore(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
     }
 
-
-
-
-
-
-
     /**
      * Getting PrivateKey from KeyStoreManager.
      *

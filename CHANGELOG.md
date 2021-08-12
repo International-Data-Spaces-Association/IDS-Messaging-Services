@@ -9,7 +9,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [3.1.0] UNRELEASED
+## Version [3.1.1] UNRELEASED
+
+### Dependency Maintenance (Patch Change)
+- Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1
+
+### Changes (Patch change)
+- Changes in printed warning/error logs
+  - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
+  - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
+  - Adjusted error message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" and appended "Are you using a valid IDS-Certificate issued by the DAPS or a testing certificate?"
+
+## Version [3.1.0] 2021-08-09
 
 ### Infomodel Maintenance (Patch Change)
 - Used Dependency Version: 4.1.2 (released 2021-07-30)
