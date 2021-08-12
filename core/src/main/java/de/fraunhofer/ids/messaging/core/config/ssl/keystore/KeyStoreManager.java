@@ -421,6 +421,7 @@ public class KeyStoreManager {
 
         //also make connector UUID available per getter
         ConnectorUUIDProvider.ConnertorUUID = connectorUUID;
+        ConnectorUUIDProvider.validUUID = true;
     }
 
     /**
