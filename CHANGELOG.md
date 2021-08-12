@@ -22,11 +22,11 @@ All notable changes to this project will be documented in this file.
 - The connector UUID can be retrieved by the connector developer at any time after initialization of the KeyStoreManager via static call **ConnectorUUIDProvider.connectorUUID**, which returns as a string the current connector UUID, regardless of whether it contains the default value or a valid connector UUID.
 - Whether a valid connector UUID could be generated can be determined at any time via the static boolean query **ConnectorUUIDProvider.validUUID**.
 
-### Changes (Patch change)
+### Printed Log Changes (Patch change)
 - Changes in printed warning/error logs
   - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
   - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
-  - Adjusted error message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" and appended "Are you using a valid IDS-Certificate issued by the DAPS or a testing certificate?"
+  - Log message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" is now written in connection with the KeyStoreManager and the connector UUID generation with different wording and more details and no longer at the AisecTokenManagerService  
 
 ### Dependency Maintenance (Patch Change)
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1
