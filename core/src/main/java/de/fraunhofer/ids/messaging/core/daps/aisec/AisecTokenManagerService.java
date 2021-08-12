@@ -22,6 +22,7 @@ import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
+import de.fraunhofer.ids.messaging.core.config.util.ConnectorUUIDProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.TokenManagerService;
@@ -89,7 +90,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         // Try clause for setup phase (loading keys, building trust manager)
         try {
             final var privateKey = getPrivateKey(keyStoreManager);
-            final var connectorUUID = keyStoreManager.getConnectorUUID();
+            final var connectorUUID = ConnectorUUIDProvider.ConnertorUUID;
 
             if (log.isInfoEnabled()) {
                 log.info("ConnectorUUID: " + connectorUUID);
@@ -159,7 +160,8 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     private void handleIOException(final IOException e) throws DapsConnectionException {
         final var error = String.format("Error connecting to DAPS "
-            + "(possibly currently not reachable or wrong DAPS-URL): %s",
+            + "(not reachable, wrong DAPS-URL or no valid Connector UUID "
+            + "(valid connector certificate?)): %s",
             e.getMessage());
 
         if (configContainer.getConfigurationModel().getConnectorDeployMode()

@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 - Used Dependency Version: 4.1.2 (released 2021-07-30)
 - Used Artifacts: java, infomodel-serializer, interaction
 
-### Added Features (Minor change)
+### Added Features (Minor Change)
 - Service-Module for AppStore communication (AppStoreService)
 - Service-Module for ParIS communication (ParisService)
 - Service-Module for Vocol communication (VocolService)

@@ -36,6 +36,7 @@ import java.util.stream.IntStream;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
+import de.fraunhofer.ids.messaging.core.config.util.ConnectorUUIDProvider;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import lombok.Getter;
 import lombok.Setter;
@@ -142,9 +143,17 @@ public class KeyStoreManager {
         } catch (KeyStoreException e) {
             throwKeyStoreInitException(e, "Initialization of Key- or Truststore failed!");
         } catch (ConnectorMissingCertExtensionException e) {
-                throwKeyStoreInitException(e, "Connector UUID cannot be determined! "
-                      + "Mandatorily required information of the connector "
-                      + "certificate is missing (AKI/SKI)! ");
+            if (log.isErrorEnabled()) {
+                log.error("Connector UUID could not be generated because connector certificate is "
+                          + "missing AKI and SKI! Will be required for DAPS communication. "
+                          + "Possible Reason: You are not using a connector "
+                          + "certificate provided by the DAPS (e.g. a generic testing "
+                          + "certificate). Using default Connector UUID instead.");
+            }
+        }
+
+        if (log.isInfoEnabled()) {
+            log.info("Connector UUID: " + ConnectorUUIDProvider.ConnertorUUID);
         }
     }
 
@@ -400,7 +409,7 @@ public class KeyStoreManager {
      * @throws KeyStoreException Generic Keystore exception.
      * @throws ConnectorMissingCertExtensionException Thrwon if SKI of certificateis empty.
      */
-    public void generateConnectorUUID()
+    private void generateConnectorUUID()
             throws KeyStoreException, ConnectorMissingCertExtensionException {
         final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
         final var authorityKeyIdentifier = getCertificateAKI(certificate);
@@ -408,11 +417,10 @@ public class KeyStoreManager {
 
         final var connectorUUID = generateConnectorUUID(authorityKeyIdentifier, subjectKeyIdentifier);
 
-        if (log.isInfoEnabled()) {
-            log.info("Connector UUID: " + connectorUUID);
-        }
-
         this.connectorUUID = connectorUUID;
+
+        //also make connector UUID available per getter
+        ConnectorUUIDProvider.ConnertorUUID = connectorUUID;
     }
 
     /**
