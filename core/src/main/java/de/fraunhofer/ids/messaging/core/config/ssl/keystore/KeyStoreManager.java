@@ -27,7 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -409,10 +408,10 @@ public class KeyStoreManager {
         }
     }
 
-    private void getConnectorUUID() throws KeyStoreException, CertificateEncodingException {
-        final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
-
+    private void getConnectorUUID() {
         try {
+            final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
+
             X500Name x500name = new JcaX509CertificateHolder(certificate).getSubject();
             RDN cn = x500name.getRDNs(BCStyle.CN)[0];
 
