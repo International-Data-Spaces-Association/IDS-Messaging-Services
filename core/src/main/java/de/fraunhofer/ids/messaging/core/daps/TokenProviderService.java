@@ -219,9 +219,9 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
             claims = DapsValidator.getClaims(token, this.publicKeys).getBody();
         } catch (ClaimsException e) {
             if (configContainer.getConfigurationModel().getConnectorDeployMode()
-                != ConnectorDeployMode.TEST_DEPLOYMENT)
-            if (log.isWarnEnabled()) {
-                log.warn("Could not parse JWT! Treat JWT as having expired.");
+                != ConnectorDeployMode.TEST_DEPLOYMENT
+                && log.isWarnEnabled()) {
+                    log.warn("Could not parse JWT! Treat JWT as having expired.");
             }
 
             return true;
