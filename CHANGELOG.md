@@ -16,6 +16,9 @@ All notable changes to this project will be documented in this file.
 - Background: The generation of the complete connector fingerprint using AKI and SKI from the connector certificate was moved to the KeyStoreManager to do it only once at the startup of the Messaging-Services instead of generating it each time before connecting to DAPS.
 - The KeyStoreManager is handling the ConnectorMissingCertExtensionException internally instead now.
 
+### Connector UUID accessible for connector developers (Minor Change)
+- New Feature: **ConnectorUUIDProvider.connectorUUID** now returns the Subject CN of the connector certificate, which can be understood as a unique and constant connector UUID
+
 ### Printed Log Changes (Patch change)
 - Changes in printed warning/error logs
   - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion

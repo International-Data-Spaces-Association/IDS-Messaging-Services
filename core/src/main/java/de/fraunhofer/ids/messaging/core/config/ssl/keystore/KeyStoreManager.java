@@ -27,24 +27,32 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
 import de.fraunhofer.ids.messaging.core.config.util.ConnectorFingerprintHandler;
+import de.fraunhofer.ids.messaging.core.config.util.ConnectorUUIDProvider;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.ClassPathResource;
@@ -193,6 +201,7 @@ public class KeyStoreManager {
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
         getConnectorFingerprint();
+        getConnectorUUID();
     }
 
     private void initTrustManager(final char... trustStorePw)
@@ -397,6 +406,29 @@ public class KeyStoreManager {
             }
             this.privateKey = (PrivateKey) key;
             this.cert = keyStore.getCertificate(keyAlias);
+        }
+    }
+
+    private void getConnectorUUID() throws KeyStoreException, CertificateEncodingException {
+        final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
+
+        X500Name x500name = new JcaX509CertificateHolder(certificate).getSubject();
+        RDN cn = x500name.getRDNs(BCStyle.CN)[0];
+
+        try {
+            ConnectorUUIDProvider.connectorUUID
+                    = UUID.fromString(IETFUtils.valueToString(cn.getFirst().getValue()));
+
+            if (log.isInfoEnabled()) {
+                log.info("Connector Certifacte CN Subject (connector UUID): "
+                         + ConnectorUUIDProvider.connectorUUID);
+            }
+        } catch(IllegalArgumentException e) {
+            if (log.isWarnEnabled()) {
+                log.warn("The connector certificate doesn't include a valid subject CN UUID: "
+                         + IETFUtils.valueToString(cn.getFirst().getValue())
+                         + " Random connector UUID will be used instead.");
+            }
         }
     }
 
