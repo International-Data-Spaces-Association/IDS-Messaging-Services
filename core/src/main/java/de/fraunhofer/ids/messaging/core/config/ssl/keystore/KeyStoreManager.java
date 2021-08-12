@@ -423,7 +423,7 @@ public class KeyStoreManager {
                 log.info("Connector Certifacte CN Subject (connector UUID): "
                          + ConnectorUUIDProvider.connectorUUID);
             }
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             if (log.isWarnEnabled()) {
                 log.warn("The connector certificate doesn't include a valid subject CN UUID: "
                          + IETFUtils.valueToString(cn.getFirst().getValue())
