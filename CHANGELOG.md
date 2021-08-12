@@ -15,7 +15,8 @@ All notable changes to this project will be documented in this file.
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1
 
 # Changes (Patch change)
-- Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occured only in TEST_DEPLOYMENT
+- Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT
+- Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
 
 ## Version [3.1.0] 2021-08-09
 
