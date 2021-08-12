@@ -22,9 +22,10 @@ public final class ConnectorFingerprintHandler {
      * The connector fingerprint generated during the initialization of the KeyStoreManager,
      * which is required for the connection to the DAPS. Generated using information from
      * the connector certificate, for which AKI and SKI in the connector certificate are required
-     * for successful generation.
+     * for successful generation. If connector certificate is invalid, the connector fingerprint
+     * can not be generated and will be the default INVALID_FINGERPRINT.
      */
-    public static String connectorFingerprint;
+    public static String connectorFingerprint = "INVALID_FINGERPRINT";
 
     private ConnectorFingerprintHandler() {
         //Nothing to do here.
