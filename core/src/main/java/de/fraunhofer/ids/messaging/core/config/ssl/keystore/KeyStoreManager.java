@@ -412,22 +412,23 @@ public class KeyStoreManager {
     private void getConnectorUUID() throws KeyStoreException, CertificateEncodingException {
         final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
 
-        X500Name x500name = new JcaX509CertificateHolder(certificate).getSubject();
-        RDN cn = x500name.getRDNs(BCStyle.CN)[0];
-
         try {
+            X500Name x500name = new JcaX509CertificateHolder(certificate).getSubject();
+            RDN cn = x500name.getRDNs(BCStyle.CN)[0];
+
             ConnectorUUIDProvider.connectorUUID
                     = UUID.fromString(IETFUtils.valueToString(cn.getFirst().getValue()));
 
             if (log.isInfoEnabled()) {
-                log.info("Connector Certifacte CN Subject (connector UUID): "
+                log.info("Connector Certificate CN Subject (connector UUID): "
                          + ConnectorUUIDProvider.connectorUUID);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             if (log.isWarnEnabled()) {
-                log.warn("The connector certificate doesn't include a valid subject CN UUID: "
-                         + IETFUtils.valueToString(cn.getFirst().getValue())
-                         + " Random connector UUID will be used instead.");
+                log.warn("The connector certificate doesn't include a valid subject CN UUID!"
+                         + " Random connector UUID will be generated instead."
+                         + " Possible Reason: You are using a test-certificate which was not"
+                         + " issued by the DAPS.");
             }
         }
     }
