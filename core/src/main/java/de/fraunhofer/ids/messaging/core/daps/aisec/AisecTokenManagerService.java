@@ -22,7 +22,7 @@ import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.config.ssl.keystore.KeyStoreManager;
-import de.fraunhofer.ids.messaging.core.config.util.ConnectorUUIDProvider;
+import de.fraunhofer.ids.messaging.core.config.util.ConnectorFingerprintHandler;
 import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.TokenManagerService;
@@ -90,14 +90,13 @@ public class AisecTokenManagerService implements TokenManagerService {
         // Try clause for setup phase (loading keys, building trust manager)
         try {
             final var privateKey = getPrivateKey(keyStoreManager);
-            final var connectorUUID = ConnectorUUIDProvider.connectorUUID;
+            final var connectorFingerprint = ConnectorFingerprintHandler.connectorFingerprint;
 
             if (log.isInfoEnabled()) {
-                log.info("ConnectorUUID: " + connectorUUID);
                 log.info("Retrieving Dynamic Attribute Token...");
             }
 
-            final var jws = getRequestToken(targetAudience, privateKey, connectorUUID);
+            final var jws = getRequestToken(targetAudience, privateKey, connectorFingerprint);
 
             // build form body to embed client assertion into post request
             final var formBody = getFormBody(jws);
@@ -160,7 +159,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     private void handleIOException(final IOException e) throws DapsConnectionException {
         final var error = String.format("Error connecting to DAPS "
-            + "(not reachable, wrong DAPS-URL or no valid Connector UUID "
+            + "(wrong DAPS-URL or no valid Connector fingerprint "
             + "(valid connector certificate?)): %s",
             e.getMessage());
 
@@ -259,20 +258,20 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Get the signed(!) request token.
      *
-     * @param targetAudience The target audience
-     * @param privateKey     the private key of the keystore
-     * @param connectorUUID  the UUID of the Connector
-     * @return The signed request token
+     * @param targetAudience The target audience.
+     * @param privateKey The private key of the keystore.
+     * @param connectorFingerprint  The fingerprint of the Connector.
+     * @return The signed request token.
      */
     private String getRequestToken(final String targetAudience,
                                    final PrivateKey privateKey,
-                                   final String connectorUUID) {
+                                   final String connectorFingerprint) {
         if (log.isDebugEnabled()) {
             log.debug("Building jwt token");
         }
 
         final var expiryDate = Date.from(Instant.now().plusSeconds(ONE_DAY_IN_SECONDS));
-        final var jwtb = getJwtBuilder(targetAudience, connectorUUID, expiryDate);
+        final var jwtb = getJwtBuilder(targetAudience, connectorFingerprint, expiryDate);
 
         if (log.isDebugEnabled()) {
             log.debug("Signing jwt token");
@@ -284,17 +283,17 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Get the JWT Builder.
      *
-     * @param targetAudience The targetAudience
-     * @param connectorUUID  The UUID of the Connector
-     * @param expiryDate     The set expiry date
-     * @return The JWT-Builder
+     * @param targetAudience The targetAudience.
+     * @param connectorFingerprint The fingerprint of the Connector.
+     * @param expiryDate The set expiry date.
+     * @return The JWT-Builder.
      */
     private JwtBuilder getJwtBuilder(final String targetAudience,
-                                     final String connectorUUID,
+                                     final String connectorFingerprint,
                                      final Date expiryDate) {
         return Jwts.builder()
-                   .setIssuer(connectorUUID)
-                   .setSubject(connectorUUID)
+                   .setIssuer(connectorFingerprint)
+                   .setSubject(connectorFingerprint)
                    .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
                    .claim("@type", "ids:DatRequestToken")
                    .setExpiration(expiryDate)

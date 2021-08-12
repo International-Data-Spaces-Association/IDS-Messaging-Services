@@ -14,29 +14,19 @@
 package de.fraunhofer.ids.messaging.core.config.util;
 
 /**
- * This class provides the retrieval of the connector UUID, which is important for the
+ * This class provides the the connector fingerprint, which is important for the
  * communication with the DAPS and is generated from the AKI and SKI of the connector certificate.
  */
-public final class ConnectorUUIDProvider {
+public final class ConnectorFingerprintHandler {
     /**
-     * The Connector UUID generated during the initialization of the KeyStoreManager,
+     * The connector fingerprint generated during the initialization of the KeyStoreManager,
      * which is required for the connection to the DAPS. Generated using information from
      * the connector certificate, for which AKI and SKI in the connector certificate are required
-     * for successful generation. If an invalid certificate is present, it remains with a default
-     * connector UUID, where all numbers are 0.
+     * for successful generation.
      */
-    public static String connectorUUID = "00:00:00:00:00:00:00:00:00:00:00:00:"
-         + "00:00:00:00:00:00:00:00:keyid:00:00:00:00:00:00:00:00:00:00:00:00:"
-         + "00:00:00:00:00:00:00:00";
+    public static String connectorFingerprint;
 
-    /**
-     * This boolean value allows to query if during the initialization of the KeyStoreManager
-     * the connector UUID could be generated successfully or if it is probably the default
-     * connector UUID. True if connector UUID could be generated.
-     */
-    public static boolean validUUID = false;
-
-    private ConnectorUUIDProvider() {
+    private ConnectorFingerprintHandler() {
         //Nothing to do here.
     }
 }

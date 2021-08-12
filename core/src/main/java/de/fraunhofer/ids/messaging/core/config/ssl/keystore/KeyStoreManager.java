@@ -36,7 +36,7 @@ import java.util.stream.IntStream;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
-import de.fraunhofer.ids.messaging.core.config.util.ConnectorUUIDProvider;
+import de.fraunhofer.ids.messaging.core.config.util.ConnectorFingerprintHandler;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import lombok.Getter;
 import lombok.Setter;
@@ -110,9 +110,9 @@ public class KeyStoreManager {
     private X509TrustManager trustManager;
 
     /**
-     * The Connector UUID.
+     * The connector fingerprint needed for DAPS communication.
      */
-    private String connectorUUID;
+    private String connectorFingerprint;
 
     /**
      * Build the KeyStoreManager from the given configuration.
@@ -143,12 +143,13 @@ public class KeyStoreManager {
         } catch (KeyStoreException e) {
             throwKeyStoreInitException(e, "Initialization of Key- or Truststore failed!");
         } catch (ConnectorMissingCertExtensionException e) {
-            if (log.isErrorEnabled()) {
-                log.error("Connector UUID could not be generated because connector certificate is "
-                          + "missing AKI or SKI! Will be required for DAPS communication. "
+            if (log.isWarnEnabled()) {
+                log.warn("Connector fingerprint could not be generated because connector"
+                          + " certificate is missing AKI or SKI! Will be required for DAPS"
+                          + " communication to acquire DAT! "
                           + "Possible Reason: You are not using a connector "
                           + "certificate provided by the DAPS (e.g. a generic testing "
-                          + "certificate).");
+                          + "certificate). Can be ignored in TEST_DEPLOYMENT.");
             }
         }
     }
@@ -191,7 +192,7 @@ public class KeyStoreManager {
         createTrustStore(configurationModel, trustStorePw);
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
-        generateConnectorUUID();
+        getConnectorFingerprint();
     }
 
     private void initTrustManager(final char... trustStorePw)
@@ -400,28 +401,23 @@ public class KeyStoreManager {
     }
 
     /**
-     * Generated the UUID of the Connector by giving the method only the KeyStoreManager.
+     * Generated the fingerprint of the Connector by giving the method only the KeyStoreManager.
      *
      * @throws KeyStoreException Generic Keystore exception.
      * @throws ConnectorMissingCertExtensionException Thrown if AKI or SKI of certificate is empty.
      */
-    private void generateConnectorUUID()
+    private void getConnectorFingerprint()
             throws KeyStoreException, ConnectorMissingCertExtensionException {
         final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
         final var authorityKeyIdentifier = getCertificateAKI(certificate);
         final var subjectKeyIdentifier = getCertificateSKI(certificate);
 
-        final var connectorUUID = generateConnectorUUID(
+        final var connectorFingerprint = getConnectorFingerprint(
                 authorityKeyIdentifier,
                 subjectKeyIdentifier);
 
-        this.connectorUUID = connectorUUID;
-
-        //also make connector UUID available per getter
-        //if connector certificate was not valid, this code will never be reached
-        //ConnectorMissingCertExtensionException will be thrown before
-        ConnectorUUIDProvider.connectorUUID = connectorUUID;
-        ConnectorUUIDProvider.validUUID = true;
+        this.connectorFingerprint = connectorFingerprint;
+        ConnectorFingerprintHandler.connectorFingerprint = connectorFingerprint;
     }
 
     /**
@@ -490,15 +486,15 @@ public class KeyStoreManager {
     }
 
     /**
-     * Generates the UUID of the Connector.
+     * Generates the fingerprint of the Connector.
      *
      * @param authorityKeyIdentifier The Connector-Certificate AKI.
      * @param subjectKeyIdentifier The Connector-Certificate SKI.
-     * @return The generated UUID of the Connector.
+     * @return The generated fingerprint of the Connector.
      */
     @NotNull
-    private String generateConnectorUUID(final byte[] authorityKeyIdentifier,
-                                         final byte[] subjectKeyIdentifier) {
+    private String getConnectorFingerprint(final byte[] authorityKeyIdentifier,
+                                           final byte[] subjectKeyIdentifier) {
         final var akiResult = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
         final var skiResult = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
 
