@@ -92,7 +92,7 @@ public class ClientProvider {
 
         if (connector.getConnectorDeployMode() == ConnectorDeployMode.PRODUCTIVE_DEPLOYMENT) {
             if (log.isDebugEnabled()) {
-                log.debug("Productive Deployment, use Trustmanager vrom KeyStoreManager");
+                log.debug("Productive Deployment, use Trustmanager from KeyStoreManager");
             }
 
             setSSLSocketFactory(manager, okHttpBuilder);

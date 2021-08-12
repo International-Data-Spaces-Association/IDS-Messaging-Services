@@ -57,7 +57,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     public static final int ONE_DAY_IN_SECONDS  = 86_400;
 
     /**
-     * Seconds to substract for the issued at value.
+     * Seconds to subtract for the issued at value.
      */
     public static final int SECONDS_TO_SUBTRACT = 10;
 
@@ -90,7 +90,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         // Try clause for setup phase (loading keys, building trust manager)
         try {
             final var privateKey = getPrivateKey(keyStoreManager);
-            final var connectorUUID = ConnectorUUIDProvider.connertorUUID;
+            final var connectorUUID = ConnectorUUIDProvider.connectorUUID;
 
             if (log.isInfoEnabled()) {
                 log.info("ConnectorUUID: " + connectorUUID);
@@ -132,9 +132,9 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Handle exception if DAPS returned an empty response.
      *
-     * @param e the thrown excpetion
-     * @throws DapsEmptyResponseException forwarded exception to the connector
-     * developer if DAPS returned an empty response
+     * @param e The thrown exception.
+     * @throws DapsEmptyResponseException Forwarded exception to the connector
+     * developer if DAPS returned an empty response.
      */
     private void handleDapsEmptyResponseException(
             final DapsEmptyResponseException e)
@@ -155,8 +155,8 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Handle exception if connection to DAPS failed.
      *
-     * @param e the thrwon IOException
-     * @throws DapsConnectionException mapped exception, thworn if connection to DAPS failed
+     * @param e The thrown IOException,
+     * @throws DapsConnectionException Mapped exception, thrown if connection to DAPS failed.
      */
     private void handleIOException(final IOException e) throws DapsConnectionException {
         final var error = String.format("Error connecting to DAPS "

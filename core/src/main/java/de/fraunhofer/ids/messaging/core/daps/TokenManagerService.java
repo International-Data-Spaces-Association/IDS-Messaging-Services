@@ -14,7 +14,7 @@
 package de.fraunhofer.ids.messaging.core.daps;
 
 /**
- * Interface for TokenManagerService to aquire a DAPS DAT.
+ * Interface for TokenManagerService to acquire a DAPS DAT.
  */
 public interface TokenManagerService {
 

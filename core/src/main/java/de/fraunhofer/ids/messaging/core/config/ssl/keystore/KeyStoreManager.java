@@ -153,7 +153,7 @@ public class KeyStoreManager {
         }
 
         if (log.isInfoEnabled()) {
-            log.info("Connector UUID: " + ConnectorUUIDProvider.connertorUUID);
+            log.info("Connector UUID: " + ConnectorUUIDProvider.connectorUUID);
         }
     }
 
@@ -424,7 +424,7 @@ public class KeyStoreManager {
         //also make connector UUID available per getter
         //if connector certificate was not valid, this code will never be reached
         //ConnectorMissingCertExtensionException will be thrown before
-        ConnectorUUIDProvider.connertorUUID = connectorUUID;
+        ConnectorUUIDProvider.connectorUUID = connectorUUID;
         ConnectorUUIDProvider.validUUID = true;
     }
 
@@ -433,7 +433,7 @@ public class KeyStoreManager {
      *
      * @param cert The X509Certificate-Certificate.
      * @return The SKI-KeyIdentifier of the certificate.
-     * @throws ConnectorMissingCertExtensionException Thrwon if SKI of certificateis empty.
+     * @throws ConnectorMissingCertExtensionException Thrown if SKI of certificate is empty.
      */
     private byte[] getCertificateSKI(final X509Certificate cert)
             throws ConnectorMissingCertExtensionException {
@@ -510,7 +510,7 @@ public class KeyStoreManager {
     }
 
     /**
-     * Beautyfies Hex strings and will generate a result later used to
+     * Beautifies Hex strings and will generate a result later used to
      * create the client id (XX:YY:ZZ).
      *
      * @param hexString HexString to be beautified

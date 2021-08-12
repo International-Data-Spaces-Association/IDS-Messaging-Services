@@ -90,7 +90,7 @@ In general, the core-module artifact is the main module artifact with the config
 
 The individual module-artifacts of the IDS-Infrastructure-Components in turn require functionalities of the messaging-module artifact and have it therefore linked as a dependency in each module case. This simplified architecture means that it is sufficient, for example, to integrate the broker-module artifact into the project's pom, which automatically makes the functionalities of the messaging- and thus also the core-module artifact available.
 
-So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Broker occurs as IDS-Infrastructure-Component, the following entry in the project's pom is completely sufficient as dependcies to get all needed functionalities to exchange messages with the IDS-Broker with advanced functionalities, without the need to use the full-module:
+So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Broker occurs as IDS-Infrastructure-Component, the following entry in the project's pom is completely sufficient as dependencies to get all needed functionalities to exchange messages with the IDS-Broker with advanced functionalities, without the need to use the full-module:
 
 ```xml
 <dependency>

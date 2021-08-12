@@ -25,7 +25,7 @@ public final class ConnectorUUIDProvider {
      * for successful generation. If an invalid certificate is present, it remains with a default
      * connector UUID, where all numbers are 0.
      */
-    public static String connertorUUID = "00:00:00:00:00:00:00:00:00:00:00:00:"
+    public static String connectorUUID = "00:00:00:00:00:00:00:00:00:00:00:00:"
          + "00:00:00:00:00:00:00:00:keyid:00:00:00:00:00:00:00:00:00:00:00:00:"
          + "00:00:00:00:00:00:00:00";
 

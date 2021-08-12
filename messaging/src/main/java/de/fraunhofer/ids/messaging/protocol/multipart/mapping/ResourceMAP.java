@@ -45,8 +45,8 @@ public class ResourceMAP implements MessageAndPayload<Message, Resource> {
 
     /**
      * Constructor for the ResourceMAP.
-     * @param m The messsage.
-     * @param r The ressource.
+     * @param m The message.
+     * @param r The resource.
      */
     public ResourceMAP(final Message m, final Resource r) {
         this.message = m;
