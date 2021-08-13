@@ -198,7 +198,7 @@ public class KeyStoreManager {
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
         getConnectorFingerprint();
-        getConnectorUUID();
+        getConnectorCertSubjectCn();
     }
 
     private void initTrustManager(final char... trustStorePw)
@@ -406,7 +406,7 @@ public class KeyStoreManager {
         }
     }
 
-    private void getConnectorUUID() {
+    private void getConnectorCertSubjectCn() {
         try {
             final var certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
             final var x500name = new JcaX509CertificateHolder(certificate).getSubject();
@@ -414,15 +414,10 @@ public class KeyStoreManager {
 
             ConnectorCertSubjectCNProvider.certSubjectCnUUID
                     = UUID.fromString(IETFUtils.valueToString(cn.getFirst().getValue()));
-
-            if (log.isInfoEnabled()) {
-                log.info("Connector Certificate CN Subject (connector UUID): "
-                         + ConnectorCertSubjectCNProvider.certSubjectCnUUID);
-            }
         } catch (Exception e) {
             if (log.isWarnEnabled()) {
                 log.warn("The connector certificate doesn't include a valid subject CN UUID!"
-                         + " Random connector UUID will be generated instead."
+                         + " Random UUID will be generated instead and provided as subject CN UUID."
                          + " Possible Reason: You are using a test-certificate which was not"
                          + " issued by the DAPS.");
             }
