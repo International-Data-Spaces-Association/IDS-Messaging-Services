@@ -197,8 +197,8 @@ public class KeyStoreManager {
         createTrustStore(configurationModel, trustStorePw);
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
-        getConnectorFingerprint();
-        getConnectorCertSubjectCn();
+        getConnectorFingerprint(); //requires valid connector certificate
+        getConnectorCertSubjectCn(); //requires valid connector certificate
     }
 
     private void initTrustManager(final char... trustStorePw)
