@@ -38,7 +38,7 @@ import java.util.stream.IntStream;
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
 import de.fraunhofer.ids.messaging.core.config.util.ConnectorFingerprintHandler;
-import de.fraunhofer.ids.messaging.core.config.util.ConnectorUUIDProvider;
+import de.fraunhofer.ids.messaging.core.config.util.ConnectorCertSubjectCNProvider;
 import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import lombok.Getter;
 import lombok.Setter;
@@ -412,12 +412,12 @@ public class KeyStoreManager {
             final var x500name = new JcaX509CertificateHolder(certificate).getSubject();
             final var cn = x500name.getRDNs(BCStyle.CN)[0];
 
-            ConnectorUUIDProvider.connectorUUID
+            ConnectorCertSubjectCNProvider.certSubjectCnUUID
                     = UUID.fromString(IETFUtils.valueToString(cn.getFirst().getValue()));
 
             if (log.isInfoEnabled()) {
                 log.info("Connector Certificate CN Subject (connector UUID): "
-                         + ConnectorUUIDProvider.connectorUUID);
+                         + ConnectorCertSubjectCNProvider.certSubjectCnUUID);
             }
         } catch (Exception e) {
             if (log.isWarnEnabled()) {

@@ -16,18 +16,17 @@ package de.fraunhofer.ids.messaging.core.config.util;
 import java.util.UUID;
 
 /**
- * This class provides the the connector UUID, which is imported from the
- * connector certificate.
+ * This class provides the the connector certificate subject CN. Can be used as unique connector-ID.
  */
-public final class ConnectorUUIDProvider {
+public final class ConnectorCertSubjectCNProvider {
     /**
-     * The connector UUID set during the initialization of the KeyStoreManager.
-     * If connector certificate is invalid, the connector UUID
+     * The UUID is set during the initialization of the KeyStoreManager.
+     * If connector certificate is invalid, the UUID
      * will be initialized as a random UUID.
      */
-    public static UUID connectorUUID = UUID.randomUUID();
+    public static UUID certSubjectCnUUID = UUID.randomUUID();
 
-    private ConnectorUUIDProvider() {
+    private ConnectorCertSubjectCNProvider() {
         //Nothing to do here.
     }
 }

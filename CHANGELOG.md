@@ -18,9 +18,11 @@ All notable changes to this project will be documented in this file.
 ### Used infomodel artifact versions can now be queried (Minor Change)
 - New Feature: **InfomodelArtifactsVersionProvider** in core module now offers the possibility to query the versions of the used artifact dependencies (java, serializer, interaction) and returns them as string (e.g. "4.1.2"). Can for example be used to automatically set the current OutBoundModelVersion of the connector.
 
-### Connector UUID accessible for connector developers (Minor Change)
-- New Feature: **ConnectorUUIDProvider.connectorUUID** now returns the Subject CN of the connector certificate, which can be understood as a unique and constant connector UUID
-- If there is no valid UUID in the connector certificate, a random UUID will be generated as connector UUID, which will be regenerated each time the KeyStoreManager is reinitialized.
+### The Subject CN of the connector certificate is now available for the connector developer (Minor Change)
+- New Feature: **ConnectorCertSubjectCNProvider.certSubjectCnUUID** now returns the Subject CN of the connector certificate.
+- Depending on the implementation of the connector that relies on the IDS-Messaging-Services, this UUID could be used as the Connector-ID.
+- If there is no valid UUID in the connector certificate, a random UUID will be generated, which will be regenerated each time the KeyStoreManager is reinitialized.
+- This is an optional feature, it is up to the connector developer to either use this UUID or something else as the unique Connector-ID.
 
 ### Printed Log Changes (Patch change)
 - Changes in printed warning/error logs
