@@ -16,6 +16,9 @@ All notable changes to this project will be documented in this file.
 - Background: The generation of the complete connector fingerprint using AKI and SKI from the connector certificate was moved to the KeyStoreManager to do it only once at the startup of the Messaging-Services instead of generating it each time before connecting to DAPS.
 - The KeyStoreManager is handling the ConnectorMissingCertExtensionException internally instead now.
 
+### Used infomodel artifact versions can now be queried (Minor Change)
+- New Feature: **InfomodelArtifactsVersionProvider** in core module now offers the possibility to query the versions of the used artifact dependencies (java, serializer, interaction) and returns them as string (e.g. "4.1.2"). Can for example ne used to automatically set the current OutBoundModelVersion of the connector.
+
 ### Connector UUID accessible for connector developers (Minor Change)
 - New Feature: **ConnectorUUIDProvider.connectorUUID** now returns the Subject CN of the connector certificate, which can be understood as a unique and constant connector UUID
 - If there is no valid UUID in the connector certificate, a random UUID will be generated as connector UUID, which will be regenerated each time the KeyStoreManager is reinitialized.
