@@ -12,9 +12,8 @@ All notable changes to this project will be documented in this file.
 ## Version [4.0.0] UNRELEASED
 
 ### Connector fingerprint generation moved to KeyStoreManager (Major Change)
+- Theoretical background: Among other things, the DAPS receives a fingerprint from the connector based on information from its certificate issued by the DAPS in order to uniquely identify the connector. Until now, the fingerprint was generated every time a message was sent to the DAPS. This has now been changed so that the fingerprint is only calculated once when the connector is started or the KeyStoreManager is updated.
 - Major change: ConnectorMissingCertExtensionException is no longer thrown by the AisecTokenManagerService and TokenProviderService
-- Background: The generation of the complete connector fingerprint using AKI and SKI from the connector certificate was moved to the KeyStoreManager to do it only once at the startup of the Messaging-Services instead of generating it each time before connecting to DAPS.
-- The KeyStoreManager is handling the ConnectorMissingCertExtensionException internally instead now.
 
 ### Used infomodel artifact versions can now be queried (Minor Change)
 - New Feature: **InfomodelArtifactsVersionProvider** in core module now offers the possibility to query the versions of the used artifact dependencies (java, serializer, interaction) and returns them as string (e.g. "4.1.2"). Can for example be used to automatically set the current OutBoundModelVersion of the connector.
