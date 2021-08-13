@@ -55,10 +55,10 @@ public class InfomodelArtifactsVersionProvider {
     private String getDependencyVersion(final String artifact)
             throws VersionDeterminationException {
         try {
-            final var p = new Properties();
+            final var properties = new Properties();
             final var is = getClass().getResourceAsStream(artifact);
-            p.load(is);
-            return p.getProperty("version", "");
+            properties.load(is);
+            return properties.getProperty("version", "");
         } catch (Exception exception) {
             throw new VersionDeterminationException("Could not determine artifact version!",
                                                     exception.getCause());

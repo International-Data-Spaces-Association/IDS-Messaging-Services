@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 - The KeyStoreManager is handling the ConnectorMissingCertExtensionException internally instead now.
 
 ### Used infomodel artifact versions can now be queried (Minor Change)
-- New Feature: **InfomodelArtifactsVersionProvider** in core module now offers the possibility to query the versions of the used artifact dependencies (java, serializer, interaction) and returns them as string (e.g. "4.1.2"). Can for example ne used to automatically set the current OutBoundModelVersion of the connector.
+- New Feature: **InfomodelArtifactsVersionProvider** in core module now offers the possibility to query the versions of the used artifact dependencies (java, serializer, interaction) and returns them as string (e.g. "4.1.2"). Can for example be used to automatically set the current OutBoundModelVersion of the connector.
 
 ### Connector UUID accessible for connector developers (Minor Change)
 - New Feature: **ConnectorUUIDProvider.connectorUUID** now returns the Subject CN of the connector certificate, which can be understood as a unique and constant connector UUID
