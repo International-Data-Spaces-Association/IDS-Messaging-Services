@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 
 ### Used infomodel artifact versions can now be queried (Minor Change)
 - New Feature: **InfomodelArtifactsVersionProvider** in core module now offers the possibility to query the versions of the used artifact dependencies (java, serializer, interaction) and returns them as string (e.g. "4.1.2"). Can for example be used to automatically set the current OutBoundModelVersion of the connector.
+- This is an optional feature, it is up to the connector developer to either use this information or something else to determine the currently used infomodel artifacts versions.
 
 ### The Subject CN of the connector certificate is now available for the connector developer (Minor Change)
 - New Feature: **ConnectorCertSubjectCNProvider.certSubjectCnUUID** now returns the Subject CN of the connector certificate.
