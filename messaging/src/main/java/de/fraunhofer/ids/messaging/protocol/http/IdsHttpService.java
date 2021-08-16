@@ -359,11 +359,11 @@ public class IdsHttpService implements HttpService {
     /**
      * Sends a generated request http message to the defined address.
      *
-     * @param request POST Request with the message as body
-     * @param client  {@link OkHttpClient} for sending Request
-     * @return Response object containing the return message from the broker
-     * @throws IOException if the request could not be executed due
-     * to cancellation, a connectivity problem or timeout.
+     * @param request POST Request with the message as body.
+     * @param client {@link OkHttpClient} for sending Request.
+     * @return Response object containing the return message.
+     * @throws IOException If the request could not be executed due
+     * to cancellation, a connectivity problem or timeout etc.
      */
     private Response sendRequest(final Request request,
                                  final OkHttpClient client) throws IOException {
@@ -375,7 +375,9 @@ public class IdsHttpService implements HttpService {
 
         if (!response.isSuccessful()) {
             if (log.isErrorEnabled()) {
-                log.error("Error while sending the request!");
+                log.error("Request send but response-code not in 200-299,"
+                          + " received unexpected response-code!"
+                          + " (connectivity problem, timeout, ..?");
             }
 
             throw new IOException("Unexpected code " + response + " With Body: " + Objects
