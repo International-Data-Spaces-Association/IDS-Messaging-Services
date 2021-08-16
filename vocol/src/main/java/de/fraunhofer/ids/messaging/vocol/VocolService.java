@@ -30,10 +30,10 @@ public class VocolService extends QueryService implements IDSVocolService {
     /**
      * VocolService constructor.
      *
-     * @param container      the ConfigContainer
-     * @param tokenProvider  the DapsTokenProvider
-     * @param messageService the MessageService
-     * @param idsRequestBuilderService  the idsRequestBuilderService
+     * @param container The ConfigContainer.
+     * @param tokenProvider The DapsTokenProvider.
+     * @param messageService The MessageService.
+     * @param idsRequestBuilderService The idsRequestBuilderService.
      */
     public VocolService(
             final ConfigContainer container,

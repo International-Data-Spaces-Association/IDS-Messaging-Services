@@ -27,8 +27,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @param <T> a subtype of ResponseMessage or NotificationMessage
- * (will throw IllegalStateException if used with ResponseMessage)
+ * @param <T> a subtype of ResponseMessage or NotificationMessage (will throw
+ * IllegalStateException if used with ResponseMessage).
  */
 @Data
 @Slf4j
@@ -45,8 +45,8 @@ public class BodyResponse<T extends Message> implements MessageResponse {
     private final Object payload;
 
     /**
-     * @param header  ResponseMessage or NotificationMessage for the header
-     * @param payload some Object as payload
+     * @param header ResponseMessage or NotificationMessage for the header.
+     * @param payload Some Object as payload.
      */
     public BodyResponse(final T header, final Object payload) {
         if (header instanceof RequestMessage) {
@@ -61,10 +61,10 @@ public class BodyResponse<T extends Message> implements MessageResponse {
     /**
      * Create a MessageResponse with some Object as payload.
      *
-     * @param header  ResponseMessage or NotificationMessage for the header
-     * @param payload some Object used as payload
-     * @param <T>     type of the Message (some instance of ResponseMessage or NotificationMessage)
-     * @return an instance of BodyResponse with the given parameters
+     * @param header ResponseMessage or NotificationMessage for the header.
+     * @param payload Some Object used as payload.
+     * @param <T> Type of the Message (some instance of ResponseMessage or NotificationMessage).
+     * @return An instance of BodyResponse with the given parameters.
      */
     public static <T extends Message> BodyResponse<T> create(final T header, final Object payload) {
         return new BodyResponse<>(header, payload);

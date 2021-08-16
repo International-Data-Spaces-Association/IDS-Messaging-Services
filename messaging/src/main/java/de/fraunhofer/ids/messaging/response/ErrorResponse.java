@@ -51,10 +51,10 @@ public class ErrorResponse implements MessageResponse {
     /**
      * Create an ErrorResponse with a RejectionMessage header and errorReason String payload.
      *
-     * @param rejectionMessage a RejectionMessage
-     * @param errorReason      a detailed Error description
+     * @param rejectionMessage A RejectionMessage.
+     * @param errorReason A detailed Error description.
      *
-     * @return an instance of ErrorResponse with the given parameters
+     * @return An instance of ErrorResponse with the given parameters.
      */
     public static ErrorResponse create(final RejectionMessage rejectionMessage,
                                        final String errorReason) {
@@ -62,15 +62,15 @@ public class ErrorResponse implements MessageResponse {
     }
 
     /**
-     * Create an ErrorResponse with Default RejectionMessage as
-     * header (only RejectionReason has to be Provided).
+     * Create an ErrorResponse with Default RejectionMessage as header
+     * (only RejectionReason has to be Provided).
      *
-     * @param rejectionReason RejectionReason (why the message was rejected)
-     * @param errorMessage    detailed error description
-     * @param connectorId     id of the current connector
-     * @param modelVersion    infomodelversion of the current connector
-     * @param messageId       id of the message being rejected (from message-header)
-     * @return an instance of ErrorResponse with the given parameters
+     * @param rejectionReason RejectionReason (why the message was rejected).
+     * @param errorMessage Detailed error description.
+     * @param connectorId ID of the current connector.
+     * @param modelVersion Infomodelversion of the current connector.
+     * @param messageId ID of the message being rejected (from message-header).
+     * @return An instance of ErrorResponse with the given parameters.
      */
     public static ErrorResponse withDefaultHeader(
             final RejectionReason rejectionReason,
@@ -102,14 +102,14 @@ public class ErrorResponse implements MessageResponse {
     }
 
     /**
-     * Create an ErrorResponse with Default RejectionMessage as header
-     * (only RejectionReason has to be Provided).
+     * Create an ErrorResponse with Default RejectionMessage as header (only RejectionReason
+     * has to be Provided).
      *
-     * @param rejectionReason RejectionReason (why the message was rejected)
-     * @param errorMessage    detailed error description
-     * @param connectorId     id of the current connector
-     * @param modelVersion    infomodelversion of the current connector
-     * @return an instance of ErrorResponse with the given parameters
+     * @param rejectionReason RejectionReason (why the message was rejected).
+     * @param errorMessage Detailed error description.
+     * @param connectorId ID of the current connector.
+     * @param modelVersion Infomodelversion of the current connector.
+     * @return An instance of ErrorResponse with the given parameters.
      */
     public static ErrorResponse withDefaultHeader(
             final RejectionReason rejectionReason, final String errorMessage,

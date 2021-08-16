@@ -42,10 +42,10 @@ public interface IDSBrokerService {
      * Builds and sends a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage} to the broker.
      * The given Resource will be unregistered from the broker.
      *
-     * @param brokerURI URI of the broker the connector will try to unregister the resource at
-     * @param resource  the resource that will be unregistered at the broker
-     * @return the ResponseMessage of the Broker
-     * @throws IOException if the built message could not be serialized
+     * @param brokerURI URI of the broker the connector will try to unregister the resource at.
+     * @param resource The resource that will be unregistered at the broker.
+     * @return The ResponseMessage of the Broker.
+     * @throws IOException If the built message could not be serialized.
      */
     MessageContainer<?> removeResourceFromBroker(URI brokerURI, Resource resource)
             throws
@@ -67,11 +67,10 @@ public interface IDSBrokerService {
      * The Connector will be registered at the broker, or
      * its selfdescription will be updated.
      *
-     * @param brokerURI URI of the broker the connector will
-     *                  try to unregister the resource at
-     * @param resource  the resource that will be unregistered at the broker
-     * @return the ResponseMessage of the Broker
-     * @throws IOException if the built message could not be serialized
+     * @param brokerURI URI of the broker the connector will try to unregister the resource at.
+     * @param resource The resource that will be unregistered at the broker.
+     * @return The ResponseMessage of the Broker.
+     * @throws IOException If the built message could not be serialized.
      */
     MessageContainer<?> updateResourceAtBroker(URI brokerURI, Resource resource)
             throws
@@ -93,10 +92,10 @@ public interface IDSBrokerService {
      * {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
      * The Connector will be unregistered from the broker.
      *
-     * @param brokerURI URI of the broker the connector will try to unregister at
-     * @return the ResponseMessage of the Broker (NotificationMessage
-     * if it worked, RejectionMessage if not)
-     * @throws IOException if the message could not be serialized
+     * @param brokerURI URI of the broker the connector will try to unregister at.
+     * @return The ResponseMessage of the Broker (NotificationMessage
+     * if it worked, RejectionMessage if not).
+     * @throws IOException If the message could not be serialized.
      */
     MessageContainer<?> unregisterAtBroker(URI brokerURI)
             throws IOException,
@@ -120,11 +119,10 @@ public interface IDSBrokerService {
      * connector uuid in the self declaration has to be the same
      * as the registered one at the broker.
      *
-     * @param brokerURI URI of the broker the connector will
-     *                  try to update its information at
-     * @return the ResponseMessage of the Broker
-     * (NotificationMessage if it worked, RejectionMessage if not)
-     * @throws IOException if the built message could not be serialized
+     * @param brokerURI URI of the broker the connector will try to update its information at.
+     * @return The ResponseMessage of the Broker (NotificationMessage if it worked,
+     * RejectionMessage if not).
+     * @throws IOException If the built message could not be serialized.
      */
     MessageContainer<?> updateSelfDescriptionAtBroker(URI brokerURI)
             throws IOException,
@@ -144,17 +142,15 @@ public interface IDSBrokerService {
      * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage}
      * to the broker.
      *
-     * @param brokerURI     the URI of the broker the message is sent to
-     * @param query         the query as payload for the QueryMessage
-     * @param queryLanguage the Language of the Query (e.g. SPARQL,
-     *                      SQL, XQUERY). See {@link QueryLanguage}
-     * @param queryScope    the Scope of the Query (ALL connectors,
-     *                      ACTIVE connectors, INACTIVE connectors).
-     *                      See {@link QueryScope}
-     * @param queryTarget   the type of IDS Components that are queried.
-     *                      See {@link QueryTarget}
-     * @return the brokers response to the query request
-     * @throws IOException if the built message could not be serialized
+     * @param brokerURI The URI of the broker the message is sent to.
+     * @param query The query as payload for the QueryMessage.
+     * @param queryLanguage The Language of the Query (e.g. SPARQL, SQL, XQUERY).
+     *                      See {@link QueryLanguage}
+     * @param queryScope The Scope of the Query (ALL connectors, ACTIVE connectors,
+     *                   INACTIVE connectors). See {@link QueryScope}.
+     * @param queryTarget The type of IDS Components that are queried. See {@link QueryTarget}.
+     * @return The brokers response to the query request.
+     * @throws IOException If the built message could not be serialized.
      */
     MessageContainer<String> queryBroker(URI brokerURI,
                                          String query,

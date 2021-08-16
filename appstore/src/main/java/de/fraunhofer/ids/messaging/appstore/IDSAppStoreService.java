@@ -30,23 +30,21 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
 
 
 /**
- *
+ * Service class interface for communication to the IDS AppStore.
  */
 public interface IDSAppStoreService {
 
 
     /**
-     * @param appStoreURI URI of the App Store to be used
-     * @param app  URI of the requested app
-     *
-     * @return Response MAP with the SelfDescription in the payload as an AppStore
-     *
-     * @throws MultipartParseException if response could not be parsed to
-     * header and payload.@throws ClaimsException
-     * @throws IOException if message could not be sent
+     * @param appStoreURI URI of the App Store to be used.
+     * @param app URI of the requested app.
+     * @return Response MAP with the SelfDescription in the payload as an AppStore.
+     * @throws MultipartParseException If response could not be parsed to
+     * header and payload.@throws ClaimsException.
+     * @throws IOException If message could not be sent
      * or Serializer could not parse RDF to Java Object.
-     * @throws DapsTokenManagerException if no DAT for sending the message could be received.
-     * @throws ClaimsException if DAT of incoming message could not be validated.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
      */
     MessageContainer<Object> requestAppDescription(URI appStoreURI, URI app)
             throws
@@ -58,16 +56,14 @@ public interface IDSAppStoreService {
             DeserializeException, RejectionException,
             UnexpectedPayloadException;
     /**
-     * @param appStoreURI URI of the App Store to be used
-     *
-     * @return Response MAP with the SelfDescription in the payload as AppResource
-     *
-     * @throws MultipartParseException if response could not be parsed to
-     * header and payload.@throws ClaimsException
-     * @throws IOException if message could not be sent or Serializer
+     * @param appStoreURI URI of the AppStore to be used.
+     * @return Response MAP with the SelfDescription in the payload as AppResource.
+     * @throws MultipartParseException If response could not be parsed to
+     * header and payload.@throws ClaimsException.
+     * @throws IOException If message could not be sent or Serializer
      * could not parse RDF to Java Object.
-     * @throws DapsTokenManagerException if no DAT for sending the message could be received.
-     * @throws ClaimsException if DAT of incoming message could not be validated.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
      */
     MessageContainer<Object> requestAppStoreDescription(URI appStoreURI)
             throws
@@ -79,17 +75,15 @@ public interface IDSAppStoreService {
             DeserializeException, RejectionException,
             UnexpectedPayloadException;
     /**
-     * @param appStoreURI URI of the App Store to be used
-     * @param app  URI of the requested app
-     *
-     * @return Response MAP with the SelfDescription in the payload as String
-     *
-     * @throws MultipartParseException if response could not be parsed
-     * to header and payload.@throws ClaimsException
-     * @throws IOException if message could not be sent or
+     * @param appStoreURI URI of the App Store to be used.
+     * @param app  URI of the requested app.
+     * @return Response MAP with the SelfDescription in the payload as String.
+     * @throws MultipartParseException If response could not be parsed
+     * to header and payload.@throws ClaimsException.
+     * @throws IOException If message could not be sent or
      * Serializer could not parse RDF to Java Object.
-     * @throws DapsTokenManagerException if no DAT for sending the message could be received.
-     * @throws ClaimsException if DAT of incoming message could not be validated.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
      */
     MessageContainer<Object> requestAppArtifact(URI appStoreURI, URI app)
             throws
@@ -101,5 +95,3 @@ public interface IDSAppStoreService {
             DeserializeException, RejectionException,
             UnexpectedPayloadException;
 }
-
-

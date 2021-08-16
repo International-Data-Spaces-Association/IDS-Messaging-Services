@@ -28,6 +28,7 @@ public @interface SupportedMessageTypes {
 
     /**
      * Return the supported messagetypes of a handler.
+     *
      * @return The supported messagetypes of a handler.
      */
     SupportedMessageType[] value();

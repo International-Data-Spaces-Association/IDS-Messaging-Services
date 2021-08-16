@@ -74,7 +74,7 @@ public class ContractRequestBuilder<T> extends IdsRequestBuilder<T> implements
      * Set the operation to RECEIVE: describes a
      * {@link de.fraunhofer.iais.eis.ContractRequestMessage}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     public ContractRequestBuilder<T> operationGet() {
         this.operation = Crud.RECEIVE;

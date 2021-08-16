@@ -89,8 +89,8 @@ public class ParticipantCertificateRequestBuilder<T>
      * Set the operation to UPDATE: describes
      * a {@link de.fraunhofer.iais.eis.ParticipantCertificateGrantedMessage}.
      *
-     * @param affectedParticipant affected participant id for message header
-     * @return this builder instance
+     * @param affectedParticipant Affected participant id for message header.
+     * @return This builder instance.
      */
     public ParticipantCertificateRequestBuilder<T> operationUpdate(
             final URI affectedParticipant) {
@@ -103,9 +103,9 @@ public class ParticipantCertificateRequestBuilder<T>
      * Set the operation to UPDATE: describes a
      * {@link de.fraunhofer.iais.eis.ParticipantCertificateRevokedMessage}.
      *
-     * @param affectedParticipant affected connector id for message header
-     * @param revocationReason reason why certificate was revoked
-     * @return this builder instance
+     * @param affectedParticipant Affected connector id for message header.
+     * @param revocationReason Reason why certificate was revoked.
+     * @return This builder instance.
      */
     public ParticipantCertificateRequestBuilder<T> operationDelete(
             final URI affectedParticipant,
@@ -143,11 +143,9 @@ public class ParticipantCertificateRequestBuilder<T>
         }
         switch (protocolType) {
             case IDSCP:
-                throw new UnsupportedOperationException(
-                        "Not yet implemented Protocol!");
+                throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case LDP:
-                throw new UnsupportedOperationException(
-                        "Not yet implemented Protocol!");
+                throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
@@ -162,12 +160,10 @@ public class ParticipantCertificateRequestBuilder<T>
                                 .buildMessage();
                         return sendMultipart(target, deleteMessage);
                     default:
-                        throw new UnsupportedOperationException(
-                                "Unsupported Operation!");
+                        throw new UnsupportedOperationException("Unsupported Operation!");
                 }
             default:
-                throw new UnsupportedOperationException(
-                        "Unsupported Protocol!");
+                throw new UnsupportedOperationException("Unsupported Protocol!");
         }
     }
 

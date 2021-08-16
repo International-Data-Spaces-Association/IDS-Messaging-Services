@@ -89,8 +89,8 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
     /**
      * Set the operation to DELETE: describes an {@link de.fraunhofer.iais.eis.AppDeleteMessage}.
      *
-     * @param affectedApp affected app id for message header
-     * @return this builder instance
+     * @param affectedApp Affected app id for message header.
+     * @return This builder instance.
      */
     public AppRequestBuilder<T> operationDelete(final URI affectedApp) {
         operation = Crud.DELETE;
@@ -102,8 +102,8 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
      * Set the operation to DISABLE: describes an
      * {@link de.fraunhofer.iais.eis.AppUnavailableMessage}.
      *
-     * @param affectedApp affected app id for message header
-     * @return this builder instance
+     * @param affectedApp Affected app id for message header.
+     * @return This builder instance.
      */
     public AppRequestBuilder<T> operationUnavailable(final URI affectedApp) {
         operation = Crud.DISABLE;
@@ -115,8 +115,8 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
      * Set the operation to REGISTER: describes an
      * {@link de.fraunhofer.iais.eis.AppRegistrationRequestMessage}.
      *
-     * @param affectedApp affected app id for message header
-     * @return this builder instance
+     * @param affectedApp Affected app id for message header.
+     * @return This builder instance.
      */
     public AppRequestBuilder<T> operationRegistration(final URI affectedApp) {
         operation = Crud.REGISTER;

@@ -37,11 +37,11 @@ public interface MessageAndClaimsHandler<T extends Message> extends MessageHandl
     }
 
     /**
-     * @param queryHeader IDS Message Header
-     * @param payload Payload of Message
-     * @param optionalClaimsJws optional containing claims of the messages DAT
-     * @return Response (which will be sent back to the requesting connector)
-     * @throws MessageHandlerException when some error happens while handling the message
+     * @param queryHeader IDS Message Header.
+     * @param payload Payload of Message.
+     * @param optionalClaimsJws Optional containing claims of the messages DAT.
+     * @return Response (which will be sent back to the requesting connector).
+     * @throws MessageHandlerException When some error happens while handling the message.
      */
     MessageResponse handleMessage(T queryHeader, MessagePayload payload,
                                   Optional<Jws<Claims>> optionalClaimsJws)

@@ -39,11 +39,9 @@ import io.jsonwebtoken.Jws;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The MessageDispatcher takes all incoming Messages,
- * applies all defined PreDispatchingFilters onto them,
- * checks the DAPS token, gives Messages to the specified
- * MessageHandlers depending on their type and returns
- * the results returned by the MessageHandlers.
+ * The MessageDispatcher takes all incoming Messages, applies all defined PreDispatchingFilters
+ * onto them, checks the DAPS token, gives Messages to the specified MessageHandlers depending
+ * on their type and returns the results returned by the MessageHandlers.
  */
 @Slf4j
 public class MessageDispatcher {
@@ -75,11 +73,12 @@ public class MessageDispatcher {
 
     /**
      * Create a MessageDispatcher.
-     *  @param objectMapper a jackson objectmapper for (de)serializing objects
-     * @param requestMessageHandler resolver for finding the
-     *      fitting {@link MessageHandler} for the incoming Message
-     * @param configContainer the connector configuration
-     * @param dapsValidator validator class for daps dat
+     *
+     * @param objectMapper A jackson objectmapper for (de)serializing objects.
+     * @param requestMessageHandler Resolver for finding the fitting {@link MessageHandler} for
+     *                              the incoming Message.
+     * @param configContainer The connector configuration.
+     * @param dapsValidator Validator class for DAPS DAT.
      */
     public MessageDispatcher(final ObjectMapper objectMapper,
                              final RequestMessageHandler requestMessageHandler,
@@ -96,8 +95,8 @@ public class MessageDispatcher {
      * Register a new PreDispatchingFilter which will
      * be used to filter incoming messages.
      *
-     * @param preDispatchingFilter a new {@link PreDispatchingFilter}
-     *                             that should be added to the list of filters
+     * @param preDispatchingFilter A new {@link PreDispatchingFilter} that should be added to
+     *                             the list of filters.
      */
     public void registerPreDispatchingAction(
             final PreDispatchingFilter preDispatchingFilter) {
@@ -105,19 +104,17 @@ public class MessageDispatcher {
     }
 
     /**
-     * Apply the preDispatchingFilters to the message.
-     * If it wasn't filtered: find the {@link MessageHandler} for its type.
-     * Let the handler handle the Message and return
+     * Apply the preDispatchingFilters to the message. If it wasn't filtered:
+     * find the {@link MessageHandler} for its type. Let the handler handle the Message and return
      * the {@link MessageResponse}.
      *
-     * @param header header of the incoming Message
-     *               (RequestMessage implementation)
-     * @param payload payload of the incoming Message
-     * @param <R> a subtype of RequestMessage
-     * @return the {@link MessageResponse} that is returned by
-     * the specified {@link MessageHandler} for the type of the incoming Message
-     * @throws PreDispatchingFilterException if an error occurs
-     * in a PreDispatchingFilter
+     * @param header Header of the incoming Message (RequestMessage implementation).
+     * @param payload Payload of the incoming Message.
+     * @param <R> A subtype of RequestMessage.
+     * @return The {@link MessageResponse} that is returned by the specified {@link MessageHandler}
+     * for the type of the incoming Message.
+     * @throws PreDispatchingFilterException If an error occurs
+     * in a PreDispatchingFilter.
      */
     @SuppressWarnings("unchecked")
     public <R extends Message> MessageResponse process(final R header,

@@ -51,10 +51,10 @@ public class AppStoreService extends InfrastructureService
     /**
      * Creates the IDSAppStore Communication controller.
      *
-     * @param container      Configuration container
-     * @param tokenProvider  providing DAT Token for RequestMessage
-     * @param messageService providing Messaging functionality
-     * @param idsRequestBuilderService service to send request messages
+     * @param container Configuration container.
+     * @param tokenProvider Providing DAT Token for RequestMessage.
+     * @param messageService Providing Messaging functionality.
+     * @param idsRequestBuilderService Service to send request messages.
      */
     public AppStoreService(
             final ConfigContainer container,

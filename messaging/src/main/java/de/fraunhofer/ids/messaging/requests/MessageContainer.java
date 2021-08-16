@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Container holding ids header fields, the underlying IDS message
- * they were parsed from and the message payload.
+ * Container holding ids header fields, the underlying IDS message they were parsed from
+ * and the message payload.
  *
- * @param <T> Type of payload
+ * @param <T> Type of payload.
  */
 @Getter
 public class MessageContainer<T> {
@@ -55,8 +55,8 @@ public class MessageContainer<T> {
     /**
      * Construct a MessageContainer from incoming MAP.
      *
-     * @param message incoming message header
-     * @param payload incoming message payload
+     * @param message Incoming message header.
+     * @param payload Incoming message payload.
      */
     public MessageContainer(final Message message, final T payload) {
         this.receivedPayload = payload;
@@ -70,8 +70,8 @@ public class MessageContainer<T> {
     /**
      * Construct a MessageContainer from incoming MAP.
      *
-     * @param headers incoming map from http headers
-     * @param payload incoming message payload
+     * @param headers Incoming map from http headers.
+     * @param payload Incoming message payload.
      */
     public MessageContainer(final Map<String, String> headers, final T payload) {
         //TODO build headerContainer from httpHeaders given
@@ -82,7 +82,7 @@ public class MessageContainer<T> {
     /**
      * Check if message was a RejectionMessage.
      *
-     * @return true, if this container saves a RejectionMessage.
+     * @return True, if this container saves a RejectionMessage.
      */
     public boolean isRejection() {
         return rejectionReason.isPresent();
@@ -91,7 +91,7 @@ public class MessageContainer<T> {
     /**
      * Get ID of incoming message.
      *
-     * @return message ID
+     * @return The message-ID.
      */
     public URI getMessageID() {
         return underlyingMessage.getId();
@@ -100,8 +100,8 @@ public class MessageContainer<T> {
     /**
      * Extract headers from incoming message.
      *
-     * @param message incoming message header
-     * @return {@link HeaderContainer} from extracted header fields
+     * @param message Incoming message header.
+     * @return {@link HeaderContainer} from extracted header fields.
      */
     private HeaderContainer containerFromMessage(final Message message) {
         return new HeaderContainer(

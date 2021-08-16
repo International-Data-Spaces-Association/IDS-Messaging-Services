@@ -88,12 +88,10 @@ public class IdsHttpService implements HttpService {
     private Boolean shaclValidation;
 
     /**
-     * @param response {@link Response} from an IDS Http request
-     *
-     * @return Multipart Map with header and payload part of response
-     *
-     * @throws IOException     if request cannot be sent
-     * @throws ClaimsException if DAT of response is invalid or cannot be parsed
+     * @param response {@link Response} from an IDS Http request.
+     * @return Multipart Map with header and payload part of response.
+     * @throws IOException If request cannot be sent.
+     * @throws ClaimsException If DAT of response is invalid or cannot be parsed.
      */
     private Map<String, String> checkDatFromResponse(final Response response)
             throws
@@ -298,10 +296,9 @@ public class IdsHttpService implements HttpService {
     /**
      * Build a {@link Request} from given {@link RequestBody} and target {@link URI}.
      *
-     * @param requestBody {@link RequestBody} object to be sent
-     * @param target      The target-URI of the request
-     *
-     * @return the built http {@link Request}
+     * @param requestBody {@link RequestBody} object to be sent.
+     * @param target The target-URI of the request.
+     * @return The built http {@link Request}.
      */
     private Request buildRequest(final RequestBody requestBody, final URI target) {
         final var targetURL = target.toString();
@@ -318,13 +315,12 @@ public class IdsHttpService implements HttpService {
 
     /**
      * Build a {@link Request} from given {@link RequestBody} and target {@link URI},
-     * add extra header fields provided in headers map-.
+     * add extra header fields provided in headers map.
      *
-     * @param requestBody {@link RequestBody} object to be sent
-     * @param target      The target-URI of the request
-     * @param headers     a Map of http headers for the header of the built request
-     *
-     * @return the build http {@link Request}
+     * @param requestBody {@link RequestBody} object to be sent.
+     * @param target The target-URI of the request.
+     * @param headers A Map of http headers for the header of the built request.
+     * @return The build http {@link Request}.
      */
     private Request buildWithHeaders(final RequestBody requestBody,
                                      final URI target,
@@ -362,8 +358,8 @@ public class IdsHttpService implements HttpService {
      * @param request POST Request with the message as body.
      * @param client {@link OkHttpClient} for sending Request.
      * @return Response object containing the return message.
-     * @throws IOException If the request could not be executed due
-     * to cancellation, a connectivity problem or timeout etc.
+     * @throws IOException If the request could not be executed due to cancellation, a connectivity
+     * problem or timeout etc.
      */
     private Response sendRequest(final Request request,
                                  final OkHttpClient client) throws IOException {
@@ -390,7 +386,7 @@ public class IdsHttpService implements HttpService {
     /**
      * Get an OkHttpClient with the current Timeout Settings.
      *
-     * @return client with set timeouts
+     * @return Client with set timeouts.
      */
     private OkHttpClient getClientWithSettings() {
         OkHttpClient client;

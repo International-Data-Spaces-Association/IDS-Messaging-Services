@@ -50,11 +50,11 @@ public final class DapsVerifier {
 
     /**
      * Check notbefore and expiration of the DAT Token Claims.
-     * The default rules check if the current Time is between NotBefore and Expiration
+     * The default rules check if the current Time is between NotBefore and Expiration.
      *
-     * @param toVerify the claims to verify
-     * @return true if message is valid
-     * @throws ClaimsException when the claims of the DAT cannot be verified
+     * @param toVerify The claims to verify.
+     * @return True if message is valid.
+     * @throws ClaimsException When the claims of the DAT cannot be verified.
      */
     public static boolean verify(final Jws<Claims> toVerify) throws ClaimsException {
         if (toVerify != null) {
@@ -65,11 +65,11 @@ public final class DapsVerifier {
 
     /**
      * Check notbefore and expiration of the DAT Token Claims.
-     * The default rules check if the current Time is between NotBefore and Expiration
+     * The default rules check if the current Time is between NotBefore and Expiration.
      *
-     * @param toVerify the claims to verify
-     * @return true if message is valid
-     * @throws ClaimsException when the claims of the DAT cannot be verified
+     * @param toVerify The claims to verify.
+     * @return True if message is valid.
+     * @throws ClaimsException When the claims of the DAT cannot be verified.
      */
     public static boolean verify(final Claims toVerify) throws ClaimsException {
         try {

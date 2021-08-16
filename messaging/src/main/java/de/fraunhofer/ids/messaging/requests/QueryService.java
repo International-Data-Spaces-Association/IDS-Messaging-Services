@@ -54,10 +54,10 @@ public class QueryService extends InfrastructureService implements
 
     /**
      * QueryService constructor.
-     * @param container the ConfigContainer
-     * @param tokenProvider the DapsTokenProvider
-     * @param messageService the MessageService
-     * @param idsRequestBuilderService the IdsRequestBuilderService
+     * @param container The ConfigContainer.
+     * @param tokenProvider The DapsTokenProvider.
+     * @param messageService The MessageService.
+     * @param idsRequestBuilderService The IdsRequestBuilderService.
      */
     public QueryService(
             final ConfigContainer container,

@@ -35,9 +35,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Parse the configuration and initialize the key- and
- * truststores specified in the {@link ConfigProperties} via
- * Spring application.properties.
+ * Parse the configuration and initialize the key- and truststores specified in
+ * the {@link ConfigProperties} via Spring application.properties.
  */
 @Slf4j
 @Configuration
@@ -191,7 +190,7 @@ public class ConfigProducer {
     /**
      * Provide the ConfigurationContainer as Bean for autowiring.
      *
-     * @return the imported {@link ConfigurationModel} as bean for autowiring
+     * @return The imported {@link ConfigurationModel} as bean for autowiring.
      */
     @Bean
     @ConditionalOnMissingBean
@@ -202,7 +201,7 @@ public class ConfigProducer {
     /**
      * Provide the ClientProvider as bean for autowiring.
      *
-     * @return the created {@link ClientProvider} as bean for autowiring
+     * @return The created {@link ClientProvider} as bean for autowiring.
      */
     @Bean
     @ConditionalOnMissingBean

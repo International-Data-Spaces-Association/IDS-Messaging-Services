@@ -82,14 +82,12 @@ public class MessageController {
     }
 
     /**
-     * Generic method to handle all incoming ids messages.
-     * One Method to Rule them All.
-     * Get header and payload from incoming message,
-     * let the MessageDispatcher and MessageHandler process it
-     * and return the result as a Multipart response.
+     * Generic method to handle all incoming ids messages. One Method to Rule them All.
+     * Get header and payload from incoming message, let the MessageDispatcher and
+     * MessageHandler process it and return the result as a Multipart response.
      *
-     * @param request incoming http request
-     * @return multipart MultivalueMap containing ResponseMessage header and some payload
+     * @param request Incoming http request.
+     * @return Multipart MultivalueMap containing ResponseMessage header and some payload.
      */
     public ResponseEntity<MultiValueMap<String, Object>> handleIDSMessage(
             final HttpServletRequest request) {
@@ -214,8 +212,8 @@ public class MessageController {
     /**
      * Create a Spring {@link MultiValueMap} from a {@link java.util.Map}.
      *
-     * @param map a map as provided by the MessageResponse
-     * @return a MultiValueMap used as ResponseEntity for Spring
+     * @param map A map as provided by the MessageResponse.
+     * @return A MultiValueMap used as ResponseEntity for Spring.
      */
     private MultiValueMap<String, Object> createMultiValueMap(
             final Map<String, Object> map) {
@@ -236,10 +234,10 @@ public class MessageController {
      * Create a default RejectionMessage with a given RejectionReason
      * and specific error message for the payload.
      *
-     * @param rejectionReason reason why the message was rejected
-     * @param errorMessage    a specific error message for the payload
+     * @param rejectionReason Reason why the message was rejected.
+     * @param errorMessage A specific error message for the payload.
      * @return MultiValueMap with given error information that can
-     * be used for a multipart response
+     * be used for a multipart response.
      */
     private MultiValueMap<String, Object> createDefaultErrorMessage(
             final RejectionReason rejectionReason,
@@ -276,9 +274,9 @@ public class MessageController {
     }
 
     /**
-     * @param input controllers header input as string
-     * @return true if infomodel version is supported
-     * @throws IOException if no infomodel version is found in input
+     * @param input Controllers header input as string.
+     * @return True if infomodel version is supported.
+     * @throws IOException If no infomodel version is found in input.
      */
     private boolean checkInboundVersion(final String input) throws IOException {
         final var jsonInput = new ObjectMapper().readTree(input);
@@ -300,10 +298,9 @@ public class MessageController {
     }
 
     /**
-     * @param input input infomodel version (eg 4.0.1)
-     * @param accepted accepted infomodel version (eg 4.0.2,
-     *                 supports wildcards eg 4.*.*)
-     * @return true if infomodel input is covered by accepted input
+     * @param input Input infomodel version (eg 4.0.1).
+     * @param accepted Accepted infomodel version (eg 4.0.2, supports wildcards eg 4.*.*).
+     * @return True if infomodel input is covered by accepted input.
      */
     private boolean checkInfomodelContainment(final String input,
                                               final String accepted) {

@@ -81,10 +81,10 @@ public class MultipartResponseConverter {
 
     /**
      * Converts a Response into a corresponding MessageAndPayload Object.
-     * @param responseMap Response in a Map
-     * @return MessageAndPayload containing the corresponding Message
-     * and the payload parsed in Infomodel classes
-     * @throws UnknownResponseException if message or payload cannot be parsed
+     * @param responseMap Response in a Map.
+     * @return MessageAndPayload containing the corresponding Message and the payload parsed
+     * in Infomodel classes.
+     * @throws UnknownResponseException If message or payload cannot be parsed.
      */
     public MessageAndPayload<?, ?> convertResponse(
             final Map<String, String> responseMap)
@@ -109,73 +109,43 @@ public class MultipartResponseConverter {
 
         try {
             if (responseHeader instanceof DescriptionRequestMessage) {
-                messageAndPayload
-                    = getDescriptionRequestMessage(responseHeader);
+                messageAndPayload = getDescriptionRequestMessage(responseHeader);
             } else if (responseHeader instanceof DescriptionResponseMessage) {
-                messageAndPayload
-                    = getDescriptionResponseMessage(responseHeader,
-                                                    responsePayload);
-            } else if (responseHeader
-                    instanceof MessageProcessedNotificationMessage) {
-                messageAndPayload
-                    = getMessageProcessedNotificationMessage(responseHeader);
+                messageAndPayload = getDescriptionResponseMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof MessageProcessedNotificationMessage) {
+                messageAndPayload = getMessageProcessedNotificationMessage(responseHeader);
             } else if (responseHeader instanceof RejectionMessage) {
-                messageAndPayload
-                    = getRejectionMessage(responseHeader, responsePayload);
+                messageAndPayload = getRejectionMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ArtifactRequestMessage) {
-                messageAndPayload
-                    = getArtifactRequestMessage(responseHeader);
+                messageAndPayload = getArtifactRequestMessage(responseHeader);
             } else if (responseHeader instanceof ArtifactResponseMessage) {
-                messageAndPayload
-                    = getArtifactResponseMessage(responseHeader,
-                                                 responsePayload);
+                messageAndPayload = getArtifactResponseMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ConnectorUpdateMessage) {
-                messageAndPayload
-                    = getConnectorUpdateMessage(responseHeader,
-                                                responsePayload);
+                messageAndPayload = getConnectorUpdateMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ConnectorUnavailableMessage) {
-                messageAndPayload
-                    = getConnectorUnavailableMessage(responseHeader);
+                messageAndPayload = getConnectorUnavailableMessage(responseHeader);
             } else if (responseHeader instanceof QueryMessage) {
-                messageAndPayload
-                    = getQueryMessage(responseHeader, responsePayload);
+                messageAndPayload = getQueryMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ResultMessage) {
-                messageAndPayload
-                    = getResultMessage(responseHeader, responsePayload);
+                messageAndPayload = getResultMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ResourceUpdateMessage) {
-                messageAndPayload
-                    = getResourceUpdateMessage(responseHeader,
-                                               responsePayload);
+                messageAndPayload = getResourceUpdateMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ResourceUnavailableMessage) {
-                messageAndPayload
-                    = getResourceUnavailableMessage(responseHeader);
+                messageAndPayload= getResourceUnavailableMessage(responseHeader);
             } else if (responseHeader instanceof ParticipantUpdateMessage) {
-                messageAndPayload
-                    = getParticipantUpdateMessage(responseHeader,
-                                                  responsePayload);
-            } else if (responseHeader
-                    instanceof ParticipantUnavailableMessage) {
-                messageAndPayload
-                    = getParticipantUnavailableMessage(responseHeader);
+                messageAndPayload = getParticipantUpdateMessage(responseHeader, responsePayload);
+            } else if (responseHeader instanceof ParticipantUnavailableMessage) {
+                messageAndPayload = getParticipantUnavailableMessage(responseHeader);
             } else if (responseHeader instanceof ParticipantRequestMessage) {
-                messageAndPayload
-                    = getParticipantRequestMessage(responseHeader);
+                messageAndPayload = getParticipantRequestMessage(responseHeader);
             } else if (responseHeader instanceof ContractOfferMessage) {
-                messageAndPayload
-                    = getContractOfferMessage(responseHeader,
-                                              responsePayload);
+                messageAndPayload = getContractOfferMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ContractRequestMessage) {
-                messageAndPayload
-                    = getContractRequestMessage(responseHeader,
-                                                responsePayload);
+                messageAndPayload = getContractRequestMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ContractAgreementMessage) {
-                messageAndPayload
-                    = getContractAgreementMessage(responseHeader,
-                                                  responsePayload);
+                messageAndPayload = getContractAgreementMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ContractResponseMessage) {
-                messageAndPayload
-                    = getContractResponseMessage(responseHeader,
-                                                 responsePayload);
+                messageAndPayload = getContractResponseMessage(responseHeader, responsePayload);
             }
 
             if (messageAndPayload != null) {
@@ -184,19 +154,17 @@ public class MultipartResponseConverter {
             } else {
                 //No match found, throw UnknownResponseException
                 if (log.isErrorEnabled()) {
-                    log.error("Could not convert input header"
-                        + " to suitable responseHeader and payload type!");
+                    log.error("Could not convert input header to suitable responseHeader"
+                              + " and payload type!");
                 }
                 throw new UnknownResponseException(
-                        "Could not convert input header to suitable"
-                        + " responseHeader and payload type. Header: "
-                        + responseHeader.toRdf());
+                        "Could not convert input header to suitable responseHeader and payload"
+                        + " type. Header: " + responseHeader.toRdf());
             }
         } catch (IOException ioException) {
             //Deserializing Payload threw exception
             if (log.isErrorEnabled()) {
-                log.error("Error deserializing Payload! " + ioException
-                        .getMessage());
+                log.error("Error deserializing Payload! " + ioException.getMessage());
             }
             throw new DeserializeException(ioException);
         }
@@ -366,7 +334,6 @@ public class MultipartResponseConverter {
     }
 
     private String getResponsePayload(final Map<String, String> responseMap) {
-        return responseMap
-                .getOrDefault(MultipartDatapart.PAYLOAD.toString(), "");
+        return responseMap.getOrDefault(MultipartDatapart.PAYLOAD.toString(), "");
     }
 }

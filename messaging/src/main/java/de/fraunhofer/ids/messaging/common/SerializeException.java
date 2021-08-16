@@ -22,7 +22,7 @@ public class SerializeException extends Exception {
     /**
      * An exception that is thrown if serializing gone wrong and threw IOException.
      *
-     * @param cause Throwable cause of the Exception
+     * @param cause Throwable cause of the Exception.
      */
     public SerializeException(final Throwable cause) {
         super(cause);

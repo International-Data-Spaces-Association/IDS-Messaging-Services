@@ -39,7 +39,7 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
 /**
  * Builder class for configurable ids requests.
  *
- * @param <T> type of payload
+ * @param <T> Type of payload.
  */
 public class IdsRequestBuilder<T> {
 
@@ -106,8 +106,8 @@ public class IdsRequestBuilder<T> {
     /**
      * Add a payload to the request.
      *
-     * @param payload payload to be sent with the request
-     * @return this builder instance
+     * @param payload Payload to be sent with the request.
+     * @return This builder instance.
      */
     public IdsRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
@@ -117,7 +117,7 @@ public class IdsRequestBuilder<T> {
     /**
      * If this is set, a RejectionMessage as response will trigger a {@link RejectionException}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     public IdsRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
@@ -127,7 +127,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'artifact' as the subject of the message.
      *
-     * @return an ArtifactRequestBuilder with current information of this builder
+     * @return An ArtifactRequestBuilder with current information of this builder.
      */
     public ArtifactRequestBuilder<T> subjectArtifact() {
         final var builder = new ArtifactRequestBuilder<>(expectedPayload.orElse(null),
@@ -141,7 +141,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'connector' as the subject of the message.
      *
-     * @return an ConnectorRequestBuilder with current information of this builder
+     * @return An ConnectorRequestBuilder with current information of this builder.
      */
     public ConnectorRequestBuilder<T> subjectConnector() {
         final var builder =
@@ -156,7 +156,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'resource' as the subject of the message.
      *
-     * @return an ResourceRequestBuilder with current information of this builder
+     * @return An ResourceRequestBuilder with current information of this builder.
      */
     public ResourceRequestBuilder<T> subjectResource() {
         final var builder = new ResourceRequestBuilder<>(expectedPayload.orElse(null),
@@ -170,7 +170,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'query' as the subject of the message.
      *
-     * @return an QueryRequestBuilder with current information of this builder
+     * @return An QueryRequestBuilder with current information of this builder.
      */
     public QueryRequestBuilder<T> subjectQuery() {
         final var builder = new QueryRequestBuilder<>(expectedPayload.orElse(null),
@@ -184,7 +184,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'participant' as the subject of the message.
      *
-     * @return an ParticipantRequestBuilder with current information of this builder
+     * @return An ParticipantRequestBuilder with current information of this builder.
      */
     public ParticipantRequestBuilder<T> subjectParticipant() {
         final var builder =
@@ -199,7 +199,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'app' as the subject of the message.
      *
-     * @return an AppRequestBuilder with current information of this builder
+     * @return An AppRequestBuilder with current information of this builder.
      */
     public AppRequestBuilder<T> subjectApp() {
         final var builder = new AppRequestBuilder<>(expectedPayload.orElse(null),
@@ -213,7 +213,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'description' as the subject of the message.
      *
-     * @return an DescriptionRequestBuilder with current information of this builder
+     * @return An DescriptionRequestBuilder with current information of this builder.
      */
     public DescriptionRequestBuilder<T> subjectDescription() {
         final var builder =
@@ -228,7 +228,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'log' as the subject of the message.
      *
-     * @return an LogRequestBuilder with current information of this builder
+     * @return An LogRequestBuilder with current information of this builder.
      */
     public LogRequestBuilder<T> subjectLog() {
         final var builder = new LogRequestBuilder<>(expectedPayload.orElse(null),
@@ -242,7 +242,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'connector certificate' as the subject of the message.
      *
-     * @return an ConnectorCertificateRequestBuilder with current information of this builder
+     * @return An ConnectorCertificateRequestBuilder with current information of this builder.
      */
     public ConnectorCertificateRequestBuilder<T> subjectConnectorCertificate() {
         final var builder = new ConnectorCertificateRequestBuilder<>(
@@ -257,7 +257,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'participant' as the subject of the message.
      *
-     * @return an ParticipantCertificateRequestBuilder with current information of this builder
+     * @return An ParticipantCertificateRequestBuilder with current information of this builder.
      */
    public ParticipantCertificateRequestBuilder<T> subjectParticipantCertificate() {
        final var builder = new ParticipantCertificateRequestBuilder<>(
@@ -272,7 +272,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'contract' as the subject of the message.
      *
-     * @return an ContractRequestBuilder with current information of this builder
+     * @return An ContractRequestBuilder with current information of this builder.
      */
    public ContractRequestBuilder<T> subjectContract() {
        final var builder = new ContractRequestBuilder<>(expectedPayload.orElse(null),
@@ -286,7 +286,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'command' as the subject of the message.
      *
-     * @return an CommandRequestBuilder with current information of this builder
+     * @return An CommandRequestBuilder with current information of this builder.
      */
    public CommandRequestBuilder<T> subjectCommand() {
        final var builder = new CommandRequestBuilder<>(expectedPayload.orElse(null),
@@ -300,7 +300,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'contract supplement' as the subject of the message.
      *
-     * @return an ContractSupplementRequestBuilder with current information of this builder
+     * @return An ContractSupplementRequestBuilder with current information of this builder.
      */
    public ContractSupplementRequestBuilder<T> subjectContractSupplement() {
        final var builder = new ContractSupplementRequestBuilder<>(
@@ -315,7 +315,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'contract offer' as the subject of the message.
      *
-     * @return an ContractOfferRequestBuilder with current information of this builder
+     * @return An ContractOfferRequestBuilder with current information of this builder.
      */
     public ContractOfferRequestBuilder<T> subjectContractOffer() {
         final var builder =
@@ -330,7 +330,7 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'access token' as the subject of the message.
      *
-     * @return an AccessTokenRequestBuilder with current information of this builder
+     * @return An AccessTokenRequestBuilder with current information of this builder.
      */
     public AccessTokenRequestBuilder<T> subjectAccessToken() {
         final var builder =
@@ -343,24 +343,23 @@ public class IdsRequestBuilder<T> {
     }
 
     /**
-     * Send a multipart message to target using current
-     * information of the RequestBuilder.
+     * Send a multipart message to target using current information of the RequestBuilder.
      *
-     * @param target target URI message will be sent to
-     * @param message multipart header message
-     * @return MessageContainer containing response
-     * @throws RejectionException when response is a RejectionMessage
-     * (and 'throwOnRejection' is set in the builder)
-     * @throws UnexpectedPayloadException when payload is not of type T
-     * @throws ShaclValidatorException when Shacl Validation fails
-     * @throws SerializeException when the payload cannot be serialized
-     * @throws ClaimsException when DAT of response is not valid
-     * @throws UnknownResponseException when type of response is not known
-     * @throws SendMessageException when Message cannot be sent, because
+     * @param target Target URI message will be sent to.
+     * @param message Multipart header message.
+     * @return MessageContainer containing response.
+     * @throws RejectionException When response is a RejectionMessage (and 'throwOnRejection'
+     * is set in the builder).
+     * @throws UnexpectedPayloadException When payload is not of type T.
+     * @throws ShaclValidatorException When Shacl Validation fails.
+     * @throws SerializeException When the payload cannot be serialized.
+     * @throws ClaimsException When DAT of response is not valid.
+     * @throws UnknownResponseException When type of response is not known.
+     * @throws SendMessageException When Message cannot be sent, because
      * of missing fields or an error in the underlying httpclient
-     * @throws MultipartParseException when the response cannot be parsed as multipart
-     * @throws IOException when some other error happens while sending the message
-     * @throws DeserializeException when response cannot be deserialized
+     * @throws MultipartParseException When the response cannot be parsed as multipart.
+     * @throws IOException When some other error happens while sending the message.
+     * @throws DeserializeException When response cannot be deserialized.
      */
     protected MessageContainer<T> sendMultipart(final URI target, final Message message)
             throws RejectionException,
@@ -399,5 +398,4 @@ public class IdsRequestBuilder<T> {
         }
         return new MessageContainer<>(header, (T) payload);
     }
-
 }

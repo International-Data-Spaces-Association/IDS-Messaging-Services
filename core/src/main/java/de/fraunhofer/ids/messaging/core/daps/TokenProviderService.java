@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Get Daps Tokens and Daps Public Key from specified URLs.
- * Spring Component Wrapper for TokenManagerService
+ * Spring Component Wrapper for TokenManagerService.
  */
 @Slf4j
 @Service
@@ -101,7 +101,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * Return the DAT as a Infomodel {@link DynamicAttributeToken}.
      *
-     * @return acquire a new DAPS Token and return it as a {@link DynamicAttributeToken}
+     * @return Acquire a new DAPS Token and return it as a {@link DynamicAttributeToken}.
      */
     @Override
     public DynamicAttributeToken getDAT()
@@ -118,7 +118,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * Return the DAT as JWT String.
      *
-     * @return acquire a new DAPS Token and return the JWT String value
+     * @return Acquire a new DAPS Token and return the JWT String value.
      */
     @Override
     public String provideDapsToken()
@@ -140,7 +140,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * Return the Public Key from the DAPS JWKS.
      *
-     * @return the Public Key from the DAPS (used for validating Tokens of incoming Messages)
+     * @return The Public Key from the DAPS (used for validating Tokens of incoming Messages).
      */
     @Override
     public List<Key> providePublicKeys() {
@@ -204,8 +204,8 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     }
 
     /**
-     * @param jwt the jwt to check expiration
-     * @return true if jwt expired
+     * @param jwt The jwt to check expiration.
+     * @return True if jwt expired.
      */
     private boolean isExpired(final String jwt) {
         final var token =
