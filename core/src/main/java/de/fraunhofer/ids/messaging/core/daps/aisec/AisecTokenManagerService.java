@@ -168,8 +168,8 @@ public class AisecTokenManagerService implements TokenManagerService {
             throws ConnectorMissingCertExtensionException {
         final var error = "Mandatory required information of the connector "
           + "certificate is missing (AKI/SKI)!"
-          + " Needed to determine the fingerprint of the connector!"
-          + " Possible reason: Are you using a valid IDS-Certificate issued by the DAPS?";
+          + " Needed to determine the fingerprint of the connector for the DAPS!"
+          + " Possible reason: Are you using a valid connector certificate issued by the DAPS?";
 
         if (configContainer.getConfigurationModel().getConnectorDeployMode()
            != ConnectorDeployMode.TEST_DEPLOYMENT) {
