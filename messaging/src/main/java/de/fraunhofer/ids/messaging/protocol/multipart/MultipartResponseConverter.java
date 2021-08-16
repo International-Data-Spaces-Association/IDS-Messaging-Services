@@ -131,7 +131,7 @@ public class MultipartResponseConverter {
             } else if (responseHeader instanceof ResourceUpdateMessage) {
                 messageAndPayload = getResourceUpdateMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ResourceUnavailableMessage) {
-                messageAndPayload= getResourceUnavailableMessage(responseHeader);
+                messageAndPayload = getResourceUnavailableMessage(responseHeader);
             } else if (responseHeader instanceof ParticipantUpdateMessage) {
                 messageAndPayload = getParticipantUpdateMessage(responseHeader, responsePayload);
             } else if (responseHeader instanceof ParticipantUnavailableMessage) {
