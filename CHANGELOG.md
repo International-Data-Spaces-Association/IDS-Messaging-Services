@@ -57,7 +57,7 @@ For a complete changelog of artifacts, see: https://github.com/International-Dat
 ## Version [2.0.1] 2021-07-20
 
 ### Changes
-- Patch Change: If the search term for the fulltext broker search is already passed in quotes, these are now removed and the adjusted search termn is passed to the query template.
+- Patch Change: If the search term for the fulltext broker search is already passed in quotes, these are now removed and the adjusted search term is passed to the query template.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework:spring-core 5.3.8 -> 5.3.9
@@ -131,7 +131,7 @@ With this version we switch to the versions-format of semantic versioning. In pr
 
 ### Added
 - Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
-- Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 applicaton.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
+- Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 application.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
 - Minor Change: New feature - At Connector runtime, individual additional DAPS DAT validation rules can now be added during the verification process of the DAT. For example, it is possible to create a blacklist of untrusted IDS-Connectors or DAPS-Systems and save them in a Connector-Database and check for them when a message is received. If the rules are not met, a RejectionMessage is sent automatically by the IDS-Messaging-Services.
 
 ### Changes

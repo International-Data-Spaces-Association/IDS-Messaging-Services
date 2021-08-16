@@ -50,7 +50,7 @@ public class PreDispatchingFilterResultBuilder {
     /**
      * Success indicator of the PreDispatchingFilter.
      *
-     * @param success boolean if filter was successfull
+     * @param success boolean if filter was successful
      * @return PreDispatchingFilterResultBuilder
      */
     public PreDispatchingFilterResultBuilder withSuccess(final boolean success) {

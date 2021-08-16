@@ -12,6 +12,6 @@
  * limitations under the License.
  */
 /**
- * Exception calsses used in the messaging module.
+ * Exception classes used in the messaging module.
  */
 package de.fraunhofer.ids.messaging.requests.exceptions;

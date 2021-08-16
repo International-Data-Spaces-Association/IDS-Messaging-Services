@@ -66,7 +66,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     public static final int ONE_DAY_IN_SECONDS  = 86_400;
 
     /**
-     * Seconds to substract for the issued at value.
+     * Seconds to subtract for the issued at value.
      */
     public static final int SECONDS_TO_SUBTRACT = 10;
 
@@ -81,7 +81,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     private final ConfigContainer configContainer;
 
     /***
-     * Beautyfies Hex strings and will generate a result later used to
+     * Beautifies Hex strings and will generate a result later used to
      * create the client id (XX:YY:ZZ).
      *
      * @param hexString HexString to be beautified
@@ -181,7 +181,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Handle exception if DAPS returned an empty response.
      *
-     * @param e the thrown excpetion
+     * @param e the thrown exception
      * @throws DapsEmptyResponseException forwarded exception to the connector
      * developer if DAPS returned an empty response
      */
@@ -204,8 +204,8 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Handle exception if connection to DAPS failed.
      *
-     * @param e the thrwon IOException
-     * @throws DapsConnectionException mapped exception, thworn if connection to DAPS failed
+     * @param e the thrown IOException
+     * @throws DapsConnectionException mapped exception, thrown if connection to DAPS failed
      */
     private void handleIOException(final IOException e) throws DapsConnectionException {
         final var error = String.format("Error connecting to DAPS "
@@ -390,7 +390,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      *
      * @param cert The X509Certificate-Certificate
      * @return The SKI-KeyIdentifier of the certificate
-     * @throws ConnectorMissingCertExtensionException thrwon if SKI of certificateis empty
+     * @throws ConnectorMissingCertExtensionException thrown if SKI of certificate is empty
      */
     private byte[] getCertificateSKI(final X509Certificate cert)
             throws ConnectorMissingCertExtensionException {

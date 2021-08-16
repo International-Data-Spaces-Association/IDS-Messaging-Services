@@ -95,7 +95,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
     private final ClientProvider clientProvider;
 
     /**
-     * The certifacte.
+     * The certificate.
      */
     private X509Certificate clientCert;
 

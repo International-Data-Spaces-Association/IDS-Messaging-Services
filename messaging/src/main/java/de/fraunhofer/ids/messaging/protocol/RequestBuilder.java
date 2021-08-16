@@ -25,9 +25,9 @@ import okhttp3.Request;
  */
 public interface RequestBuilder {
     /**
-     * @param message A Message from the IDS Infomation Model
+     * @param message A Message from the IDS Information Model
      * @param target  An URI to which the message should be sent to
-     * @return okhttp Response (to be updated to Infomation Model Message)
+     * @return okhttp Response (to be updated to Information Model Message)
      * @throws SerializeException if serialization of Message Header is not successful.
      * @throws MalformedURLException Thrown to indicate that a malformed URL has occurred
      */

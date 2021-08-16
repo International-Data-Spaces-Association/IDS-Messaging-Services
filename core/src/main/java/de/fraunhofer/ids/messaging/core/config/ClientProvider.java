@@ -92,7 +92,7 @@ public class ClientProvider {
 
         if (connector.getConnectorDeployMode() == ConnectorDeployMode.PRODUCTIVE_DEPLOYMENT) {
             if (log.isDebugEnabled()) {
-                log.debug("Productive Deployment, use Trustmanager vrom KeyStoreManager");
+                log.debug("Productive Deployment, use Trustmanager from KeyStoreManager");
             }
 
             setSSLSocketFactory(manager, okHttpBuilder);
@@ -145,7 +145,7 @@ public class ClientProvider {
     /**
      * Select the Proxy being used.
      *
-     * @param okHttpBuilder      The Cuilder of the okHttp Client used for sending messages
+     * @param okHttpBuilder      The Builder of the okHttp Client used for sending messages
      * @param proxyConfiguration the configuration of the proxy to be used
      */
     private static void setProxySelector(final OkHttpClient.Builder okHttpBuilder,

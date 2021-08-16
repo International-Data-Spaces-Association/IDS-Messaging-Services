@@ -172,7 +172,8 @@ public class IdsHttpService implements HttpService {
 
             return multipartResponse;
         } catch (IOException ioException) {
-            //serializer.deserialize messageString thre IOException, mapping to DeserializeException
+            //serializer.deserialize messageString threw IOException, mapping to
+            //DeserializeException
             throw new DeserializeException(ioException);
         }
     }
