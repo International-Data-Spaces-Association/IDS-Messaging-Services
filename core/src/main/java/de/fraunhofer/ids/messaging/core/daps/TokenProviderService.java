@@ -128,7 +128,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
             DapsEmptyResponseException {
         if (this.currentJwt == null || isExpired(currentJwt)) {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Get a new DAT Token from %s", dapsTokenUrl));
+                log.debug("Get a new DAT Token from {}", dapsTokenUrl);
             }
 
             currentJwt = tokenManagerService.acquireToken(dapsTokenUrl);
@@ -167,7 +167,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         for (final var entry : urlKidMap.entrySet()) {
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug(String.format("Getting json web keyset from %s", entry.getKey()));
+                    log.debug("Getting json web keyset from {}", entry.getKey());
                 }
 
                 final var request = new Request.Builder().url(entry.getKey()).build();

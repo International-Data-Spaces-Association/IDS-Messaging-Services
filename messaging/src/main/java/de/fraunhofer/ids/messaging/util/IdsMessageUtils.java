@@ -112,9 +112,7 @@ public final class IdsMessageUtils {
 
         //read /main/resources/project/properties
         if (log.isDebugEnabled()) {
-            log.debug(String.format(
-                    "Trying to read Property %s from pom.xml properties",
-                    property));
+            log.debug("Trying to read Property {} from pom.xml properties", property);
         }
 
         final var properties = new Properties();

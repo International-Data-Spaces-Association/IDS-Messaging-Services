@@ -214,7 +214,7 @@ public class KeyStoreManager {
             IOException,
             KeyStoreManagerInitializationException {
         if (log.isInfoEnabled()) {
-            log.info(String.format("Searching for keystore file %s", location.toString()));
+            log.info("Searching for keystore file {}", location.toString());
         }
         final var store = getKeyStoreInstance();
 
@@ -234,7 +234,7 @@ public class KeyStoreManager {
                                   .toString();
 
         if (log.isInfoEnabled()) {
-            log.info("Relative Path: " + relativepathString);
+            log.info("Relative Path: {}", relativepathString);
         }
 
         final var keyStoreOnClassPath = new ClassPathResource(relativepathString).exists();
@@ -260,7 +260,7 @@ public class KeyStoreManager {
             }
             try {
                 if (log.isInfoEnabled()) {
-                    log.info("System Path: " + pathString);
+                    log.info("System Path: {}", pathString);
                 }
 
                 //try absolute path
@@ -298,7 +298,7 @@ public class KeyStoreManager {
             store = KeyStore.getInstance(KeyStore.getDefaultType());
         } catch (KeyStoreException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not create a KeyStore with default type! " + e.getMessage());
+                log.error("Could not create a KeyStore with default type! {}", e.getMessage());
             }
         }
         return store;
@@ -355,7 +355,7 @@ public class KeyStoreManager {
             throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Getting private key %s from keystore", keyAlias));
+            log.debug("Getting private key {} from keystore", keyAlias);
         }
         final var key = keyStore.getKey(keyAlias, keyStorePw);
 

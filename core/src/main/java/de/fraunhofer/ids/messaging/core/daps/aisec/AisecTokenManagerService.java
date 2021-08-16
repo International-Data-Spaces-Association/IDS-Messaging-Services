@@ -136,7 +136,7 @@ public class AisecTokenManagerService implements TokenManagerService {
             final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
             if (log.isInfoEnabled()) {
-                log.info(String.format("Sending request to DAPS: %s", dapsUrl));
+                log.info("Sending request to DAPS: {}", dapsUrl);
             }
 
             final var jwtResponse = sendRequestToDAPS(client, request);
@@ -236,8 +236,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         if (log.isErrorEnabled()) {
             log.error(
                     "PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! "
-                    + "No DAT could be loaded from DAPS, reason: "
-                    + error);
+                    + "No DAT could be acquired from DAPS, reason: {}", error);
         }
     }
 

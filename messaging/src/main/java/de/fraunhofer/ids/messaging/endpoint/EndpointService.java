@@ -67,7 +67,7 @@ public class EndpointService {
      */
     public void addMapping(final String url) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Adding a mapping for url %s", url));
+            log.debug("Adding a mapping for url {}", url);
         }
 
         final var requestMappingInfo = getRequestMappingInfo(url);
@@ -92,7 +92,7 @@ public class EndpointService {
      */
     public void removeMapping(final String url) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Remove mapping for url %s", url));
+            log.debug("Remove mapping for url {}", url);
         }
 
         final var requestMappingInfo = getRequestMappingInfo(url);

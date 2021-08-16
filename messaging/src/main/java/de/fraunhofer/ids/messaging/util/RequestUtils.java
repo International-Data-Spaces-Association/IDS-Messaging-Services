@@ -48,7 +48,7 @@ public final class RequestUtils {
             buffer.close();
         } catch (IOException | NullPointerException e) {
             if (log.isErrorEnabled()) {
-                log.error(e.getClass().toString() + ": printing failed.");
+                log.error("{}: printing failed.", e.getClass().toString());
             }
         }
 

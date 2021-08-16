@@ -159,8 +159,7 @@ public class ClientProvider {
 
                 if (proxyConfiguration.getNoProxy().contains(uri)) {
                     if (log.isDebugEnabled()) {
-                        log.debug(String.format("URI %s is in NoProxy List,"
-                            + " no proxy is used", uri.toString()));
+                        log.debug("URI {} is in NoProxy List, no proxy is used", uri.toString());
                     }
 
                     //if the called uri is in the Exceptions of the
@@ -168,8 +167,8 @@ public class ClientProvider {
                     proxyList.add(Proxy.NO_PROXY);
                 } else {
                     if (log.isDebugEnabled()) {
-                        log.debug(String.format("URI %s is not in NoProxy List,"
-                            + " use configured Proxy", uri.toString()));
+                        log.debug("URI {} is not in NoProxy List, use configured Proxy",
+                                  uri.toString());
                     }
 
                     //else use proxy with ProxyConfig
@@ -178,7 +177,7 @@ public class ClientProvider {
                     final int proxyPort = proxyAddress.getPort();
 
                     if (log.isInfoEnabled()) {
-                        log.info("Address: " + proxyHost + " , Port: " + proxyPort);
+                        log.info("Address: {}, Port: {}", proxyHost, proxyPort);
                     }
                     proxyList.add(new Proxy(Proxy.Type.HTTP,
                         new InetSocketAddress(proxyHost, proxyPort)));
@@ -372,17 +371,14 @@ public class ClientProvider {
                                               final Duration readTimeout,
                                               final Duration writeTimeout,
                                               final Duration callTimeout) {
-        if (log.isDebugEnabled()) {
-            log.debug("Creating OkHttp client");
-        }
 
         final var withTimeout =
             rebuildClientWithTimeouts(client, connectTimeout,
                                       readTimeout, writeTimeout,
                                       callTimeout);
 
-        if (log.isInfoEnabled()) {
-            log.info("Ok Http Client Protocols" + withTimeout.protocols());
+        if (log.isDebugEnabled()) {
+            log.debug("Ok Http Client Protocols: {}", withTimeout.protocols());
         }
         return withTimeout;
     }
@@ -409,25 +405,25 @@ public class ClientProvider {
 
         if (connectTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Setting connect timeout: %s ", connectTimeout.toString()));
+                log.debug("Setting connect timeout: {}", connectTimeout.toString());
             }
             builder.connectTimeout(connectTimeout);
         }
         if (readTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Setting read timeout: %s ", readTimeout.toString()));
+                log.debug("Setting read timeout: {}", readTimeout.toString());
             }
             builder.readTimeout(readTimeout);
         }
         if (writeTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Setting write timeout: %s ", writeTimeout.toString()));
+                log.debug("Setting write timeout: {}", writeTimeout.toString());
             }
             builder.writeTimeout(writeTimeout);
         }
         if (callTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Setting call timeout: %s ", callTimeout.toString()));
+                log.debug("Setting call timeout: {}", callTimeout.toString());
             }
             builder.callTimeout(callTimeout);
         }
@@ -439,7 +435,7 @@ public class ClientProvider {
         final var okHttpClient = builder.build();
 
         if (log.isInfoEnabled()) {
-            log.info("Ok Http Client Protocols" + okHttpClient.protocols());
+            log.info("Ok Http Client Protocols {}", okHttpClient.protocols());
         }
 
         return okHttpClient;

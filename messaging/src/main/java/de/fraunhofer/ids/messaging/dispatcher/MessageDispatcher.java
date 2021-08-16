@@ -221,8 +221,7 @@ public class MessageDispatcher {
             }
         } else {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("No message handler exists for %s",
-                                        header.getClass()));
+                log.debug("No message handler exists for {}", header.getClass());
             }
 
             //If no handler for the type exists, the message type isn't supported

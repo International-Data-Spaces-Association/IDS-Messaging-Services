@@ -170,7 +170,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
         final var clientResponse = Objects.requireNonNull(response.body()).string();
 
         if (log.isInfoEnabled()) {
-            log.info("Success: " + response.isSuccessful() + " " + clientResponse);
+            log.info("Success: {} {}", response.isSuccessful(), clientResponse);
         }
 
         return clientResponse;

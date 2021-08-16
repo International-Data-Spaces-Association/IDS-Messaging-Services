@@ -48,7 +48,7 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
     private ConfigurationModel loadConfig(final ConfigProperties properties)
             throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Loading configuration from %s", properties.getPath()));
+            log.debug("Loading configuration from {}", properties.getPath());
         }
 
         final var config = getConfiguration(properties);
@@ -70,7 +70,7 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
 
     private String getClassPathConfig(final ConfigProperties properties) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info(String.format("Loading config from classpath: %s", properties.getPath()));
+            log.info("Loading config from classpath: {}", properties.getPath());
         }
 
         final var configurationStream = new ClassPathResource(properties.getPath()).getInputStream();
@@ -82,7 +82,7 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
 
     private String getAbsolutePathConfig(final ConfigProperties properties) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info(String.format("Loading config from absolute Path %s", properties.getPath()));
+            log.info("Loading config from absolute Path {}", properties.getPath());
         }
 
         final var fis = new FileInputStream(properties.getPath());
