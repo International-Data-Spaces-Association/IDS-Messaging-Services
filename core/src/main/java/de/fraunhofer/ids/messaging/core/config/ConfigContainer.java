@@ -25,9 +25,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The ConfigurationContainer wraps the current configuration
- * with the respective key- and truststore,
- * and manages changes of the configuration.
+ * The ConfigurationContainer wraps the current configuration with the respective key- and
+ * truststore, and manages changes of the configuration.
  */
 @Slf4j
 public class ConfigContainer {
@@ -52,8 +51,8 @@ public class ConfigContainer {
     /**
      * Create a ConfigurationContainer with a ConfigurationModel and KeyStoreManager.
      *
-     * @param configurationModel the initial {@link ConfigurationModel} of the Connector
-     * @param keyStoreManager    the KeyStoreManager, managing Key- and Truststore of the Connector
+     * @param configurationModel The initial {@link ConfigurationModel} of the Connector.
+     * @param keyStoreManager The KeyStoreManager, managing Key- and Truststore of the Connector.
      */
     public ConfigContainer(final ConfigurationModel configurationModel,
                            final KeyStoreManager keyStoreManager) {
@@ -64,20 +63,19 @@ public class ConfigContainer {
     /**
      * Getter for the {@link Connector} (ConnectorDescription of the {@link ConfigurationModel}).
      *
-     * @return the ConnectorDescription of the managed ConfigurationModel
+     * @return The ConnectorDescription of the managed ConfigurationModel.
      */
     public Connector getConnector() {
         return configurationModel.getConnectorDescription();
     }
 
     /**
-     * Update the ConfigurationContainer with a new
-     * {@link ConfigurationModel}, rebuild the KeyStoreManager with
-     * new Configuration in the process.
+     * Update the ConfigurationContainer with a new {@link ConfigurationModel},
+     * rebuild the KeyStoreManager with new Configuration in the process.
      *
-     * @param configurationModel the new configurationModel that replaces the current one
-     * @throws ConfigUpdateException when the Key- and Truststore
-     * in the new Connector cannot be initialized
+     * @param configurationModel The new configurationModel that replaces the current one.
+     * @throws ConfigUpdateException When the Key- and Truststore in the new Connector
+     * cannot be initialized.
      */
     public void updateConfiguration(final ConfigurationModel configurationModel)
             throws ConfigUpdateException {
@@ -120,10 +118,10 @@ public class ConfigContainer {
     /**
      * Rebuild the {@link KeyStoreManager} with a given configuration.
      *
-     * @param configurationModel the current ConfigurationModel
-     * @return the newly built KeyStoreManager
-     * @throws KeyStoreManagerInitializationException when the new
-     * KeyStoreManager cannot be initialized
+     * @param configurationModel The current ConfigurationModel.
+     * @return The newly built KeyStoreManager.
+     * @throws KeyStoreManagerInitializationException When the new KeyStoreManager cannot be
+     * initialized.
      */
     private KeyStoreManager rebuildKeyStoreManager(final ConfigurationModel configurationModel)
             throws KeyStoreManagerInitializationException {

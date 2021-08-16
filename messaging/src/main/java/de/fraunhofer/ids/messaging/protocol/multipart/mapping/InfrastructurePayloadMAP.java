@@ -40,7 +40,7 @@ public class InfrastructurePayloadMAP
     private Message message;
 
     /**
-     * The connector self descrition.
+     * The connector self description.
      */
     private InfrastructureComponent connectorSelfDescription;
 

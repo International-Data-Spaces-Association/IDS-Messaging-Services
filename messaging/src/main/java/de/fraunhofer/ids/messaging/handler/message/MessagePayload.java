@@ -18,22 +18,22 @@ import java.io.InputStream;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 
 /**
- * Wrapper for payloads of incoming Messages. Implementation
- * can be found in {@link MessagePayloadInputstream}.
+ * Wrapper for payloads of incoming Messages. Implementation can be found
+ * in {@link MessagePayloadInputstream}.
  */
 public interface MessagePayload {
     /**
      * Getter for the InputStream of the incoming message.
      *
-     * @return get the InputSteam of the incoming message
+     * @return Get the InputSteam of the incoming message.
      */
     InputStream getUnderlyingInputStream();
 
     /**
-     * @param targetType type that should be parsed from the message
-     * @param <T> type of the parsed object
-     * @return underlying input stream parsed as targetType
-     * @throws DeserializeException if underlying input stream cannot be parsed
+     * @param targetType Type that should be parsed from the message.
+     * @param <T> Type of the parsed object.
+     * @return Underlying input stream parsed as targetType.
+     * @throws DeserializeException If underlying input stream cannot be parsed.
      */
     <T> T readFromJSON(Class<? extends T> targetType)
             throws DeserializeException;

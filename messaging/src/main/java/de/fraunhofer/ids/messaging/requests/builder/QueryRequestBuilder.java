@@ -89,12 +89,12 @@ public class QueryRequestBuilder<T> extends IdsRequestBuilder<T>
     /**
      * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.QueryMessage}.
      *
-     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY).
+     * @param queryLanguage The Language of the Query (e.g. SPARQL, SQL, XQUERY).
      *                      See {@link QueryLanguage}
-     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors,
-     *                      INACTIVE connectors). See {@link QueryScope}
-     * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
-     * @return this builder instance
+     * @param queryScope The Scope of the Query (ALL connectors, ACTIVE connectors,
+     *                      INACTIVE connectors). See {@link QueryScope}.
+     * @param queryTarget The type of IDS Components that are queried. See {@link QueryTarget}.
+     * @return This builder instance.
      */
     public QueryRequestBuilder<T> operationSend(final QueryLanguage queryLanguage,
                                                 final QueryScope queryScope,

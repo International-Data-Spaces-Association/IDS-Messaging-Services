@@ -22,7 +22,7 @@ public class ShaclValidatorException extends Exception {
     /**
      * SHACL Validation: Received message headers does not conform to IDS-infomodel.
      *
-     * @param message The error message
+     * @param message The error message.
      */
     public ShaclValidatorException(final String message) {
         super(message);

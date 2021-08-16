@@ -78,8 +78,8 @@ public class ArtifactRequestBuilder<T> extends IdsRequestBuilder<T> implements
      * Set the operation to RECEIVE: describes an
      * {@link de.fraunhofer.iais.eis.ArtifactRequestMessage}.
      *
-     * @param requestedArtifact requested artifact id for message header
-     * @return this builder instance
+     * @param requestedArtifact Requested artifact id for message header.
+     * @return This builder instance.
      */
     public ArtifactRequestBuilder<T> operationGet(final URI requestedArtifact) {
         this.operation = Crud.RECEIVE;

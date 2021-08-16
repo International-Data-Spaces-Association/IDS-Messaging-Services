@@ -31,7 +31,7 @@ import java.net.URI;
 /**
  * A RequestBuilder that is able to execute a request will implement this class.
  *
- * @param <T> type of expected payload
+ * @param <T> Type of expected payload.
  */
 public interface ExecutableBuilder<T> {
 

@@ -41,11 +41,10 @@ public class EndpointService {
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     /**
-     * Use <code>/api/ids/data</code> and <code>/api/ids/infrastructure</code>
-     * routes as default mappings.
+     * Use /api/ids/data and /api/ids/infrastructure routes as default mappings.
      *
-     * @param messageController            the {@link MessageController} which will be mapped
-     * @param requestMappingHandlerMapping for managing Springs http route mappings
+     * @param messageController The {@link MessageController} which will be mapped.
+     * @param requestMappingHandlerMapping For managing Springs http route mappings.
      */
     @Autowired
     public EndpointService(final MessageController messageController,
@@ -64,11 +63,11 @@ public class EndpointService {
     /**
      * Add another endpoint to the MessageController.
      *
-     * @param url the url for which a route to {@link MessageController} should be added
+     * @param url The url for which a route to {@link MessageController} should be added.
      */
     public void addMapping(final String url) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Adding a mapping for url %s", url));
+            log.debug("Adding a mapping for url {}", url);
         }
 
         final var requestMappingInfo = getRequestMappingInfo(url);
@@ -88,12 +87,12 @@ public class EndpointService {
     /**
      * Remove an endpoint from the MessageController.
      *
-     * @param url the url for which the {@link MessageController}
-     *            should be unmapped for (RequestMappingInfo is deleted)
+     * @param url The url for which the {@link MessageController} should be unmapped for
+     *            (RequestMappingInfo is deleted).
      */
     public void removeMapping(final String url) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Remove mapping for url %s", url));
+            log.debug("Remove mapping for url {}", url);
         }
 
         final var requestMappingInfo = getRequestMappingInfo(url);

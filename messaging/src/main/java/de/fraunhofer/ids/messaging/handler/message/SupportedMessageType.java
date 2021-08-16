@@ -32,6 +32,7 @@ public @interface SupportedMessageType {
 
     /**
      * Return the supported messagetype of a handler.
+     *
      * @return The supported messagetype of a handler.
      */
     Class<? extends Message> value();

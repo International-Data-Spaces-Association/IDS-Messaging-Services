@@ -70,10 +70,10 @@ public class DapsValidator {
     /**
      * Extract the Claims from the Dat token of a message, given the Message and a signingKey.
      *
-     * @param token       {@link DynamicAttributeToken} of an incoming RequestMessage
-     * @param signingKeys a  List of public Keys
-     * @return the Claims of the messages DAT Token, when it can be signed with the given key
-     * @throws ClaimsException if Token cannot be signed with the given key
+     * @param token {@link DynamicAttributeToken} of an incoming RequestMessage.
+     * @param signingKeys A list of public Keys.
+     * @return The Claims of the messages DAT Token, when it can be signed with the given key.
+     * @throws ClaimsException If Token cannot be signed with the given key.
      */
     public static Jws<Claims> getClaims(final DynamicAttributeToken token,
                                         final List<Key> signingKeys)
@@ -99,9 +99,9 @@ public class DapsValidator {
     }
 
     /**
-     * @param token incoming DAT token
-     * @return claims extracted from the DAT
-     * @throws ClaimsException if token cannot be parsed using a DAPS public key
+     * @param token Incoming DAT token.
+     * @return Claims extracted from the DAT.
+     * @throws ClaimsException If token cannot be parsed using a DAPS public key.
      */
     public Jws<Claims> getClaims(final DynamicAttributeToken token) throws ClaimsException {
         Jws<Claims> claims;
@@ -118,9 +118,9 @@ public class DapsValidator {
     /**
      * Check the claims of the DAT.
      *
-     * @param claims JWS claims of DAT Token
-     * @param extraAttributes extra attributes to be checked
-     * @return true, if claims are valid
+     * @param claims JWS claims of DAT Token.
+     * @param extraAttributes Extra attributes to be checked.
+     * @return True, if claims are valid.
      */
     public boolean checkClaims(final Jws<Claims> claims,
                                final Map<String, Object> extraAttributes) {
@@ -148,9 +148,9 @@ public class DapsValidator {
     /**
      * Check a given DAT considering additional attributes from the message payload.
      *
-     * @param token           {@link DynamicAttributeToken} of an incoming Message
-     * @param extraAttributes additional Attributes from the Message Payload
-     * @return true if DAT is valid
+     * @param token {@link DynamicAttributeToken} of an incoming Message.
+     * @param extraAttributes Additional Attributes from the Message Payload.
+     * @return True if DAT is valid.
      */
     public boolean checkDat(final DynamicAttributeToken token,
                             final Map<String, Object> extraAttributes) {
@@ -170,8 +170,8 @@ public class DapsValidator {
     /**
      * Check a given DAT.
      *
-     * @param token a {@link DynamicAttributeToken} from a Infomodel Message
-     * @return true if DAT is valid
+     * @param token A {@link DynamicAttributeToken} from a Infomodel Message.
+     * @return True if DAT is valid.
      */
     public boolean checkDat(final DynamicAttributeToken token) {
         return checkDat(token, null);
@@ -181,9 +181,9 @@ public class DapsValidator {
      * Verifies that the {@link de.fraunhofer.iais.eis.SecurityProfile}
      * in the token is  same as in the Selfdescription.
      *
-     * @param registered the SecurityProfile ID  in token
-     * @param given      the SecurityProfile ID in Selfdescription
-     * @throws ClaimsException if SecurityProfiles do not match
+     * @param registered The SecurityProfile ID  in token.
+     * @param given The SecurityProfile ID in Selfdescription.
+     * @throws ClaimsException If SecurityProfiles do not match.
      */
     private void verifySecurityProfile(final String registered,
                                        final String given)

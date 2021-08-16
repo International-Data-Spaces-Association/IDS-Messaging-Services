@@ -26,7 +26,7 @@ public interface MessageResponse {
     /**
      * Create an empty MessageResponse.
      *
-     * @return an empty MessageResponse
+     * @return An empty MessageResponse.
      */
     static MessageResponse empty() {
         return s -> Map.of();
@@ -35,9 +35,9 @@ public interface MessageResponse {
     /**
      * Create a MultipartMap from the MessageResponse, with header and payload part.
      *
-     * @param serializer a Serializer to produce JsonLD
-     * @return Map of response parts that can be used for the multipart response
-     * @throws SerializeException if some object cannot be serialized
+     * @param serializer A Serializer to produce JsonLD.
+     * @return Map of response parts that can be used for the multipart response.
+     * @throws SerializeException If some object cannot be serialized.
      */
     Map<String, Object> createMultipartMap(Serializer serializer) throws SerializeException;
 }

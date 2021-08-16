@@ -116,15 +116,15 @@ public abstract class InfrastructureService  {
     }
 
     /**
-     * Check if incoming response if of expected type, throw
-     * an IOException with information, if it is not.
+     * Check if incoming response if of expected type, throw an IOException with
+     * information, if it is not.
      *
-     * @param response {@link MessageAndPayload} as returned by the {@link MessageService}
-     * @param expectedType Expected type response MAP should have
-     * @param <T> expected Type as generic
-     * @return {@link MessageAndPayload object specialized to the expected Message}
-     * @throws UnexpectedResponseException if a rejection message or any
-     * other unexpected message was returned.
+     * @param response {@link MessageAndPayload} as returned by the {@link MessageService}.
+     * @param expectedType Expected type response MAP should have.
+     * @param <T> Expected Type as generic.
+     * @return {@link MessageAndPayload Object specialized to the expected Message}.
+     * @throws UnexpectedResponseException If a rejection message or any other unexpected
+     * message was returned.
      */
     protected <T extends MessageAndPayload<?, ?>> T expectMapOfTypeT(
             final MessageAndPayload<?, ?> response,

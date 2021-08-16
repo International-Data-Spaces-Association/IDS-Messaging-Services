@@ -24,7 +24,7 @@ public interface DapsTokenProvider {
     /**
      * Get the DAPS JWT Token from a DAPS and return its compact String representation.
      *
-     * @return the Daps Token of the Connector
+     * @return The DAPS Token of the Connector.
      */
     String provideDapsToken() throws
             ConnectorMissingCertExtensionException,
@@ -34,7 +34,7 @@ public interface DapsTokenProvider {
     /**
      * Return the DAPS JWT Token in infomodel {@link DynamicAttributeToken} representation.
      *
-     * @return DynamicAttributeToken from the DAPS JWT
+     * @return DynamicAttributeToken from the DAPS JWT.
      */
     DynamicAttributeToken getDAT() throws
             ConnectorMissingCertExtensionException,

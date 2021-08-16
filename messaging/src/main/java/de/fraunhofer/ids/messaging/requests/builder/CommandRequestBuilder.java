@@ -77,7 +77,7 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements
     /**
      * Set the operation to UPDATE: describes an {@link de.fraunhofer.iais.eis.UploadMessage}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     public CommandRequestBuilder<T> operationUpload() {
         this.operation = Crud.UPDATE;
@@ -88,8 +88,8 @@ public class CommandRequestBuilder<T> extends IdsRequestBuilder<T> implements
      * Set the operation to COMMAND: describes an
      * {@link de.fraunhofer.iais.eis.InvokeOperationMessage}.
      *
-     * @param operationReference operation reference for message header
-     * @return this builder instance
+     * @param operationReference Operation reference for message header.
+     * @return This builder instance.
      */
     public CommandRequestBuilder<T> operationCommand(final URI operationReference) {
         this.operationReference = operationReference;

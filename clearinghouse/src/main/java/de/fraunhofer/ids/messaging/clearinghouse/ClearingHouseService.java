@@ -239,9 +239,7 @@ public class ClearingHouseService extends InfrastructureService
      * @param headerMessage  IDS Message used as Header
      * @param payloadContent Payload String
      * @param payloadType    MediaType of Payload String
-     *
      * @return built MultipartBody
-     *
      * @throws SerializeException when headerMessage cannot be serialized
      */
     private MultipartBody buildMultipartWithInternalHeaders(final Message headerMessage,

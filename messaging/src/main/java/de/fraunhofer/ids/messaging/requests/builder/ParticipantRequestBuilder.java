@@ -40,8 +40,7 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
  * @param <T> Type of expected Payload.
  */
 public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
-        implements ExecutableBuilder<T>,
-        SupportsMultipart<T, ParticipantRequestBuilder<T>> {
+        implements ExecutableBuilder<T>, SupportsMultipart<T, ParticipantRequestBuilder<T>> {
 
     /**
      * URI of the affected participant.
@@ -81,8 +80,8 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to UPDATE: describes a
      * {@link de.fraunhofer.iais.eis.ParticipantUpdateMessage}.
      *
-     * @param affectedParticipant affected connector id for message header
-     * @return this builder instance
+     * @param affectedParticipant Affected connector id for message header.
+     * @return This builder instance.
      */
     public ParticipantRequestBuilder<T> operationUpdate(
             final URI affectedParticipant) {
@@ -95,8 +94,8 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to DELETE: describes a
      * {@link de.fraunhofer.iais.eis.ParticipantUnavailableMessage}.
      *
-     * @param affectedParticipant affected connector id for message header
-     * @return this builder instance
+     * @param affectedParticipant Affected connector id for message header.
+     * @return This builder instance.
      */
     public ParticipantRequestBuilder<T> operationDelete(
             final URI affectedParticipant) {
@@ -109,8 +108,8 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to RECEIVE: describes a
      * {@link de.fraunhofer.iais.eis.ParticipantRequestMessage}.
      *
-     * @param affectedParticipant affected connector id for message header
-     * @return this builder instance
+     * @param affectedParticipant Affected connector id for message header.
+     * @return This builder instance.
      */
     public ParticipantRequestBuilder<T> operationGet(
             final URI affectedParticipant) {
@@ -146,11 +145,9 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
         }
         switch (protocolType) {
             case IDSCP:
-                throw new UnsupportedOperationException(
-                        "Not yet implemented Protocol!");
+                throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case LDP:
-                throw new UnsupportedOperationException(
-                        "Not yet implemented Protocol!");
+                throw new UnsupportedOperationException("Not yet implemented Protocol!");
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
@@ -169,12 +166,10 @@ public class ParticipantRequestBuilder<T> extends IdsRequestBuilder<T>
                                         affectedParticipant).buildMessage();
                         return sendMultipart(target, receiveMessage);
                     default:
-                        throw new UnsupportedOperationException(
-                                "Unsupported Operation!");
+                        throw new UnsupportedOperationException("Unsupported Operation!");
                 }
             default:
-                throw new UnsupportedOperationException(
-                        "Unsupported Protocol!");
+                throw new UnsupportedOperationException("Unsupported Protocol!");
         }
     }
 

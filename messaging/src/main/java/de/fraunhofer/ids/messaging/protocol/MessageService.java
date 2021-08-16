@@ -34,9 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Option for the connector developer to choose the protocol for
- * sending the message in the IDS dynamically per message.
- * Additionally a default if no protocol is specified.
+ * Option for the connector developer to choose the protocol for sending the message in the
+ * IDS dynamically per message. Additionally a default if no protocol is specified.
  */
 @Slf4j
 @Service
@@ -50,8 +49,7 @@ public class MessageService {
     /**
      * The MultipartRequestBuilder.
      */
-    private final MultipartRequestBuilder multipartRequestBuilder
-                            = new MultipartRequestBuilder();
+    private final MultipartRequestBuilder multipartRequestBuilder = new MultipartRequestBuilder();
 
     /**
      * The MultipartResponseConverter.
@@ -77,17 +75,16 @@ public class MessageService {
     /**
      * Send messages in IDS to other actors with choice of the protocol used.
      *
-     * @param messageAndPayload The IDS Infomodel Message
-     *                          containing the Metadata,
-     *                          and the Payload to be sent
-     * @param target The target of the message
-     * @param protocolType The selected protocol which should
-     *                     be used for sending (see ProtocolType enum)
-     * @return returns the response
-     * @throws MultipartParseException something went wrong with
-     * the file attached (if there was one)
-     * @throws ClaimsException something went wrong with the DAT
-     * @throws IOException  DAPS or target could not be reached
+     * @param messageAndPayload The IDS Infomodel Message containing the Metadata, and the
+     *                          Payload to be sent.
+     * @param target The target of the message.
+     * @param protocolType The selected protocol which should be used for sending
+     *                     (see ProtocolType enum).
+     * @return Returns the response.
+     * @throws MultipartParseException Something went wrong with the file attached
+     * (if there was one).
+     * @throws ClaimsException Something went wrong with the DAT.
+     * @throws IOException DAPS or target could not be reached.
      */
     public MessageAndPayload<?, ?> sendIdsMessage(
             final MessageAndPayload<?, ?> messageAndPayload,
@@ -147,19 +144,17 @@ public class MessageService {
     }
 
     /**
-     * Send messages in IDS to other actors without choosing a
-     * specific protocol, will use Multipart as default.
+     * Send messages in IDS to other actors without choosing a specific protocol, will
+     * use Multipart as default.
      *
-     * @param messageAndPayload The IDS Infomodel Message containing
-     *                          the Metadata, and the Payload to be sent
-     * @param target The target of the message
-     *
-     * @return returns the response
-     *
-     * @throws MultipartParseException something went wrong with the
-     * file attached (if there was one)
-     * @throws ClaimsException something went wrong with the DAT
-     * @throws IOException DAPS or target could not be reached
+     * @param messageAndPayload The IDS Infomodel Message containing the Metadata, and the
+     *                          Payload to be sent.
+     * @param target The target of the message.
+     * @return Returns the response.
+     * @throws MultipartParseException Something went wrong with the file attached
+     * (if there was one).
+     * @throws ClaimsException Something went wrong with the DAT.
+     * @throws IOException DAPS or target could not be reached.
      */
     public MessageAndPayload<?, ?> sendIdsMessage(
             final MessageAndPayload<?, ?> messageAndPayload, final URI target)

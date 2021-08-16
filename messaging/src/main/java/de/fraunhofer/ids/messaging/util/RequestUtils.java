@@ -33,8 +33,8 @@ public final class RequestUtils {
     /**
      * A util class that prints okhttp Requests.
      *
-     * @param request a okhttp Request
-     * @return the request as string or an empty string
+     * @param request A okhttp Request.
+     * @return The request as string or an empty string.
      */
     public static String printRequest(final Request request) {
         var bufferText = "";
@@ -48,7 +48,7 @@ public final class RequestUtils {
             buffer.close();
         } catch (IOException | NullPointerException e) {
             if (log.isErrorEnabled()) {
-                log.error(e.getClass().toString() + ": printing failed.");
+                log.error("{}: printing failed.", e.getClass().toString());
             }
         }
 
@@ -58,7 +58,7 @@ public final class RequestUtils {
     /**
      * Prints the request as info in the log.
      *
-     * @param request {@link Request} to be logged
+     * @param request {@link Request} to be logged.
      */
     public static void logRequest(final Request request) {
         if (log.isInfoEnabled()) {

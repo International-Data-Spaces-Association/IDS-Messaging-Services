@@ -38,7 +38,7 @@ public interface MessageAndPayload<M extends Message, T> {
     Optional<T> getPayload();
 
     /**
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
+     * @throws SerializeException Exception is thrown if serializing a message threw an IOException.
      * @return The serzialized payload.
      */
     SerializedPayload serializePayload() throws SerializeException;

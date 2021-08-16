@@ -39,8 +39,8 @@ public class PreDispatchingFilterResultBuilder {
     /**
      * Error message of the PreDispatchingFilter.
      *
-     * @param error the throwable error
-     * @return PreDispatchingFilterResultBuilder
+     * @param error The throwable error.
+     * @return PreDispatchingFilterResultBuilder.
      */
     public PreDispatchingFilterResultBuilder withError(final Throwable error) {
         this.error = error;
@@ -50,8 +50,8 @@ public class PreDispatchingFilterResultBuilder {
     /**
      * Success indicator of the PreDispatchingFilter.
      *
-     * @param success boolean if filter was successfull
-     * @return PreDispatchingFilterResultBuilder
+     * @param success Boolean if filter was successful.
+     * @return PreDispatchingFilterResultBuilder.
      */
     public PreDispatchingFilterResultBuilder withSuccess(final boolean success) {
         this.success = success;
@@ -61,8 +61,8 @@ public class PreDispatchingFilterResultBuilder {
     /**
      * Message of the PreDispatchingFilter.
      *
-     * @param message Message of the PreDispatchingFilter
-     * @return PreDispatchingFilterResultBuilder
+     * @param message Message of the PreDispatchingFilter.
+     * @return PreDispatchingFilterResultBuilder.
      */
     public PreDispatchingFilterResultBuilder withMessage(final String message) {
         this.message = message;
@@ -72,7 +72,7 @@ public class PreDispatchingFilterResultBuilder {
     /**
      * Build the PreDispatchingFilter-Result.
      *
-     * @return The build PreDispatchingFilter-Result
+     * @return The build PreDispatchingFilter-Res.ult
      */
     public PreDispatchingFilterResult build() {
         return new PreDispatchingFilterResult(error, success, message);

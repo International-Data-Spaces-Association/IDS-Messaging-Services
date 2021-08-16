@@ -26,8 +26,8 @@ public interface MessageTemplate<T extends Message> {
     /**
      * Build the message defined by this template.
      *
-     * @return built message by template
-     * @throws DapsTokenManagerException when no DAT for Message can be received
+     * @return Built message by template.
+     * @throws DapsTokenManagerException when no DAT for Message can be received.
      */
     T buildMessage() throws DapsTokenManagerException;
 }

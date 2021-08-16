@@ -78,8 +78,8 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements
      * Set the operation to UPDATE: describes a
      * {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage}.
      *
-     * @param affectedConnector affected connector id for message header
-     * @return this builder instance
+     * @param affectedConnector Affected connector id for message header.
+     * @return This builder instance.
      */
     public ConnectorRequestBuilder<T> operationUpdate(final URI affectedConnector) {
         this.operation = Crud.UPDATE;
@@ -91,8 +91,8 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements
      * Set the operation to DELETE: describes a
      * {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage}.
      *
-     * @param affectedConnector affected connector id for message header
-     * @return this builder instance
+     * @param affectedConnector Affected connector id for message header.
+     * @return This builder instance.
      */
     public ConnectorRequestBuilder<T> operationDelete(final URI affectedConnector) {
         this.operation = Crud.DELETE;

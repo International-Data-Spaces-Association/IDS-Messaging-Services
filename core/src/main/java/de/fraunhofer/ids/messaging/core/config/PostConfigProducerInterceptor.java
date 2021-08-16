@@ -22,10 +22,9 @@ public interface PostConfigProducerInterceptor {
     /**
      * Perform a custom action on the generated configuration.
      *
-     * @param configContainer container managing configuration, connector and clientprovider
-     * @throws ConfigProducerInterceptorException if an internal error occurs
+     * @param configContainer Container managing configuration, connector and clientprovider.
+     * @throws ConfigProducerInterceptorException If an internal error occurs.
      */
     void perform(ConfigContainer configContainer) throws ConfigProducerInterceptorException;
 
 }
-

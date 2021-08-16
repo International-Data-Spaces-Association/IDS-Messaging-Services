@@ -50,11 +50,11 @@ public class Base64EncodedFileBodyResponse<T extends Message> implements Message
     /**
      * Create a MessageResponse with a Payload containing a Base64 encoded File.
      *
-     * @param header    header of the response (ResponseMessage or NotificationMessage)
-     * @param file      file that should be returned
-     * @param mediaType mediatype of the file
-     * @throws IOException if header cannot be serialized to json,
-     * or file cannot be parsed to base64 encoded string
+     * @param header Header of the response (ResponseMessage or NotificationMessage).
+     * @param file File that should be returned.
+     * @param mediaType Mediatype of the file.
+     * @throws IOException If header cannot be serialized to json, or file cannot be parsed
+     * to base64 encoded string.
      */
     @SuppressWarnings(value = { "rawtypes", "unchecked" })
     public Base64EncodedFileBodyResponse(final T header, final File file, final MediaType mediaType)
@@ -77,13 +77,13 @@ public class Base64EncodedFileBodyResponse<T extends Message> implements Message
     /**
      * Create a MessageResponse with a Payload containing a Base64 encoded File.
      *
-     * @param header    header of the response (ResponseMessage or NotificationMessage)
-     * @param file      file that should be returned
-     * @param mediaType mediatype of the file
-     * @param <T>       subtype of Message (ResponseMessage or NotificationMessage)
-     * @return instance of Base64EncodedFileBodyResponse using given parameters
-     * @throws IOException if header cannot be serialized to json, or
-     * file cannot be parsed to base64 encoded string
+     * @param header Header of the response (ResponseMessage or NotificationMessage).
+     * @param file File that should be returned.
+     * @param mediaType Mediatype of the file.
+     * @param <T> Subtype of Message (ResponseMessage or NotificationMessage).
+     * @return Instance of Base64EncodedFileBodyResponse using given parameters.
+     * @throws IOException If header cannot be serialized to json, or file cannot be parsed
+     * to base64 encoded string.
      */
     public static <T extends Message> Base64EncodedFileBodyResponse<T> create(
             final T header, final File file, final MediaType mediaType)

@@ -26,7 +26,7 @@ public class MessageBuilderException extends Exception {
      * with the given information threw a ConstraintViolationException
      * (catches builders RuntimeException).
      *
-     * @param cause Throwable cause of the Exception
+     * @param cause Throwable cause of the Exception.
      */
     public MessageBuilderException(final Throwable cause) {
         super(cause);
