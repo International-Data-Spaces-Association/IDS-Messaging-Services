@@ -114,14 +114,16 @@ public class AisecTokenManagerService implements TokenManagerService {
         // Try clause for setup phase (loading keys, building trust manager)
         try {
             final var privateKey = getPrivateKey(keyStoreManager);
-            final var connectorUUID = getConnectorUUID(keyStoreManager);
+
+            //This is the fingerprint of the connector, not the UUID (can als be called UID).
+            //
+            final var connectorFingerprint = getConnectorFingerprint(keyStoreManager);
 
             if (log.isInfoEnabled()) {
-                log.info("ConnectorUUID: " + connectorUUID);
                 log.info("Retrieving Dynamic Attribute Token...");
             }
 
-            final var jws = getRequestToken(targetAudience, privateKey, connectorUUID);
+            final var jws = getRequestToken(targetAudience, privateKey, connectorFingerprint);
 
             // build form body to embed client assertion into post request
             final var formBody = getFormBody(jws);
@@ -307,20 +309,20 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Get the signed(!) request token.
      *
-     * @param targetAudience The target audience
-     * @param privateKey     the private key of the keystore
-     * @param connectorUUID  the UUID of the Connector
-     * @return The signed request token
+     * @param targetAudience The target audience.
+     * @param privateKey The private key of the keystore.
+     * @param connectorFingerprint The fingerprint of the Connector (UID).
+     * @return The signed request token.
      */
     private String getRequestToken(final String targetAudience,
                                    final PrivateKey privateKey,
-                                   final String connectorUUID) {
+                                   final String connectorFingerprint) {
         if (log.isDebugEnabled()) {
             log.debug("Building jwt token");
         }
 
         final var expiryDate = Date.from(Instant.now().plusSeconds(ONE_DAY_IN_SECONDS));
-        final var jwtb = getJwtBuilder(targetAudience, connectorUUID, expiryDate);
+        final var jwtb = getJwtBuilder(targetAudience, connectorFingerprint, expiryDate);
 
         if (log.isDebugEnabled()) {
             log.debug("Signing jwt token");
@@ -332,17 +334,17 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Get the JWT Builder.
      *
-     * @param targetAudience The targetAudience
-     * @param connectorUUID  The UUID of the Connector
-     * @param expiryDate     The set expiry date
-     * @return The JWT-Builder
+     * @param targetAudience The targetAudience.
+     * @param connectorFingerprint The fingerprint of the Connector (UID).
+     * @param expiryDate The set expiry date.
+     * @return The JWT-Builder.
      */
     private JwtBuilder getJwtBuilder(final String targetAudience,
-                                     final String connectorUUID,
+                                     final String connectorFingerprint,
                                      final Date expiryDate) {
         return Jwts.builder()
-                   .setIssuer(connectorUUID)
-                   .setSubject(connectorUUID)
+                   .setIssuer(connectorFingerprint)
+                   .setSubject(connectorFingerprint)
                    .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
                    .claim("@type", "ids:DatRequestToken")
                    .setExpiration(expiryDate)
@@ -352,33 +354,33 @@ public class AisecTokenManagerService implements TokenManagerService {
     }
 
     /**
-     * Generated the UUID of the Connector by giving the method only the KeyStoreManager.
+     * Generates the fingerprint of the Connector (UID) using the KeyStoreManager.
      *
-     * @param keyStoreManager The KeyStoremanager used to access the AKI and SKI of the Certificate
-     * @return The generated Connector-UUID
+     * @param keyStoreManager The KeyStoremanager used to access the AKI and SKI of the certificate.
+     * @return The generated connector fingerprint (UID).
      * @throws ConnectorMissingCertExtensionException Thrown if either AKI
-     * or SKI are not valid within the Connector-Certificate
+     * or SKI are not valid within the connector certificate.
      */
     @NotNull
-    private String getConnectorUUID(final KeyStoreManager keyStoreManager)
+    private String getConnectorFingerprint(final KeyStoreManager keyStoreManager)
             throws ConnectorMissingCertExtensionException {
         final var certificate = getCertificate(keyStoreManager);
         final var authorityKeyIdentifier = getCertificateAKI(certificate);
         final var subjectKeyIdentifier = getCertificateSKI(certificate);
 
-        return generateConnectorUUID(authorityKeyIdentifier, subjectKeyIdentifier);
+        return generateConnectorFingerprint(authorityKeyIdentifier, subjectKeyIdentifier);
     }
 
     /**
-     * Generates the UUID of the Connector.
+     * Generates the fingerprint of the connector (UID).
      *
-     * @param authorityKeyIdentifier The Connector-Certificate AKI
-     * @param subjectKeyIdentifier   The Connector-Certificate SKI
-     * @return The generated UUID of the Connector
+     * @param authorityKeyIdentifier The connector certificate AKI.
+     * @param subjectKeyIdentifier The connector certificate SKI.
+     * @return The generated fingerprint of the connector (UID).
      */
     @NotNull
-    private String generateConnectorUUID(final byte[] authorityKeyIdentifier,
-                                         final byte[] subjectKeyIdentifier) {
+    private String generateConnectorFingerprint(final byte[] authorityKeyIdentifier,
+                                                final byte[] subjectKeyIdentifier) {
         final var akiResult = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
         final var skiResult = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
 
