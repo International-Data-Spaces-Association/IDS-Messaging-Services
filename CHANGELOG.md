@@ -12,10 +12,10 @@ All notable changes to this project will be documented in this file.
 ## Version [3.1.1] UNRELEASED
 
 ### Changes (Patch change)
-- Changes in printed warning/error logs
+- Changes in printed info/warning/error logs
   - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
   - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
-  - Adjusted error message "Mandatory required information of the connector certificate is missing (AKI/SKI)!"
+  - Adjusted error message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" with reference to the connector fingerprint
   - Stopped printing connector fingerprint in log message in TokenManagerService
   - Other minor adjustments to make log messages more consistent (parameterized logs, more useful outputs) 
 
