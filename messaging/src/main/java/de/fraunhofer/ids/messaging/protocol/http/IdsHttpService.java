@@ -121,7 +121,7 @@ public class IdsHttpService implements HttpService {
             }
 
             if (log.isInfoEnabled()) {
-                log.info("Received response passed SHACL Validation.");
+                log.info("Received response passed SHACL-Validation.");
             }
         }
 
@@ -150,9 +150,7 @@ public class IdsHttpService implements HttpService {
                 }
             }
 
-            final var ignoreDAT = configContainer
-                                    .getConfigurationModel()
-                                    .getConnectorDeployMode()
+            final var ignoreDAT = configContainer.getConfigurationModel().getConnectorDeployMode()
                                         == ConnectorDeployMode.TEST_DEPLOYMENT;
             var valid = true;
 

@@ -178,7 +178,7 @@ public class ClientProvider {
                     final int proxyPort = proxyAddress.getPort();
 
                     if (log.isInfoEnabled()) {
-                        log.info("Address: " + proxyHost + " ,Port: " + proxyPort);
+                        log.info("Address: " + proxyHost + " , Port: " + proxyPort);
                     }
                     proxyList.add(new Proxy(Proxy.Type.HTTP,
                         new InetSocketAddress(proxyHost, proxyPort)));
@@ -202,7 +202,7 @@ public class ClientProvider {
     /**
      * Set the Proxy-Authenticator.
      *
-     * @param okHttpBuilder The Cuilder of the okHttp Client used for sending messages.
+     * @param okHttpBuilder The Builder of the okHttp Client used for sending messages.
      * @param proxyConfiguration The configuration of the proxy to be used.
      */
     private static void setProxyAuthenticator(

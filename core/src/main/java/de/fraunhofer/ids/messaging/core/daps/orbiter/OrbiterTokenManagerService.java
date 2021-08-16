@@ -167,12 +167,10 @@ public class OrbiterTokenManagerService implements TokenManagerService {
                                           final Request request)
             throws IOException {
         final var response = client.newCall(request).execute();
-        final var clientResponse =
-                Objects.requireNonNull(response.body()).string();
+        final var clientResponse = Objects.requireNonNull(response.body()).string();
 
         if (log.isInfoEnabled()) {
-            log.info("Success: " + response.isSuccessful());
-            log.info(clientResponse);
+            log.info("Success: " + response.isSuccessful() + " " + clientResponse);
         }
 
         return clientResponse;
@@ -193,8 +191,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
 
     private String getCertificateRequest(final PKCS10CertificationRequest csr)
             throws IOException {
-        final var pemObject =
-                new PemObject("CERTIFICATE REQUEST", csr.getEncoded());
+        final var pemObject = new PemObject("CERTIFICATE REQUEST", csr.getEncoded());
         final var stringWriter = new StringWriter();
 
         final var pemWriter = new PemWriter(stringWriter);
@@ -225,8 +222,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
             throws IOException, OperatorCreationException {
         //create csr builder with principal
         final var p10Builder = new JcaPKCS10CertificationRequestBuilder(
-                new X500Principal(
-                        "C=DE, ST=Bonn, L=NRW, O=truzzt, CN=*.truzzt.org"),
+                new X500Principal("C=DE, ST=Bonn, L=NRW, O=truzzt, CN=*.truzzt.org"),
                          generatedKeyPair.getPublic());
 
         //add extensions
