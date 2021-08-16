@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
   - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
   - Adjusted error message "Mandatory required information of the connector certificate is missing (AKI/SKI)!"
   - Stopped printing connector fingerprint in log message in TokenManagerService
-  - Other minor adjustments to make log messages more consistent
+  - Other minor adjustments to make log messages more consistent (parameterized logs, more useful outputs) 
 
 ### Miscellaneous  (Patch change)
 - Internal change: Identifiers and documentation in the code that previously described the supposed connector UUID have been changed to connector fingerprint to reflect their actual meaning.
