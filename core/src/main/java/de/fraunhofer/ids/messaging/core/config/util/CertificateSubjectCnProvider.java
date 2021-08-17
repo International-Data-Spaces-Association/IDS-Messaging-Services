@@ -31,4 +31,8 @@ public final class CertificateSubjectCnProvider {
      * generated in the KeyStoreManager instead.
      */
     public static UUID certificateSubjectCn;
+
+    private CertificateSubjectCnProvider() {
+        //Nothing to do here.
+    }
 }
