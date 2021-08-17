@@ -46,7 +46,7 @@ public class IdsRequestBuilderService {
     /**
      * Get a requestbuilder, expecting no specific payload type.
      *
-     * @return an {@link IdsRequestBuilder} expecting no specific payload type.
+     * @return an {@link IdsRequestBuilder} Expecting no specific payload type.
      */
     public IdsRequestBuilder<Object> newRequest() {
         return new IdsRequestBuilder<>(null,
@@ -58,9 +58,9 @@ public class IdsRequestBuilderService {
     /**
      * Get a requestbuilder, expecting payload of type T.
      *
-     * @param expected expected class of payload object.
-     * @param <T> expected type of payload.
-     * @return an {@link IdsRequestBuilder} expecting payload of type T.
+     * @param expected Expected class of payload object.
+     * @param <T> Expected type of payload.
+     * @return An {@link IdsRequestBuilder} expecting payload of type T.
      */
     public <T> IdsRequestBuilder<T> newRequestExpectingType(final Class<T> expected) {
         return new IdsRequestBuilder<>(expected,
@@ -68,6 +68,4 @@ public class IdsRequestBuilderService {
                                        requestTemplateProvider,
                                        notificationTemplateProvider);
     }
-
-
 }

@@ -46,7 +46,7 @@ public class PreDispatchingFilterResult {
     /**
      * Static method returning a builder.
      *
-     * @return a builder instance for this class
+     * @return A builder instance for this class.
      */
     public static PreDispatchingFilterResultBuilder builder() {
         return new PreDispatchingFilterResultBuilder();
@@ -55,7 +55,7 @@ public class PreDispatchingFilterResult {
     /**
      * Static method for a default successResult.
      *
-     * @return a PreDispatchingFilterResult where success = true, but with empty message
+     * @return A PreDispatchingFilterResult where success = true, but with empty message.
      */
     public static PreDispatchingFilterResult successResult() {
         return successResult("");
@@ -64,8 +64,8 @@ public class PreDispatchingFilterResult {
     /**
      * Create a successResult with given message.
      *
-     * @param message the message of the Result
-     * @return a PreDispatchingFilterResult where success = true, with given message
+     * @param message The message of the Result.
+     * @return A PreDispatchingFilterResult where success = true, with given message.
      */
     public static PreDispatchingFilterResult successResult(final String message) {
         return new PreDispatchingFilterResult(null, true, message);

@@ -58,10 +58,10 @@ public final class IdsMessageUtils {
     /**
      * Hash a value with a given MessageDigest.
      *
-     * @param digest MessageDigest to hash with
-     * @param value  String to hash.
+     * @param digest MessageDigest to hash with.
+     * @param value String to hash.
      *
-     * @return Hash value of the input String
+     * @return Hash value of the input String.
      */
     public static String hash(final MessageDigest digest, final String value) {
         digest.update(value.getBytes());
@@ -71,13 +71,12 @@ public final class IdsMessageUtils {
     /**
      * Generate a signature over a given String value.
      *
-     * @param privateSignature Signature method
-     * @param value String to sign
+     * @param privateSignature Signature method.
+     * @param value String to sign.
      * @param privateKey Private Key to sign with.
-     * @return Signature as String
-     * @throws InvalidKeyException if the private key is invalid.
-     * @throws SignatureException if the signature cannot
-     * properly be initialized.
+     * @return Signature as String.
+     * @throws InvalidKeyException If the private key is invalid.
+     * @throws SignatureException If the signature cannot properly be initialized.
      */
     public static String sign(final Signature privateSignature,
                        final String value,
@@ -93,9 +92,9 @@ public final class IdsMessageUtils {
     /**
      * Takes generic elements and returns them as a ArrayList.
      *
-     * @param <T>      type of objects in the returned ArrayList
-     * @param elements elements to be put in the list
-     * @return elements as {@code ArrayList<T>}
+     * @param <T> Type of objects in the returned ArrayList.
+     * @param elements Elements to be put in the list.
+     * @return Elements as {@code ArrayList<T>}.
      */
     @SafeVarargs
     public static <T> ArrayList<T> asList(final T... elements) {
@@ -106,16 +105,14 @@ public final class IdsMessageUtils {
      * Helper Function for accessing Info from pom.xml.
      * This will read from the generated file target/classes/.../project.properties
      *
-     * @param property like version, artifactID etc
-     * @return the pom value
+     * @param property Like version, artifactID etc.
+     * @return The pom value.
      */
     public static String getProjectProperty(final String property) {
 
         //read /main/resources/project/properties
         if (log.isDebugEnabled()) {
-            log.debug(String.format(
-                    "Trying to read Property %s from pom.xml properties",
-                    property));
+            log.debug("Trying to read Property {} from pom.xml properties", property);
         }
 
         final var properties = new Properties();
@@ -138,8 +135,8 @@ public final class IdsMessageUtils {
     /**
      * Generates a XML gregorian calendar from the current time.
      *
-     * @return XMLGregorianCalendar containing the current time
-     * stamp as {@link XMLGregorianCalendar}.
+     * @return XMLGregorianCalendar containing the current time stamp
+     * as {@link XMLGregorianCalendar}.
      */
     public static XMLGregorianCalendar getGregorianNow() {
         final var calendar = new GregorianCalendar();
@@ -158,9 +155,9 @@ public final class IdsMessageUtils {
     /**
      * Get a ConfigurationModel as JsonLD.
      *
-     * @param model a ConfigurationModel
-     * @return the SelfDeclaration of the configured connector
-     * @throws IOException when the connector cannot be serialized
+     * @param model A ConfigurationModel.
+     * @return The SelfDeclaration of the configured connector.
+     * @throws IOException When the connector cannot be serialized.
      */
     public static String buildSelfDeclaration(final ConfigurationModel model) throws IOException {
         return SERIALIZER.serialize(model.getConnectorDescription());
@@ -169,9 +166,9 @@ public final class IdsMessageUtils {
     /**
      * Get a Connector as JsonLD.
      *
-     * @param model a ConfigurationModel
-     * @return the SelfDeclaration of the configured connector
-     * @throws IOException when the connector cannot be serialized
+     * @param model A ConfigurationModel.
+     * @return The SelfDeclaration of the configured connector.
+     * @throws IOException When the connector cannot be serialized.
      */
     public static String buildSelfDeclaration(final Connector model) throws IOException {
         return SERIALIZER.serialize(model);

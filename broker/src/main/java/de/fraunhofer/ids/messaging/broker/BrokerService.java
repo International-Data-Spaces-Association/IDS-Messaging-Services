@@ -85,12 +85,12 @@ public class BrokerService extends InfrastructureService
 
     /**
      * BrokerService constructor.
-     * @param container the ConfigContainer
-     * @param tokenProvider the DapsTokenProvider
-     * @param messageService the MessageService
-     * @param idsRequestBuilderService service to send request messages
-     * @param templateProvider provider for notification message templates
-     * @param requestTemplateProvider provider for request message templates
+     * @param container The ConfigContainer.
+     * @param tokenProvider The DapsTokenProvider.
+     * @param messageService The MessageService.
+     * @param idsRequestBuilderService Service to send request messages.
+     * @param templateProvider Provider for notification message templates.
+     * @param requestTemplateProvider Provider for request message templates.
      */
     public BrokerService(final ConfigContainer container,
                          final DapsTokenProvider tokenProvider,

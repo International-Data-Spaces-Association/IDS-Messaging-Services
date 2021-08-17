@@ -78,7 +78,7 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements
      * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.LogMessage}.
      *
      * @param clearingHouseUrl The URL of the CH.
-     * @return this builder instance
+     * @return This builder instance.
      */
     public LogRequestBuilder<T> operationUpdate(final URI clearingHouseUrl) {
         this.operation = Crud.UPDATE;

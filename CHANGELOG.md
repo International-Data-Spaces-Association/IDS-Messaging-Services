@@ -9,6 +9,29 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.0.0] 2021-08-17
+
+### Major Change: Dependency Infomodel Artifacts 4.2.0
+- The update of the infomodel artifacts to version 4.2.0 may result in breaking changes for the connector developers.
+- One of the possible breaking changes is that PaymentModality is no longer defined as a list and therefore calls like isEmpty() will no longer compile.
+
+### Minor Change: CertificateSubjectCnProvider
+- New feature: **CertificateSubjectCnProvider.certificateSubjectCn** provides static access to the subject-CN of the connector certificate, which could be used as the connector UUID depending on the implementation of the connector. Value is initialized by the KeyStoreManager and reset at each update. If no valid certificate with Subject-CN is available, a random UUID is generated in the KeyStoreManager instead.
+
+### Patch Change: Log Message Changes
+- Changes in printed info/warning/error logs
+  - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
+  - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
+  - Adjusted error message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" with reference to the connector fingerprint
+  - Stopped printing connector fingerprint in log message in TokenManagerService
+  - Other minor adjustments to make log messages more consistent (parameterized logs, more useful outputs) 
+
+### Patch Change: Miscellaneous
+- Internal change: Identifiers and documentation in the code that previously described the supposed connector UUID have been changed to connector fingerprint to reflect their actual meaning.
+
+### Patch Change: Dependency Maintenance
+- Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1 
+
 ## Version [3.1.0] 2021-08-09
 
 ### Infomodel Maintenance (Patch Change)
@@ -46,7 +69,7 @@ For a complete changelog of artifacts, see: https://github.com/International-Dat
 ## Version [2.0.1] 2021-07-20
 
 ### Changes
-- Patch Change: If the search term for the fulltext broker search is already passed in quotes, these are now removed and the adjusted search termn is passed to the query template.
+- Patch Change: If the search term for the fulltext broker search is already passed in quotes, these are now removed and the adjusted search term is passed to the query template.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework:spring-core 5.3.8 -> 5.3.9
@@ -120,7 +143,7 @@ With this version we switch to the versions-format of semantic versioning. In pr
 
 ### Added
 - Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
-- Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 applicaton.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
+- Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 application.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
 - Minor Change: New feature - At Connector runtime, individual additional DAPS DAT validation rules can now be added during the verification process of the DAT. For example, it is possible to create a blacklist of untrusted IDS-Connectors or DAPS-Systems and save them in a Connector-Database and check for them when a message is received. If the rules are not met, a RejectionMessage is sent automatically by the IDS-Messaging-Services.
 
 ### Changes

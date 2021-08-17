@@ -22,7 +22,7 @@ public class DeserializeException extends Exception {
     /**
      * An exception that is thrown if deserializing gone wrong and threw IOException.
      *
-     * @param cause Throwable cause of the Exception
+     * @param cause Throwable cause of the Exception.
      */
     public DeserializeException(final Throwable cause) {
         super(cause);

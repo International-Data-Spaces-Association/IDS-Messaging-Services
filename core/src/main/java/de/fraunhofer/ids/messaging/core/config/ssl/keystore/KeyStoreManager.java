@@ -31,13 +31,18 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
+import de.fraunhofer.ids.messaging.core.config.util.CertificateSubjectCnProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.ClassPathResource;
 
@@ -62,51 +67,51 @@ public class KeyStoreManager {
     /**
      * The keystore.
      */
-    private KeyStore           keyStore;
+    private KeyStore keyStore;
 
     /**
      * The keystore password.
      */
-    private char[]             keyStorePw;
+    private char[] keyStorePw;
 
     /**
      * The alias.
      */
-    private String             keyAlias;
+    private String keyAlias;
 
     /**
      * The truststore.
      */
-    private KeyStore           trustStore;
+    private KeyStore trustStore;
 
     /**
      * The truststore password.
      */
-    private char[]             trustStorePw;
+    private char[] trustStorePw;
 
     /**
      * The private key.
      */
-    private PrivateKey         privateKey;
+    private PrivateKey privateKey;
 
     /**
      * The Certificate.
      */
-    private Certificate        cert;
+    private Certificate cert;
 
     /**
      * The X509TrustManager.
      */
-    private X509TrustManager   trustManager;
+    private X509TrustManager trustManager;
 
     /**
      * Build the KeyStoreManager from the given configuration.
      *
-     * @param configurationModel a ConfigurationModel
-     * @param keystorePw         the password for the IDSKeyStore
-     * @param trustStorePw       the password for the IDSTrustStore
-     * @param keyAlias           the alias of the IDS PrivateKey
-     * @throws KeyStoreManagerInitializationException when the KeyStoreManager cannot be initialized
+     * @param configurationModel A ConfigurationModel.
+     * @param keystorePw The password for the IDSKeyStore.
+     * @param trustStorePw The password for the IDSTrustStore.
+     * @param keyAlias The alias of the IDS PrivateKey.
+     * @throws KeyStoreManagerInitializationException When the KeyStoreManager cannot be initialized
      */
     public KeyStoreManager(final ConfigurationModel configurationModel,
                            final char[] keystorePw,
@@ -132,7 +137,7 @@ public class KeyStoreManager {
     /**
      * Getter for the expiration date of the Cert in the KeyStore.
      *
-     * @return expiration of currently used IDS Certificate
+     * @return Expiration of currently used IDS Certificate.
      */
     public Date getCertExpiration() {
         return ((X509Certificate) cert).getNotAfter();
@@ -166,6 +171,27 @@ public class KeyStoreManager {
         createTrustStore(configurationModel, trustStorePw);
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
+        initCertificateSubjectCn(); //requires valid connector certificate (e.g. issued by DAPS)
+    }
+
+    private void initCertificateSubjectCn()  {
+        try {
+            final var certificate = (X509Certificate) this.getCert();
+            final var x500name = new JcaX509CertificateHolder(certificate).getSubject();
+            final var cn = x500name.getRDNs(BCStyle.CN)[0];
+
+            //Set certificate subject cn
+            CertificateSubjectCnProvider.certificateSubjectCn
+                    = UUID.fromString(IETFUtils.valueToString(cn.getFirst().getValue()));
+        } catch (Exception exception) {
+            if (log.isWarnEnabled()) {
+                log.warn("Could not read the Subject-CN UUID from the connector certificate."
+                         + " Are you using a valid connector certificate?"
+                         + " CertificateSubjectCnProvider will provide a random UUID instead!");
+            }
+
+            CertificateSubjectCnProvider.certificateSubjectCn = UUID.randomUUID();
+        }
     }
 
     private void initTrustManager(final char... trustStorePw)
@@ -196,19 +222,16 @@ public class KeyStoreManager {
     }
 
     /**
-     * Load a KeyStore from the given location
-     * and open it with the given password.
-     * Try to find it inside the jar first, if nothing
-     * is found there, try the path at system scope
+     * Load a KeyStore from the given location and open it with the given password.
+     * Try to find it inside the jar first, if nothing is found there, try the path at system scope.
      *
-     * @param pw password of the keystore
-     * @param location path of the keystore
-     * @return the IdsKeyStore as java keystore instance
-     * @throws CertificateException if any of the certificates
-     * in the keystore could not be loaded
-     * @throws NoSuchAlgorithmException if the algorithm used to
-     * check the integrity of the keystore cannot be found
-     * @throws IOException when the Key-/Truststore File cannot be found
+     * @param pw Password of the keystore.
+     * @param location Path of the keystore.
+     * @return The IdsKeyStore as java keystore instance.
+     * @throws CertificateException If any of the certificates in the keystore could not be loaded.
+     * @throws NoSuchAlgorithmException If the algorithm used to check the integrity of the
+     * keystore cannot be found.
+     * @throws IOException When the Key-/Truststore File cannot be found.
      */
     private KeyStore loadKeyStore(final char[] pw, final URI location)
             throws
@@ -217,7 +240,7 @@ public class KeyStoreManager {
             IOException,
             KeyStoreManagerInitializationException {
         if (log.isInfoEnabled()) {
-            log.info(String.format("Searching for keystore file %s", location.toString()));
+            log.info("Searching for keystore file {}", location.toString());
         }
         final var store = getKeyStoreInstance();
 
@@ -237,7 +260,7 @@ public class KeyStoreManager {
                                   .toString();
 
         if (log.isInfoEnabled()) {
-            log.info("Relative Path: " + relativepathString);
+            log.info("Relative Path: {}", relativepathString);
         }
 
         final var keyStoreOnClassPath = new ClassPathResource(relativepathString).exists();
@@ -263,7 +286,7 @@ public class KeyStoreManager {
             }
             try {
                 if (log.isInfoEnabled()) {
-                    log.info("System Path: " + pathString);
+                    log.info("System Path: {}", pathString);
                 }
 
                 //try absolute path
@@ -301,7 +324,7 @@ public class KeyStoreManager {
             store = KeyStore.getInstance(KeyStore.getDefaultType());
         } catch (KeyStoreException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not create a KeyStore with default type! " + e.getMessage());
+                log.error("Could not create a KeyStore with default type! {}", e.getMessage());
             }
         }
         return store;
@@ -310,13 +333,13 @@ public class KeyStoreManager {
     /**
      * Load the TrustManager from the truststore.
      *
-     * @param password password of the truststore
-     * @return the X509TrustManager for the certificates inside the Truststore
-     * @throws NoSuchAlgorithmException if no Provider supports a
-     * TrustManagerFactorySpi implementation for the specified algorithm
-     * @throws UnrecoverableKeyException if the key cannot be
-     * recovered (e.g. the given password is wrong)
-     * @throws KeyStoreException if initialization of the trustmanager fails
+     * @param password Password of the truststore.
+     * @return The X509TrustManager for the certificates inside the Truststore.
+     * @throws NoSuchAlgorithmException If no Provider supports a TrustManagerFactorySpi
+     * implementation for the specified algorithm.
+     * @throws UnrecoverableKeyException If the key cannot be recovered
+     * (e.g. the given password is wrong).
+     * @throws KeyStoreException If initialization of the trustmanager fails.
      */
     private X509TrustManager loadTrustManager(final char... password)
             throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
@@ -348,19 +371,17 @@ public class KeyStoreManager {
     /**
      * Get the PrivateKey from the KeyStore (use the Key with the given alias).
      *
-     * @param keyAlias the alias of the PrivateKey to be loaded
-     *
-     * @throws UnrecoverableKeyException if the Key cannot be retrieved
-     * from the keystore (e.g. the given password is wrong)
-     * @throws NoSuchAlgorithmException if the algorithm
-     * for recovering the key cannot be found
-     * @throws KeyStoreException if KeyStore was not initialized
+     * @param keyAlias The alias of the PrivateKey to be loaded.
+     * @throws UnrecoverableKeyException If the Key cannot be retrieved
+     * from the keystore (e.g. the given password is wrong).
+     * @throws NoSuchAlgorithmException If the algorithm for recovering the key cannot be found.
+     * @throws KeyStoreException If KeyStore was not initialized.
      */
     private void getPrivateKeyFromKeyStore(final String keyAlias)
             throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Getting private key %s from keystore", keyAlias));
+            log.debug("Getting private key {} from keystore", keyAlias);
         }
         final var key = keyStore.getKey(keyAlias, keyStorePw);
 

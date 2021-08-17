@@ -11,21 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.fraunhofer.ids.messaging.core.daps;
-
 /**
- * Exception which is thrown when the Response from the DAPS is empty.
+ * Util classes for configuration and certificate issues.
  */
-public class DapsEmptyResponseException extends DapsTokenManagerException {
-    private static final long serialVersionUID = 42L;
-
-    /**
-     * For Throwing a EmptyDapsResponseException with a custom error message.
-     *
-     * @param message The error message to be included with the exception.
-     */
-    public DapsEmptyResponseException(final String message) {
-        super(message);
-    }
-
-}
+package de.fraunhofer.ids.messaging.core.config.util;

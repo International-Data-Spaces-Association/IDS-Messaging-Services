@@ -12,6 +12,6 @@
  * limitations under the License.
  */
 /**
- * Service classes for communication to IDS-Vocols.
+ * Service classes for communication to IDS-Vocol.
  */
 package de.fraunhofer.ids.messaging.vocol;

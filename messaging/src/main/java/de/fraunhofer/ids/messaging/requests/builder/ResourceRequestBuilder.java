@@ -77,8 +77,8 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to UPDATE: describes a
      * {@link de.fraunhofer.iais.eis.ResourceUpdateMessage}.
      *
-     * @param affectedResource affected resource id for message header
-     * @return this builder instance
+     * @param affectedResource Affected resource id for message header.
+     * @return This builder instance.
      */
     public ResourceRequestBuilder<T> operationUpdate(final URI affectedResource) {
         this.operation = Crud.UPDATE;
@@ -90,8 +90,8 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to DELETE: describes a
      * {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage}.
      *
-     * @param affectedResource affected resource id for message header
-     * @return this builder instance
+     * @param affectedResource Affected resource id for message header.
+     * @return This builder instance.
      */
     public ResourceRequestBuilder<T> operationDelete(final URI affectedResource) {
         this.operation = Crud.DELETE;

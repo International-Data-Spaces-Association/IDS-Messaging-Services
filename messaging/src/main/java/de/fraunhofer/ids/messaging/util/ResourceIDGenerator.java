@@ -32,9 +32,8 @@ public final class ResourceIDGenerator {
     /**
      * Create an URI with callerClazz name and random uuid in path (used as ID URIs).
      *
-     * @param callerClazz class for which the randomURI should be generated
-     *
-     * @return a random URI ID
+     * @param callerClazz Class for which the randomURI should be generated.
+     * @return A random URI ID.
      */
     public static URI randomURI(final Class<?> callerClazz) {
         try {

@@ -18,7 +18,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Set of Properties to configure the imported configuration at startup.
- * Properties should be added to the application.properties file
+ * Properties should be added to the application.properties file.
  */
 @Data
 @ConfigurationProperties(prefix = "configuration")
@@ -35,10 +35,10 @@ public class ConfigProperties {
      */
 
     private String keyStorePassword;
+
     /**
      * Alias of the connectors private key (used for signing DAT Requests).
      */
-
     private String keyAlias;
 
     /**

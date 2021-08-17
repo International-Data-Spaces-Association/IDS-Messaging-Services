@@ -59,12 +59,12 @@ public class MessageController {
     /**
      * The ConfigContainer.
      */
-    private final ConfigContainer   configContainer;
+    private final ConfigContainer configContainer;
 
     /**
      * The infomodel serializer.
      */
-    private final Serializer        serializer;
+    private final Serializer serializer;
 
     /**
      * Constructor for the MessageController.
@@ -82,18 +82,20 @@ public class MessageController {
     }
 
     /**
-     * Generic method to handle all incoming ids messages.
-     * One Method to Rule them All.
-     * Get header and payload from incoming message,
-     * let the MessageDispatcher and MessageHandler process it
-     * and return the result as a Multipart response.
+     * Generic method to handle all incoming ids messages. One Method to Rule them All.
+     * Get header and payload from incoming message, let the MessageDispatcher and
+     * MessageHandler process it and return the result as a Multipart response.
      *
-     * @param request incoming http request
-     * @return multipart MultivalueMap containing ResponseMessage header and some payload
+     * @param request Incoming http request.
+     * @return Multipart MultivalueMap containing ResponseMessage header and some payload.
      */
     public ResponseEntity<MultiValueMap<String, Object>> handleIDSMessage(
             final HttpServletRequest request) {
         try {
+            if (log.isInfoEnabled()) {
+                log.info("Received incoming message!");
+            }
+
             final var headerPart =
                     request.getPart(MultipartDatapart.HEADER.toString());
             final var payloadPart =
@@ -101,7 +103,7 @@ public class MessageController {
 
             if (headerPart == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("header of incoming message were empty!");
+                    log.debug("Header of incoming message were empty!");
                 }
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -113,7 +115,7 @@ public class MessageController {
             String input;
 
             if (log.isDebugEnabled()) {
-                log.debug("parsing header of incoming message");
+                log.debug("Parsing header of incoming message.");
             }
 
             try (var scanner = new Scanner(headerPart.getInputStream(),
@@ -126,7 +128,7 @@ public class MessageController {
                         .status(HttpStatus.BAD_REQUEST)
                         .body(createDefaultErrorMessage(
                              RejectionReason.VERSION_NOT_SUPPORTED,
-                             "Infomodel Version of incoming Message not supported"));
+                             "Infomodel Version of incoming Message not supported!"));
             }
 
             // Deserialize JSON-LD headerPart to its RequestMessage.class
@@ -134,8 +136,7 @@ public class MessageController {
                     .deserialize(input, Message.class);
 
             if (log.isDebugEnabled()) {
-                log.debug("hand the incoming message"
-                          + " to the message dispatcher!");
+                log.debug("Hand the incoming message to the message dispatcher!");
             }
 
             //pass null if payloadPart is null, else pass it as inputStream
@@ -152,7 +153,7 @@ public class MessageController {
                 // return the ResponseEntity as Multipart content
                 // with created MultiValueMap
                 if (log.isDebugEnabled()) {
-                    log.debug("sending response with status OK (200)");
+                    log.debug("Sending response with status OK (200).");
                 }
 
                 return ResponseEntity
@@ -164,8 +165,7 @@ public class MessageController {
                 // of the connector (e.g. for received RequestInProcessMessage)
 
                 if (log.isWarnEnabled()) {
-                    log.warn("Implemented Message-Handler"
-                             + " didn't return a response!");
+                    log.warn("Implemented Message-Handler didn't return a response!");
                 }
 
                 return ResponseEntity
@@ -175,16 +175,14 @@ public class MessageController {
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
                 log.error(
-                        "Error during pre-processing with"
-                        + " a PreDispatchingFilter! "
-                        + e.getMessage());
+                        "Error during pre-processing with a PreDispatchingFilter! {}",
+                        e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(createDefaultErrorMessage(
                                      RejectionReason.BAD_PARAMETERS,
                                      String.format(
-                                         "Error during preprocessing: %s",
-                                         e.getMessage())));
+                                         "Error during preprocessing: %s", e.getMessage())));
         } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("incoming message could not be parsed!");
@@ -206,16 +204,15 @@ public class MessageController {
                          .body(createDefaultErrorMessage(
                              RejectionReason.INTERNAL_RECIPIENT_ERROR,
                              String.format(
-                                 "Could not read incoming request! Error: %s",
-                                 e.getMessage())));
+                                 "Could not read incoming request! Error: %s", e.getMessage())));
         }
     }
 
     /**
      * Create a Spring {@link MultiValueMap} from a {@link java.util.Map}.
      *
-     * @param map a map as provided by the MessageResponse
-     * @return a MultiValueMap used as ResponseEntity for Spring
+     * @param map A map as provided by the MessageResponse.
+     * @return A MultiValueMap used as ResponseEntity for Spring.
      */
     private MultiValueMap<String, Object> createMultiValueMap(
             final Map<String, Object> map) {
@@ -236,10 +233,10 @@ public class MessageController {
      * Create a default RejectionMessage with a given RejectionReason
      * and specific error message for the payload.
      *
-     * @param rejectionReason reason why the message was rejected
-     * @param errorMessage    a specific error message for the payload
+     * @param rejectionReason Reason why the message was rejected.
+     * @param errorMessage A specific error message for the payload.
      * @return MultiValueMap with given error information that can
-     * be used for a multipart response
+     * be used for a multipart response.
      */
     private MultiValueMap<String, Object> createDefaultErrorMessage(
             final RejectionReason rejectionReason,
@@ -276,9 +273,9 @@ public class MessageController {
     }
 
     /**
-     * @param input controllers header input as string
-     * @return true if infomodel version is supported
-     * @throws IOException if no infomodel version is found in input
+     * @param input Controllers header input as string.
+     * @return True if infomodel version is supported.
+     * @throws IOException If no infomodel version is found in input.
      */
     private boolean checkInboundVersion(final String input) throws IOException {
         final var jsonInput = new ObjectMapper().readTree(input);
@@ -300,10 +297,9 @@ public class MessageController {
     }
 
     /**
-     * @param input input infomodel version (eg 4.0.1)
-     * @param accepted accepted infomodel version (eg 4.0.2,
-     *                 supports wildcards eg 4.*.*)
-     * @return true if infomodel input is covered by accepted input
+     * @param input Input infomodel version (eg 4.0.1).
+     * @param accepted Accepted infomodel version (eg 4.0.2, supports wildcards eg 4.*.*).
+     * @return True if infomodel input is covered by accepted input.
      */
     private boolean checkInfomodelContainment(final String input,
                                               final String accepted) {

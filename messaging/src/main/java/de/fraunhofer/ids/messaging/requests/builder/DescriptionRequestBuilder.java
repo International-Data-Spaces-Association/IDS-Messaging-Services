@@ -78,8 +78,8 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to RECEIVE: describes a
      * {@link de.fraunhofer.iais.eis.DescriptionRequestMessage}.
      *
-     * @param requestedElement requested element id for message header (null is selfdescription)
-     * @return this builder instance
+     * @param requestedElement Requested element id for message header (null is selfdescription).
+     * @return This builder instance.
      */
     public DescriptionRequestBuilder<T> operationGet(final URI requestedElement) {
         this.operation = Crud.RECEIVE;

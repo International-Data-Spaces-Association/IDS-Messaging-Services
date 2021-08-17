@@ -29,11 +29,10 @@ public class SerializerProvider {
     /**
      * Infomodel Serializer as Bean, so it can be autowired.
      *
-     * @return a new {@link Serializer} object as bean for autowiring
+     * @return A new {@link Serializer} object as bean for autowiring.
      */
     @Bean
     public Serializer getSerializer() {
         return new Serializer();
     }
-
 }

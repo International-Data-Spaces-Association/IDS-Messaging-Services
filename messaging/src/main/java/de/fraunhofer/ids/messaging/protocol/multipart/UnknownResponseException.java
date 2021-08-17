@@ -23,7 +23,7 @@ public class UnknownResponseException extends Exception {
      * An exception that is thrown during converting a Response into the
      * corresponding MessageAndPayload if no possible cast found.
      *
-     * @param message Message of the Exception to be thrown
+     * @param message Message of the Exception to be thrown.
      */
     public UnknownResponseException(final String message) {
         super(message);

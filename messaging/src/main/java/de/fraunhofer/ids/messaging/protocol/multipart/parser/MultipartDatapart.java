@@ -38,7 +38,7 @@ public enum MultipartDatapart {
     /**
      * One way to get the Name of the enum-item.
      *
-     * @return name of tje enum item
+     * @return Name of tje enum item.
      */
     @Override
     public String toString() {

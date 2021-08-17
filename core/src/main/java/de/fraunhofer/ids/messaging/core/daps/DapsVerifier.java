@@ -50,11 +50,11 @@ public final class DapsVerifier {
 
     /**
      * Check notbefore and expiration of the DAT Token Claims.
-     * The default rules check if the current Time is between NotBefore and Expiration
+     * The default rules check if the current Time is between NotBefore and Expiration.
      *
-     * @param toVerify the claims to verify
-     * @return true if message is valid
-     * @throws ClaimsException when the claims of the DAT cannot be verified
+     * @param toVerify The claims to verify.
+     * @return True if message is valid.
+     * @throws ClaimsException When the claims of the DAT cannot be verified.
      */
     public static boolean verify(final Jws<Claims> toVerify) throws ClaimsException {
         if (toVerify != null) {
@@ -65,11 +65,11 @@ public final class DapsVerifier {
 
     /**
      * Check notbefore and expiration of the DAT Token Claims.
-     * The default rules check if the current Time is between NotBefore and Expiration
+     * The default rules check if the current Time is between NotBefore and Expiration.
      *
-     * @param toVerify the claims to verify
-     * @return true if message is valid
-     * @throws ClaimsException when the claims of the DAT cannot be verified
+     * @param toVerify The claims to verify.
+     * @return True if message is valid.
+     * @throws ClaimsException When the claims of the DAT cannot be verified.
      */
     public static boolean verify(final Claims toVerify) throws ClaimsException {
         try {
@@ -97,32 +97,27 @@ public final class DapsVerifier {
                         if (!result.isSuccess()) {
                             //if a rule fails, reject token
                             if (log.isWarnEnabled()) {
-                                log.warn(String.format(
-                                    "Custom DAT validation rule failed!"
-                                    + " Message: %s",
-                                    result.getMessage()));
+                                log.warn(String.format("Custom DAT validation rule failed!"
+                                    + " Message: %s", result.getMessage()));
                             }
 
                             throw new ClaimsException(String.format(
-                                    "Custom Rule failed! Message: %s",
-                                    result.getMessage()));
+                                    "Custom Rule failed! Message: %s", result.getMessage()));
                         }
                     } catch (ValidationRuleException e) {
                         //if a rule throws an exception, log exception and reject token
                         if (log.isErrorEnabled()) {
                             log.error(
-                                "Exception thrown by custom DAT"
-                                + " validation rule! "
-                                + e.getMessage());
+                                "Exception thrown by custom DAT validation rule! {}",
+                                e.getMessage());
                         }
                         throw new ClaimsException(String.format(
-                            "Custom Rule threw Exception! Message: %s",
-                            e.getMessage()));
+                            "Custom Rule threw Exception! Message: %s", e.getMessage()));
                     }
                 }
             }
             if (log.isInfoEnabled()) {
-                log.info("Claims verified successfully");
+                log.info("Claims verified successfully.");
             }
 
             return true;

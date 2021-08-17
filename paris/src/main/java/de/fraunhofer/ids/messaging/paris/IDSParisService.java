@@ -34,19 +34,16 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
  */
 public interface IDSParisService {
     /**
-     * Create or Update {@link Participant}
-     * at {@link de.fraunhofer.iais.eis.ParIS}.
+     * Create or Update {@link Participant} at {@link de.fraunhofer.iais.eis.ParIS}.
      *
-     * @param parisURI URI of the ParIS
-     * @param participant {@link Participant} to be created or updated
-     * @return MessageProcessedNotification in Message and Payload object
-     * @throws ClaimsException if DAT of incoming message could not be validated.
-     * @throws MultipartParseException if response could not be parsed to header
-     * and payload.
-     * @throws IOException if message could not be sent or Serializer could not
+     * @param parisURI URI of the ParIS.
+     * @param participant {@link Participant} to be created or updated.
+     * @return MessageProcessedNotification in Message and Payload object.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException If message could not be sent or Serializer could not
      * parse RDF to Java Object.
-     * @throws DapsTokenManagerException if no DAT for sending the message could
-     * be received.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      */
     MessageContainer<?> updateParticipantAtParIS(
             URI parisURI,
@@ -67,15 +64,13 @@ public interface IDSParisService {
     /**
      * Unregister the connector at the ParIS.
      *
-     * @param parisURI URI of the ParIS
-     * @param participantURI URI of the {@link Participant} to be unregistered
-     * @throws DapsTokenManagerException if no DAT for sending the message could
-     * be received.
-     * @throws ClaimsException if DAT of incoming message could not be validated.
-     * @throws MultipartParseException if response could not be parsed to header
-     * and payload.
-     * @throws IOException if message could not be sent or Serializer could not
-     * parse RDF to Java Object.
+     * @param parisURI URI of the ParIS.
+     * @param participantURI URI of the {@link Participant} to be unregistered.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException If message could not be sent or Serializer could not parse RDF
+     * to Java Object.
      * @return The MessageContainer.
      */
     MessageContainer<?> unregisterAtParIS(
@@ -97,15 +92,13 @@ public interface IDSParisService {
      *
      * Receive Description of a {@link Participant} registered in the ParIS.
      *
-     * @param parisURI URI of the {@link de.fraunhofer.iais.eis.ParIS}
-     * @param participantUri URI of the {@link Participant} to be requested
-     * @throws DapsTokenManagerException if no DAT for sending the message could
-     * be received.
-     * @throws ClaimsException if DAT of incoming message could not be validated.
-     * @throws MultipartParseException  if response could not be parsed to header
-     * and payload.
-     * @throws IOException if message could not be sent or Serializer could not
-     * parse RDF to Java Object.
+     * @param parisURI URI of the {@link de.fraunhofer.iais.eis.ParIS}.
+     * @param participantUri URI of the {@link Participant} to be requested.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException If message could not be sent or Serializer could not parse RDF
+     * to Java Object.
      * @return The MessageContainer.
      */
     MessageContainer<Object> requestParticipant(

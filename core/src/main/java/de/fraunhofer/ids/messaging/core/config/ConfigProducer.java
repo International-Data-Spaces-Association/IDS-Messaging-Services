@@ -35,9 +35,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Parse the configuration and initialize the key- and
- * truststores specified in the {@link ConfigProperties} via
- * Spring application.properties.
+ * Parse the configuration and initialize the key- and truststores specified in
+ * the {@link ConfigProperties} via Spring application.properties.
  */
 @Slf4j
 @Configuration
@@ -79,7 +78,7 @@ public class ConfigProducer {
                 configModel = preInterceptor.get().perform(properties);
             } catch (ConfigProducerInterceptorException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("PreConfigProducerInterceptor failed! " + e.getMessage());
+                    log.error("PreConfigProducerInterceptor failed! {}", e.getMessage());
                 }
             }
         } else {
@@ -90,7 +89,7 @@ public class ConfigProducer {
                 }
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Configuration cannot be parsed! " + e.getMessage());
+                    log.error("Configuration cannot be parsed! {}", e.getMessage());
                 }
             }
         }
@@ -98,7 +97,7 @@ public class ConfigProducer {
         if (configModel != null) {
             try {
                 if (log.isInfoEnabled()) {
-                    log.info("Initializing KeyStoreManager");
+                    log.info("Initializing KeyStoreManager, ConfigContainer and ClientProvider.");
                 }
                 //initialize the KeyStoreManager with Key and Truststore
                 //locations in the ConfigurationModel
@@ -108,10 +107,6 @@ public class ConfigProducer {
                         properties.getKeyAlias());
 
                 configContainer = new ConfigContainer(configModel, manager);
-
-                if (log.isInfoEnabled()) {
-                    log.info("Creating ClientProvider");
-                }
                 clientProvider = new ClientProvider(configContainer);
                 configContainer.setClientProvider(clientProvider);
 
@@ -122,8 +117,7 @@ public class ConfigProducer {
                             } catch (ConfigProducerInterceptorException e) {
                                 if (log.isErrorEnabled()) {
                                     log.error(
-                                        "PreConfigProducerInterceptor failed! "
-                                        + e.getMessage());
+                                        "PreConfigProducerInterceptor failed! {}", e.getMessage());
                                 }
                             }
                         }
@@ -131,11 +125,11 @@ public class ConfigProducer {
 
             } catch (KeyStoreManagerInitializationException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("KeyStoreManager could not be initialized! " + e.getMessage());
+                    log.error("KeyStoreManager could not be initialized! {}", e.getMessage());
                 }
             } catch (NoSuchAlgorithmException | KeyManagementException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("ClientProvider could not be initialized! " + e.getMessage());
+                    log.error("ClientProvider could not be initialized! {}", e.getMessage());
                 }
             }
         }
@@ -143,7 +137,7 @@ public class ConfigProducer {
 
     private ConfigurationModel loadConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Loading configuration from %s", properties.getPath()));
+            log.debug("Loading configuration from {}", properties.getPath());
         }
 
         final var config = getConfiguration(properties);
@@ -165,7 +159,7 @@ public class ConfigProducer {
 
     private String getClassPathConfig(final ConfigProperties properties) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info(String.format("Loading config from classpath: %s", properties.getPath()));
+            log.info("Loading config from classpath: {}", properties.getPath());
         }
 
         final var configurationStream =
@@ -178,7 +172,7 @@ public class ConfigProducer {
 
     private String getAbsolutePathConfig(final ConfigProperties properties) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info(String.format("Loading config from absolute Path %s", properties.getPath()));
+            log.info("Loading config from absolute Path {}", properties.getPath());
         }
 
         final var fis = new FileInputStream(properties.getPath());
@@ -191,7 +185,7 @@ public class ConfigProducer {
     /**
      * Provide the ConfigurationContainer as Bean for autowiring.
      *
-     * @return the imported {@link ConfigurationModel} as bean for autowiring
+     * @return The imported {@link ConfigurationModel} as bean for autowiring.
      */
     @Bean
     @ConditionalOnMissingBean
@@ -202,7 +196,7 @@ public class ConfigProducer {
     /**
      * Provide the ClientProvider as bean for autowiring.
      *
-     * @return the created {@link ClientProvider} as bean for autowiring
+     * @return The created {@link ClientProvider} as bean for autowiring.
      */
     @Bean
     @ConditionalOnMissingBean

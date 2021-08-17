@@ -84,8 +84,8 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to UPDATE: describes a
      * {@link de.fraunhofer.iais.eis.ConnectorCertificateGrantedMessage}.
      *
-     * @param affectedConnector affected connector id for message header
-     * @return this builder instance
+     * @param affectedConnector Affected connector id for message header.
+     * @return This builder instance.
      */
     public ConnectorCertificateRequestBuilder<T> operationUpdate(final URI affectedConnector) {
         this.operation = Crud.UPDATE;
@@ -97,9 +97,9 @@ public class ConnectorCertificateRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to DELETE: describes a
      * {@link de.fraunhofer.iais.eis.ConnectorCertificateRevokedMessage}.
      *
-     * @param affectedConnector affected connector id for message header
-     * @param revocationReason reason why certificate was revoked
-     * @return this builder instance
+     * @param affectedConnector Affected connector id for message header.
+     * @param revocationReason Reason why certificate was revoked.
+     * @return This builder instance.
      */
     public ConnectorCertificateRequestBuilder<T> operationDelete(
             final URI affectedConnector, final TypedLiteral revocationReason) {

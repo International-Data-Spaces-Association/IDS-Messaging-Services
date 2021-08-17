@@ -73,7 +73,7 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T>
      * Set the operation to RECEIVE: describes an
      * {@link de.fraunhofer.iais.eis.AccessTokenRequestMessage}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     public AccessTokenRequestBuilder<T> operationGet() {
         this.operation = Crud.RECEIVE;

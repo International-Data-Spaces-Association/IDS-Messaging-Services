@@ -73,7 +73,7 @@ public class ContractOfferRequestBuilder<T> extends IdsRequestBuilder<T>
     /**
      * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ContractOfferMessage}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     private ContractOfferRequestBuilder<T> operationUpdate() {
         this.operation = Crud.UPDATE;

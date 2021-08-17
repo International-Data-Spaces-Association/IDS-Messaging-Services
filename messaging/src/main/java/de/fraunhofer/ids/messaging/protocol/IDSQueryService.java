@@ -42,19 +42,16 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * to the Infrastructure Component.
      *
      * @param targetURI The URI of a Infrastructure Component.
-     * @param query the query as payload for the QueryMessage
-     * @param queryLanguage the Language of the Query (e.g. SPARQL,
-     *                      SQL, XQUERY). See {@link QueryLanguage}
-     * @param queryScope the Scope of the Query (ALL connectors,
-     *                   ACTIVE connectors, INACTIVE connectors).
-     *                   See {@link QueryScope}
-     * @param queryTarget the type of IDS Components that are queried.
-     *                    See {@link QueryTarget}
-     * @return the response to the query request
+     * @param query The query as payload for the QueryMessage.
+     * @param queryLanguage The Language of the Query (e.g. SPARQL, SQL, XQUERY).
+     *                      See {@link QueryLanguage}
+     * @param queryScope The Scope of the Query (ALL connectors, ACTIVE connectors,
+     *                   INACTIVE connectors). See {@link QueryScope}.
+     * @param queryTarget The type of IDS Components that are queried. See {@link QueryTarget}.
+     * @return The response to the query request.
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
-     * @throws ClaimsException Exception while validating
-     * the DAT from the Response.
+     * @throws ClaimsException Exception while validating the DAT from the Response.
      */
     MessageContainer<String> query(@NonNull URI targetURI,
                                    @NonNull String query,
@@ -74,8 +71,7 @@ public interface IDSQueryService extends IDSInfrastructureService {
             RejectionException,
             UnexpectedPayloadException;
     /**
-     * Do a FullText Query on the Infrastructure Component
-     * with default limit and offset.
+     * Do a FullText Query on the Infrastructure Component with default limit and offset.
      *
      * @param targetURI The URI of a Infrastructure Component.
      * @param searchTerm The searchterm used in the query.
@@ -84,8 +80,7 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @return The query result.
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
-     * @throws ClaimsException Exception while validating
-     * the DAT from the Response.
+     * @throws ClaimsException Exception while validating the DAT from the Response.
      */
     MessageContainer<String> boundFullTextSearch(URI targetURI,
                                                  String searchTerm,
@@ -116,8 +111,7 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @return The query result.
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
-     * @throws ClaimsException Exception while validating
-     * the DAT from the Response.
+     * @throws ClaimsException Exception while validating the DAT from the Response.
      */
     MessageContainer<String> fullTextSearch(URI targetURI,
                                             String searchTerm,
