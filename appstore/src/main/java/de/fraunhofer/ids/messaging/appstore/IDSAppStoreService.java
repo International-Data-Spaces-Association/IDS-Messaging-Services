@@ -33,65 +33,98 @@ import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadExceptio
  * Service class interface for communication to the IDS AppStore.
  */
 public interface IDSAppStoreService {
-
+    /**
+     * Requests description from the AppStore itself using its URI.
+     *
+     * @param appStoreURI URI of the App Store to be used.
+     * @return Response MAP with the SelfDescription in the payload as an AppStore.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
+     */
+    MessageContainer<Object> requestAppStoreDescription(URI appStoreURI)
+            throws
+            ClaimsException,
+            IOException,
+            DapsTokenManagerException,
+            MultipartParseException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 
     /**
+     * Requests description for a specific App by its URI and the AppStore URI.
+     *
      * @param appStoreURI URI of the App Store to be used.
      * @param app URI of the requested app.
      * @return Response MAP with the SelfDescription in the payload as an AppStore.
-     * @throws MultipartParseException If response could not be parsed to
-     * header and payload.@throws ClaimsException.
-     * @throws IOException If message could not be sent
-     * or Serializer could not parse RDF to Java Object.
      * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<Object> requestAppDescription(URI appStoreURI, URI app)
             throws
             ClaimsException,
             MultipartParseException,
             IOException,
-            DapsTokenManagerException, ShaclValidatorException,
-            SerializeException, UnknownResponseException, SendMessageException,
-            DeserializeException, RejectionException,
+            DapsTokenManagerException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException,
+            RejectionException,
             UnexpectedPayloadException;
+
     /**
-     * @param appStoreURI URI of the AppStore to be used.
-     * @return Response MAP with the SelfDescription in the payload as AppResource.
-     * @throws MultipartParseException If response could not be parsed to
-     * header and payload.@throws ClaimsException.
-     * @throws IOException If message could not be sent or Serializer
-     * could not parse RDF to Java Object.
-     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
-     * @throws ClaimsException If DAT of incoming message could not be validated.
-     */
-    MessageContainer<Object> requestAppStoreDescription(URI appStoreURI)
-            throws
-            ClaimsException,
-            IOException,
-            DapsTokenManagerException, MultipartParseException,
-            ShaclValidatorException, SerializeException,
-            UnknownResponseException, SendMessageException,
-            DeserializeException, RejectionException,
-            UnexpectedPayloadException;
-    /**
+     * Requests the App artifact by its App URI and the AppStore URI.
+     *
      * @param appStoreURI URI of the App Store to be used.
-     * @param app  URI of the requested app.
-     * @return Response MAP with the SelfDescription in the payload as String.
-     * @throws MultipartParseException If response could not be parsed
-     * to header and payload.@throws ClaimsException.
-     * @throws IOException If message could not be sent or
-     * Serializer could not parse RDF to Java Object.
+     * @param app URI of the requested app.
+     * @return Response MAP with the SelfDescription in the payload as an AppStore.
      * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<Object> requestAppArtifact(URI appStoreURI, URI app)
             throws
             DapsTokenManagerException,
             ClaimsException,
             MultipartParseException,
-            IOException, ShaclValidatorException, SerializeException,
-            UnknownResponseException, SendMessageException,
-            DeserializeException, RejectionException,
+            IOException,
+            ShaclValidatorException,
+            SerializeException,
+            UnknownResponseException,
+            SendMessageException,
+            DeserializeException,
+            RejectionException,
             UnexpectedPayloadException;
 }

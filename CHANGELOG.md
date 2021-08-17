@@ -9,6 +9,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.0.1] UNRELEASED
+
+### Patch Change: Miscellaneous
+- Missing Javadoc annotations for thrown exceptions to services were added where they were missing.
+
 ## Version [4.0.0] 2021-08-17
 
 ### Major Change: Dependency Infomodel Artifacts 4.2.0

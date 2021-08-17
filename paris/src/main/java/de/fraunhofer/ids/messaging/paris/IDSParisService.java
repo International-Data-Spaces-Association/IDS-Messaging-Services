@@ -39,11 +39,17 @@ public interface IDSParisService {
      * @param parisURI URI of the ParIS.
      * @param participant {@link Participant} to be created or updated.
      * @return MessageProcessedNotification in Message and Payload object.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      * @throws ClaimsException If DAT of incoming message could not be validated.
      * @throws MultipartParseException If response could not be parsed to header and payload.
-     * @throws IOException If message could not be sent or Serializer could not
-     * parse RDF to Java Object.
-     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<?> updateParticipantAtParIS(
             URI parisURI,
@@ -66,12 +72,18 @@ public interface IDSParisService {
      *
      * @param parisURI URI of the ParIS.
      * @param participantURI URI of the {@link Participant} to be unregistered.
+     * @return The MessageContainer.
      * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      * @throws ClaimsException If DAT of incoming message could not be validated.
      * @throws MultipartParseException If response could not be parsed to header and payload.
-     * @throws IOException If message could not be sent or Serializer could not parse RDF
-     * to Java Object.
-     * @return The MessageContainer.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<?> unregisterAtParIS(
             URI parisURI, URI participantURI)
@@ -89,17 +101,22 @@ public interface IDSParisService {
             DeserializeException;
 
     /**
-     *
      * Receive Description of a {@link Participant} registered in the ParIS.
      *
      * @param parisURI URI of the {@link de.fraunhofer.iais.eis.ParIS}.
      * @param participantUri URI of the {@link Participant} to be requested.
+     * @return The MessageContainer.
      * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      * @throws ClaimsException If DAT of incoming message could not be validated.
      * @throws MultipartParseException If response could not be parsed to header and payload.
-     * @throws IOException If message could not be sent or Serializer could not parse RDF
-     * to Java Object.
-     * @return The MessageContainer.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<Object> requestParticipant(
             URI parisURI, URI participantUri)

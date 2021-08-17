@@ -76,15 +76,19 @@ public class MessageService {
      * Send messages in IDS to other actors with choice of the protocol used.
      *
      * @param messageAndPayload The IDS Infomodel Message containing the Metadata, and the
-     *                          Payload to be sent.
+     * Payload to be sent.
      * @param target The target of the message.
      * @param protocolType The selected protocol which should be used for sending
-     *                     (see ProtocolType enum).
+     * (see ProtocolType enum).
      * @return Returns the response.
-     * @throws MultipartParseException Something went wrong with the file attached
-     * (if there was one).
-     * @throws ClaimsException Something went wrong with the DAT.
-     * @throws IOException DAPS or target could not be reached.
+     * @throws MultipartParseException If the content cannot be parsed.
+     * @throws ClaimsException If the claims cannot be successfully verified.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
      */
     public MessageAndPayload<?, ?> sendIdsMessage(
             final MessageAndPayload<?, ?> messageAndPayload,
