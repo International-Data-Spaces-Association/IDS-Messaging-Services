@@ -59,12 +59,12 @@ public class MessageController {
     /**
      * The ConfigContainer.
      */
-    private final ConfigContainer   configContainer;
+    private final ConfigContainer configContainer;
 
     /**
      * The infomodel serializer.
      */
-    private final Serializer        serializer;
+    private final Serializer serializer;
 
     /**
      * Constructor for the MessageController.
@@ -92,6 +92,10 @@ public class MessageController {
     public ResponseEntity<MultiValueMap<String, Object>> handleIDSMessage(
             final HttpServletRequest request) {
         try {
+            if (log.isInfoEnabled()) {
+                log.info("Received incoming message. Starting validation.");
+            }
+
             final var headerPart =
                     request.getPart(MultipartDatapart.HEADER.toString());
             final var payloadPart =
@@ -99,7 +103,7 @@ public class MessageController {
 
             if (headerPart == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("header of incoming message were empty!");
+                    log.debug("Header of incoming message were empty!");
                 }
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -111,7 +115,7 @@ public class MessageController {
             String input;
 
             if (log.isDebugEnabled()) {
-                log.debug("parsing header of incoming message");
+                log.debug("Parsing header of incoming message.");
             }
 
             try (var scanner = new Scanner(headerPart.getInputStream(),
@@ -124,7 +128,7 @@ public class MessageController {
                         .status(HttpStatus.BAD_REQUEST)
                         .body(createDefaultErrorMessage(
                              RejectionReason.VERSION_NOT_SUPPORTED,
-                             "Infomodel Version of incoming Message not supported"));
+                             "Infomodel Version of incoming Message not supported!"));
             }
 
             // Deserialize JSON-LD headerPart to its RequestMessage.class
@@ -132,7 +136,7 @@ public class MessageController {
                     .deserialize(input, Message.class);
 
             if (log.isDebugEnabled()) {
-                log.debug("hand the incoming message to the message dispatcher!");
+                log.debug("Hand the incoming message to the message dispatcher!");
             }
 
             //pass null if payloadPart is null, else pass it as inputStream
@@ -149,7 +153,7 @@ public class MessageController {
                 // return the ResponseEntity as Multipart content
                 // with created MultiValueMap
                 if (log.isDebugEnabled()) {
-                    log.debug("sending response with status OK (200)");
+                    log.debug("Sending response with status OK (200).");
                 }
 
                 return ResponseEntity

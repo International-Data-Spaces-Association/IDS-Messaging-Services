@@ -140,6 +140,11 @@ public class AisecTokenManagerService implements TokenManagerService {
             }
 
             final var jwtResponse = sendRequestToDAPS(client, request);
+
+            if (jwtResponse.isSuccessful()) {
+                log.info("Successful received response from DAPS.");
+            }
+
             final var responseBody = jwtResponse.body();
             checkEmptyDAPSResponse(responseBody); //can throw exception
 
