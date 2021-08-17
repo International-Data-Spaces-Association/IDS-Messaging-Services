@@ -15,6 +15,9 @@ All notable changes to this project will be documented in this file.
 - The update of the infomodel artifacts to version 4.2.0 may result in breaking changes for the connector developers.
 - One of the possible breaking changes is that PaymentModality is no longer defined as a list and therefore calls like isEmpty() will no longer compile.
 
+### Minor Change: CertificateSubjectCnProvider
+- New feature: **CertificateSubjectCnProvider.certificateSubjectCn** provides static access to the subject-CN of the connector certificate, which could be used as the connector UUID depending on the implementation of the connector. Value is initialized by the KeyStoreManager and reset at each update. If no valid certificate with Subject-CN is available, a random UUID is generated in the KeyStoreManager instead.
+
 ### Patch Change: Log Message Changes
 - Changes in printed info/warning/error logs
   - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
