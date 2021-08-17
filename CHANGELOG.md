@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.0.0] UNRELEASED
+## Version [4.0.0] 2021-08-17
 
 ### Major Change: Dependency Infomodel Artifacts 4.2.0
 - The update of the infomodel artifacts to version 4.2.0 may result in breaking changes for the connector developers.
