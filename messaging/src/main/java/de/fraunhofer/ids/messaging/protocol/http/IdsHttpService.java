@@ -361,7 +361,7 @@ public class IdsHttpService implements HttpService {
     private Response sendRequest(final Request request,
                                  final OkHttpClient client) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info("Request is HTTPS: {}", request.isHttps());
+            log.info("Sending Request (is HTTPS: {})", request.isHttps());
         }
 
         final var response = client.newCall(request).execute();
@@ -375,6 +375,10 @@ public class IdsHttpService implements HttpService {
 
             throw new IOException("Unexpected code " + response + " With Body: " + Objects
                     .requireNonNull(response.body()).string());
+        } else {
+            if (log.isInfoEnabled()) {
+                log.info("Successful received response for request!");
+            }
         }
 
         return response;

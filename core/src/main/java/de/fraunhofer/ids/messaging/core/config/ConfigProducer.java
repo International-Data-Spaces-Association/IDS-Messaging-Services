@@ -97,7 +97,7 @@ public class ConfigProducer {
         if (configModel != null) {
             try {
                 if (log.isInfoEnabled()) {
-                    log.info("Initializing KeyStoreManager");
+                    log.info("Initializing KeyStoreManager, ConfigContainer and ClientProvider.");
                 }
                 //initialize the KeyStoreManager with Key and Truststore
                 //locations in the ConfigurationModel
@@ -107,10 +107,6 @@ public class ConfigProducer {
                         properties.getKeyAlias());
 
                 configContainer = new ConfigContainer(configModel, manager);
-
-                if (log.isInfoEnabled()) {
-                    log.info("Creating ClientProvider");
-                }
                 clientProvider = new ClientProvider(configContainer);
                 configContainer.setClientProvider(clientProvider);
 
