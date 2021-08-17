@@ -184,14 +184,13 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                     this.publicKeys.add(jsonWebKey.getKey());
                 } else {
                     if (log.isWarnEnabled()) {
-                        log.warn("Could not get JsonWebKey with kid "
-                                 + entry.getValue()
-                                 + " from received KeySet! PublicKey is null!");
+                        log.warn("Could not get JsonWebKey with kid {}"
+                                 + " from received KeySet! PublicKey is null!", entry.getValue());
                     }
                 }
             } catch (IOException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not get key from " + entry.getKey() + "!");
+                    log.warn("Could not get key from {}!", entry.getKey());
                     log.warn(e.getMessage(), e);
                 }
             } catch (JoseException e) {

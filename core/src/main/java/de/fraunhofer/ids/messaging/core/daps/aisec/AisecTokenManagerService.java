@@ -227,8 +227,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         if (log.isWarnEnabled()) {
             log.warn(
                     "TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, "
-                    + "will not be send in PRODUCTIVE_DEPLOYMENT, reason: "
-                    + error);
+                    + "will not be send in PRODUCTIVE_DEPLOYMENT, reason: {}", error);
         }
     }
 

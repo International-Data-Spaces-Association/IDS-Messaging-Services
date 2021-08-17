@@ -132,8 +132,7 @@ public class MessageController {
                     .deserialize(input, Message.class);
 
             if (log.isDebugEnabled()) {
-                log.debug("hand the incoming message"
-                          + " to the message dispatcher!");
+                log.debug("hand the incoming message to the message dispatcher!");
             }
 
             //pass null if payloadPart is null, else pass it as inputStream
@@ -162,8 +161,7 @@ public class MessageController {
                 // of the connector (e.g. for received RequestInProcessMessage)
 
                 if (log.isWarnEnabled()) {
-                    log.warn("Implemented Message-Handler"
-                             + " didn't return a response!");
+                    log.warn("Implemented Message-Handler didn't return a response!");
                 }
 
                 return ResponseEntity
@@ -173,16 +171,14 @@ public class MessageController {
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
                 log.error(
-                        "Error during pre-processing with"
-                        + " a PreDispatchingFilter! "
-                        + e.getMessage());
+                        "Error during pre-processing with a PreDispatchingFilter! {}",
+                        e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(createDefaultErrorMessage(
                                      RejectionReason.BAD_PARAMETERS,
                                      String.format(
-                                         "Error during preprocessing: %s",
-                                         e.getMessage())));
+                                         "Error during preprocessing: %s", e.getMessage())));
         } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("incoming message could not be parsed!");
@@ -204,8 +200,7 @@ public class MessageController {
                          .body(createDefaultErrorMessage(
                              RejectionReason.INTERNAL_RECIPIENT_ERROR,
                              String.format(
-                                 "Could not read incoming request! Error: %s",
-                                 e.getMessage())));
+                                 "Could not read incoming request! Error: %s", e.getMessage())));
         }
     }
 

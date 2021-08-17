@@ -145,7 +145,7 @@ public class IdsHttpService implements HttpService {
                 } catch (IOException | RiotException e) {
                     if (log.isWarnEnabled()) {
                         log.warn("Could not deserialize Playload! Skipping Connector-"
-                                 + "SecurityProfile Attribute! " + e.getMessage());
+                                 + "SecurityProfile Attribute! {}", e.getMessage());
                     }
                 }
             }
