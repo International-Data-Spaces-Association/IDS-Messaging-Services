@@ -117,7 +117,7 @@ public final class DapsVerifier {
                 }
             }
             if (log.isInfoEnabled()) {
-                log.info("Claims verified successfully");
+                log.info("Claims verified successfully.");
             }
 
             return true;

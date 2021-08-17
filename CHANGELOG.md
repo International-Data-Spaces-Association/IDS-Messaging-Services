@@ -9,9 +9,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [3.1.1] UNRELEASED
+## Version [4.0.0] UNRELEASED
 
-### Changes (Patch change)
+### Major Change: Dependency Infomodel Artifacts 4.2.0
+- The update of the infomodel artifacts to version 4.2.0 may result in breaking changes for the connector developers.
+- One of the possible breaking changes is that PaymentModality is no longer defined as a list and therefore calls like isEmpty() will no longer compile.
+
+### Minor Change: CertificateSubjectCnProvider
+- New feature: **CertificateSubjectCnProvider.certificateSubjectCn** provides static access to the subject-CN of the connector certificate, which could be used as the connector UUID depending on the implementation of the connector. Value is initialized by the KeyStoreManager and reset at each update. If no valid certificate with Subject-CN is available, a random UUID is generated in the KeyStoreManager instead.
+
+### Patch Change: Log Message Changes
 - Changes in printed info/warning/error logs
   - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
   - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
@@ -19,10 +26,10 @@ All notable changes to this project will be documented in this file.
   - Stopped printing connector fingerprint in log message in TokenManagerService
   - Other minor adjustments to make log messages more consistent (parameterized logs, more useful outputs) 
 
-### Miscellaneous  (Patch change)
+### Patch Change: Miscellaneous
 - Internal change: Identifiers and documentation in the code that previously described the supposed connector UUID have been changed to connector fingerprint to reflect their actual meaning.
 
-### Dependency Maintenance (Patch Change)
+### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1 
 
 ## Version [3.1.0] 2021-08-09

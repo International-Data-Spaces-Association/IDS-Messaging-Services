@@ -31,13 +31,18 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
+import de.fraunhofer.ids.messaging.core.config.util.CertificateSubjectCnProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.ClassPathResource;
 
@@ -166,6 +171,27 @@ public class KeyStoreManager {
         createTrustStore(configurationModel, trustStorePw);
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
+        initCertificateSubjectCn(); //requires valid connector certificate (e.g. issued by DAPS)
+    }
+
+    private void initCertificateSubjectCn()  {
+        try {
+            final var certificate = (X509Certificate) this.getCert();
+            final var x500name = new JcaX509CertificateHolder(certificate).getSubject();
+            final var cn = x500name.getRDNs(BCStyle.CN)[0];
+
+            //Set certificate subject cn
+            CertificateSubjectCnProvider.certificateSubjectCn
+                    = UUID.fromString(IETFUtils.valueToString(cn.getFirst().getValue()));
+        } catch (Exception exception) {
+            if (log.isWarnEnabled()) {
+                log.warn("Could not read the Subject-CN UUID from the connector certificate."
+                         + " Are you using a valid connector certificate?"
+                         + " CertificateSubjectCnProvider will provide a random UUID instead!");
+            }
+
+            CertificateSubjectCnProvider.certificateSubjectCn = UUID.randomUUID();
+        }
     }
 
     private void initTrustManager(final char... trustStorePw)

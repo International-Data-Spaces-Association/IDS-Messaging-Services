@@ -227,7 +227,7 @@ public class DapsValidator {
         if (!Arrays.asList(includedProfiles).contains(adjustedGiven)) {
             throw new ClaimsException(
                     "Security profile violation. Registered security profile"
-                    + " at DAPS is:  " + registered
+                    + " at DAPS is: " + registered
                     + ", but the given security profile is: " + given);
         }
     }

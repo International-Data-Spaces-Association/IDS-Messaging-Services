@@ -434,8 +434,8 @@ public class ClientProvider {
 
         final var okHttpClient = builder.build();
 
-        if (log.isInfoEnabled()) {
-            log.info("Ok Http Client Protocols {}", okHttpClient.protocols());
+        if (log.isDebugEnabled()) {
+            log.debug("Ok Http Client Protocols {}", okHttpClient.protocols());
         }
 
         return okHttpClient;

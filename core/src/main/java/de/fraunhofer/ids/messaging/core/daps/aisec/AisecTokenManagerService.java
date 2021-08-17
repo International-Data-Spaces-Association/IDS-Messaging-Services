@@ -140,6 +140,11 @@ public class AisecTokenManagerService implements TokenManagerService {
             }
 
             final var jwtResponse = sendRequestToDAPS(client, request);
+
+            if (jwtResponse.isSuccessful()) {
+                log.info("Successful received response from DAPS.");
+            }
+
             final var responseBody = jwtResponse.body();
             checkEmptyDAPSResponse(responseBody); //can throw exception
 
@@ -227,8 +232,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         if (log.isWarnEnabled()) {
             log.warn(
                     "TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, "
-                    + "will not be send in PRODUCTIVE_DEPLOYMENT, reason: "
-                    + error);
+                    + "will not be sent in PRODUCTIVE_DEPLOYMENT, reason: {}", error);
         }
     }
 
