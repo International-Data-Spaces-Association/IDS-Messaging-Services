@@ -93,7 +93,7 @@ public class MessageController {
             final HttpServletRequest request) {
         try {
             if (log.isInfoEnabled()) {
-                log.info("Received incoming message. Starting validation.");
+                log.info("Received incoming message!");
             }
 
             final var headerPart =
