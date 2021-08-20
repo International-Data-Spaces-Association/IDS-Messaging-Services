@@ -16,7 +16,8 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.bitbucket.b_c:jose4j 0.7.8 -> 0.7.9
-- Upgrade: org.springframework.boot 2.5.3 -> 2.5.4
+- Upgrade: org.springframework.boot:spring-boot-starte 2.5.3 -> 2.5.4
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.3 -> 2.5.4
 
 ## Version [4.0.0] 2021-08-17
 
