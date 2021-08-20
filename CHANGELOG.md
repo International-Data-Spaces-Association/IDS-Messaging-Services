@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file.
 ### Patch Change: Miscellaneous
 - Missing Javadoc annotations for thrown exceptions to services were added where they were missing.
 
+### Patch Change: Dependency Maintenance
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.8 -> 0.7.9 
+
 ## Version [4.0.0] 2021-08-17
 
 ### Major Change: Dependency Infomodel Artifacts 4.2.0
