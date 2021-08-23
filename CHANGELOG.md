@@ -9,7 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.0.1] UNRELEASED
+## Version [4.1.0] UNRELEASED
+
+### Minor Change: FullTextQuery template update
+- Extended FullTextQuery template in messaging.util.FULL_TEXT_QUERY.
 
 ### Patch Change: Miscellaneous
 - Missing Javadoc annotations for thrown exceptions to services were added where they were missing.
