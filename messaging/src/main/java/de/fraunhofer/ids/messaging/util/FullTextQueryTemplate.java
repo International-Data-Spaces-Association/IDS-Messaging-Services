@@ -71,7 +71,7 @@ public final class FullTextQueryTemplate {
           + "    ?internalUri ?predicate ?text .\n"
           + "    FILTER ( isLiteral(?text)) .\n"
           + "\n"
-          + "    FILTER( REGEX(?text, \"%1$s\", \"i\") )\n"
+          + "    FILTER( REGEX(?text, \"%1$s\", \"i\") || REGEX(str(?uri), \"%1$s\", \"i\") )\n"
           + "\n"
           + "    # Get the Access Endpoint\n"
           + "    ?connector ids:hasDefaultEndpoint ?endpoint .\n"
