@@ -122,7 +122,6 @@ public class ParisService extends InfrastructureService
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public MessageContainer<Object> requestParticipant(

@@ -109,9 +109,18 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @param limit Custom limit used in the query.
      * @param offset Custom offset used in the query.
      * @return The query result.
-     * @throws IOException Exception while getting DAT from DAPS.
-     * @throws MultipartParseException Exception while parsing the response.
-     * @throws ClaimsException Exception while validating the DAT from the Response.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws MultipartParseException If the content cannot be parsed.
+     * @throws ClaimsException If the claims cannot be successfully verified.
+     * @throws DapsTokenManagerException If there are problems when retrieving the DAT
+     * from the DAPS.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<String> fullTextSearch(URI targetURI,
                                             String searchTerm,

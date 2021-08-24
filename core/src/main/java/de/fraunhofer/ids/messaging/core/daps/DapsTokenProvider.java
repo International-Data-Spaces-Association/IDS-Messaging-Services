@@ -25,6 +25,10 @@ public interface DapsTokenProvider {
      * Get the DAPS JWT Token from a DAPS and return its compact String representation.
      *
      * @return The DAPS Token of the Connector.
+     * @throws ConnectorMissingCertExtensionException If the connector fingerprint
+     * cannot be determined.
+     * @throws DapsConnectionException If the DAPS cannot be reached.
+     * @throws DapsEmptyResponseException If the DAPS responded with an unexpected answer.
      */
     String provideDapsToken() throws
             ConnectorMissingCertExtensionException,
@@ -35,6 +39,10 @@ public interface DapsTokenProvider {
      * Return the DAPS JWT Token in infomodel {@link DynamicAttributeToken} representation.
      *
      * @return DynamicAttributeToken from the DAPS JWT.
+     * @throws ConnectorMissingCertExtensionException If the connector fingerprint
+     * cannot be determined.
+     * @throws DapsConnectionException If the DAPS cannot be reached.
+     * @throws DapsEmptyResponseException If the DAPS responded with an unexpected answer.
      */
     DynamicAttributeToken getDAT() throws
             ConnectorMissingCertExtensionException,

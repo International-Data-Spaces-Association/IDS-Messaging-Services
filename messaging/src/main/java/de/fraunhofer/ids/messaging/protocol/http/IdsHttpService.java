@@ -369,8 +369,7 @@ public class IdsHttpService implements HttpService {
         if (!response.isSuccessful()) {
             if (log.isErrorEnabled()) {
                 log.error("Request send but response-code not in 200-299,"
-                          + " received unexpected response-code!"
-                          + " (connectivity problem, timeout, ..?");
+                          + " received unexpected response-code!");
             }
 
             throw new IOException("Unexpected code " + response + " With Body: " + Objects

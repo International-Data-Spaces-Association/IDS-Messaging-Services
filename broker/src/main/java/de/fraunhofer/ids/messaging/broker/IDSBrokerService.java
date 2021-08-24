@@ -178,10 +178,18 @@ public interface IDSBrokerService {
      * @param queryScope The Scope of the query.
      * @param queryTarget The target of the query.
      * @return The query result from the Broker.
+     * @throws DapsTokenManagerException
      * @throws IOException Exception while getting DAT from DAPS.
      * @throws MultipartParseException Exception while parsing the response.
      * @throws ClaimsException Exception while validating
-     * the DAT from the Broker Response.
+     * @throws NoTemplateProvidedException If there is no template for the message type to be used.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<String> fullTextSearchBroker(URI brokerURI,
                                                   String searchTerm,

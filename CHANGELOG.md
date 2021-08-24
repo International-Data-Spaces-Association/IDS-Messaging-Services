@@ -9,6 +9,30 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.2.0] 2021-08-24
+
+### Minor Change: FullTextQuery template update
+- Extended FullTextQuery template in messaging.util.FULL_TEXT_QUERY, with the following new features:
+  - provides the original identifier
+  - returns the type of the found entity
+  - gives the AccessUrl of the related Connector
+  - searches also for non-xsd:string Literals
+  - also checks for entities that are not a BaseConnector or a Resource
+- Note: returns of APIs that are based on the template could be extended to include this new informations, depending on the connector implementation.
+
+### Patch Change: Miscellaneous
+- Missing Javadoc annotations for thrown exceptions to services were added where they were missing.
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.8 -> 0.7.9
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.3 -> 2.5.4
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.3 -> 2.5.4
+
+## Version [4.1.0] SKIPPED
+
+### Note on the version number - skipping v4.1.0
+- In the past, a different version numbering system approach with 4 digits was followed and various old versions of the IDS-Messaging-Services exist, which start with 4.1.0, for example the old version 4.1.0.0. To avoid confusion, we skip version-number 4.1.0, to not have versions 4.1.0 and 4.1.0.0 present at the same time.
+
 ## Version [4.0.0] 2021-08-17
 
 ### Major Change: Dependency Infomodel Artifacts 4.2.0
