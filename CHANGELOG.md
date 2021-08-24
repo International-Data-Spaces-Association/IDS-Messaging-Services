@@ -11,9 +11,6 @@ All notable changes to this project will be documented in this file.
 
 ## Version [4.2.0] UNRELEASED
 
-### Note on the version number - skipping v4.1.0
-- In the past, a different version numbering system approach with 4 digits was followed and various old versions of the IDS-Messaging-Services exist, which start with 4.1.0, for example the old version 4.1.0.0. To avoid confusion, we skip version-number 4.1.0, to not have versions 4.1.0 and 4.1.0.0 present at the same time.
-
 ### Minor Change: FullTextQuery template update
 - Extended FullTextQuery template in messaging.util.FULL_TEXT_QUERY, with the following new features:
   - provides the original identifier
@@ -30,6 +27,11 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.bitbucket.b_c:jose4j 0.7.8 -> 0.7.9
 - Upgrade: org.springframework.boot:spring-boot-starter 2.5.3 -> 2.5.4
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.3 -> 2.5.4
+
+## Version [4.1.0] SKIPPED
+
+### Note on the version number - skipping v4.1.0
+- In the past, a different version numbering system approach with 4 digits was followed and various old versions of the IDS-Messaging-Services exist, which start with 4.1.0, for example the old version 4.1.0.0. To avoid confusion, we skip version-number 4.1.0, to not have versions 4.1.0 and 4.1.0.0 present at the same time.
 
 ## Version [4.0.0] 2021-08-17
 
