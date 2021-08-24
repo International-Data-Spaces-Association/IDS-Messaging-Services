@@ -9,7 +9,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.0.1] UNRELEASED
+## Version [4.1.0] UNRELEASED
+
+### Minor Change: FullTextQuery template update
+- Extended FullTextQuery template in messaging.util.FULL_TEXT_QUERY, with the following new features:
+  - provides the original identifier
+  - returns the type of the found entity
+  - gives the AccessUrl of the related Connector
+  - searches also for non-xsd:string Literals
+  - also checks for entities that are not a BaseConnector or a Resource
+- Note: returns of APIs that are based on the template could be extended to include this new informations, depending on the connector implementation.
 
 ### Patch Change: Miscellaneous
 - Missing Javadoc annotations for thrown exceptions to services were added where they were missing.
