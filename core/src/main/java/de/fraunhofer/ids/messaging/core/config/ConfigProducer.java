@@ -85,7 +85,7 @@ public class ConfigProducer {
             try {
                 configModel = loadConfig(properties);
                 if (log.isInfoEnabled()) {
-                    log.info("Imported existing configuration from file.");
+                    log.info("Successfully imported configuration.");
                 }
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
@@ -96,9 +96,6 @@ public class ConfigProducer {
 
         if (configModel != null) {
             try {
-                if (log.isInfoEnabled()) {
-                    log.info("Initializing KeyStoreManager, ConfigContainer and ClientProvider.");
-                }
                 //initialize the KeyStoreManager with Key and Truststore
                 //locations in the ConfigurationModel
                 final var manager = new KeyStoreManager(configModel, properties
@@ -137,14 +134,10 @@ public class ConfigProducer {
 
     private ConfigurationModel loadConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading configuration from {}", properties.getPath());
+            log.debug("Loading configuration from: {}", properties.getPath());
         }
 
         final var config = getConfiguration(properties);
-
-        if (log.isInfoEnabled()) {
-            log.info("Importing configuration from file");
-        }
 
         return SERIALIZER.deserialize(config, ConfigurationModel.class);
     }
@@ -158,8 +151,9 @@ public class ConfigProducer {
     }
 
     private String getClassPathConfig(final ConfigProperties properties) throws IOException {
-        if (log.isInfoEnabled()) {
-            log.info("Loading config from classpath: {}", properties.getPath());
+        if (log.isDebugEnabled()) {
+            log.debug("Loading configuration from classpath: {}",
+                      properties.getPath());
         }
 
         final var configurationStream =

@@ -9,6 +9,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.2.1] UNRELEASED
+
+### Patch Change: Miscellaneous
+- Refactored KeyStoreManager logs for loading configuration, keystore and truststore.
+
 ## Version [4.2.0] 2021-08-24
 
 ### Minor Change: FullTextQuery template update
