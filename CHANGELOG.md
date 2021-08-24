@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.2.0] UNRELEASED
+## Version [4.2.0] 2021-08-24
 
 ### Minor Change: FullTextQuery template update
 - Extended FullTextQuery template in messaging.util.FULL_TEXT_QUERY, with the following new features:
