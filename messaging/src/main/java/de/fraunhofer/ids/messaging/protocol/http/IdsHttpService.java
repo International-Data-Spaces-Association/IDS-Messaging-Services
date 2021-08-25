@@ -106,10 +106,6 @@ public class IdsHttpService implements HttpService {
         final var messageString = multipartResponse.get(MultipartDatapart.HEADER.toString());
 
         if (Boolean.TRUE.equals(shaclValidation)) {
-            if (log.isInfoEnabled()) {
-                log.info(messageString);
-            }
-
             try {
                 //If the validation is not successful, then this throws an IOException
                 ShaclValidator.validateRdf(messageString).conforms();
@@ -121,7 +117,7 @@ public class IdsHttpService implements HttpService {
             }
 
             if (log.isInfoEnabled()) {
-                log.info("Received response passed SHACL-Validation.");
+                log.info("Successfully passed SHACL-Validation.");
             }
         }
 
@@ -300,8 +296,8 @@ public class IdsHttpService implements HttpService {
     private Request buildRequest(final RequestBody requestBody, final URI target) {
         final var targetURL = target.toString();
 
-        if (log.isInfoEnabled()) {
-            log.info("URL is valid: {}", HttpUrl.parse(targetURL));
+        if (log.isDebugEnabled()) {
+            log.debug("Request URL: {}", HttpUrl.parse(targetURL));
         }
 
         return new Request.Builder()
@@ -324,8 +320,8 @@ public class IdsHttpService implements HttpService {
                                      final Map<String, String> headers) {
         final var targetURL = target.toString();
 
-        if (log.isInfoEnabled()) {
-            log.info("URL is valid: {}", HttpUrl.parse(targetURL));
+        if (log.isDebugEnabled()) {
+            log.debug("Request URL: {}", HttpUrl.parse(targetURL));
         }
 
         //!!! DO NOT PRINT RESPONSE BECAUSE RESPONSE BODY IS JUST ONE TIME READABLE
@@ -361,22 +357,22 @@ public class IdsHttpService implements HttpService {
     private Response sendRequest(final Request request,
                                  final OkHttpClient client) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info("Sending Request (is HTTPS: {})", request.isHttps());
+            log.info("Sending request...");
         }
 
         final var response = client.newCall(request).execute();
 
         if (!response.isSuccessful()) {
             if (log.isErrorEnabled()) {
-                log.error("Request send but response-code not in 200-299,"
-                          + " received unexpected response-code!");
+                log.error("Request send but response-code unexpectedly not in 200-299!"
+                          + " Response-code: {}", response.code());
             }
 
             throw new IOException("Unexpected code " + response + " With Body: " + Objects
                     .requireNonNull(response.body()).string());
         } else {
             if (log.isInfoEnabled()) {
-                log.info("Successful received response for request!");
+                log.info("Successfully received response to request.");
             }
         }
 

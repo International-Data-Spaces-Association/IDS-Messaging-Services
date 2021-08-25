@@ -151,7 +151,6 @@ public class MessageDispatcher {
             }
         }
 
-
         //apply all preDispatchingFilters to the message
         for (final var preDispatchingFilter : this.preDispatchingFilters) {
             if (log.isDebugEnabled()) {
@@ -161,12 +160,10 @@ public class MessageDispatcher {
             try {
                 final var result = preDispatchingFilter.process(header);
                 if (!result.isSuccess()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("A preDispatchingFilter failed!");
-                    }
-
                     if (log.isErrorEnabled()) {
-                        log.error(result.getMessage(), result.getError());
+                        log.error("A preDispatchingFilter failed, sending"
+                              + " response RejectionReason.MALFORMED_MESSAGE! {}",
+                                  result.getMessage());
                     }
 
                     return ErrorResponse.withDefaultHeader(
@@ -177,8 +174,7 @@ public class MessageDispatcher {
                 }
             } catch (Exception e) {
                 if (log.isDebugEnabled()) {
-                    log.debug("A preDispatchingFilter threw an exception!");
-                    log.debug(e.getMessage(), e);
+                    log.debug("A preDispatchingFilter threw an exception! {}", e.getMessage());
                 }
 
                 throw new PreDispatchingFilterException(e);

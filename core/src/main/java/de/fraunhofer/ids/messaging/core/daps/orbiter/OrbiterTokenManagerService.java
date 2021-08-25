@@ -167,13 +167,8 @@ public class OrbiterTokenManagerService implements TokenManagerService {
                                           final Request request)
             throws IOException {
         final var response = client.newCall(request).execute();
-        final var clientResponse = Objects.requireNonNull(response.body()).string();
 
-        if (log.isInfoEnabled()) {
-            log.info("Success: {} {}", response.isSuccessful(), clientResponse);
-        }
-
-        return clientResponse;
+        return Objects.requireNonNull(response.body()).string();
     }
 
     private Request getCertificateRequestMessage(final String csrString) {

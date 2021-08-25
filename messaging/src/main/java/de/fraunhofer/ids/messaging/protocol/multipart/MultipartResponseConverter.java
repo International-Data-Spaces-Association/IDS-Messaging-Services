@@ -162,9 +162,6 @@ public class MultipartResponseConverter {
             }
         } catch (IOException ioException) {
             //Deserializing Payload threw exception
-            if (log.isErrorEnabled()) {
-                log.error("Error deserializing Payload! {}", ioException.getMessage());
-            }
             throw new DeserializeException(ioException);
         }
     }

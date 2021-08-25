@@ -28,7 +28,6 @@ import de.fraunhofer.ids.messaging.protocol.multipart.MultipartRequestBuilder;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
-import de.fraunhofer.ids.messaging.util.RequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -132,18 +131,11 @@ public class MessageService {
                                target,
                                payloadString);
 
-                RequestUtils.logRequest(request);
-
                 final var responseMap = httpService.sendAndCheckDat(request);
 
                 return multipartResponseConverter.convertResponse(responseMap);
             default:
-                if (log.isWarnEnabled()) {
-                    log.warn("Unknown protocol using default multipart");
-                }
-
                 return sendIdsMessage(messageAndPayload, target, ProtocolType.MULTIPART);
-
         }
     }
 

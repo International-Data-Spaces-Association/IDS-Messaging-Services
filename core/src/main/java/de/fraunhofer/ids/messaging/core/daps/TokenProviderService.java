@@ -190,13 +190,11 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                 }
             } catch (IOException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not get key from {}!", entry.getKey());
-                    log.warn(e.getMessage(), e);
+                    log.warn("Could not get key from {}! {}", entry.getKey(), e.getMessage());
                 }
             } catch (JoseException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not create JsonWebKeySet from response!");
-                    log.warn(e.getMessage(), e);
+                    log.warn("Could not create JsonWebKeySet from response! {}", e.getMessage());
                 }
             }
         }
@@ -207,19 +205,17 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * @return True if jwt expired.
      */
     private boolean isExpired(final String jwt) {
-        final var token =
-                new DynamicAttributeTokenBuilder()
-                        ._tokenFormat_(TokenFormat.JWT)
-                        ._tokenValue_(jwt)
-                        .build();
+        final var token = new DynamicAttributeTokenBuilder()
+                ._tokenFormat_(TokenFormat.JWT)
+                ._tokenValue_(jwt)
+                .build();
 
         Claims claims;
         try {
             claims = DapsValidator.getClaims(token, this.publicKeys).getBody();
         } catch (ClaimsException e) {
             if (configContainer.getConfigurationModel().getConnectorDeployMode()
-                != ConnectorDeployMode.TEST_DEPLOYMENT
-                && log.isWarnEnabled()) {
+                != ConnectorDeployMode.TEST_DEPLOYMENT && log.isWarnEnabled()) {
                     log.warn("Could not parse JWT! Treat JWT as having expired.");
             }
 

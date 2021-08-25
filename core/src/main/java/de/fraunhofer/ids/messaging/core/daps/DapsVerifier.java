@@ -97,8 +97,8 @@ public final class DapsVerifier {
                         if (!result.isSuccess()) {
                             //if a rule fails, reject token
                             if (log.isWarnEnabled()) {
-                                log.warn(String.format("Custom DAT validation rule failed!"
-                                    + " Message: %s", result.getMessage()));
+                                log.warn("Custom DAT validation rule failed: {}",
+                                         result.getMessage());
                             }
 
                             throw new ClaimsException(String.format(
@@ -117,13 +117,13 @@ public final class DapsVerifier {
                 }
             }
             if (log.isInfoEnabled()) {
-                log.info("Claims verified successfully.");
+                log.info("Successfully verified claims.");
             }
 
             return true;
         } catch (NullPointerException e) {
             if (log.isWarnEnabled()) {
-                log.warn("Could not verify Claims of the DAT Token!");
+                log.warn("Could not verify DAT Claims!");
             }
 
             throw new ClaimsException(e.getMessage());

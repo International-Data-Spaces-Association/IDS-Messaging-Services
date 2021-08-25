@@ -93,7 +93,7 @@ public class MessageController {
             final HttpServletRequest request) {
         try {
             if (log.isInfoEnabled()) {
-                log.info("Received incoming message!");
+                log.info("Received incoming message.");
             }
 
             final var headerPart =
@@ -164,8 +164,9 @@ public class MessageController {
                 //if no response-body specified by the implemented handler
                 // of the connector (e.g. for received RequestInProcessMessage)
 
-                if (log.isWarnEnabled()) {
-                    log.warn("Implemented Message-Handler didn't return a response!");
+                if (log.isDebugEnabled()) {
+                    log.debug("Implemented Message-Handler didn't return a response,"
+                              + " sending status OK instead as response!");
                 }
 
                 return ResponseEntity
@@ -174,8 +175,7 @@ public class MessageController {
             }
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
-                log.error(
-                        "Error during pre-processing with a PreDispatchingFilter! {}",
+                log.error("Error during pre-processing with a PreDispatchingFilter! {}",
                         e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -185,8 +185,8 @@ public class MessageController {
                                          "Error during preprocessing: %s", e.getMessage())));
         } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
-                log.warn("incoming message could not be parsed!");
-                log.warn(e.getMessage(), e);
+                log.warn("Incoming message could not be parsed, sending response BAD_REQUEST"
+                         + " with RejectionReason.MALFORMED_MESSAGE! {}", e.getMessage());
             }
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -195,8 +195,8 @@ public class MessageController {
                                          "Could not parse incoming message!"));
         } catch (ServletException e) {
             if (log.isWarnEnabled()) {
-                log.warn("incoming request was not multipart!");
-                log.warn(e.getMessage(), e);
+                log.warn("Incoming request was not multipart!"
+                         + " Sending INTERNAL_SERVER_ERROR as response {}", e.getMessage());
             }
 
             return ResponseEntity
@@ -265,8 +265,9 @@ public class MessageController {
 
             return multiMap;
         } catch (IOException e) {
-            if (log.isInfoEnabled()) {
-                log.info(e.getMessage(), e);
+            if (log.isErrorEnabled()) {
+                log.error("Serializer threw exception while creating default rejection message: {}"
+                        , e.getMessage());
             }
             return null;
         }

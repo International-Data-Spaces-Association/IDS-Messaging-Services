@@ -130,7 +130,7 @@ public class DapsValidator {
                         extraAttributes.get("securityProfile").toString());
             } catch (ClaimsException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Security profile does not match Selfdescription");
+                    log.warn("Security profile does not match selfdescription!");
                 }
                 return false;
             }
@@ -139,7 +139,7 @@ public class DapsValidator {
             return DapsVerifier.verify(claims);
         } catch (ClaimsException e) {
             if (log.isWarnEnabled()) {
-                log.warn("Claims could not be verified!");
+                log.warn("Claims could not be successfully verified!");
             }
             return false;
         }

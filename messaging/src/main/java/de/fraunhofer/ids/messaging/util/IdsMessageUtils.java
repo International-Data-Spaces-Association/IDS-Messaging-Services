@@ -108,7 +108,7 @@ public final class IdsMessageUtils {
      * @param property Like version, artifactID etc.
      * @return The pom value.
      */
-    public static String getProjectProperty(final String property) {
+    public static String getProjectProperty(final String property) throws IOException {
 
         //read /main/resources/project/properties
         if (log.isDebugEnabled()) {
@@ -123,9 +123,10 @@ public final class IdsMessageUtils {
                                 .getClassLoader()
                                 .getResourceAsStream("project.properties")));
         } catch (IOException e) {
-            if (log.isInfoEnabled()) {
-                log.info(e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("Could not read property from pom: {}", e.getMessage());
             }
+            throw e;
         }
 
         //get property (might be null if not correct)
@@ -145,8 +146,8 @@ public final class IdsMessageUtils {
         try {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
         } catch (DatatypeConfigurationException e) {
-            if (log.isInfoEnabled()) {
-                log.info(e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error(e.getMessage());
             }
         }
         return null;
