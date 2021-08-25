@@ -266,8 +266,8 @@ public class MessageController {
             return multiMap;
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
-                log.error("Serializer threw exception while creating default rejection message: {}"
-                        , e.getMessage());
+                log.error("Serializer threw exception while creating default rejection message: {}",
+                          e.getMessage());
             }
             return null;
         }
