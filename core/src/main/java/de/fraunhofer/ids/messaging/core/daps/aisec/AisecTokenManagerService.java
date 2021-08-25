@@ -119,8 +119,8 @@ public class AisecTokenManagerService implements TokenManagerService {
             //
             final var connectorFingerprint = getConnectorFingerprint(keyStoreManager);
 
-            if (log.isInfoEnabled()) {
-                log.info("Retrieving Dynamic Attribute Token...");
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieving Dynamic Attribute Token from DAPS...");
             }
 
             final var jws = getRequestToken(targetAudience, privateKey, connectorFingerprint);
@@ -135,22 +135,20 @@ public class AisecTokenManagerService implements TokenManagerService {
             final var client = clientProvider.getClient();
             final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
-            if (log.isInfoEnabled()) {
-                log.info("Sending request to DAPS: {}", dapsUrl);
+            if (log.isDebugEnabled()) {
+                log.debug("Sending request to DAPS: {}", dapsUrl);
             }
 
             final var jwtResponse = sendRequestToDAPS(client, request);
-
-            if (jwtResponse.isSuccessful()) {
-                log.info("Successful received response from DAPS.");
-            }
-
             final var responseBody = jwtResponse.body();
             checkEmptyDAPSResponse(responseBody); //can throw exception
 
             final var jwtString = responseBody.string();
-
             dynamicAttributeToken = getDAT(jwtString);
+
+            if (jwtResponse.isSuccessful() && log.isInfoEnabled()) {
+                log.info("Successfully received DAT from DAPS.");
+            }
         } catch (IOException e) {
             handleIOException(e);
         } catch (DapsEmptyResponseException e) {

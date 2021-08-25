@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 ## Version [4.2.1] UNRELEASED
 
 ### Patch Change: Miscellaneous
-- Refactored KeyStoreManager logs for loading configuration, keystore and truststore.
+- Refactored debug/info/warn/error log-messages (e.g. for KeyStoreManager).
 
 ## Version [4.2.0] 2021-08-24
 

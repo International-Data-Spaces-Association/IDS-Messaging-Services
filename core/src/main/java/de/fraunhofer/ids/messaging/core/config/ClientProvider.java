@@ -176,8 +176,8 @@ public class ClientProvider {
                     final var proxyHost = proxyAddress.getHost();
                     final int proxyPort = proxyAddress.getPort();
 
-                    if (log.isInfoEnabled()) {
-                        log.info("Address: {}, Port: {}", proxyHost, proxyPort);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Address: {}, Port: {}", proxyHost, proxyPort);
                     }
                     proxyList.add(new Proxy(Proxy.Type.HTTP,
                         new InetSocketAddress(proxyHost, proxyPort)));
@@ -245,14 +245,9 @@ public class ClientProvider {
      */
     private static void setAcceptingAllSSLCertificates(final OkHttpClient.Builder okHttpBuilder)
             throws NoSuchAlgorithmException, KeyManagementException {
-        if (log.isDebugEnabled()) {
-            log.debug("Test Deployment, use all trusting trustmanager");
-        }
-
         if (log.isWarnEnabled()) {
             log.warn("Trustmanager is trusting all Certificates in "
-                     + "TEST_DEPLOYMENT mode, you should not use"
-                     + " this in production!");
+                     + "TEST_DEPLOYMENT mode, you should not use this in production!");
         }
 
         final var trustmanager = getAllTrustingTrustManager();

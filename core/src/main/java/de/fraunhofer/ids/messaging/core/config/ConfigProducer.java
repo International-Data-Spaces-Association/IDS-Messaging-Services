@@ -165,8 +165,8 @@ public class ConfigProducer {
     }
 
     private String getAbsolutePathConfig(final ConfigProperties properties) throws IOException {
-        if (log.isInfoEnabled()) {
-            log.info("Loading config from absolute Path {}", properties.getPath());
+        if (log.isDebugEnabled()) {
+            log.debug("Loading config from absolute Path {}", properties.getPath());
         }
 
         final var fis = new FileInputStream(properties.getPath());

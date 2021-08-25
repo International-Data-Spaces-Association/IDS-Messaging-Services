@@ -184,10 +184,9 @@ public class KeyStoreManager {
             CertificateSubjectCnProvider.certificateSubjectCn
                     = UUID.fromString(IETFUtils.valueToString(cn.getFirst().getValue()));
         } catch (Exception exception) {
-            if (log.isWarnEnabled()) {
-                log.warn("Could not read the Subject-CN UUID from the connector certificate."
-                         + " Are you using a valid connector certificate?"
-                         + " CertificateSubjectCnProvider will provide a random UUID instead!");
+            if (log.isDebugEnabled()) {
+                log.debug("Could not read Subject-CN UUID from the connector certificate."
+                         + " Valid connector certificate? Will generate random UUID.");
             }
 
             CertificateSubjectCnProvider.certificateSubjectCn = UUID.randomUUID();
@@ -277,7 +276,7 @@ public class KeyStoreManager {
                 is.close();
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Could not find keystore, aborting!");
+                    log.error("Could not find {}, aborting!", keyStoreType);
                 }
                 throwKeyStoreInitException(e, e.getMessage());
             }
@@ -308,13 +307,13 @@ public class KeyStoreManager {
 
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Could not find keystore at system scope, aborting!");
+                    log.error("Could not find {} at system scope, aborting!", keyStoreType);
                 }
                 throwKeyStoreInitException(e, e.getMessage());
             }
         }
         if (log.isInfoEnabled()) {
-            log.info("Successfully loaded {} {}", keyStoreType, location);
+            log.info("Successfully loaded {}.", keyStoreType);
         }
         return store;
     }
