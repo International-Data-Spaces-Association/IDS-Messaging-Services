@@ -135,8 +135,9 @@ public class IdsHttpService implements HttpService {
                         extraAttributes.put("securityProfile",
                                             connector.getSecurityProfile().getId());
                     }
-
-                } catch (IOException | RiotException e) {
+                } catch (Exception e) {
+                    //At this point, all exceptions can be caught regardless of their cause,
+                    //since all of them break the logic behind this section.
                     if (log.isDebugEnabled()) {
                         log.debug("Could not deserialize Payload to Connector class."
                                   + " Skipping Connector-SecurityProfile attribute"
