@@ -133,15 +133,14 @@ public class IdsHttpService implements HttpService {
 
                     if (message.getIssuerConnector().equals(connector.getId())) {
                         extraAttributes.put("securityProfile",
-                                            connector
-                                                .getSecurityProfile()
-                                                .getId());
+                                            connector.getSecurityProfile().getId());
                     }
 
                 } catch (IOException | RiotException e) {
-                    if (log.isWarnEnabled()) {
-                        log.warn("Could not deserialize Payload! Skipping Connector-"
-                                 + "SecurityProfile Attribute! {}", e.getMessage());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Could not deserialize Payload to Connector class."
+                                  + " Skipping Connector-SecurityProfile attribute"
+                                  + " in DAT validation. Reason: {}", e.getMessage());
                     }
                 }
             }
@@ -357,15 +356,15 @@ public class IdsHttpService implements HttpService {
     private Response sendRequest(final Request request,
                                  final OkHttpClient client) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info("Sending request...");
+            log.info("Sending request to {} ...", request.url());
         }
 
         final var response = client.newCall(request).execute();
 
         if (!response.isSuccessful()) {
             if (log.isErrorEnabled()) {
-                log.error("Request send but response-code unexpectedly not in 200-299!"
-                          + " Response-code: {}", response.code());
+                log.error("Received response but response-code not in 200-299!"
+                          + " Response-code: {}!", response.code());
             }
 
             throw new IOException("Unexpected code " + response + " With Body: " + Objects
@@ -425,8 +424,8 @@ public class IdsHttpService implements HttpService {
         try {
             response = send(request);
         } catch (IOException ioException) {
-            if (log.isErrorEnabled()) {
-                log.error("Error during transmission of the message: {}", ioException.getMessage());
+            if (log.isDebugEnabled()) {
+                log.debug("Error during transmission of the message: {}", ioException.getMessage());
             }
 
             //throw SendMessageException instead of IOException
@@ -451,12 +450,12 @@ public class IdsHttpService implements HttpService {
 
         try {
             response = send(body, target);
-        } catch (IOException e) {
-            if (log.isErrorEnabled()) {
-                log.error("Error during transmission of the message: {}", e.getMessage());
+        } catch (IOException ioException) {
+            if (log.isDebugEnabled()) {
+                log.debug("Error during transmission of the message: {}", ioException.getMessage());
             }
 
-            throw e;
+            throw ioException;
         }
 
         return checkDatFromResponse(response);
@@ -479,12 +478,12 @@ public class IdsHttpService implements HttpService {
 
         try {
             response = sendWithHeaders(body, target, headers);
-        } catch (IOException e) {
-            if (log.isErrorEnabled()) {
-                log.error("Error during transmission of the message: {}", e.getMessage());
+        } catch (IOException ioException) {
+            if (log.isDebugEnabled()) {
+                log.debug("Error during transmission of the message: {}", ioException.getMessage());
             }
 
-            throw e;
+            throw ioException;
         }
 
         return checkDatFromResponse(response);
