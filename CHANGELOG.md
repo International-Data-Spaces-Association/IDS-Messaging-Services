@@ -9,10 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.2.2] UNRELEASED
+## Version [4.2.2] 2021-08-26
 
 ### Patch Change: Miscellaneous
-- When the security-profile attribute of an incoming message is determined, all exceptions are now caught, regardless of their cause, since they are not relevant for the rest of the process.
+- When the security-profile attribute of an incoming message is determined, all exceptions are now caught, regardless of their cause.
 
 ## Version [4.2.1] 2021-08-26
 
