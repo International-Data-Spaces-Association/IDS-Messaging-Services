@@ -9,10 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.2.1] UNRELEASED
+## Version [4.2.1] 2021-08-26
 
 ### Patch Change: Miscellaneous
-- Refactored debug/info/warn/error log-messages (e.g. for KeyStoreManager).
+- Refactored debug/info/warn/error log-messages (e.g. for KeyStoreManager and IdsHttpService).
 
 ## Version [4.2.0] 2021-08-24
 
