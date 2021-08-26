@@ -44,7 +44,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.jena.riot.RiotException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -135,8 +134,9 @@ public class IdsHttpService implements HttpService {
                         extraAttributes.put("securityProfile",
                                             connector.getSecurityProfile().getId());
                     }
-
-                } catch (IOException | RiotException e) {
+                } catch (Exception e) {
+                    //At this point, all exceptions can be caught regardless of their cause,
+                    //since all of them break the logic behind this section.
                     if (log.isDebugEnabled()) {
                         log.debug("Could not deserialize Payload to Connector class."
                                   + " Skipping Connector-SecurityProfile attribute"
