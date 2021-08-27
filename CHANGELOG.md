@@ -9,6 +9,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.2.3] UNRELEASED
+
+### Patch Change: Enhancements
+- If no private key can be found for a given alias within a keystore, a KeyStoreException is now thrown and an error is logged, preventing an otherwise possible NullpointerException (KeystoreManager getPrivateKeyFromKeyStore).
+
 ## Version [4.2.2] 2021-08-26
 
 ### Patch Change: Miscellaneous
