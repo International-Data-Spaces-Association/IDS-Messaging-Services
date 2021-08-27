@@ -376,7 +376,7 @@ public class KeyStoreManager {
      * @throws UnrecoverableKeyException If the Key cannot be retrieved
      * from the keystore (e.g. the given password is wrong).
      * @throws NoSuchAlgorithmException If the algorithm for recovering the key cannot be found.
-     * @throws KeyStoreException If KeyStore was not initialized.
+     * @throws KeyStoreException If KeyStore was not initialized or private key cannot be found.
      */
     private void getPrivateKeyFromKeyStore(final String keyAlias)
             throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
@@ -385,6 +385,19 @@ public class KeyStoreManager {
             log.debug("Getting private key {} from keystore", keyAlias);
         }
         final var key = keyStore.getKey(keyAlias, keyStorePw);
+
+        if (key == null) {
+            if (log.isErrorEnabled()) {
+                log.error("Keystoremanager: No private key for the given alias found"
+                          + " within the Keystore! Given alias does not exist"
+                          + " or does not identify a key-related entry! (used alias: {})",
+                          keyAlias);
+            }
+            throw new KeyStoreException("Keystoremanager: No private key for the given alias found"
+                                        + " within the Keystore! Given alias does not exist"
+                                        + " or does not identify a key-related entry! (used alias:"
+                                        + " " + keyAlias + ")");
+        }
 
         if (key instanceof PrivateKey) {
             if (log.isDebugEnabled()) {
