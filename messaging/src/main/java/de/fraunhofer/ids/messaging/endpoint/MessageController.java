@@ -35,7 +35,6 @@ import de.fraunhofer.ids.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -216,7 +215,14 @@ public class MessageController {
         }
     }
 
-    private boolean validateInfomodelVersion(String input) throws IOException {
+    /**
+     * Decides whether to run the infomodel compatibility check and if so, whether the
+     * incoming message is compatible.
+     * @param input The received message.
+     * @return True if compatible or no validation to be performed, false otherwise.
+     * @throws IOException No model version information found in the header.
+     */
+    private boolean validateInfomodelVersion(final String input) throws IOException {
         if (validateInfVer && !checkInboundVersion(input)) {
             return false;
         } else if (!validateInfVer) {
