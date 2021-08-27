@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Enhancements
 - If no private key can be found for a given alias within a keystore, a KeyStoreException is now thrown and an error is logged, preventing an otherwise possible NullpointerException (KeystoreManager getPrivateKeyFromKeyStore).
+- The payload of incoming messages is now first validated for valid JSON and whether the securityProfile attribute is present, if not, this check is skipped instead of issuing an error message in the logs (IdsHttpService checkDatFromResponse).
 
 ## Version [4.2.2] 2021-08-26
 
