@@ -390,11 +390,13 @@ public class KeyStoreManager {
             if (log.isErrorEnabled()) {
                 log.error("Keystoremanager: No private key for the given alias found"
                           + " within the Keystore! Given alias does not exist"
-                          + " or does not identify a key-related entry!");
+                          + " or does not identify a key-related entry! (used alias: {})",
+                          keyAlias);
             }
             throw new KeyStoreException("Keystoremanager: No private key for the given alias found"
                                         + " within the Keystore! Given alias does not exist"
-                                        + " or does not identify a key-related entry!");
+                                        + " or does not identify a key-related entry! (used alias:"
+                                        + " " + keyAlias + ")");
         }
 
         if (key instanceof PrivateKey) {
