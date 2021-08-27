@@ -44,6 +44,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -126,7 +128,7 @@ public class IdsHttpService implements HttpService {
             final var message = serializer.deserialize(messageString, Message.class);
             final var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
-            if (payloadString != null) {
+            if (isJsonSecProfile(payloadString)) {
                 try {
                     final var connector = serializer.deserialize(payloadString, Connector.class);
 
@@ -135,13 +137,18 @@ public class IdsHttpService implements HttpService {
                                             connector.getSecurityProfile().getId());
                     }
                 } catch (Exception e) {
-                    //At this point, all exceptions can be caught regardless of their cause,
-                    //since all of them break the logic behind this section.
+                    //At this point, all exceptions can be caught regardless of their cause.
                     if (log.isDebugEnabled()) {
                         log.debug("Could not deserialize Payload to Connector class."
                                   + " Skipping Connector-SecurityProfile attribute"
                                   + " in DAT validation. Reason: {}", e.getMessage());
                     }
+                }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Payload is no valid JSON or does not contain a securityProfile"
+                              + " attribute. Skipping Connector-SecurityProfile attribute"
+                              + " in DAT validation.");
                 }
             }
 
@@ -283,6 +290,29 @@ public class IdsHttpService implements HttpService {
         final var request = builder.build();
 
         return sendRequest(request, getClientWithSettings());
+    }
+
+    /**
+     * Checks if the payload is a valid JSON (array or object) and if it contains
+     * a securityProfile specification.
+     * @param payload The received payload.
+     * @return True if valid JSON and contains securityProfile, else false.
+     */
+    private boolean isJsonSecProfile(final String payload) {
+        if (payload == null || !payload.contains("securityProfile")) {
+            return false;
+        }
+
+        try {
+            new JSONObject(payload);
+        } catch (Exception noObject) {
+            try {
+                new JSONArray(payload);
+            } catch (Exception noArray) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
