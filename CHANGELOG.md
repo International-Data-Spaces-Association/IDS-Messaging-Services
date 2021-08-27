@@ -9,7 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.2.3] UNRELEASED
+## Version [4.3.0] UNRELEASED
+
+### Minor Change: Incoming message infomodel compatibility check
+- The check whether an incoming message is compatible with its ModelVersion to the inbound ModelVersions of the Connector can be switched on or off via application.properties (infomodel.compatibility.validation=true/false). The default value if not set is true (switched on).
 
 ### Patch Change: Enhancements
 - If no private key can be found for a given alias within a keystore, a KeyStoreException is now thrown and an error is logged, preventing an otherwise possible NullpointerException (KeystoreManager getPrivateKeyFromKeyStore).
