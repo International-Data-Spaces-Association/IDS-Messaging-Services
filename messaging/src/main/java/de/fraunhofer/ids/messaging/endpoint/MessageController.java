@@ -35,8 +35,10 @@ import de.fraunhofer.ids.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +67,12 @@ public class MessageController {
      * The infomodel serializer.
      */
     private final Serializer serializer;
+
+    /**
+     * Used to switch incoming infomodel version compatibility check off or on (default on).
+     */
+    @Value("#{new Boolean('${infomodel.compatibility.validation:true}')}")
+    private Boolean validateInfVer;
 
     /**
      * Constructor for the MessageController.
@@ -123,12 +131,12 @@ public class MessageController {
                 input = scanner.useDelimiter("\\A").next();
             }
 
-            if (!checkInboundVersion(input)) {
+            if (!validateInfomodelVersion(input)) {
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .body(createDefaultErrorMessage(
-                             RejectionReason.VERSION_NOT_SUPPORTED,
-                             "Infomodel Version of incoming Message not supported!"));
+                                RejectionReason.VERSION_NOT_SUPPORTED,
+                                "Infomodel Version of incoming Message not supported!"));
             }
 
             // Deserialize JSON-LD headerPart to its RequestMessage.class
@@ -206,6 +214,22 @@ public class MessageController {
                              String.format(
                                  "Could not read incoming request! Error: %s", e.getMessage())));
         }
+    }
+
+    private boolean validateInfomodelVersion(String input) throws IOException {
+        if (validateInfVer && !checkInboundVersion(input)) {
+            return false;
+        } else if (!validateInfVer) {
+            if (log.isDebugEnabled()) {
+                log.debug("Skipped validating infomodel compability!");
+            }
+        } else {
+            if (log.isInfoEnabled()) {
+                log.info("Successfully validated infomodel compability.");
+            }
+        }
+
+        return true;
     }
 
     /**
