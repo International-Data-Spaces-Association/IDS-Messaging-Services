@@ -101,7 +101,7 @@ public class MultipartResponseConverter {
             responseHeader = getResponseHeader(responseMap);
         } catch (IOException ioException) {
             if (log.isErrorEnabled()) {
-                log.error("Error deserializing Header! {}", ioException.getMessage());
+                log.error("Error deserializing Header! [exception=({})]", ioException.getMessage());
             }
             throw new DeserializeException(ioException);
         }

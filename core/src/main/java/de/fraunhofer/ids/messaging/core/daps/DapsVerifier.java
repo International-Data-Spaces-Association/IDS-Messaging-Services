@@ -97,7 +97,7 @@ public final class DapsVerifier {
                         if (!result.isSuccess()) {
                             //if a rule fails, reject token
                             if (log.isWarnEnabled()) {
-                                log.warn("Custom DAT validation rule failed: {}",
+                                log.warn("Custom DAT validation rule failed! [message=({})]",
                                          result.getMessage());
                             }
 
@@ -108,7 +108,7 @@ public final class DapsVerifier {
                         //if a rule throws an exception, log exception and reject token
                         if (log.isErrorEnabled()) {
                             log.error(
-                                "Exception thrown by custom DAT validation rule! {}",
+                                "Exception thrown by custom DAT validation rule! [exception=({})]",
                                 e.getMessage());
                         }
                         throw new ClaimsException(String.format(
