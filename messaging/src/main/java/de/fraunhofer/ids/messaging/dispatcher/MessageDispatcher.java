@@ -84,12 +84,13 @@ public class MessageDispatcher {
      *                              the incoming Message.
      * @param configContainer The connector configuration.
      * @param dapsValidator Validator class for DAPS DAT.
+     * @param provider Provides DAPS public keys for checking tokens.
      */
     public MessageDispatcher(final ObjectMapper objectMapper,
                              final RequestMessageHandler requestMessageHandler,
                              final DapsPublicKeyProvider provider,
                              final ConfigContainer configContainer,
-                             DapsValidator dapsValidator) {
+                             final DapsValidator dapsValidator) {
         this.objectMapper = objectMapper;
         this.requestMessageHandler = requestMessageHandler;
         this.configContainer = configContainer;

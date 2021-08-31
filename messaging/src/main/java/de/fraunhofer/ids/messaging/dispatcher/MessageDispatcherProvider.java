@@ -34,8 +34,10 @@ public class MessageDispatcherProvider {
      *
      * @param objectMapper    for parsing objects from json
      * @param provider        providing DAPS public key for checking DAT Tokens
+     * @param dapsValidator   validator for DAT Tokens
      * @param configContainer container for current configuration
-     * @param resolver        resolver for finding the right handler for infomodel {@link de.fraunhofer.iais.eis.Message}
+     * @param resolver        resolver for finding the right handler for infomodel
+     * {@link de.fraunhofer.iais.eis.Message}
      *
      * @return MessageDispatcher as Spring Bean
      */
@@ -46,6 +48,8 @@ public class MessageDispatcherProvider {
                                                       final ConfigContainer configContainer,
                                                       final DapsValidator dapsValidator) {
 
-        return new MessageDispatcher(objectMapper, resolver, provider, configContainer, dapsValidator);
+        return new MessageDispatcher(
+                objectMapper, resolver, provider, configContainer, dapsValidator
+        );
     }
 }
