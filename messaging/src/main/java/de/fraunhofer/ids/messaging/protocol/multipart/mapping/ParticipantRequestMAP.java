@@ -31,6 +31,7 @@ public class ParticipantRequestMAP implements MessageAndPayload<ParticipantReque
 
     /**
      * Constructor for the ParticipantRequestMAP.
+     *
      * @param message The ParticipantRequestMessage.
      */
     public ParticipantRequestMAP(final ParticipantRequestMessage message) {

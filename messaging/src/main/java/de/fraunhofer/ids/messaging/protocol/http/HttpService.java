@@ -117,6 +117,8 @@ public interface HttpService {
     Response getWithHeaders(URI target, Map<String, String> headers) throws IOException;
 
     /**
+     * Sends a request and validates the DAT of the response.
+     *
      * @param request To be sent.
      * @return Multipart Map with header and payload part of response.
      * @throws IOException If request cannot be sent.
@@ -139,6 +141,8 @@ public interface HttpService {
             DeserializeException;
 
     /**
+     * Sends a request to a given target and validates the DAT of the response.
+     *
      * @param body RequestBody to be sent.
      * @param target The target to send the message to.
      * @return Multipart Map with header and payload part of response.

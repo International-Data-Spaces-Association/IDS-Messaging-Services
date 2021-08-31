@@ -133,11 +133,11 @@ public class AisecTokenManagerService implements TokenManagerService {
             }
 
             final var client = clientProvider.getClient();
-            final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
             if (log.isDebugEnabled()) {
-                log.debug("Sending request to DAPS: {}", dapsUrl);
+                log.debug("Sending DAT request to DAPS. [url=({})]", dapsUrl);
             }
+            final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
             final var jwtResponse = sendRequestToDAPS(client, request);
             final var responseBody = jwtResponse.body();
@@ -230,7 +230,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         if (log.isWarnEnabled()) {
             log.warn(
                     "TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, "
-                    + "will not be sent in PRODUCTIVE_DEPLOYMENT, reason: {}", error);
+                    + "will not be sent in PRODUCTIVE_DEPLOYMENT. [reason=({})]", error);
         }
     }
 
@@ -238,7 +238,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         if (log.isErrorEnabled()) {
             log.error(
                     "PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! "
-                    + "No DAT could be acquired from DAPS, reason: {}", error);
+                    + "No DAT could be acquired from DAPS! [reason=({})]", error);
         }
     }
 

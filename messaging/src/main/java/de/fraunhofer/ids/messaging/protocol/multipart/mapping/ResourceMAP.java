@@ -37,6 +37,7 @@ public class ResourceMAP implements MessageAndPayload<Message, Resource> {
 
     /**
      * Constructor for the ResourceMAP.
+     *
      * @param m The message.
      */
     public ResourceMAP(final Message m) {
@@ -45,6 +46,7 @@ public class ResourceMAP implements MessageAndPayload<Message, Resource> {
 
     /**
      * Constructor for the ResourceMAP.
+     *
      * @param m The message.
      * @param r The resource.
      */

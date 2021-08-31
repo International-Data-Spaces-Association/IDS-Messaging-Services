@@ -51,6 +51,8 @@ public class ParisService extends InfrastructureService
     private final IdsRequestBuilderService idsRequestBuilderService;
 
     /**
+     * ParisService constructor.
+     *
      * @param container The ConfigContainer.
      * @param tokenProvider The DapsTokenProvider.
      * @param messageService The MessageService.

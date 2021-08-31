@@ -28,6 +28,7 @@ public class ContractRequestMAP
 
     /**
      * Constructor for ContractRequestMAP.
+     *
      * @param contractRequestMessage The message.
      * @param payload The payload.
      */

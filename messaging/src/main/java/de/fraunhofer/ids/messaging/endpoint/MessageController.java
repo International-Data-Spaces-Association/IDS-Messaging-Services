@@ -37,6 +37,7 @@ import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,12 @@ public class MessageController {
      * The infomodel serializer.
      */
     private final Serializer serializer;
+
+    /**
+     * Used to switch incoming infomodel version compatibility check off or on (default on).
+     */
+    @Value("#{new Boolean('${infomodel.compatibility.validation:true}')}")
+    private Boolean validateInfVer;
 
     /**
      * Constructor for the MessageController.
@@ -123,17 +130,25 @@ public class MessageController {
                 input = scanner.useDelimiter("\\A").next();
             }
 
-            if (!checkInboundVersion(input)) {
+            if (!validateInfomodelVersion(input)) {
+                final var errorMessage = "Infomodel Version of incoming Message not supported!";
+
+                if (log.isWarnEnabled()) {
+                    log.warn("Infomodel model-version validation of received messages is switched"
+                             + " on. Model-version of incoming message not supported."
+                             + " Sending BAD_REQUEST response as a result."
+                             + " [response-message=({})]", errorMessage);
+                }
+
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .body(createDefaultErrorMessage(
-                             RejectionReason.VERSION_NOT_SUPPORTED,
-                             "Infomodel Version of incoming Message not supported!"));
+                                RejectionReason.VERSION_NOT_SUPPORTED,
+                                errorMessage));
             }
 
             // Deserialize JSON-LD headerPart to its RequestMessage.class
-            final var requestHeader = serializer
-                    .deserialize(input, Message.class);
+            final var requestHeader = serializer.deserialize(input, Message.class);
 
             if (log.isDebugEnabled()) {
                 log.debug("Hand the incoming message to the message dispatcher!");
@@ -152,8 +167,8 @@ public class MessageController {
 
                 // return the ResponseEntity as Multipart content
                 // with created MultiValueMap
-                if (log.isDebugEnabled()) {
-                    log.debug("Sending response with status OK (200).");
+                if (log.isInfoEnabled()) {
+                    log.info("Sending response with status OK (200).");
                 }
 
                 return ResponseEntity
@@ -169,14 +184,19 @@ public class MessageController {
                               + " sending status OK instead as response!");
                 }
 
+                if (log.isInfoEnabled()) {
+                    log.info("Sending response with status OK (200) without body.");
+                }
+
                 return ResponseEntity
                         .status(HttpStatus.OK)
                         .build();
             }
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
-                log.error("Error during pre-processing with a PreDispatchingFilter! {}",
-                        e.getMessage());
+                log.error("Error during pre-processing with a PreDispatchingFilter!"
+                          + " Sending BAD_REQUEST as response."
+                          + " [exception=({})]", e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(createDefaultErrorMessage(
@@ -186,7 +206,8 @@ public class MessageController {
         } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Incoming message could not be parsed, sending response BAD_REQUEST"
-                         + " with RejectionReason.MALFORMED_MESSAGE! {}", e.getMessage());
+                         + " with RejectionReason.MALFORMED_MESSAGE! [exception=({})]",
+                         e.getMessage());
             }
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -196,7 +217,8 @@ public class MessageController {
         } catch (ServletException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Incoming request was not multipart!"
-                         + " Sending INTERNAL_SERVER_ERROR as response {}", e.getMessage());
+                         + " Sending INTERNAL_SERVER_ERROR as response [exception=({})]",
+                         e.getMessage());
             }
 
             return ResponseEntity
@@ -206,6 +228,30 @@ public class MessageController {
                              String.format(
                                  "Could not read incoming request! Error: %s", e.getMessage())));
         }
+    }
+
+    /**
+     * Decides whether to run the infomodel compatibility check and if so, whether the
+     * incoming message is compatible.
+     *
+     * @param input The received message.
+     * @return True if compatible or no validation to be performed, false otherwise.
+     * @throws IOException No model version information found in the header.
+     */
+    private boolean validateInfomodelVersion(final String input) throws IOException {
+        if (validateInfVer && !checkInboundVersion(input)) {
+            return false;
+        } else if (!validateInfVer) {
+            if (log.isDebugEnabled()) {
+                log.debug("Skipped validating infomodel compability!");
+            }
+        } else {
+            if (log.isInfoEnabled()) {
+                log.info("Successfully validated infomodel compability.");
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -266,8 +312,8 @@ public class MessageController {
             return multiMap;
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
-                log.error("Serializer threw exception while creating default rejection message: {}",
-                          e.getMessage());
+                log.error("Serializer threw exception while creating default rejection message!"
+                          + " [exception=({})]", e.getMessage());
             }
             return null;
         }

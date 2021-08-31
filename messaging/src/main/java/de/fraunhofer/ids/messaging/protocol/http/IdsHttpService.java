@@ -44,6 +44,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -126,7 +128,7 @@ public class IdsHttpService implements HttpService {
             final var message = serializer.deserialize(messageString, Message.class);
             final var payloadString = multipartResponse.get(MultipartDatapart.PAYLOAD.toString());
 
-            if (payloadString != null) {
+            if (isJsonSecProfile(payloadString)) {
                 try {
                     final var connector = serializer.deserialize(payloadString, Connector.class);
 
@@ -135,13 +137,18 @@ public class IdsHttpService implements HttpService {
                                             connector.getSecurityProfile().getId());
                     }
                 } catch (Exception e) {
-                    //At this point, all exceptions can be caught regardless of their cause,
-                    //since all of them break the logic behind this section.
+                    //At this point, all exceptions can be caught regardless of their cause.
                     if (log.isDebugEnabled()) {
                         log.debug("Could not deserialize Payload to Connector class."
                                   + " Skipping Connector-SecurityProfile attribute"
-                                  + " in DAT validation. Reason: {}", e.getMessage());
+                                  + " in DAT validation. [exception=({})]", e.getMessage());
                     }
+                }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Payload is no valid JSON or does not contain a securityProfile"
+                              + " attribute. Skipping Connector-SecurityProfile attribute"
+                              + " in DAT validation.");
                 }
             }
 
@@ -219,14 +226,10 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Response send(final RequestBody requestBody, final URI target) throws IOException {
-        if (log.isDebugEnabled()) {
-            log.debug("Building request to {}", target.toString());
-        }
-
         final var request = buildRequest(requestBody, target);
 
         if (log.isDebugEnabled()) {
-            log.debug("sending request to {}", target);
+            log.debug("Sending request. [url=({})]", target);
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -240,15 +243,10 @@ public class IdsHttpService implements HttpService {
                                     final URI target,
                                     final Map<String, String> headers)
             throws IOException {
-
-        if (log.isDebugEnabled()) {
-            log.debug("Building request to {}", target.toString());
-        }
-
         final var request = buildWithHeaders(requestBody, target, headers);
 
         if (log.isDebugEnabled()) {
-            log.debug("Sending request to {}", target);
+            log.debug("Sending request. [url=({})]", target);
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -274,7 +272,7 @@ public class IdsHttpService implements HttpService {
 
         headers.keySet().forEach(key -> {
              if (log.isDebugEnabled()) {
-                 log.debug("Adding header part ({},{})", key, headers.get(key));
+                 log.debug("Adding header. [key=({}), header=({})]", key, headers.get(key));
              }
 
              builder.addHeader(key, headers.get(key));
@@ -283,6 +281,30 @@ public class IdsHttpService implements HttpService {
         final var request = builder.build();
 
         return sendRequest(request, getClientWithSettings());
+    }
+
+    /**
+     * Checks if the payload is a valid JSON (array or object) and if it contains
+     * a securityProfile specification.
+     *
+     * @param payload The received payload.
+     * @return True if valid JSON and contains securityProfile, else false.
+     */
+    private boolean isJsonSecProfile(final String payload) {
+        if (payload == null || !payload.contains("securityProfile")) {
+            return false;
+        }
+
+        try {
+            new JSONObject(payload);
+        } catch (Exception noObject) {
+            try {
+                new JSONArray(payload);
+            } catch (Exception noArray) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -296,7 +318,7 @@ public class IdsHttpService implements HttpService {
         final var targetURL = target.toString();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request URL: {}", HttpUrl.parse(targetURL));
+            log.debug("Request URL: [url=({})]", HttpUrl.parse(targetURL));
         }
 
         return new Request.Builder()
@@ -320,7 +342,7 @@ public class IdsHttpService implements HttpService {
         final var targetURL = target.toString();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request URL: {}", HttpUrl.parse(targetURL));
+            log.debug("Request URL: [url=({})]", HttpUrl.parse(targetURL));
         }
 
         //!!! DO NOT PRINT RESPONSE BECAUSE RESPONSE BODY IS JUST ONE TIME READABLE
@@ -336,7 +358,7 @@ public class IdsHttpService implements HttpService {
 
         headers.keySet().forEach(key -> {
             if (log.isDebugEnabled()) {
-                log.debug("adding header part ({},{})", key, headers.get(key));
+                log.debug("Adding header [key=({}), header=({})]", key, headers.get(key));
             }
             builder.addHeader(key, headers.get(key));
         });
@@ -364,7 +386,7 @@ public class IdsHttpService implements HttpService {
         if (!response.isSuccessful()) {
             if (log.isErrorEnabled()) {
                 log.error("Received response but response-code not in 200-299!"
-                          + " Response-code: {}!", response.code());
+                          + " [code=({})]", response.code());
             }
 
             throw new IOException("Unexpected code " + response + " With Body: " + Objects
@@ -425,7 +447,8 @@ public class IdsHttpService implements HttpService {
             response = send(request);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message: {}", ioException.getMessage());
+                log.debug("Error during transmission of the message! [exception=({})]",
+                          ioException.getMessage());
             }
 
             //throw SendMessageException instead of IOException
@@ -452,7 +475,8 @@ public class IdsHttpService implements HttpService {
             response = send(body, target);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message: {}", ioException.getMessage());
+                log.debug("Error during transmission of the message! [exception=({})]",
+                          ioException.getMessage());
             }
 
             throw ioException;
@@ -480,7 +504,8 @@ public class IdsHttpService implements HttpService {
             response = sendWithHeaders(body, target, headers);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message: {}", ioException.getMessage());
+                log.debug("Error during transmission of the message! [exception=({})]",
+                          ioException.getMessage());
             }
 
             throw ioException;

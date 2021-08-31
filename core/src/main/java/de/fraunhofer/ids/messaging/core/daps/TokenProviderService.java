@@ -85,6 +85,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
     /**
      * Constructor for TokenProviderService.
+     *
      * @param clientProvider The ClientProvider.
      * @param tokenManagerService The TokenManagerService.
      * @param configContainer The ConfigContainer.
@@ -128,7 +129,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
             DapsEmptyResponseException {
         if (this.currentJwt == null || isExpired(currentJwt)) {
             if (log.isDebugEnabled()) {
-                log.debug("Get a new DAT Token from {}", dapsTokenUrl);
+                log.debug("Requesting a new DAT Token from DAPS! [url=({})]", dapsTokenUrl);
             }
 
             currentJwt = tokenManagerService.acquireToken(dapsTokenUrl);
@@ -167,7 +168,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         for (final var entry : urlKidMap.entrySet()) {
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug("Getting json web keyset from {}", entry.getKey());
+                    log.debug("Getting json web keyset. [key=({})]", entry.getKey());
                 }
 
                 final var request = new Request.Builder().url(entry.getKey()).build();
@@ -184,17 +185,19 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                     this.publicKeys.add(jsonWebKey.getKey());
                 } else {
                     if (log.isWarnEnabled()) {
-                        log.warn("Could not get JsonWebKey with kid {}"
-                                 + " from received KeySet! PublicKey is null!", entry.getValue());
+                        log.warn("Could not get JsonWebKey from received KeySet! PublicKey is null!"
+                                 + "[kid=({})]", entry.getValue());
                     }
                 }
             } catch (IOException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not get key from {}! {}", entry.getKey(), e.getMessage());
+                    log.warn("Could not load the key. [key=({}), exception=({})]", entry.getKey(),
+                             e.getMessage());
                 }
             } catch (JoseException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not create JsonWebKeySet from response! {}", e.getMessage());
+                    log.warn("Could not create JsonWebKeySet from response! [exception=({})]",
+                             e.getMessage());
                 }
             }
         }

@@ -241,7 +241,7 @@ public class KeyStoreManager {
             IOException,
             KeyStoreManagerInitializationException {
         if (log.isDebugEnabled()) {
-            log.debug("Searching for keystore file {}", location.toString());
+            log.debug("Searching for keystore file. [location=({})]", location.toString());
         }
         final var store = getKeyStoreInstance();
 
@@ -261,14 +261,14 @@ public class KeyStoreManager {
                                   .toString();
 
         if (log.isDebugEnabled()) {
-            log.debug("Relative Path: {}", relativepathString);
+            log.debug("Determined relative path. [path=({})]", relativepathString);
         }
 
         final var keyStoreOnClassPath = new ClassPathResource(relativepathString).exists();
 
         if (keyStoreOnClassPath) {
             if (log.isDebugEnabled()) {
-                log.debug("Loading KeyStore from ClassPath...");
+                log.debug("Loading KeyStore from ClassPath ...");
             }
             final var is = new ClassPathResource(relativepathString).getInputStream();
             try {
@@ -276,7 +276,8 @@ public class KeyStoreManager {
                 is.close();
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Could not find {}, aborting!", keyStoreType);
+                    log.error("Could not find {} aborting! [exception=({})]", keyStoreType,
+                              e.getMessage());
                 }
                 throwKeyStoreInitException(e, e.getMessage());
             }
@@ -287,7 +288,7 @@ public class KeyStoreManager {
             }
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug("System Path: {}", pathString);
+                    log.debug("System Path [path=({})]", pathString);
                 }
 
                 //try absolute path
@@ -307,7 +308,8 @@ public class KeyStoreManager {
 
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Could not find {} at system scope, aborting!", keyStoreType);
+                    log.error("Could not find {} at system scope, aborting! [exception=({})]",
+                              keyStoreType, e.getMessage());
                 }
                 throwKeyStoreInitException(e, e.getMessage());
             }
@@ -325,7 +327,8 @@ public class KeyStoreManager {
             store = KeyStore.getInstance(KeyStore.getDefaultType());
         } catch (KeyStoreException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not create a KeyStore with default type! {}", e.getMessage());
+                log.error("Could not create a KeyStore with default type! [exception=({})]",
+                          e.getMessage());
             }
         }
         return store;
@@ -376,15 +379,28 @@ public class KeyStoreManager {
      * @throws UnrecoverableKeyException If the Key cannot be retrieved
      * from the keystore (e.g. the given password is wrong).
      * @throws NoSuchAlgorithmException If the algorithm for recovering the key cannot be found.
-     * @throws KeyStoreException If KeyStore was not initialized.
+     * @throws KeyStoreException If KeyStore was not initialized or private key cannot be found.
      */
     private void getPrivateKeyFromKeyStore(final String keyAlias)
             throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Getting private key {} from keystore", keyAlias);
+            log.debug("Getting private key from keystore. [alias=({})]", keyAlias);
         }
         final var key = keyStore.getKey(keyAlias, keyStorePw);
+
+        if (key == null) {
+            if (log.isErrorEnabled()) {
+                log.error("Keystoremanager: No private key for the given alias found"
+                          + " within the Keystore! Given alias does not exist"
+                          + " or does not identify a key-related entry! [alias=({})]",
+                          keyAlias);
+            }
+            throw new KeyStoreException("Keystoremanager: No private key for the given alias found"
+                                        + " within the Keystore! Given alias does not exist"
+                                        + " or does not identify a key-related entry! [alias=("
+                                        + keyAlias + ")]");
+        }
 
         if (key instanceof PrivateKey) {
             if (log.isDebugEnabled()) {

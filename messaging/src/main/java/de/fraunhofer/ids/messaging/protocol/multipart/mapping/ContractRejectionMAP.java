@@ -31,6 +31,7 @@ public class ContractRejectionMAP implements MessageAndPayload<ContractRejection
 
     /**
      * Constructor for ContractRejectionMAP.
+     *
      * @param contractRejectionMessage The message.
      */
     public ContractRejectionMAP(final ContractRejectionMessage contractRejectionMessage) {

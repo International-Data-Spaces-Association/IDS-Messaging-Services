@@ -27,6 +27,7 @@ public class ContractAgreementMAP
 
     /**
      * Constructor for ContractAgreementMAP.
+     *
      * @param contractAgreementMessage The message.
      * @param payload The payload.
      */

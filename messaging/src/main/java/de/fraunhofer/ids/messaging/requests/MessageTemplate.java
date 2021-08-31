@@ -18,6 +18,7 @@ import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 
 /**
  * Interface for building messages defined by the template.
+ *
  * @param <T> The message type.
  */
 @FunctionalInterface

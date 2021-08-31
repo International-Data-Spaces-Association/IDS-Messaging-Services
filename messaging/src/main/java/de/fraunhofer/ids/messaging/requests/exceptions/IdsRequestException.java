@@ -25,6 +25,7 @@ public class IdsRequestException extends Exception {
 
     /**
      * Constructor for IdsRequestException with message.
+     *
      * @param message The exception message.
      */
     public IdsRequestException(final String message) {

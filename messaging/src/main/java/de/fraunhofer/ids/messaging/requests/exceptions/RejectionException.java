@@ -29,6 +29,7 @@ public class RejectionException extends IdsRequestException {
 
     /**
      * Constructor for the RejectionException.
+     *
      * @param rejectionReason The rejection reason.
      */
     public RejectionException(final RejectionReason rejectionReason) {
@@ -38,6 +39,7 @@ public class RejectionException extends IdsRequestException {
 
     /**
      * Constructor for the RejectionException.
+     *
      * @param message The exception message.
      * @param rejectionReason The rejection reason.
      */

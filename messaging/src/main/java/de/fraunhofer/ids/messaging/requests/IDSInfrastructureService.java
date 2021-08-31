@@ -34,6 +34,7 @@ import lombok.NonNull;
 public interface IDSInfrastructureService {
     /**
      * Interface Method to create a request for a self-description and send it.
+     *
      * @param uri The target URI.
      * @return MessageContrainer with the response.
      * @throws IOException Every other exception.
@@ -64,6 +65,7 @@ public interface IDSInfrastructureService {
 
     /**
      * Interface Method to create a request for a self-description and send it.
+     *
      * @param uri The target URI.
      * @param requestedElement URI of the requested element.
      * @return MessageContrainer with the response.

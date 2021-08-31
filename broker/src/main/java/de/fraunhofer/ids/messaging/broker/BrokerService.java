@@ -50,8 +50,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class BrokerService extends InfrastructureService
-        implements IDSBrokerService {
+public class BrokerService extends InfrastructureService implements IDSBrokerService {
 
     /**
      * Default item limit for the query.
@@ -85,6 +84,7 @@ public class BrokerService extends InfrastructureService
 
     /**
      * BrokerService constructor.
+     *
      * @param container The ConfigContainer.
      * @param tokenProvider The DapsTokenProvider.
      * @param messageService The MessageService.
@@ -177,7 +177,9 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         logBuildingHeader();
         return idsRequestBuilderService.newRequest()
                                        .subjectConnector()
@@ -199,7 +201,9 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         logBuildingHeader();
         return idsRequestBuilderService.newRequest()
                                        .withPayload(container.getConnector())

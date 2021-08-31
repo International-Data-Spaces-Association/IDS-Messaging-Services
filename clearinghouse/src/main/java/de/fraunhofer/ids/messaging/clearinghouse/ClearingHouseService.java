@@ -110,6 +110,7 @@ public class ClearingHouseService extends InfrastructureService
 
     /**
      * Constructor for the ClearingHouseService.
+     *
      * @param container The ConfigContainer.
      * @param tokenProvider The DapsTokenProvider.
      * @param messageService The MessageService.

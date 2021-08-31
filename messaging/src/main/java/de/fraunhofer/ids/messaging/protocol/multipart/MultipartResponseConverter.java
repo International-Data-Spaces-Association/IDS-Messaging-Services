@@ -81,6 +81,7 @@ public class MultipartResponseConverter {
 
     /**
      * Converts a Response into a corresponding MessageAndPayload Object.
+     *
      * @param responseMap Response in a Map.
      * @return MessageAndPayload containing the corresponding Message and the payload parsed
      * in Infomodel classes.
@@ -101,7 +102,7 @@ public class MultipartResponseConverter {
             responseHeader = getResponseHeader(responseMap);
         } catch (IOException ioException) {
             if (log.isErrorEnabled()) {
-                log.error("Error deserializing Header! {}", ioException.getMessage());
+                log.error("Error deserializing Header! [exception=({})]", ioException.getMessage());
             }
             throw new DeserializeException(ioException);
         }

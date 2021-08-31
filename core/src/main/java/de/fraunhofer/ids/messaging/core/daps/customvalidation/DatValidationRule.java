@@ -22,6 +22,7 @@ import io.jsonwebtoken.Claims;
 public interface DatValidationRule {
     /**
      * Adds the possibility to add custom validation rules.
+     *
      * @param toVerify The Claims to verify.
      * @return ValidationRuleResult if successful or not and message.
      * @throws ValidationRuleException If exception thrown by custom check.
