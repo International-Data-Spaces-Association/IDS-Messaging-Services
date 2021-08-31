@@ -78,7 +78,8 @@ public class ConfigProducer {
                 configModel = preInterceptor.get().perform(properties);
             } catch (ConfigProducerInterceptorException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("PreConfigProducerInterceptor failed! {}", e.getMessage());
+                    log.error("PreConfigProducerInterceptor failed! [exception=({})]",
+                              e.getMessage());
                 }
             }
         } else {
@@ -89,7 +90,8 @@ public class ConfigProducer {
                 }
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Configuration cannot be parsed! {}", e.getMessage());
+                    log.error("Configuration cannot be parsed! [exception=({})]",
+                              e.getMessage());
                 }
             }
         }
@@ -114,7 +116,8 @@ public class ConfigProducer {
                             } catch (ConfigProducerInterceptorException e) {
                                 if (log.isErrorEnabled()) {
                                     log.error(
-                                        "PreConfigProducerInterceptor failed! {}", e.getMessage());
+                                        "PreConfigProducerInterceptor failed! [exception=({})]",
+                                        e.getMessage());
                                 }
                             }
                         }
@@ -122,11 +125,13 @@ public class ConfigProducer {
 
             } catch (KeyStoreManagerInitializationException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("KeyStoreManager could not be initialized! {}", e.getMessage());
+                    log.error("KeyStoreManager could not be initialized! [exception=({})]",
+                              e.getMessage());
                 }
             } catch (NoSuchAlgorithmException | KeyManagementException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("ClientProvider could not be initialized! {}", e.getMessage());
+                    log.error("ClientProvider could not be initialized! [exception=({})]",
+                              e.getMessage());
                 }
             }
         }
@@ -134,7 +139,7 @@ public class ConfigProducer {
 
     private ConfigurationModel loadConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading configuration from: {}", properties.getPath());
+            log.debug("Loading configuration. [path=({})]", properties.getPath());
         }
 
         final var config = getConfiguration(properties);
@@ -152,7 +157,7 @@ public class ConfigProducer {
 
     private String getClassPathConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading configuration from classpath: {}",
+            log.debug("Loading configuration from classpath. [path=({})]",
                       properties.getPath());
         }
 
@@ -166,7 +171,7 @@ public class ConfigProducer {
 
     private String getAbsolutePathConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading config from absolute Path {}", properties.getPath());
+            log.debug("Loading config from absolute Path. [path=({})]", properties.getPath());
         }
 
         final var fis = new FileInputStream(properties.getPath());

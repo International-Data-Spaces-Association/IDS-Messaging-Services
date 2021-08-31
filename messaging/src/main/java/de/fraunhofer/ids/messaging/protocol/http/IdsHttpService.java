@@ -141,7 +141,7 @@ public class IdsHttpService implements HttpService {
                     if (log.isDebugEnabled()) {
                         log.debug("Could not deserialize Payload to Connector class."
                                   + " Skipping Connector-SecurityProfile attribute"
-                                  + " in DAT validation. Reason: {}", e.getMessage());
+                                  + " in DAT validation. [exception=({})]", e.getMessage());
                     }
                 }
             } else {
@@ -226,14 +226,10 @@ public class IdsHttpService implements HttpService {
      */
     @Override
     public Response send(final RequestBody requestBody, final URI target) throws IOException {
-        if (log.isDebugEnabled()) {
-            log.debug("Building request to {}", target.toString());
-        }
-
         final var request = buildRequest(requestBody, target);
 
         if (log.isDebugEnabled()) {
-            log.debug("sending request to {}", target);
+            log.debug("Sending request. [url=({})]", target);
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -247,15 +243,10 @@ public class IdsHttpService implements HttpService {
                                     final URI target,
                                     final Map<String, String> headers)
             throws IOException {
-
-        if (log.isDebugEnabled()) {
-            log.debug("Building request to {}", target.toString());
-        }
-
         final var request = buildWithHeaders(requestBody, target, headers);
 
         if (log.isDebugEnabled()) {
-            log.debug("Sending request to {}", target);
+            log.debug("Sending request. [url=({})]", target);
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -281,7 +272,7 @@ public class IdsHttpService implements HttpService {
 
         headers.keySet().forEach(key -> {
              if (log.isDebugEnabled()) {
-                 log.debug("Adding header part ({},{})", key, headers.get(key));
+                 log.debug("Adding header. [key=({}), header=({})]", key, headers.get(key));
              }
 
              builder.addHeader(key, headers.get(key));
@@ -326,7 +317,7 @@ public class IdsHttpService implements HttpService {
         final var targetURL = target.toString();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request URL: {}", HttpUrl.parse(targetURL));
+            log.debug("Request URL: [url=({})]", HttpUrl.parse(targetURL));
         }
 
         return new Request.Builder()
@@ -350,7 +341,7 @@ public class IdsHttpService implements HttpService {
         final var targetURL = target.toString();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request URL: {}", HttpUrl.parse(targetURL));
+            log.debug("Request URL: [url=({})]", HttpUrl.parse(targetURL));
         }
 
         //!!! DO NOT PRINT RESPONSE BECAUSE RESPONSE BODY IS JUST ONE TIME READABLE
@@ -366,7 +357,7 @@ public class IdsHttpService implements HttpService {
 
         headers.keySet().forEach(key -> {
             if (log.isDebugEnabled()) {
-                log.debug("adding header part ({},{})", key, headers.get(key));
+                log.debug("Adding header [key=({}), header=({})]", key, headers.get(key));
             }
             builder.addHeader(key, headers.get(key));
         });
@@ -394,7 +385,7 @@ public class IdsHttpService implements HttpService {
         if (!response.isSuccessful()) {
             if (log.isErrorEnabled()) {
                 log.error("Received response but response-code not in 200-299!"
-                          + " Response-code: {}!", response.code());
+                          + " [code=({})]!", response.code());
             }
 
             throw new IOException("Unexpected code " + response + " With Body: " + Objects
@@ -455,7 +446,8 @@ public class IdsHttpService implements HttpService {
             response = send(request);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message: {}", ioException.getMessage());
+                log.debug("Error during transmission of the message! [exception=({})]",
+                          ioException.getMessage());
             }
 
             //throw SendMessageException instead of IOException
@@ -482,7 +474,8 @@ public class IdsHttpService implements HttpService {
             response = send(body, target);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message: {}", ioException.getMessage());
+                log.debug("Error during transmission of the message! [exception=({})]",
+                          ioException.getMessage());
             }
 
             throw ioException;
@@ -510,7 +503,8 @@ public class IdsHttpService implements HttpService {
             response = sendWithHeaders(body, target, headers);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message: {}", ioException.getMessage());
+                log.debug("Error during transmission of the message! [exception=({})]",
+                          ioException.getMessage());
             }
 
             throw ioException;

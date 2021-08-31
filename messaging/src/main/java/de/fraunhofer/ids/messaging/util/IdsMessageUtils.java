@@ -112,7 +112,7 @@ public final class IdsMessageUtils {
 
         //read /main/resources/project/properties
         if (log.isDebugEnabled()) {
-            log.debug("Trying to read Property {} from pom.xml properties", property);
+            log.debug("Trying to read Property from pom.xml properties. [property=({})]", property);
         }
 
         final var properties = new Properties();
@@ -124,7 +124,7 @@ public final class IdsMessageUtils {
                                 .getResourceAsStream("project.properties")));
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not read property from pom: {}", e.getMessage());
+                log.error("Could not read property from pom! [exception=({})]", e.getMessage());
             }
             throw e;
         }
