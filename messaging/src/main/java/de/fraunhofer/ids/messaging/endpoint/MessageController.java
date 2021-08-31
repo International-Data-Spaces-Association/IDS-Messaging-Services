@@ -131,16 +131,24 @@ public class MessageController {
             }
 
             if (!validateInfomodelVersion(input)) {
+                final var errorMessage = "Infomodel Version of incoming Message not supported!";
+
+                if (log.isWarnEnabled()) {
+                    log.warn("Infomodel model-version validation of received messages is switched"
+                             + " on. Model-version of incoming message not supported."
+                             + " Sending BAD_REQUEST response as a result."
+                             + " [response-message=({})]", errorMessage);
+                }
+
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .body(createDefaultErrorMessage(
                                 RejectionReason.VERSION_NOT_SUPPORTED,
-                                "Infomodel Version of incoming Message not supported!"));
+                                errorMessage));
             }
 
             // Deserialize JSON-LD headerPart to its RequestMessage.class
-            final var requestHeader = serializer
-                    .deserialize(input, Message.class);
+            final var requestHeader = serializer.deserialize(input, Message.class);
 
             if (log.isDebugEnabled()) {
                 log.debug("Hand the incoming message to the message dispatcher!");
@@ -159,8 +167,8 @@ public class MessageController {
 
                 // return the ResponseEntity as Multipart content
                 // with created MultiValueMap
-                if (log.isDebugEnabled()) {
-                    log.debug("Sending response with status OK (200).");
+                if (log.isInfoEnabled()) {
+                    log.info("Sending response with status OK (200).");
                 }
 
                 return ResponseEntity
@@ -176,6 +184,10 @@ public class MessageController {
                               + " sending status OK instead as response!");
                 }
 
+                if (log.isInfoEnabled()) {
+                    log.info("Sending response with status OK (200) without body.");
+                }
+
                 return ResponseEntity
                         .status(HttpStatus.OK)
                         .build();
@@ -183,6 +195,7 @@ public class MessageController {
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
                 log.error("Error during pre-processing with a PreDispatchingFilter!"
+                          + " Sending BAD_REQUEST as response."
                           + " [exception=({})]", e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
