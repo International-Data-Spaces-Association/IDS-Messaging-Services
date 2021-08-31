@@ -18,7 +18,7 @@ import de.fraunhofer.ids.messaging.response.MessageResponse;
 
 /**
  * Interface for implementing message handler for specific message types.
- * @param <T>
+ * @param <T> The type of message that the handler should handle.
  */
 public interface MessageHandler<T extends Message> {
 

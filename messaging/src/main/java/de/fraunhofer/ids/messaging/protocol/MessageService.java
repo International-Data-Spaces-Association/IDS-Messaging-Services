@@ -149,8 +149,14 @@ public class MessageService {
      * @return Returns the response.
      * @throws MultipartParseException Something went wrong with the file attached
      * (if there was one).
-     * @throws ClaimsException Something went wrong with the DAT.
-     * @throws IOException DAPS or target could not be reached.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
      */
     public MessageAndPayload<?, ?> sendIdsMessage(
             final MessageAndPayload<?, ?> messageAndPayload, final URI target)

@@ -9,6 +9,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [4.3.1] UNRELEASED
+
+### Patch Change: Miscellaneous
+- Other minor enhancements to existing Javadoc.
+
 ## Version [4.3.0] 2021-08-31
 
 ### Minor Change: Incoming message infomodel compatibility check
