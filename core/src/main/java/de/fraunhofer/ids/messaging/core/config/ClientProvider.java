@@ -159,7 +159,8 @@ public class ClientProvider {
 
                 if (proxyConfiguration.getNoProxy().contains(uri)) {
                     if (log.isDebugEnabled()) {
-                        log.debug("URI {} is in NoProxy List, no proxy is used", uri.toString());
+                        log.debug("URI is in NoProxy List, no proxy is used. [uri=({})]",
+                                  uri.toString());
                     }
 
                     //if the called uri is in the Exceptions of the
@@ -167,7 +168,7 @@ public class ClientProvider {
                     proxyList.add(Proxy.NO_PROXY);
                 } else {
                     if (log.isDebugEnabled()) {
-                        log.debug("URI {} is not in NoProxy List, use configured Proxy",
+                        log.debug("URI is not in NoProxy List, use configured Proxy [uri=({})]",
                                   uri.toString());
                     }
 
@@ -177,7 +178,7 @@ public class ClientProvider {
                     final int proxyPort = proxyAddress.getPort();
 
                     if (log.isDebugEnabled()) {
-                        log.debug("Address: {}, Port: {}", proxyHost, proxyPort);
+                        log.debug("Address: [host=({})], Port: [port=({})]", proxyHost, proxyPort);
                     }
                     proxyList.add(new Proxy(Proxy.Type.HTTP,
                         new InetSocketAddress(proxyHost, proxyPort)));
@@ -373,7 +374,7 @@ public class ClientProvider {
                                       callTimeout);
 
         if (log.isDebugEnabled()) {
-            log.debug("Ok Http Client Protocols: {}", withTimeout.protocols());
+            log.debug("Ok Http Client Protocols: [protocols=({})]", withTimeout.protocols());
         }
         return withTimeout;
     }
@@ -400,25 +401,25 @@ public class ClientProvider {
 
         if (connectTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting connect timeout: {}", connectTimeout.toString());
+                log.debug("Setting connect timeout: [timeout=({})]", connectTimeout.toString());
             }
             builder.connectTimeout(connectTimeout);
         }
         if (readTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting read timeout: {}", readTimeout.toString());
+                log.debug("Setting read timeout: [timeout=({})]", readTimeout.toString());
             }
             builder.readTimeout(readTimeout);
         }
         if (writeTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting write timeout: {}", writeTimeout.toString());
+                log.debug("Setting write timeout: [timeout=({})]", writeTimeout.toString());
             }
             builder.writeTimeout(writeTimeout);
         }
         if (callTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting call timeout: {}", callTimeout.toString());
+                log.debug("Setting call timeout: [timeout=({})]", callTimeout.toString());
             }
             builder.callTimeout(callTimeout);
         }
@@ -430,7 +431,7 @@ public class ClientProvider {
         final var okHttpClient = builder.build();
 
         if (log.isDebugEnabled()) {
-            log.debug("Ok Http Client Protocols {}", okHttpClient.protocols());
+            log.debug("Ok Http Client Protocols [protocols=({})]", okHttpClient.protocols());
         }
 
         return okHttpClient;

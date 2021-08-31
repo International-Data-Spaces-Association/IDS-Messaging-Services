@@ -182,8 +182,8 @@ public class MessageController {
             }
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
-                log.error("Error during pre-processing with a PreDispatchingFilter! {}",
-                        e.getMessage());
+                log.error("Error during pre-processing with a PreDispatchingFilter!"
+                          + " [exception=({})]", e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(createDefaultErrorMessage(
@@ -193,7 +193,8 @@ public class MessageController {
         } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Incoming message could not be parsed, sending response BAD_REQUEST"
-                         + " with RejectionReason.MALFORMED_MESSAGE! {}", e.getMessage());
+                         + " with RejectionReason.MALFORMED_MESSAGE! [exception=({})]",
+                         e.getMessage());
             }
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -203,7 +204,8 @@ public class MessageController {
         } catch (ServletException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Incoming request was not multipart!"
-                         + " Sending INTERNAL_SERVER_ERROR as response {}", e.getMessage());
+                         + " Sending INTERNAL_SERVER_ERROR as response [exception=({})]",
+                         e.getMessage());
             }
 
             return ResponseEntity
@@ -296,8 +298,8 @@ public class MessageController {
             return multiMap;
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
-                log.error("Serializer threw exception while creating default rejection message: {}",
-                          e.getMessage());
+                log.error("Serializer threw exception while creating default rejection message!"
+                          + " [exception=({})]", e.getMessage());
             }
             return null;
         }

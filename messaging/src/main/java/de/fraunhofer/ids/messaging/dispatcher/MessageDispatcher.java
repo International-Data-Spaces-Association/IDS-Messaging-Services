@@ -162,7 +162,7 @@ public class MessageDispatcher {
                 if (!result.isSuccess()) {
                     if (log.isErrorEnabled()) {
                         log.error("A preDispatchingFilter failed, sending"
-                              + " response RejectionReason.MALFORMED_MESSAGE! {}",
+                              + " response RejectionReason.MALFORMED_MESSAGE! [result=({})]",
                                   result.getMessage());
                     }
 
@@ -174,7 +174,8 @@ public class MessageDispatcher {
                 }
             } catch (Exception e) {
                 if (log.isDebugEnabled()) {
-                    log.debug("A preDispatchingFilter threw an exception! {}", e.getMessage());
+                    log.debug("A preDispatchingFilter threw an exception! [exception=({})]",
+                              e.getMessage());
                 }
 
                 throw new PreDispatchingFilterException(e);
@@ -217,7 +218,7 @@ public class MessageDispatcher {
             }
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("No message handler exists for {}", header.getClass());
+                log.debug("No message handler exists! [type=({})]", header.getClass());
             }
 
             //If no handler for the type exists, the message type isn't supported
