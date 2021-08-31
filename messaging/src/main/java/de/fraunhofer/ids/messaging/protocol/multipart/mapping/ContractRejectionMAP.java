@@ -19,24 +19,44 @@ import de.fraunhofer.iais.eis.ContractRejectionMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the ContractRejectionMessage.
+ */
 public class ContractRejectionMAP implements MessageAndPayload<ContractRejectionMessage, Void> {
 
+    /**
+     * The ContractRejectionMessage.
+     */
     private final ContractRejectionMessage contractRejectionMessage;
 
+    /**
+     * Constructor for ContractRejectionMAP.
+     *
+     * @param contractRejectionMessage The message.
+     */
     public ContractRejectionMAP(final ContractRejectionMessage contractRejectionMessage) {
         this.contractRejectionMessage = contractRejectionMessage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractRejectionMessage getMessage() {
         return contractRejectionMessage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return SerializedPayload.EMPTY;

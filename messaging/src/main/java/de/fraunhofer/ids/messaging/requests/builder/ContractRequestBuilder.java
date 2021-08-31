@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'contract'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ContractRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractRequestBuilder<T>> {
+public class ContractRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, ContractRequestBuilder<T>> {
 
     ContractRequestBuilder(
             final Class<T> expected,
@@ -69,9 +71,10 @@ public class ContractRequestBuilder<T> extends IdsRequestBuilder<T> implements E
     }
 
     /**
-     * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.ContractRequestMessage}.
+     * Set the operation to RECEIVE: describes a
+     * {@link de.fraunhofer.iais.eis.ContractRequestMessage}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     public ContractRequestBuilder<T> operationGet() {
         this.operation = Crud.RECEIVE;
@@ -93,6 +96,14 @@ public class ContractRequestBuilder<T> extends IdsRequestBuilder<T> implements E
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -102,7 +113,7 @@ public class ContractRequestBuilder<T> extends IdsRequestBuilder<T> implements E
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider.contractRequestMessageTemplate()
+                        final var message = requestTemplateProvider.contractRequestMessageTemplate()
                                 .buildMessage();
                         return sendMultipart(target, message);
                     default:

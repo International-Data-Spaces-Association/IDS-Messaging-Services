@@ -20,17 +20,17 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.MessageBuilderException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
-import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
-import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
-import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 
 /**
  * Interface for Communication with IDS ClearingHouses.
@@ -40,20 +40,27 @@ public interface IDSClearingHouseService {
     /**
      * Send a LogMessage with some random pid to ClearingHouse.
      *
-     * @param messageToLog Infomodel Message that should be Logged
-     * @return Response from ClearingHouse
-     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
-     * @throws URISyntaxException if Clearing House URI can not be parsed from String. Check Application Properties!
-     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
-     * @throws ClaimsException if DAT of incoming message could not be validated.
-     * @throws MultipartParseException if response could not be parsed to header and payload.
+     * @param messageToLog Infomodel Message that should be Logged.
+     * @return Response from ClearingHouse.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws URISyntaxException If Clearing House URI can not be parsed from String.
+     * Check Application Properties!
+     * @throws IOException If message could not be sent or Serializer could not parse RDF
+     * to Java Object.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
-     * @throws UnknownResponseException thrown during converting IDS-Response into a corresponding Object if no possible cast found
-     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
-     * @throws UnexpectedResponseException exception that is thrownif the received response-type is not expected as a response to the request send
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
-     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
-     * @throws MessageBuilderException exception that is thrown if building an IDS-Message with the given information threw a  RuntimeException
+     * @throws UnknownResponseException Thrown during converting IDS-Response into a
+     * corresponding Object if no possible cast found.
+     * @throws DeserializeException Exception that is thrown if deserializing a message
+     * threw an IOException
+     * @throws UnexpectedResponseException Exception that is thrown if the received response-type
+     * is not expected as a response to the request send.
+     * @throws SerializeException Exception is thrown if serializing a message threw an IOException.
+     * @throws ShaclValidatorException SHACL-Validation, received message
+     * header does not conform to IDS-Infomodel and did not pass SHACL-Validation.
+     * @throws MessageBuilderException Exception that is thrown if building an IDS-Message with
+     * the given information threw a  RuntimeException.
      */
     MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog)
             throws
@@ -69,27 +76,34 @@ public interface IDSClearingHouseService {
             SerializeException,
             MessageBuilderException;
 
-
     /**
      * Send a LogMessage with given pid to ClearingHouse.
      *
-     * @param messageToLog Infomodel Message that should be Logged
-     * @param pid          process id under which the message will be logged
-     * @return Response from ClearingHouse
-     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
-     * @throws URISyntaxException if Clearing House URI can not be parsed from String. Check Application Properties!
-     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
-     * @throws ClaimsException if DAT of incoming message could not be validated.
-     * @throws MultipartParseException if response could not be parsed to header and payload.
+     * @param messageToLog Infomodel Message that should be Logged.
+     * @param pid process id under which the message will be logged.
+     * @return Response from ClearingHouse.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws URISyntaxException If Clearing House URI can not be parsed from String.
+     * Check Application Properties!
+     * @throws IOException If message could not be sent or Serializer could not parse
+     * RDF to Java Object.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
-     * @throws UnknownResponseException thrown during converting IDS-Response into a corresponding Object if no possible cast found
-     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
-     * @throws UnexpectedResponseException exception that is thrownif the received response-type is not expected as a response to the request send
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
-     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
-     * @throws MessageBuilderException exception that is thrown if building an IDS-Message with the given information threw a  RuntimeException
+     * @throws UnknownResponseException Thrown during converting IDS-Response into a corresponding
+     * Object if no possible cast found.
+     * @throws DeserializeException Exception that is thrown if deserializing a message threw
+     * an IOException.
+     * @throws UnexpectedResponseException Exception that is thrown if the received response-type
+     * is not expected as a response to the request send.
+     * @throws SerializeException Exception is thrown if serializing a message threw an IOException.
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform
+     * to IDS-Infomodel and did not pass SHACL-Validation.
+     * @throws MessageBuilderException Exception that is thrown if building an IDS-Message
+     * with the given information threw a  RuntimeException.
      */
-    MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog, String pid)
+    MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog,
+                                                           String pid)
             throws
             DapsTokenManagerException,
             URISyntaxException,
@@ -99,34 +113,46 @@ public interface IDSClearingHouseService {
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException, SerializeException,
+            ShaclValidatorException,
+            SerializeException,
             MessageBuilderException;
 
     /**
      * Query the Clearing House.
      *
-     * @param pid           process id to Query (or null when querying whole clearingHouse)
-     * @param messageId     message id to Query (or null when querying whole process if pid is given)
-     * @param queryLanguage Language of the Query
-     * @param queryScope    Scope of the Query
-     * @param queryTarget   Target of the Query
-     * @param query         QueryString
-     * @return Response from ClearingHouse
-     * @throws DapsTokenManagerException  if no DAT for sending the message could be received.
-     * @throws URISyntaxException if Clearing House URI can not be parsed from String. Check Application Properties!
-     * @throws IOException if message could not be sent or Serializer could not parse RDF to Java Object.
-     * @throws ClaimsException if DAT of incoming message could not be validated.
-     * @throws MultipartParseException if response could not be parsed to header and payload.
+     * @param pid Process id to Query (or null when querying whole clearingHouse).
+     * @param messageId Message id to Query (or null when querying whole process if pid is given).
+     * @param queryLanguage Language of the Query.
+     * @param queryScope Scope of the Query.
+     * @param queryTarget Target of the Query.
+     * @param query QueryString.
+     * @return Response from ClearingHouse.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws URISyntaxException If Clearing House URI can not be parsed from String.
+     * Check Application Properties!
+     * @throws IOException If message could not be sent or Serializer could not parse
+     * RDF to Java Object.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
-     * @throws UnknownResponseException thrown during converting IDS-Response into a corresponding Object if no possible cast found
-     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
-     * @throws UnexpectedResponseException exception that is thrownif the received response-type is not expected as a response to the request send
-     * @throws SerializeException exception  is thrown if serializing a message threw an IOException
-     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
-     * @throws MessageBuilderException exception that is thrown if building an IDS-Message with the given information threw a  RuntimeException
+     * @throws UnknownResponseException Thrown during converting IDS-Response into a
+     * corresponding Object if no possible cast found.
+     * @throws DeserializeException Exception that is thrown if deserializing a message
+     * threw an IOException.
+     * @throws UnexpectedResponseException Exception that is thrown if the received
+     * response-type is not expected as a response to the request send.
+     * @throws SerializeException Exception is thrown if serializing a message threw an IOException.
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not
+     * conform to IDS-Infomodel and did not pass SHACL-Validation.
+     * @throws MessageBuilderException Exception that is thrown if building an IDS-Message with
+     * the given information threw a RuntimeException.
      */
-    ResultMAP queryClearingHouse(String pid, String messageId, QueryLanguage queryLanguage, QueryScope queryScope,
-                                 QueryTarget queryTarget, String query)
+    ResultMAP queryClearingHouse(String pid,
+                                 String messageId,
+                                 QueryLanguage queryLanguage,
+                                 QueryScope queryScope,
+                                 QueryTarget queryTarget,
+                                 String query)
             throws
             DapsTokenManagerException,
             URISyntaxException,
@@ -138,5 +164,4 @@ public interface IDSClearingHouseService {
             UnexpectedResponseException,
             ShaclValidatorException, SerializeException,
             MessageBuilderException;
-
 }

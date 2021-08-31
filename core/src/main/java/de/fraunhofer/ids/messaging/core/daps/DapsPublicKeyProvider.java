@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * an Implementation of this has to provide the Public Key from the DAPS Service.
+ * An Implementation of this has to provide the Public Key from the DAPS Service.
  */
 public interface DapsPublicKeyProvider {
 
     /**
      * Get the Public Key from the JWKS of the DAPS.
      *
-     * @return the public Key of a DAPS Service
+     * @return The public Key of a DAPS Service.
      */
     Set<Key> providePublicKeys();
 

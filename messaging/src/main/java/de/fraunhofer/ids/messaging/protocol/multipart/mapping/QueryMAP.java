@@ -18,25 +18,37 @@ import java.util.Optional;
 import de.fraunhofer.iais.eis.QueryMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
+/**
+ * MAP representing the QueryMessage.
+ */
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class QueryMAP implements MessageAndPayload<QueryMessage, String> {
 
+    /**
+     * The complete query message.
+     */
     @Getter
-    QueryMessage message;
+    private final QueryMessage message;
 
-    String queryString;
+    /**
+     * The query string.
+     */
+    private final String queryString;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<String> getPayload() {
         return Optional.of(queryString);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return new SerializedPayload(queryString.getBytes(), "text/plain");

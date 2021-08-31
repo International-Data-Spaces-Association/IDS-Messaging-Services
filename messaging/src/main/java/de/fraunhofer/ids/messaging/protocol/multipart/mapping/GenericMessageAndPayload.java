@@ -22,36 +22,48 @@ import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * MAP representing a generic message.
+ */
 @AllArgsConstructor
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class GenericMessageAndPayload implements MessageAndPayload<Message, Object> {
-
+    /**
+     * The message.
+     */
     @Getter
     @NotNull
-    Message message;
+    private Message message;
 
-    Object payload;
+    /**
+     * The payload.
+     */
+    private Object payload;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Object> getPayload() {
         return Optional.ofNullable(payload);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() throws SerializeException {
         SerializedPayload serializedPayload;
         if (Objects.nonNull(payload)) {
             try {
-                serializedPayload = new SerializedPayload(new Serializer().serialize(payload).getBytes(), "application/ld+json");
+                serializedPayload = new SerializedPayload(
+                        new Serializer().serialize(payload).getBytes(),
+                        "application/ld+json");
             } catch (IOException ioException) {
                 throw new SerializeException(ioException);
             }

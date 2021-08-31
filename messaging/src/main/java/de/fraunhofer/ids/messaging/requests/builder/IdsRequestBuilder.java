@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.RejectionMessage;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
@@ -32,30 +36,60 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * Builder class for configurable ids requests.
  *
- * @param <T> type of payload
+ * @param <T> Type of payload.
  */
 public class IdsRequestBuilder<T> {
 
+    /**
+     * The MessageService.
+     */
     protected MessageService messageService;
+
+    /**
+     * The RequestTemplateProvider.
+     */
     protected RequestTemplateProvider requestTemplateProvider;
+
+    /**
+     * The NotificationTemplateProvider.
+     */
     protected NotificationTemplateProvider notificationTemplateProvider;
+
+    /**
+     * The chosen protocol type.
+     */
     protected ProtocolType protocolType;
+
+    /**
+     * The payload.
+     */
     protected Optional<Object> optPayload;
+
+    /**
+     * Expected Payload.
+     */
     protected Optional<Class<T>> expectedPayload;
+
+    /**
+     * Boolean of exception should be thrown upon receiving a RejectionMessage.
+     */
     protected boolean throwOnRejection;
+
+    /**
+     * The chosen CRUD operation.
+     */
     protected Crud operation;
 
     /**
      * IDS request, expecting payload of type 'expected'.
      *
-     * @param expected expected Type of payload
+     * @param expected Expected Type of payload.
+     * @param messageService The messageService.
+     * @param notificationTemplateProvider The NotificationTemplateProvider.
+     * @param requestTemplateProvider The RequestTemplateProvider.
      */
     IdsRequestBuilder(
             final Class<T> expected,
@@ -72,8 +106,8 @@ public class IdsRequestBuilder<T> {
     /**
      * Add a payload to the request.
      *
-     * @param payload payload to be sent with the request
-     * @return this builder instance
+     * @param payload Payload to be sent with the request.
+     * @return This builder instance.
      */
     public IdsRequestBuilder<T> withPayload(final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
@@ -83,7 +117,7 @@ public class IdsRequestBuilder<T> {
     /**
      * If this is set, a RejectionMessage as response will trigger a {@link RejectionException}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     public IdsRequestBuilder<T> throwOnRejection() {
         this.throwOnRejection = true;
@@ -93,182 +127,239 @@ public class IdsRequestBuilder<T> {
     /**
      * Choose 'artifact' as the subject of the message.
      *
-     * @return an ArtifactRequestBuilder with current information of this builder
+     * @return An ArtifactRequestBuilder with current information of this builder.
      */
     public ArtifactRequestBuilder<T> subjectArtifact() {
-        var builder = new ArtifactRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder = new ArtifactRequestBuilder<>(expectedPayload.orElse(null),
+                   messageService,
+                   requestTemplateProvider,
+                   notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'connector' as the subject of the message.
      *
-     * @return an ConnectorRequestBuilder with current information of this builder
+     * @return An ConnectorRequestBuilder with current information of this builder.
      */
     public ConnectorRequestBuilder<T> subjectConnector() {
-        var builder = new ConnectorRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider);
+        final var builder =
+                new ConnectorRequestBuilder<>(expectedPayload.orElse(null),
+                  messageService,
+                  requestTemplateProvider,
+                  notificationTemplateProvider)
+            .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'resource' as the subject of the message.
      *
-     * @return an ResourceRequestBuilder with current information of this builder
+     * @return An ResourceRequestBuilder with current information of this builder.
      */
     public ResourceRequestBuilder<T> subjectResource() {
-        var builder = new ResourceRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider);
+        final var builder = new ResourceRequestBuilder<>(expectedPayload.orElse(null),
+                   messageService,
+                   requestTemplateProvider,
+                   notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'query' as the subject of the message.
      *
-     * @return an QueryRequestBuilder with current information of this builder
+     * @return An QueryRequestBuilder with current information of this builder.
      */
     public QueryRequestBuilder<T> subjectQuery() {
-        var builder = new QueryRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder = new QueryRequestBuilder<>(expectedPayload.orElse(null),
+                    messageService,
+                    requestTemplateProvider,
+                    notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'participant' as the subject of the message.
      *
-     * @return an ParticipantRequestBuilder with current information of this builder
+     * @return An ParticipantRequestBuilder with current information of this builder.
      */
     public ParticipantRequestBuilder<T> subjectParticipant() {
-        var builder = new ParticipantRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder =
+                new ParticipantRequestBuilder<>(expectedPayload.orElse(null),
+                    messageService,
+                    requestTemplateProvider,
+                    notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'app' as the subject of the message.
      *
-     * @return an AppRequestBuilder with current information of this builder
+     * @return An AppRequestBuilder with current information of this builder.
      */
     public AppRequestBuilder<T> subjectApp() {
-        var builder = new AppRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder = new AppRequestBuilder<>(expectedPayload.orElse(null),
+                  messageService,
+                  requestTemplateProvider,
+                  notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'description' as the subject of the message.
      *
-     * @return an DescriptionRequestBuilder with current information of this builder
+     * @return An DescriptionRequestBuilder with current information of this builder.
      */
     public DescriptionRequestBuilder<T> subjectDescription() {
-        var builder = new DescriptionRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder =
+                new DescriptionRequestBuilder<>(expectedPayload.orElse(null),
+                    messageService,
+                    requestTemplateProvider,
+                    notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'log' as the subject of the message.
      *
-     * @return an LogRequestBuilder with current information of this builder
+     * @return An LogRequestBuilder with current information of this builder.
      */
     public LogRequestBuilder<T> subjectLog() {
-        var builder = new LogRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder = new LogRequestBuilder<>(expectedPayload.orElse(null),
+                  messageService,
+                  requestTemplateProvider,
+                  notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'connector certificate' as the subject of the message.
      *
-     * @return an ConnectorCertificateRequestBuilder with current information of this builder
+     * @return An ConnectorCertificateRequestBuilder with current information of this builder.
      */
     public ConnectorCertificateRequestBuilder<T> subjectConnectorCertificate() {
-        var builder = new ConnectorCertificateRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder = new ConnectorCertificateRequestBuilder<>(
+                    expectedPayload.orElse(null),
+                    messageService,
+                    requestTemplateProvider,
+                    notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'participant' as the subject of the message.
      *
-     * @return an ParticipantCertificateRequestBuilder with current information of this builder
+     * @return An ParticipantCertificateRequestBuilder with current information of this builder.
      */
    public ParticipantCertificateRequestBuilder<T> subjectParticipantCertificate() {
-       var builder = new ParticipantCertificateRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-               .withPayload(protocolType);
+       final var builder = new ParticipantCertificateRequestBuilder<>(
+                   expectedPayload.orElse(null),
+                   messageService,
+                   requestTemplateProvider,
+                   notificationTemplateProvider)
+               .withPayload(optPayload.orElse(null));
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
     /**
      * Choose 'contract' as the subject of the message.
      *
-     * @return an ContractRequestBuilder with current information of this builder
+     * @return An ContractRequestBuilder with current information of this builder.
      */
    public ContractRequestBuilder<T> subjectContract() {
-       var builder = new ContractRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-               .withPayload(protocolType);
+       final var builder = new ContractRequestBuilder<>(expectedPayload.orElse(null),
+                                                  messageService,
+                                                  requestTemplateProvider,
+                                                  notificationTemplateProvider)
+               .withPayload(optPayload.orElse(null));
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
     /**
      * Choose 'command' as the subject of the message.
      *
-     * @return an CommandRequestBuilder with current information of this builder
+     * @return An CommandRequestBuilder with current information of this builder.
      */
    public CommandRequestBuilder<T> subjectCommand() {
-       var builder = new CommandRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-               .withPayload(protocolType);
+       final var builder = new CommandRequestBuilder<>(expectedPayload.orElse(null),
+                                                 messageService,
+                                                 requestTemplateProvider,
+                                                 notificationTemplateProvider)
+               .withPayload(optPayload.orElse(null));
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
     /**
      * Choose 'contract supplement' as the subject of the message.
      *
-     * @return an ContractSupplementRequestBuilder with current information of this builder
+     * @return An ContractSupplementRequestBuilder with current information of this builder.
      */
    public ContractSupplementRequestBuilder<T> subjectContractSupplement() {
-       var builder = new ContractSupplementRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-               .withPayload(protocolType);
+       final var builder = new ContractSupplementRequestBuilder<>(
+               expectedPayload.orElse(null),
+               messageService,
+               requestTemplateProvider,
+               notificationTemplateProvider)
+               .withPayload(optPayload.orElse(null));
        return this.throwOnRejection ? builder.throwOnRejection() : builder;
    }
 
     /**
      * Choose 'contract offer' as the subject of the message.
      *
-     * @return an ContractOfferRequestBuilder with current information of this builder
+     * @return An ContractOfferRequestBuilder with current information of this builder.
      */
     public ContractOfferRequestBuilder<T> subjectContractOffer() {
-        var builder = new ContractOfferRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder =
+                new ContractOfferRequestBuilder<>(expectedPayload.orElse(null),
+                                                  messageService,
+                                                  requestTemplateProvider,
+                                                  notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Choose 'access token' as the subject of the message.
      *
-     * @return an AccessTokenRequestBuilder with current information of this builder
+     * @return An AccessTokenRequestBuilder with current information of this builder.
      */
     public AccessTokenRequestBuilder<T> subjectAccessToken() {
-        var builder = new AccessTokenRequestBuilder<>(expectedPayload.orElse(null), messageService, requestTemplateProvider, notificationTemplateProvider)
-                .withPayload(protocolType);
+        final var builder =
+                new AccessTokenRequestBuilder<>(expectedPayload.orElse(null),
+                                                messageService,
+                                                requestTemplateProvider,
+                                                notificationTemplateProvider)
+                .withPayload(optPayload.orElse(null));
         return this.throwOnRejection ? builder.throwOnRejection() : builder;
     }
 
     /**
      * Send a multipart message to target using current information of the RequestBuilder.
      *
-     * @param target target URI message will be sent to
-     * @param message multipart header message
-     * @return MessageContainer containing response
-     * @throws RejectionException when response is a RejectionMessage (and 'throwOnRejection' is set in the builder)
-     * @throws UnexpectedPayloadException when payload is not of type T
-     * @throws ShaclValidatorException when Shacl Validation fails
-     * @throws SerializeException when the payload cannot be serialized
-     * @throws ClaimsException when DAT of response is not valid
-     * @throws UnknownResponseException when type of response is not known
-     * @throws SendMessageException when an IOException is thrown by the httpclient when sending the message
-     * @throws MultipartParseException when the response cannot be parsed as multipart
-     * @throws IOException when some other error happens while sending the message
-     * @throws DeserializeException when response cannot be deserialized
+     * @param target Target URI message will be sent to.
+     * @param message Multipart header message.
+     * @return MessageContainer containing response.
+     * @throws RejectionException When response is a RejectionMessage (and 'throwOnRejection'
+     * is set in the builder).
+     * @throws UnexpectedPayloadException When payload is not of type T.
+     * @throws ShaclValidatorException When Shacl Validation fails.
+     * @throws SerializeException When the payload cannot be serialized.
+     * @throws ClaimsException When DAT of response is not valid.
+     * @throws UnknownResponseException When type of response is not known.
+     * @throws SendMessageException When Message cannot be sent, because
+     * of missing fields or an error in the underlying httpclient
+     * @throws MultipartParseException When the response cannot be parsed as multipart.
+     * @throws IOException When some other error happens while sending the message.
+     * @throws DeserializeException When response cannot be deserialized.
      */
     protected MessageContainer<T> sendMultipart(final URI target, final Message message)
             throws RejectionException,
@@ -281,17 +372,16 @@ public class IdsRequestBuilder<T> {
             MultipartParseException,
             IOException,
             DeserializeException {
-        final var messageAndPayload = new GenericMessageAndPayload(message, optPayload.orElse(null));
+        final var messageAndPayload =
+                new GenericMessageAndPayload(message, optPayload.orElse(null));
         final var response = messageService.sendIdsMessage(messageAndPayload, target);
-        var header = response.getMessage();
-        var payload = response.getPayload().orElse(null);
-        if (throwOnRejection) {
-            if (header instanceof RejectionMessage) {
-                throw new RejectionException(
-                        String.format("Message was Rejected! Reason: %s", payload),
-                        ((RejectionMessage) header).getRejectionReason()
-                );
-            }
+        final var header = response.getMessage();
+        final var payload = response.getPayload().orElse(null);
+        if (throwOnRejection && header instanceof RejectionMessage) {
+            throw new RejectionException(
+                    String.format("Message was Rejected! Reason: %s", payload),
+                    ((RejectionMessage) header).getRejectionReason()
+            );
         }
         if (expectedPayload.isPresent()) {
             if (payload == null || !expectedPayload.get().isAssignableFrom(payload.getClass())) {
@@ -308,5 +398,4 @@ public class IdsRequestBuilder<T> {
         }
         return new MessageContainer<>(header, (T) payload);
     }
-
 }

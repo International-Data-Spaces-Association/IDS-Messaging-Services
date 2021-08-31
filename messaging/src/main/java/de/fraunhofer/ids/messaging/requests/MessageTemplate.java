@@ -16,14 +16,19 @@ package de.fraunhofer.ids.messaging.requests;
 import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 
+/**
+ * Interface for building messages defined by the template.
+ *
+ * @param <T> The message type.
+ */
 @FunctionalInterface
 public interface MessageTemplate<T extends Message> {
 
     /**
      * Build the message defined by this template.
      *
-     * @return built message by template
-     * @throws DapsTokenManagerException when no DAT for Message can be received
+     * @return Built message by template.
+     * @throws DapsTokenManagerException when no DAT for Message can be received.
      */
     T buildMessage() throws DapsTokenManagerException;
 }

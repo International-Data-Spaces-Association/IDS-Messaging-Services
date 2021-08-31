@@ -19,19 +19,34 @@ import de.fraunhofer.iais.eis.Contract;
 import de.fraunhofer.iais.eis.ContractOffer;
 import de.fraunhofer.iais.eis.ContractOfferMessage;
 
+/**
+ * MAP representing the ContractOfferMessage.
+ */
 public class ContractOfferMAP extends AbstractContractMAP<ContractOfferMessage, ContractOffer> {
 
+    /**
+     * Constructor for ContractOfferMAP.
+     *
+     * @param contractOfferMessage The message.
+     * @param payload The payload.
+     */
     public ContractOfferMAP(final ContractOfferMessage contractOfferMessage,
                             final ContractOffer payload) {
         this.message = contractOfferMessage;
         this.payload = payload;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractOfferMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Contract> getPayload() {
         return Optional.of(payload);

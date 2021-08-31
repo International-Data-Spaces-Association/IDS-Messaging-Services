@@ -15,8 +15,6 @@ package de.fraunhofer.ids.messaging.endpoint;
 
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,17 +28,23 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  */
 @Slf4j
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EndpointService {
 
-    MessageController            messageController;
-    RequestMappingHandlerMapping requestMappingHandlerMapping;
+    /**
+     * The MessageController.
+     */
+    private MessageController messageController;
 
     /**
-     * Use <code>/api/ids/data</code> and <code>/api/ids/infrastructure</code> routes as default mappings.
+     * The RequestMappingHandlerMapping.
+     */
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+    /**
+     * Use /api/ids/data and /api/ids/infrastructure routes as default mappings.
      *
-     * @param messageController            the {@link MessageController} which will be mapped
-     * @param requestMappingHandlerMapping for managing Springs http route mappings
+     * @param messageController The {@link MessageController} which will be mapped.
+     * @param requestMappingHandlerMapping For managing Springs http route mappings.
      */
     @Autowired
     public EndpointService(final MessageController messageController,
@@ -59,17 +63,19 @@ public class EndpointService {
     /**
      * Add another endpoint to the MessageController.
      *
-     * @param url the url for which a route to {@link MessageController} should be added
+     * @param url The url for which a route to {@link MessageController} should be added.
      */
     public void addMapping(final String url) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Adding a mapping for url %s", url));
+            log.debug("Adding an endpoint mapping. [endpoint=({})]", url);
         }
 
         final var requestMappingInfo = getRequestMappingInfo(url);
 
         try {
-            requestMappingHandlerMapping.registerMapping(requestMappingInfo, messageController, MessageController.class
+            requestMappingHandlerMapping
+                    .registerMapping(requestMappingInfo, messageController,
+                                     MessageController.class
                     .getDeclaredMethod("handleIDSMessage", HttpServletRequest.class));
         } catch (NoSuchMethodException e) {
             if (log.isErrorEnabled()) {
@@ -81,11 +87,12 @@ public class EndpointService {
     /**
      * Remove an endpoint from the MessageController.
      *
-     * @param url the url for which the {@link MessageController} should be unmapped for (RequestMappingInfo is deleted)
+     * @param url The url for which the {@link MessageController} should be unmapped for
+     *            (RequestMappingInfo is deleted).
      */
     public void removeMapping(final String url) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Remove mapping for url %s", url));
+            log.debug("Removing endpoint mapping. [endpoint=({})]", url);
         }
 
         final var requestMappingInfo = getRequestMappingInfo(url);

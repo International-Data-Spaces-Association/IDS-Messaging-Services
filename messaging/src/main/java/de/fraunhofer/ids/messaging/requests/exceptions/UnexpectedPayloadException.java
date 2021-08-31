@@ -16,17 +16,35 @@ package de.fraunhofer.ids.messaging.requests.exceptions;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import lombok.Getter;
 
+/**
+ * Exception which is thrown if payload is unexpected.
+ */
 @Getter
 public class UnexpectedPayloadException extends IdsRequestException {
 
+    /**
+     * The MessageContainer.
+     */
     private final MessageContainer<?> messageContainer;
 
+    /**
+     * Constructor for the UnexpectedPayloadException.
+     *
+     * @param messageContainer The MessageContainer.
+     */
     public UnexpectedPayloadException(final MessageContainer<?> messageContainer) {
         super();
         this.messageContainer = messageContainer;
     }
 
-    public UnexpectedPayloadException(final String message, final MessageContainer<?> messageContainer) {
+    /**
+     * Constructor for the UnexpectedPayloadException.
+     *
+     * @param message The exception message.
+     * @param messageContainer The MessageContainer.
+     */
+    public UnexpectedPayloadException(final String message,
+                                      final MessageContainer<?> messageContainer) {
         super(message);
         this.messageContainer = messageContainer;
     }

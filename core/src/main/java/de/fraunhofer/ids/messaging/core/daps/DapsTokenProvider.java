@@ -16,21 +16,36 @@ package de.fraunhofer.ids.messaging.core.daps;
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 
 /**
- * Implementations of the DapsTokenProvider interface must implement a method that should return a valid JWT Daps token
+ * Implementations of the DapsTokenProvider interface must implement a
+ * method that should return a valid JWT Daps token
  * in its String representation.
  */
 public interface DapsTokenProvider {
     /**
      * Get the DAPS JWT Token from a DAPS and return its compact String representation.
      *
-     * @return the Daps Token of the Connector
+     * @return The DAPS Token of the Connector.
+     * @throws ConnectorMissingCertExtensionException If the connector fingerprint
+     * cannot be determined.
+     * @throws DapsConnectionException If the DAPS cannot be reached.
+     * @throws DapsEmptyResponseException If the DAPS responded with an unexpected answer.
      */
-    String provideDapsToken() throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException;
+    String provideDapsToken() throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException;
 
     /**
      * Return the DAPS JWT Token in infomodel {@link DynamicAttributeToken} representation.
      *
-     * @return DynamicAttributeToken from the DAPS JWT
+     * @return DynamicAttributeToken from the DAPS JWT.
+     * @throws ConnectorMissingCertExtensionException If the connector fingerprint
+     * cannot be determined.
+     * @throws DapsConnectionException If the DAPS cannot be reached.
+     * @throws DapsEmptyResponseException If the DAPS responded with an unexpected answer.
      */
-    DynamicAttributeToken getDAT() throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException;
+    DynamicAttributeToken getDAT() throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException;
 }

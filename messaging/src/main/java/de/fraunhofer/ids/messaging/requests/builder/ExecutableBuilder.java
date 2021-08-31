@@ -31,7 +31,7 @@ import java.net.URI;
 /**
  * A RequestBuilder that is able to execute a request will implement this class.
  *
- * @param <T> type of expected payload
+ * @param <T> Type of expected payload.
  */
 public interface ExecutableBuilder<T> {
 
@@ -45,11 +45,13 @@ public interface ExecutableBuilder<T> {
      * @throws SerializeException when the payload cannot be serialized
      * @throws ClaimsException when DAT of response is not valid
      * @throws UnknownResponseException when type of response is not known
-     * @throws SendMessageException when an IOException is thrown by the httpclient when sending the message
+     * @throws SendMessageException when an IOException is thrown
+     * by the httpclient when sending the message
      * @throws MultipartParseException when the response cannot be parsed as multipart
      * @throws IOException when some other error happens while sending the message
      * @throws DeserializeException when response cannot be deserialized
-     * @throws RejectionException when response is a RejectionMessage (and 'throwOnRejection' is set in the builder)
+     * @throws RejectionException when response is a RejectionMessage
+     * (and 'throwOnRejection' is set in the builder)
      * @throws UnexpectedPayloadException when payload is not of type T
      */
     MessageContainer<T> execute(URI target)

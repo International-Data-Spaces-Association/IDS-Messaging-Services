@@ -14,16 +14,18 @@
 package de.fraunhofer.ids.messaging.protocol;
 
 /**
- * An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
- * the received response-type is not expected as a response to the request send.
+ * An exception that is thrown after converting a Response into the corresponding
+ * MessageAndPayload object if the received response-type is not expected as
+ * a response to the request send.
  */
 public class UnexpectedResponseException extends Exception {
     private static final long serialVersionUID = 42L;
     /**
-     *  An exception that is thrown after converting a Response into the corresponding MessageAndPayload object if
-     *  the received response-type is not expected as a response to the request send.
+     *  An exception that is thrown after converting a Response into the corresponding
+     *  MessageAndPayload object if the received response-type is not expected as a response
+     *  to the request send.
      *
-     * @param message Message of the Exception to be thrown
+     * @param message Message of the Exception to be thrown.
      */
     public UnexpectedResponseException(final String message) {
         super(message);

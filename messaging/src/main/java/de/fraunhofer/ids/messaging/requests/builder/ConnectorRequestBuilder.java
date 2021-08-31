@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,17 +34,18 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'connector'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ConnectorRequestBuilder<T>> {
+public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, ConnectorRequestBuilder<T>> {
 
+    /**
+     * The affected connector.
+     */
     private URI affectedConnector;
 
     ConnectorRequestBuilder(
@@ -70,10 +75,11 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage}.
+     * Set the operation to UPDATE: describes a
+     * {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage}.
      *
-     * @param affectedConnector affected connector id for message header
-     * @return this builder instance
+     * @param affectedConnector Affected connector id for message header.
+     * @return This builder instance.
      */
     public ConnectorRequestBuilder<T> operationUpdate(final URI affectedConnector) {
         this.operation = Crud.UPDATE;
@@ -82,10 +88,11 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
     }
 
     /**
-     * Set the operation to DELETE: describes a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage}.
+     * Set the operation to DELETE: describes a
+     * {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage}.
      *
-     * @param affectedConnector affected connector id for message header
-     * @return this builder instance
+     * @param affectedConnector Affected connector id for message header.
+     * @return This builder instance.
      */
     public ConnectorRequestBuilder<T> operationDelete(final URI affectedConnector) {
         this.operation = Crud.DELETE;
@@ -109,6 +116,14 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -117,12 +132,13 @@ public class ConnectorRequestBuilder<T> extends IdsRequestBuilder<T> implements 
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
+                        final var updateMessage = notificationTemplateProvider
                                 .connectorUpdateMessageTemplate(affectedConnector).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
-                        var deleteMessage = notificationTemplateProvider
-                                .connectorUnavailableMessageTemplate(affectedConnector).buildMessage();
+                        final var deleteMessage = notificationTemplateProvider
+                                .connectorUnavailableMessageTemplate(
+                                        affectedConnector).buildMessage();
                         return sendMultipart(target, deleteMessage);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");

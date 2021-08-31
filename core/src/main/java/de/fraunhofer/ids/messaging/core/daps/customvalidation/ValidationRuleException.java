@@ -18,10 +18,18 @@ package de.fraunhofer.ids.messaging.core.daps.customvalidation;
  */
 public class ValidationRuleException extends Exception {
 
+    /**
+     * Constructor for ValidationRuleException.
+     */
     public ValidationRuleException() {
         super();
     }
 
+    /**
+     * Constructor for ValidationRuleException.
+     *
+     * @param message The exception message.
+     */
     public ValidationRuleException(final String message) {
         super(message);
     }

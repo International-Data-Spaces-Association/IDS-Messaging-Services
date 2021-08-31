@@ -16,16 +16,33 @@ package de.fraunhofer.ids.messaging.requests.exceptions;
 import de.fraunhofer.iais.eis.RejectionReason;
 import lombok.Getter;
 
+/**
+ * Exception which could be thrown upon receiving a rejection message.
+ */
 @Getter
 public class RejectionException extends IdsRequestException {
 
+    /**
+     * The RejectionReason.
+     */
     private RejectionReason rejectionReason;
 
+    /**
+     * Constructor for the RejectionException.
+     *
+     * @param rejectionReason The rejection reason.
+     */
     public RejectionException(final RejectionReason rejectionReason) {
         super();
         this.rejectionReason = rejectionReason;
     }
 
+    /**
+     * Constructor for the RejectionException.
+     *
+     * @param message The exception message.
+     * @param rejectionReason The rejection reason.
+     */
     public RejectionException(final String message, final RejectionReason rejectionReason) {
         super(message);
         this.rejectionReason = rejectionReason;

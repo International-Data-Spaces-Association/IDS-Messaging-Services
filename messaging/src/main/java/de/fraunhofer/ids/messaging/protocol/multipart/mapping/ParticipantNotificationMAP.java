@@ -19,37 +19,69 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.Participant;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class ParticipantNotificationMAP implements MessageAndPayload<Message, Participant> {
-    final Message message;
-    Participant participantSelfDescription;
+/**
+ * MAP representing the ParticipantNotificationMAP.
+ */
+public class ParticipantNotificationMAP
+        implements MessageAndPayload<Message, Participant> {
 
+    /**
+     * The message.
+     */
+    private final Message message;
+
+    /**
+     * The participant self description.
+     */
+    private Participant participantSelfDescription;
+
+    /**
+     * Constructor for the ParticipantNotificationMAP.
+     * @param message The message.
+     */
     public ParticipantNotificationMAP(final Message message) {
         this.message = message;
     }
 
-    public ParticipantNotificationMAP(final Message message, final Participant participantSelfDescription) {
+    /**
+     * Constructor for ParticipantNotificationMAP.
+     *
+     * @param message The message.
+     * @param participantSelfDescription The self description.
+     */
+    public ParticipantNotificationMAP(
+            final Message message,
+            final Participant participantSelfDescription) {
         this.message = message;
         this.participantSelfDescription = participantSelfDescription;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Participant> getPayload() {
         return Optional.of(participantSelfDescription);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         if (participantSelfDescription != null) {
-            return new SerializedPayload(participantSelfDescription.toRdf().getBytes(), "application/ld+json");
+            return new SerializedPayload(
+                    participantSelfDescription.toRdf().getBytes(),
+                    "application/ld+json");
         } else {
             return SerializedPayload.EMPTY;
         }

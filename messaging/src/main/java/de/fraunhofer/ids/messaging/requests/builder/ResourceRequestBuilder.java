@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,17 +34,17 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'resource'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ResourceRequestBuilder<T>> {
+public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>, SupportsMultipart<T, ResourceRequestBuilder<T>> {
 
+    /**
+     * URI of the affected resource.
+     */
     private URI affectedResource;
 
     ResourceRequestBuilder(
@@ -70,10 +74,11 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ResourceUpdateMessage}.
+     * Set the operation to UPDATE: describes a
+     * {@link de.fraunhofer.iais.eis.ResourceUpdateMessage}.
      *
-     * @param affectedResource affected resource id for message header
-     * @return this builder instance
+     * @param affectedResource Affected resource id for message header.
+     * @return This builder instance.
      */
     public ResourceRequestBuilder<T> operationUpdate(final URI affectedResource) {
         this.operation = Crud.UPDATE;
@@ -82,10 +87,11 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
     }
 
     /**
-     * Set the operation to DELETE: describes a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage}.
+     * Set the operation to DELETE: describes a
+     * {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage}.
      *
-     * @param affectedResource affected resource id for message header
-     * @return this builder instance
+     * @param affectedResource Affected resource id for message header.
+     * @return This builder instance.
      */
     public ResourceRequestBuilder<T> operationDelete(final URI affectedResource) {
         this.operation = Crud.DELETE;
@@ -109,6 +115,14 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -117,12 +131,13 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T> implements E
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
+                        final var updateMessage = notificationTemplateProvider
                                 .resourceUpdateMessageTemplate(affectedResource).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
-                        var deleteMessage = notificationTemplateProvider
-                                .resourceUnavailableMessageTemplate(affectedResource).buildMessage();
+                        final var deleteMessage = notificationTemplateProvider
+                                .resourceUnavailableMessageTemplate(affectedResource)
+                                .buildMessage();
                         return sendMultipart(target, deleteMessage);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");

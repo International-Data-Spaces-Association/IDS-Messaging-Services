@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.iais.eis.util.TypedLiteral;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
@@ -31,18 +35,24 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'participant certificate'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ParticipantCertificateRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ParticipantCertificateRequestBuilder<T>> {
+public class ParticipantCertificateRequestBuilder<T>
+        extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>,
+        SupportsMultipart<T, ParticipantCertificateRequestBuilder<T>> {
 
+    /**
+     * The affected participant.
+     */
     private URI affectedParticipant;
+
+    /**
+     * The revocation reason.
+     */
     private TypedLiteral revocationReason;
 
     ParticipantCertificateRequestBuilder(
@@ -50,14 +60,18 @@ public class ParticipantCertificateRequestBuilder<T> extends IdsRequestBuilder<T
             final MessageService messageService,
             final RequestTemplateProvider requestTemplateProvider,
             final NotificationTemplateProvider notificationTemplateProvider) {
-        super(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
+        super(expected,
+              messageService,
+              requestTemplateProvider,
+              notificationTemplateProvider);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ParticipantCertificateRequestBuilder<T> withPayload(final Object payload) {
+    public ParticipantCertificateRequestBuilder<T> withPayload(
+            final Object payload) {
         this.optPayload = Optional.ofNullable(payload);
         return this;
     }
@@ -72,25 +86,30 @@ public class ParticipantCertificateRequestBuilder<T> extends IdsRequestBuilder<T
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ParticipantCertificateGrantedMessage}.
+     * Set the operation to UPDATE: describes
+     * a {@link de.fraunhofer.iais.eis.ParticipantCertificateGrantedMessage}.
      *
-     * @param affectedParticipant affected participant id for message header
-     * @return this builder instance
+     * @param affectedParticipant Affected participant id for message header.
+     * @return This builder instance.
      */
-    public ParticipantCertificateRequestBuilder<T> operationUpdate(final URI affectedParticipant) {
+    public ParticipantCertificateRequestBuilder<T> operationUpdate(
+            final URI affectedParticipant) {
         this.operation = Crud.UPDATE;
         this.affectedParticipant = affectedParticipant;
         return this;
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ParticipantCertificateRevokedMessage}.
+     * Set the operation to UPDATE: describes a
+     * {@link de.fraunhofer.iais.eis.ParticipantCertificateRevokedMessage}.
      *
-     * @param affectedParticipant affected connector id for message header
-     * @param revocationReason reason why certificate was revoked
-     * @return this builder instance
+     * @param affectedParticipant Affected connector id for message header.
+     * @param revocationReason Reason why certificate was revoked.
+     * @return This builder instance.
      */
-    public ParticipantCertificateRequestBuilder<T> operationDelete(final URI affectedParticipant, final TypedLiteral revocationReason) {
+    public ParticipantCertificateRequestBuilder<T> operationDelete(
+            final URI affectedParticipant,
+            final TypedLiteral revocationReason) {
         this.operation = Crud.DELETE;
         this.affectedParticipant = affectedParticipant;
         this.revocationReason = revocationReason;
@@ -101,7 +120,9 @@ public class ParticipantCertificateRequestBuilder<T> extends IdsRequestBuilder<T
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<T> execute(final URI target)throws DapsTokenManagerException,
+    public MessageContainer<T> execute(final URI target)
+            throws
+            DapsTokenManagerException,
             ShaclValidatorException,
             SerializeException,
             ClaimsException,
@@ -112,6 +133,14 @@ public class ParticipantCertificateRequestBuilder<T> extends IdsRequestBuilder<T
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -120,12 +149,15 @@ public class ParticipantCertificateRequestBuilder<T> extends IdsRequestBuilder<T
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
-                                .participantCertificateGrantedMessageTemplate(affectedParticipant).buildMessage();
+                        final var updateMessage = notificationTemplateProvider
+                                .participantCertificateGrantedMessageTemplate(
+                                        affectedParticipant).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
-                        var deleteMessage = notificationTemplateProvider
-                                .participantCertificateRevokedMessageTemplate(affectedParticipant, revocationReason).buildMessage();
+                        final var deleteMessage = notificationTemplateProvider
+                                .participantCertificateRevokedMessageTemplate(
+                                        affectedParticipant, revocationReason)
+                                .buildMessage();
                         return sendMultipart(target, deleteMessage);
                     default:
                         throw new UnsupportedOperationException("Unsupported Operation!");

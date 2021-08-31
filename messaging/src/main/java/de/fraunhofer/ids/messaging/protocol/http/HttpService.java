@@ -18,23 +18,30 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
 
-import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Interface for the HttpService.
+ */
 public interface HttpService {
     /**
      * Set the timeouts for the OkHttpClient.
      *
-     * @param connectTimeout max timeout for connecting to target host (null = default values are used)
-     * @param readTimeout    max timeout for waiting for the target response (null = default values are used)
-     * @param writeTimeout   max timeout for sending the response to the target (null = default values are used)
-     * @param callTimeout    max timeout for the whole http request (null = default values are used)
+     * @param connectTimeout Max timeout for connecting to target host (null = default values
+     *                       are used).
+     * @param readTimeout Max timeout for waiting for the target response (null = default
+     *                    values are used).
+     * @param writeTimeout Max timeout for sending the response to the target (null = default
+     *                     values are used).
+     * @param callTimeout Max timeout for the whole http request (null = default values are used).
      */
-    void setTimeouts(Duration connectTimeout, Duration readTimeout, Duration writeTimeout, Duration callTimeout);
+    void setTimeouts(Duration connectTimeout, Duration readTimeout,
+                     Duration writeTimeout, Duration callTimeout);
 
     /**
      * Reset client timeouts to OkHttp default values.
@@ -44,29 +51,32 @@ public interface HttpService {
     /**
      * Sends plaintext message as http(s) request to the defined target.
      *
-     * @param target  the target host of the request
-     * @param message IDSMessage to be sent (as JSON)
-     * @return true if the message was successfully sent, else false
-     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
+     * @param target The target host of the request.
+     * @param message IDS-Message to be sent (as JSON).
+     * @return True if the message was successfully sent, else false.
+     * @throws IOException If the request could not be executed due to cancellation,
+     * a connectivity problem or timeout.
      */
     Response send(String message, URI target) throws IOException;
 
     /**
      * Sends plaintext message as http(s) request to the defined target.
      *
-     * @param request the {@link Request} to be send
-     * @return the HttpResponse that comes back for the sent Message
-     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
+     * @param request The {@link Request} to be send.
+     * @return The HttpResponse that comes back for the sent Message.
+     * @throws IOException If the request could not be executed due to cancellation, a
+     * connectivity problem or timeout.
      */
     Response send(Request request) throws IOException;
 
     /**
      * Sends a given requestBody as http(s) request to the defined in address.
      *
-     * @param target      the target host of the request
-     * @param requestBody {@link RequestBody} object to be sent
-     * @return the HttpResponse that comes back for the sent Message
-     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
+     * @param target The target host of the request.
+     * @param requestBody {@link RequestBody} object to be sent.
+     * @return The HttpResponse that comes back for the sent Message.
+     * @throws IOException If the request could not be executed due to cancellation, a connectivity
+     * problem or timeout.
      */
     Response send(RequestBody requestBody, URI target) throws IOException;
 
@@ -74,44 +84,52 @@ public interface HttpService {
      * Sends a given requestBody as http(s) request to the defined in address,
      * extra fields for the header can be provided in headers map.
      *
-     * @param requestBody {@link RequestBody} object to be sent
-     * @param headers     a Map of http headers for the header of the built request
-     * @param target      the target host of the request
-     * @return the HttpResponse that comes back for the sent Message
-     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
+     * @param requestBody {@link RequestBody} object to be sent.
+     * @param headers A Map of http headers for the header of the built request.
+     * @param target The target host of the request.
+     * @return The HttpResponse that comes back for the sent Message.
+     * @throws IOException If the request could not be executed due to cancellation,
+     * a connectivity problem or timeout.
      */
-    Response sendWithHeaders(RequestBody requestBody, URI target, Map<String, String> headers) throws IOException;
+    Response sendWithHeaders(RequestBody requestBody, URI target,
+                             Map<String, String> headers) throws IOException;
 
     /**
      * Sends a http GET request to the target.
      *
-     * @param target the target host of the request
-     * @return the HttpResponse from the get request
-     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
+     * @param target The target host of the request.
+     * @return The HttpResponse from the get request.
+     * @throws IOException If the request could not be executed due to cancellation, a connectivity
+     * problem or timeout.
      */
     Response get(URI target) throws IOException;
 
     /**
-     * Sends a http GET request to the target,
-     * extra fields for the header can be provided in headers map.
+     * Sends a http GET request to the target, extra fields for the header can be
+     * provided in headers map.
      *
-     * @param target  the target host of the request
-     * @param headers a Map of http headers for the header of the built request
-     * @return the HttpResponse from the get request
-     * @throws IOException if the request could not be executed due to cancellation, a connectivity problem or timeout.
+     * @param target The target host of the request.
+     * @param headers A Map of http headers for the header of the built request.
+     * @return The HttpResponse from the get request.
+     * @throws IOException If the request could not be executed due to cancellation, a
+     * connectivity problem or timeout.
      */
     Response getWithHeaders(URI target, Map<String, String> headers) throws IOException;
 
     /**
-     * @param request to be sent
-     * @return Multipart Map with header and payload part of response
-     * @throws IOException             if request cannot be sent
-     * @throws ClaimsException         if response cannot be parsed to multipart map
-     * @throws MultipartParseException if DAT of response is invalid or cannot be parsed
+     * Sends a request and validates the DAT of the response.
+     *
+     * @param request To be sent.
+     * @return Multipart Map with header and payload part of response.
+     * @throws IOException If request cannot be sent.
+     * @throws ClaimsException If response cannot be parsed to multipart map.
+     * @throws MultipartParseException If DAT of response is invalid or cannot be parsed.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
-     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
-     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
-     * @throws SendMessageException sending the IDS-Request returns an IOException
+     * @throws DeserializeException Exception that is thrown if deserializing a message threw
+     * an IOException.
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform
+     * to IDS-Infomodel and did not pass SHACL-Validation.
+     * @throws SendMessageException Sending the IDS-Request returns an IOException.
      */
     Map<String, String> sendAndCheckDat(Request request)
             throws
@@ -123,15 +141,19 @@ public interface HttpService {
             DeserializeException;
 
     /**
-     * @param body requestBody to be sent
-     * @param target                   the target to send the message to
-     * @return Multipart Map with header and payload part of response
-     * @throws IOException             if request cannot be sent
-     * @throws MultipartParseException if response cannot be parsed to multipart map
-     * @throws ClaimsException         if DAT of response is invalid or cannot be parsed
+     * Sends a request to a given target and validates the DAT of the response.
+     *
+     * @param body RequestBody to be sent.
+     * @param target The target to send the message to.
+     * @return Multipart Map with header and payload part of response.
+     * @throws IOException If request cannot be sent.
+     * @throws MultipartParseException If response cannot be parsed to multipart map.
+     * @throws ClaimsException If DAT of response is invalid or cannot be parsed.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
-     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
-     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
+     * @throws DeserializeException exception that is thrown if deserializing a message threw
+     * an IOException.
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform
+     * to IDS-Infomodel and did not pass SHACL-Validation.
      */
     Map<String, String> sendAndCheckDat(RequestBody body, URI target)
             throws
@@ -142,18 +164,22 @@ public interface HttpService {
             ShaclValidatorException;
 
     /**
-     * @param body    requestBody to be sent
-     * @param target  targetURI of the request
-     * @param headers additional headers for the Http header
-     * @return Multipart Map with header and payload part of response
-     * @throws IOException             if request cannot be sent
-     * @throws MultipartParseException if response cannot be parsed to multipart map
-     * @throws ClaimsException         if DAT of response is invalid or cannot be parsed
+     * @param body RequestBody to be sent.
+     * @param target TargetURI of the request.
+     * @param headers Additional headers for the Http header.
+     * @return Multipart Map with header and payload part of response.
+     * @throws IOException If request cannot be sent.
+     * @throws MultipartParseException If response cannot be parsed to multipart map.
+     * @throws ClaimsException If DAT of response is invalid or cannot be parsed.
      * @throws ClaimsException Exception while validating the DAT from the Broker Response.
-     * @throws DeserializeException  exception that is thrown if deserializing a message threw an IOException
-     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform to IDS-Infomodel and did not pass SHACL-Validation
+     * @throws DeserializeException Exception that is thrown if deserializing a message threw
+     * an IOException.
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not conform
+     * to IDS-Infomodel and did not pass SHACL-Validation.
      */
-    Map<String, String> sendWithHeadersAndCheckDat(RequestBody body, URI target, Map<String, String> headers)
+    Map<String, String> sendWithHeadersAndCheckDat(RequestBody body,
+                                                   URI target,
+                                                   Map<String, String> headers)
             throws
             IOException,
             MultipartParseException,

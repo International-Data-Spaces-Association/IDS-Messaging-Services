@@ -17,11 +17,7 @@ All participants of IDS-based data ecosystems must be able to communicate with e
 
 ## Overview: Versioning
 
-Due to the importance of the Infomodel-Java-Artifacts used in the IDS-Messaging-Services, the IDS-Messaging-Services follow an extended semantic versioning syntax for version numbering. The version number of the IDS-Messaging-Services artifacts is composed of 4 digits. The first digit of the version number is reserved for specifying the major version of the Infomodel-Java-Artifacts used. The digits 2 to 4 of the version number correspond to the actual versioning of the IDS-Messaging-Service artifact and follows the SemanticVersioning system.
-
-The scheme is explained using the following example:
-
-**4.1.0.0** = Infomodel-Java-Artifacts Major Version 4 + IDS-Messaging-Services Semantic-Versioning 1.0.0
+The IDS-Messaging-Service follows the SemanticVersioning system.
 
 ## Overview: IDS-Infomodel-Artifacts
 
@@ -29,9 +25,9 @@ The following IDS-Infomodel-Artifacts are used as dependencies.
 
 | Group | Artifact | Version |
 | ------ | ------ | ------ | 
-| de.fraunhofer.iais.eis.ids.infomodel | java | 4.1.0 |
-| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.1.0 |
-| de.fraunhofer.iais.eis.ids | interaction | 4.1.0 |
+| de.fraunhofer.iais.eis.ids.infomodel | java | 4.2.1 |
+| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.2.1 |
+| de.fraunhofer.iais.eis.ids | interaction | 4.2.1 |
 
 ## Overview: Supported IDS-Message protocols
 
@@ -45,12 +41,10 @@ Currently being worked on:
 
 Supported out-of-the-box connectivity to the following IDS-Infrastructure-Components with advanced functionality:
 - Other IDS-Connectors
-- IDS-DAPS
+- IDS-AppStore
 - IDS-Broker
 - IDS-ClearingHouse
-
-Currently being worked on advanced functionality for:
-- IDS-AppStore
+- IDS-DAPS
 - IDS-ParIS
 - IDS-VoCol
 
@@ -59,7 +53,7 @@ Currently being worked on advanced functionality for:
 - The IDS-Messaging-Services use asymmetric encryption concepts and requires public and private key of the Connector-Instance.
 - The IDS-Messaging-Services utilize contents of the IDSConfiguration Model which is part of the IDS Information Model. Therefor a *configmodel.json*-file should exist to load the configuration of the IDS-Connector. For example, the configuration file should reference the key- and trust-store.
 - The IDS-Messaging-Services assume a SpringBoot project and therefore require various specific SpringBoot functionalities.
-- [Settings in the Application Properties](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki/6.-Settings:-Application-Properties)
+- [Settings in the Application Properties](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki/09.-Settings:-Connector-Configuration)
 
 ## Quick Start: Integration into a Maven-Java-Project
 
@@ -86,14 +80,17 @@ Modules with basic functions:
 - messaging
 
 Modules for different infrastructure components:
+- appstore
 - broker
 - clearinghouse
+- paris
+- vocol
 
 In general, the core-module artifact is the main module artifact with the configuration of the IDS-Messaging-Services. The messaging-module artifact provides all needed functionalities to send and receive IDS-Messages. The messaging-module artifact in turn holds the core-module artifact as a dependency. So it is enough to specify the messaging-module artifact in the project's pom and the functionality of the core-module artifact will be loaded automatically.
 
 The individual module-artifacts of the IDS-Infrastructure-Components in turn require functionalities of the messaging-module artifact and have it therefore linked as a dependency in each module case. This simplified architecture means that it is sufficient, for example, to integrate the broker-module artifact into the project's pom, which automatically makes the functionalities of the messaging- and thus also the core-module artifact available.
 
-So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Broker occurs as IDS-Infrastructure-Component, the following entry in the project's pom is completely sufficient as dependcies to get all needed functionalities to exchange messages with the IDS-Broker with advanced functionalities, without the need to use the full-module:
+So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Broker occurs as IDS-Infrastructure-Component, the following entry in the project's pom is completely sufficient as dependencies to get all needed functionalities to exchange messages with the IDS-Broker with advanced functionalities, without the need to use the full-module:
 
 ```xml
 <dependency>

@@ -19,20 +19,35 @@ import de.fraunhofer.iais.eis.Contract;
 import de.fraunhofer.iais.eis.ContractAgreement;
 import de.fraunhofer.iais.eis.ContractAgreementMessage;
 
+/**
+ * MAP representing the ContractAgreementMessage.
+ */
+public class ContractAgreementMAP
+        extends AbstractContractMAP<ContractAgreementMessage, ContractAgreement> {
 
-public class ContractAgreementMAP extends AbstractContractMAP<ContractAgreementMessage, ContractAgreement> {
-
+    /**
+     * Constructor for ContractAgreementMAP.
+     *
+     * @param contractAgreementMessage The message.
+     * @param payload The payload.
+     */
     public ContractAgreementMAP(final ContractAgreementMessage contractAgreementMessage,
                                 final ContractAgreement payload) {
         this.message = contractAgreementMessage;
         this.payload = payload;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContractAgreementMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Contract> getPayload() {
         return Optional.of(payload);

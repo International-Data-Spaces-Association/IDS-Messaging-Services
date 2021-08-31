@@ -9,7 +9,127 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [4.2.0.0] UNRELEASED
+## Version [4.3.0] 2021-08-31
+
+### Minor Change: Incoming message infomodel compatibility check
+- The check whether an incoming message is compatible with its ModelVersion to the inbound ModelVersions of the Connector can be switched on or off via application.properties (infomodel.compatibility.validation=true/false). The default value if not set is true (switched on).
+
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.1 (released 2021-08-30)
+- Used Artifacts: java, infomodel-serializer, interaction
+
+### Patch Change: Enhancements
+- If no private key can be found for a given alias within a keystore, a KeyStoreException is now thrown and an error is logged, preventing an otherwise possible NullpointerException (KeystoreManager getPrivateKeyFromKeyStore).
+- The payload of incoming messages is now first validated for valid JSON and whether the securityProfile attribute is present, if not, this check is skipped instead of issuing an error message in the logs (IdsHttpService checkDatFromResponse).
+- For log error messages and others important logs with dynamic content, the e.g. exception reason is now highlighted to distinguish it from the rest of the log message. Format: [exception=(...)].
+
+### Patch Change: Miscellaneous
+- Other minor enhancements to existing Javadoc and log messages.
+
+## Version [4.2.2] 2021-08-26
+
+### Patch Change: Miscellaneous
+- When the security-profile attribute of an incoming message is determined, all exceptions are now caught, regardless of their cause.
+
+## Version [4.2.1] 2021-08-26
+
+### Patch Change: Miscellaneous
+- Refactored debug/info/warn/error log-messages (e.g. for KeyStoreManager and IdsHttpService).
+
+## Version [4.2.0] 2021-08-24
+
+### Minor Change: FullTextQuery template update
+- Extended FullTextQuery template in messaging.util.FULL_TEXT_QUERY, with the following new features:
+  - provides the original identifier
+  - returns the type of the found entity
+  - gives the AccessUrl of the related Connector
+  - searches also for non-xsd:string Literals
+  - also checks for entities that are not a BaseConnector or a Resource
+- Note: returns of APIs that are based on the template could be extended to include this new informations, depending on the connector implementation.
+
+### Patch Change: Miscellaneous
+- Missing Javadoc annotations for thrown exceptions to services were added where they were missing.
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.8 -> 0.7.9
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.3 -> 2.5.4
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.3 -> 2.5.4
+
+## Version [4.1.0] SKIPPED
+
+### Note on the version number - skipping v4.1.0
+- In the past, a different version numbering system approach with 4 digits was followed and various old versions of the IDS-Messaging-Services exist, which start with 4.1.0, for example the old version 4.1.0.0. To avoid confusion, we skip version-number 4.1.0, to not have versions 4.1.0 and 4.1.0.0 present at the same time.
+
+## Version [4.0.0] 2021-08-17
+
+### Major Change: Dependency Infomodel Artifacts 4.2.0
+- The update of the infomodel artifacts to version 4.2.0 may result in breaking changes for the connector developers.
+- One of the possible breaking changes is that PaymentModality is no longer defined as a list and therefore calls like isEmpty() will no longer compile.
+
+### Minor Change: CertificateSubjectCnProvider
+- New feature: **CertificateSubjectCnProvider.certificateSubjectCn** provides static access to the subject-CN of the connector certificate, which could be used as the connector UUID depending on the implementation of the connector. Value is initialized by the KeyStoreManager and reset at each update. If no valid certificate with Subject-CN is available, a random UUID is generated in the KeyStoreManager instead.
+
+### Patch Change: Log Message Changes
+- Changes in printed info/warning/error logs
+  - Removed error log message "ERROR - JWT strings must contain exactly 2 period characters. Found: 0" which occurred only in TEST_DEPLOYMENT and has caused confusion
+  - Print warn message "Could not parse jwt!" only in PRODUCTIVE_DEPLOYMENT and adjusted warn message content
+  - Adjusted error message "Mandatory required information of the connector certificate is missing (AKI/SKI)!" with reference to the connector fingerprint
+  - Stopped printing connector fingerprint in log message in TokenManagerService
+  - Other minor adjustments to make log messages more consistent (parameterized logs, more useful outputs) 
+
+### Patch Change: Miscellaneous
+- Internal change: Identifiers and documentation in the code that previously described the supposed connector UUID have been changed to connector fingerprint to reflect their actual meaning.
+
+### Patch Change: Dependency Maintenance
+- Upgrade: com.puppycrawl.tools:checkstyle 8.45 -> 8.45.1 
+
+## Version [3.1.0] 2021-08-09
+
+### Infomodel Maintenance (Patch Change)
+- Used Dependency Version: 4.1.2 (released 2021-07-30)
+- Used Artifacts: java, infomodel-serializer, interaction
+
+### Added Features (Minor change)
+- Service-Module for AppStore communication (AppStoreService)
+- Service-Module for ParIS communication (ParisService)
+- Service-Module for Vocol communication (VocolService)
+
+### Internal Changes (Patch Change)
+- Patch change: The BrokerService now internally uses the Messaging-Module QueryService for building Query-Messages.
+
+### Dependency Maintenance (Patch Change)
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.2 -> 2.5.3
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.2 -> 2.5.3
+- Upgrade: com.puppycrawl.tools:checkstyle 8.44 -> 8.45
+- Upgrade: org.springframework.spring-webmvc 5.3.8 -> 5.3.9
+  
+### Transitive Dependencies CVE Exclusions (Patch Change) 
+- Exclude: commons-io 2.2 from commons-fileupload, replace with commons-io 2.11
+- Exclude: commons-compress 1.20 from interaction, replace with commons-compress 1.21
+
+### Miscellaneous
+- New Repo pipeline setup: New required checks to pass for PR - Checkstyle & License
+
+## Version [3.0.0] 2021-07-20
+
+### Major Change: Dependency Infomodel Artifacts 4.1.1
+- The update of the infomodel artifacts to version 4.1.1 may result in breaking changes for the connector developers.
+One of the possible breaking changes is that all lists are now initialized as empty ArrayList.
+For a complete changelog of artifacts, see: https://github.com/International-Data-Spaces-Association/Java-Representation-of-IDS-Information-Model/blob/main/Changelog.md
+
+## Version [2.0.1] 2021-07-20
+
+### Changes
+- Patch Change: If the search term for the fulltext broker search is already passed in quotes, these are now removed and the adjusted search term is passed to the query template.
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework:spring-core 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-tx 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-web 5.3.8 -> 5.3.9
+- Upgrade: org.springframework:spring-test 5.3.8 -> 5.3.9
+
+## Version [2.0.0] 2021-07-16
+With this version we switch to the versions-format of semantic versioning. In principle, only the first version-number position is omitted compared to the previous versions.
 
 ### Major Change: MessageContainer
 - Services now return MessageContainer, instead of xyzMAP tied to a specific expected response
@@ -28,6 +148,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Patch change: Added Maven plugin to generate Apache 2.0 license-header in files
+- Minor change: New feature, Token-Claims can now be accessed
+- Minor change: New feature, the ConfigProducer can now be intercepted by the Connector-Developer (Pre and Post)
 
 ### Changes
 - Patch Change: Improved logging structure and messages for TEST_DEPLOYMENT vs PRODUCTIVE_DEPLOYMENT
@@ -72,7 +194,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Minor Change: New feature - FullText SPARQL Broker-Query support in BrokerService
-- Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 applicaton.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
+- Minor Change: New feature - Clearing-House Endpoints: Two new fields in application.properties for the query- and logging-endpoint which can be optionally set by the user for the different CH endpoints, if others than default should be used (default endpoints: query: <CH-URL>/messages/query, log: <CH-URL>/messages/log). In total 3 application.properties fields: clearinghouse.url, clearinghouse.query.endpoint, clearinghouse.log.endpoint
 - Minor Change: New feature - At Connector runtime, individual additional DAPS DAT validation rules can now be added during the verification process of the DAT. For example, it is possible to create a blacklist of untrusted IDS-Connectors or DAPS-Systems and save them in a Connector-Database and check for them when a message is received. If the rules are not met, a RejectionMessage is sent automatically by the IDS-Messaging-Services.
 
 ### Changes

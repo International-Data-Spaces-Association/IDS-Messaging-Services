@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,17 +34,18 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'log'.
  *
  * @param <T> Type of expected Payload.
  */
-public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, LogRequestBuilder<T>> {
+public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, LogRequestBuilder<T>> {
 
+    /**
+     * The URI of the CH.
+     */
     URI clearingHouseUrl;
 
     LogRequestBuilder(
@@ -72,7 +77,8 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     /**
      * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.LogMessage}.
      *
-     * @return this builder instance
+     * @param clearingHouseUrl The URL of the CH.
+     * @return This builder instance.
      */
     public LogRequestBuilder<T> operationUpdate(final URI clearingHouseUrl) {
         this.operation = Crud.UPDATE;
@@ -96,6 +102,14 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -105,7 +119,8 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
                 switch (operation) {
                     case UPDATE:
                         //build and send artifact request message
-                        var message = notificationTemplateProvider.logMessageTemplate(clearingHouseUrl)
+                        final var message = notificationTemplateProvider
+                                .logMessageTemplate(clearingHouseUrl)
                                 .buildMessage();
                         return sendMultipart(target, message);
                     default:

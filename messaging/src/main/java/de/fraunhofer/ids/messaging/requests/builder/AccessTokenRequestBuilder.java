@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'access token'.
  *
  * @param <T> Type of expected Payload.
  */
-public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, AccessTokenRequestBuilder<T>> {
+public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>,
+        SupportsMultipart<T, AccessTokenRequestBuilder<T>> {
 
     AccessTokenRequestBuilder(
             final Class<T> expected,
@@ -68,9 +70,10 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
     }
 
     /**
-     * Set the operation to RECEIVE: describes an {@link de.fraunhofer.iais.eis.AccessTokenRequestMessage}.
+     * Set the operation to RECEIVE: describes an
+     * {@link de.fraunhofer.iais.eis.AccessTokenRequestMessage}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     public AccessTokenRequestBuilder<T> operationGet() {
         this.operation = Crud.RECEIVE;
@@ -93,6 +96,14 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         //send ArtifactRequestMessage with settings:
         switch (protocolType) {
             case IDSCP:
@@ -103,7 +114,8 @@ public class AccessTokenRequestBuilder<T> extends IdsRequestBuilder<T> implement
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider.accessTokenRequestMessageTemplate()
+                        final var message = requestTemplateProvider
+                                .accessTokenRequestMessageTemplate()
                                 .buildMessage();
                         return sendMultipart(target, message);
                     default:

@@ -13,12 +13,23 @@
  */
 package de.fraunhofer.ids.messaging.requests.exceptions;
 
+/**
+ * Exception if no template for the message to be build is found.
+ */
 public class NoTemplateProvidedException extends IdsRequestException {
 
+    /**
+     * Constructor for NoTemplateProvidedException.
+     */
     public NoTemplateProvidedException() {
         super();
     }
 
+    /**
+     * Constructor for NoTemplateProvidedException.
+     *
+     * @param message The exception message.
+     */
     public NoTemplateProvidedException(final String message) {
         super(message);
     }

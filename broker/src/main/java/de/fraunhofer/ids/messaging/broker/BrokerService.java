@@ -13,11 +13,13 @@
  */
 package de.fraunhofer.ids.messaging.broker;
 
+import java.io.IOException;
+import java.net.URI;
+
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.Resource;
-import de.fraunhofer.ids.messaging.broker.util.FullTextQueryTemplate;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -29,48 +31,66 @@ import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
-import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.requests.MessageContainer;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.QueryService;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
-import lombok.AccessLevel;
 import lombok.NonNull;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.net.URI;
-
 /**
- * Broker Communication Controller. Generates appropriate ids multipart messages and sends them to the broker
- * infrastructure api.
- **/
+ * Broker Communication Controller. Generates appropriate ids multipart
+ * messages and sends them to the broker infrastructure api.
+ */
 
 @Slf4j
 @Component
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class BrokerService extends InfrastructureService
-        implements IDSBrokerService {
+public class BrokerService extends InfrastructureService implements IDSBrokerService {
 
-    static int DEFAULT_LIMIT = 50;
-    static int DEFAULT_OFFSET = 0;
+    /**
+     * Default item limit for the query.
+     */
+    private static final int DEFAULT_LIMIT = 50;
 
-    NotificationTemplateProvider notificationTemplateProvider;
-    RequestTemplateProvider requestTemplateProvider;
-    IdsRequestBuilderService requestBuilderService;
+    /**
+     * Default item offset for the query.
+     */
+    private static final int DEFAULT_OFFSET = 0;
+
+    /**
+     * The NotificationTemplateProvider.
+     */
+    private final NotificationTemplateProvider notificationTemplateProvider;
+
+    /**
+     * The RequestTemplateProvider.
+     */
+    private final RequestTemplateProvider requestTemplateProvider;
+
+    /**
+     * The IdsRequestBuilderService.
+     */
+    private final IdsRequestBuilderService idsRequestBuilderService;
+
+    /**
+     * The QueryService.
+     */
+    private final QueryService queryService;
 
     /**
      * BrokerService constructor.
-     * @param container the ConfigContainer
-     * @param tokenProvider the DapsTokenProvider
-     * @param messageService the MessageService
-     * @param idsRequestBuilderService service to send request messages
-     * @param templateProvider provider for notification message templates
-     * @param requestTemplateProvider provider for request message templates
+     *
+     * @param container The ConfigContainer.
+     * @param tokenProvider The DapsTokenProvider.
+     * @param messageService The MessageService.
+     * @param idsRequestBuilderService Service to send request messages.
+     * @param templateProvider Provider for notification message templates.
+     * @param requestTemplateProvider Provider for request message templates.
      */
     public BrokerService(final ConfigContainer container,
                          final DapsTokenProvider tokenProvider,
@@ -78,18 +98,25 @@ public class BrokerService extends InfrastructureService
                          final IdsRequestBuilderService idsRequestBuilderService,
                          final NotificationTemplateProvider templateProvider,
                          final RequestTemplateProvider requestTemplateProvider) {
-        super(container, tokenProvider, messageService);
+        super(container, tokenProvider, messageService, idsRequestBuilderService);
         this.notificationTemplateProvider = templateProvider;
         this.requestTemplateProvider = requestTemplateProvider;
-        this.requestBuilderService = idsRequestBuilderService;
+        this.idsRequestBuilderService = idsRequestBuilderService;
+
+        queryService = new QueryService(
+                container,
+                tokenProvider,
+                messageService,
+                idsRequestBuilderService);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<?> removeResourceFromBroker(@NonNull final URI brokerURI,
-                                                        @NonNull final Resource resource) throws
+    public MessageContainer<?> removeResourceFromBroker(
+            @NonNull final URI brokerURI,
+            @NonNull final Resource resource) throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -98,21 +125,24 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                .withPayload(resource)
-                .subjectResource()
-                .useMultipart()
-                .operationDelete(resource.getId())
-                .execute(brokerURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectResource()
+                                       .useMultipart()
+                                       .operationDelete(resource.getId())
+                                       .execute(brokerURI);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<?> updateResourceAtBroker(@NonNull final URI brokerURI, @NonNull final Resource resource) throws
+    public MessageContainer<?> updateResourceAtBroker(
+            @NonNull final URI brokerURI, @NonNull final Resource resource)
+            throws
             IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -121,15 +151,17 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
 
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                .withPayload(resource)
-                .subjectResource()
-                .useMultipart()
-                .operationUpdate(resource.getId())
-                .execute(brokerURI);
+        return idsRequestBuilderService.newRequest()
+                                       .withPayload(resource)
+                                       .subjectResource()
+                                       .useMultipart()
+                                       .operationUpdate(resource.getId())
+                                       .execute(brokerURI);
     }
 
     /**
@@ -145,14 +177,15 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                .withPayload(container.getConnector())
-                .subjectConnector()
-                .useMultipart()
-                .operationDelete(container.getConnector().getId())
-                .execute(brokerURI);
+        return idsRequestBuilderService.newRequest()
+                                       .subjectConnector()
+                                       .useMultipart()
+                                       .operationDelete(container.getConnector().getId())
+                                       .execute(brokerURI);
     }
 
     /**
@@ -168,26 +201,29 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         logBuildingHeader();
-        return requestBuilderService.newRequest()
-                .withPayload(container.getConnector())
-                .subjectConnector()
-                .useMultipart()
-                .operationUpdate(container.getConnector().getId())
-                .execute(brokerURI);
+        return idsRequestBuilderService.newRequest()
+                                       .withPayload(container.getConnector())
+                                       .subjectConnector()
+                                       .useMultipart()
+                                       .operationUpdate(container.getConnector().getId())
+                                       .execute(brokerURI);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<?> queryBroker(@NonNull final URI brokerURI,
+    public MessageContainer<String> queryBroker(@NonNull final URI brokerURI,
                                  @NonNull final String query,
                                  @NonNull final QueryLanguage queryLanguage,
                                  @NonNull final QueryScope queryScope,
                                  @NonNull final QueryTarget queryTarget)
-            throws IOException,
+            throws
+            IOException,
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
@@ -195,26 +231,23 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
-        logBuildingHeader();
-        return requestBuilderService
-                .newRequest()
-                .withPayload(query)
-                .subjectQuery()
-                .useMultipart()
-                .operationSend(queryLanguage, queryScope, queryTarget)
-                .execute(brokerURI);
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
+        return queryService
+                .query(brokerURI, query, queryLanguage, queryScope, queryTarget);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<?> fullTextSearchBroker(final URI brokerURI,
+    public MessageContainer<String> fullTextSearchBroker(final URI brokerURI,
                                           final String searchTerm,
                                           final QueryScope queryScope,
                                           final QueryTarget queryTarget)
-            throws DapsTokenManagerException,
+            throws
+            DapsTokenManagerException,
             IOException,
             MultipartParseException,
             ClaimsException,
@@ -222,7 +255,9 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         return fullTextSearchBroker(brokerURI,
                                     searchTerm,
                                     queryScope,
@@ -235,12 +270,12 @@ public class BrokerService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageContainer<?> fullTextSearchBroker(final URI brokerURI,
-                                          final String searchTerm,
-                                          final QueryScope queryScope,
-                                          final QueryTarget queryTarget,
-                                          final int limit,
-                                          final int offset)
+    public MessageContainer<String> fullTextSearchBroker(final URI brokerURI,
+                                                         final String searchTerm,
+                                                         final QueryScope queryScope,
+                                                         final QueryTarget queryTarget,
+                                                         final int limit,
+                                                         final int offset)
             throws
             DapsTokenManagerException,
             IOException,
@@ -250,25 +285,11 @@ public class BrokerService extends InfrastructureService
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
-        final var payload = String.format(
-                FullTextQueryTemplate.FULL_TEXT_QUERY,
-                searchTerm, limit, offset);
-        return requestBuilderService
-                .newRequest()
-                .withPayload(payload)
-                .subjectQuery()
-                .useMultipart()
-                .operationSend(QueryLanguage.SPARQL, queryScope, queryTarget)
-                .execute(brokerURI);
-    }
-
-    /**
-     * Log info about starting to build the header.
-     */
-    private void logBuildingHeader() {
-        if (log.isDebugEnabled()) {
-            log.debug("Building message header");
-        }
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
+        return queryService
+                .fullTextSearch(brokerURI, searchTerm, queryScope,
+                                queryTarget, limit, offset);
     }
 }

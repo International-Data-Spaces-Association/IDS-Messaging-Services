@@ -24,27 +24,25 @@ import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
-import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
-import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.UnexpectedResponseException;
 import de.fraunhofer.ids.messaging.protocol.http.IdsHttpService;
-import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
 import de.fraunhofer.ids.messaging.protocol.multipart.MultipartResponseConverter;
 import de.fraunhofer.ids.messaging.protocol.multipart.UnknownResponseException;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.MessageProcessedNotificationMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.mapping.ResultMAP;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseException;
+import de.fraunhofer.ids.messaging.requests.InfrastructureService;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
+import de.fraunhofer.ids.messaging.requests.builder.IdsRequestBuilderService;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -53,38 +51,82 @@ import okhttp3.RequestBody;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Service class for communication to the ClearingHouse.
+ */
 @Slf4j
 @Component
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ClearingHouseService extends InfrastructureService implements IDSClearingHouseService  {
+public class ClearingHouseService extends InfrastructureService
+        implements IDSClearingHouseService {
 
-    Serializer   serializer   = new Serializer();
-    SecureRandom secureRandom = new SecureRandom();
-    MultipartResponseConverter multipartResponseConverter = new MultipartResponseConverter();
+    /**
+     * The infomodel serializer.
+     */
+    private final Serializer   serializer   = new Serializer();
 
-    IdsHttpService idsHttpService;
-    NotificationTemplateProvider notificationTemplateProvider;
-    RequestTemplateProvider requestTemplateProvider;
+    /**
+     * SecureRandom function.
+     */
+    private final SecureRandom secureRandom = new SecureRandom();
 
-    @NonFinal
+    /**
+     * The MultipartResponseConverter.
+     */
+    private final MultipartResponseConverter multipartResponseConverter
+            = new MultipartResponseConverter();
+
+    /**
+     * The IdsHttpService.
+     */
+    private final IdsHttpService idsHttpService;
+
+    /**
+     * The NotificationTemplateProvider.
+     */
+    private final NotificationTemplateProvider notificationTemplateProvider;
+
+    /**
+     * The RequestTemplateProvider.
+     */
+    private final RequestTemplateProvider requestTemplateProvider;
+
+    /**
+     * The base URL of the CH.
+     */
     @Value("${clearinghouse.url}")
-    String clearingHouseUrl;
+    private String clearingHouseUrl;
 
-    @NonFinal
+    /**
+     * The CH endpoint for query messages.
+     */
     @Value("${clearinghouse.query.endpoint:/messages/query}")
-    String queryEndpoint;
+    private String queryEndpoint;
 
-    @NonFinal
+    /**
+     * The CH endpoint for logging.
+     */
     @Value("${clearinghouse.log.endpoint:/messages/log}")
-    String logEndpoint;
+    private String logEndpoint;
 
+    /**
+     * Constructor for the ClearingHouseService.
+     *
+     * @param container The ConfigContainer.
+     * @param tokenProvider The DapsTokenProvider.
+     * @param messageService The MessageService.
+     * @param idsHttpService The IdsHttpService.
+     * @param notificationTemplateProvider The NotificationTemplateProvider.
+     * @param requestTemplateProvider The RequestTemplateProvider.
+     * @param idsRequestBuilderService The IdsRequestBuilderService.
+     */
     public ClearingHouseService(final ConfigContainer container,
                                 final DapsTokenProvider tokenProvider,
                                 final MessageService messageService,
                                 final IdsHttpService idsHttpService,
                                 final NotificationTemplateProvider notificationTemplateProvider,
-                                final RequestTemplateProvider requestTemplateProvider) {
-        super(container, tokenProvider, messageService);
+                                final RequestTemplateProvider requestTemplateProvider,
+                                final IdsRequestBuilderService idsRequestBuilderService) {
+        super(container, tokenProvider, messageService, idsRequestBuilderService);
         this.idsHttpService = idsHttpService;
         this.notificationTemplateProvider = notificationTemplateProvider;
         this.requestTemplateProvider = requestTemplateProvider;
@@ -131,12 +173,14 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
-                notificationTemplateProvider.logMessageTemplate(new URI(clearingHouseUrl)).buildMessage(),
+                notificationTemplateProvider
+                    .logMessageTemplate(new URI(clearingHouseUrl)).buildMessage(),
                 serializer.serialize(messageToLog),
                 MediaType.parse("application/json"));
 
         //set some random id for message
-        final var response = idsHttpService.sendAndCheckDat(body, new URI(clearingHouseUrl + logEndpoint + "/" + pid));
+        final var response = idsHttpService
+            .sendAndCheckDat(body, new URI(clearingHouseUrl + logEndpoint + "/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
         return expectMapOfTypeT(map, MessageProcessedNotificationMAP.class);
     }
@@ -166,17 +210,25 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
-                requestTemplateProvider.queryMessageTemplate(queryLanguage, queryScope, queryTarget).buildMessage(),
+                requestTemplateProvider
+                        .queryMessageTemplate(queryLanguage,
+                                              queryScope,
+                                              queryTarget).buildMessage(),
                 query,
                 MediaType.parse("text/plain")
         );
 
         //build targetURI of QueryMessage (if pid and messageid are given)
         final var targetURI = (pid == null)
-                ? new URI(clearingHouseUrl + queryEndpoint)
-                : messageId == null
-                        ? new URI(String.format("%s/%s", clearingHouseUrl + queryEndpoint, pid))
-                        : new URI(String.format("%s/%s/%s", clearingHouseUrl + queryEndpoint, pid, messageId));
+            ? new URI(clearingHouseUrl + queryEndpoint)
+            : messageId == null
+                ? new URI(String.format("%s/%s",
+                                            clearingHouseUrl + queryEndpoint,
+                                            pid))
+                : new URI(String.format("%s/%s/%s",
+                                            clearingHouseUrl + queryEndpoint,
+                                            pid,
+                                            messageId));
 
         final var response = idsHttpService.sendAndCheckDat(body, targetURI);
         final var map = multipartResponseConverter.convertResponse(response);
@@ -188,9 +240,7 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
      * @param headerMessage  IDS Message used as Header
      * @param payloadContent Payload String
      * @param payloadType    MediaType of Payload String
-     *
      * @return built MultipartBody
-     *
      * @throws SerializeException when headerMessage cannot be serialized
      */
     private MultipartBody buildMultipartWithInternalHeaders(final Message headerMessage,
@@ -200,7 +250,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
         try {
             final var bodyBuilder = new MultipartBody.Builder();
 
-            //OkHttp does not support setting Content Type on Multipart Parts directly on creation, workaround
+            //OkHttp does not support setting Content Type on
+            //Multipart Parts directly on creation, workaround
             //Create Header for header Part of IDS Multipart Message
             final var headerHeader = new Headers.Builder()
                     .add("Content-Disposition: form-data; name=\"header\"")
@@ -222,7 +273,8 @@ public class ClearingHouseService extends InfrastructureService implements IDSCl
                         .add("Content-Disposition: form-data; name=\"payload\"")
                         .build();
 
-                //Create RequestBody for payload Part of IDS Multipart Message (with json content-type)
+                //Create RequestBody for payload Part of IDS Multipart
+                // Message (with json content-type)
                 final var payloadBody =
                         RequestBody.create(payloadContent, payloadType);
 

@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,17 +34,18 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'description'.
  *
  * @param <T> Type of expected Payload.
  */
-public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, DescriptionRequestBuilder<T>> {
+public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>,
+        SupportsMultipart<T, DescriptionRequestBuilder<T>> {
 
+    /**
+     * URI of the requested element.
+     */
     private URI requestedElement;
 
     DescriptionRequestBuilder(
@@ -70,10 +75,11 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
     }
 
     /**
-     * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.DescriptionRequestMessage}.
+     * Set the operation to RECEIVE: describes a
+     * {@link de.fraunhofer.iais.eis.DescriptionRequestMessage}.
      *
-     * @param requestedElement requested element id for message header (null => selfdescription)
-     * @return this builder instance
+     * @param requestedElement Requested element id for message header (null is selfdescription).
+     * @return This builder instance.
      */
     public DescriptionRequestBuilder<T> operationGet(final URI requestedElement) {
         this.operation = Crud.RECEIVE;
@@ -97,6 +103,14 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -106,7 +120,9 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T> implement
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider.descriptionRequestMessageTemplate(requestedElement)
+                        final var message = requestTemplateProvider
+                                .descriptionRequestMessageTemplate(
+                                        requestedElement)
                                 .buildMessage();
                         return sendMultipart(target, message);
                     default:

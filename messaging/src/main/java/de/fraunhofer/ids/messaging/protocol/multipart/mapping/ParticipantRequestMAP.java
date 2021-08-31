@@ -19,23 +19,44 @@ import de.fraunhofer.iais.eis.ParticipantRequestMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the ParticipantRequestMessage.
+ */
 public class ParticipantRequestMAP implements MessageAndPayload<ParticipantRequestMessage, Void> {
+
+    /**
+     * The ParticipantRequestMessage.
+     */
     private ParticipantRequestMessage message;
 
+    /**
+     * Constructor for the ParticipantRequestMAP.
+     *
+     * @param message The ParticipantRequestMessage.
+     */
     public ParticipantRequestMAP(final ParticipantRequestMessage message) {
         this.message = message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ParticipantRequestMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return SerializedPayload.EMPTY;

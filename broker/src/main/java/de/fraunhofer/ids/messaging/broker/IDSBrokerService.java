@@ -13,6 +13,9 @@
  */
 package de.fraunhofer.ids.messaging.broker;
 
+import java.io.IOException;
+import java.net.URI;
+
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
@@ -20,9 +23,6 @@ import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
-import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
-import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
-import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenManagerException;
 import de.fraunhofer.ids.messaging.protocol.http.SendMessageException;
 import de.fraunhofer.ids.messaging.protocol.http.ShaclValidatorException;
@@ -33,9 +33,6 @@ import de.fraunhofer.ids.messaging.requests.exceptions.NoTemplateProvidedExcepti
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-
 /**
  * Interface for Communication with IDS Brokers, implemented by {@link BrokerService}.
  */
@@ -45,13 +42,25 @@ public interface IDSBrokerService {
      * Builds and sends a {@link de.fraunhofer.iais.eis.ResourceUnavailableMessage} to the broker.
      * The given Resource will be unregistered from the broker.
      *
-     * @param brokerURI URI of the broker the connector will try to unregister the resource at
-     * @param resource  the resource that will be unregistered at the broker
-     * @return the ResponseMessage of the Broker
-     * @throws IOException if the built message could not be serialized
+     * @param brokerURI URI of the broker the connector will try to unregister the resource at.
+     * @param resource The resource that will be unregistered at the broker.
+     * @return The ResponseMessage of the Broker.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
+     * @throws NoTemplateProvidedException If no internal template can be found for the message.
      */
     MessageContainer<?> removeResourceFromBroker(URI brokerURI, Resource resource)
-            throws IOException,
+            throws
+            IOException,
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
@@ -60,19 +69,34 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException;
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 
     /**
      * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
-     * The Connector will be registered at the broker, or its selfdescription will be updated.
+     * The Connector will be registered at the broker, or
+     * its selfdescription will be updated.
      *
-     * @param brokerURI URI of the broker the connector will try to unregister the resource at
-     * @param resource  the resource that will be unregistered at the broker
-     * @return the ResponseMessage of the Broker
-     * @throws IOException if the built message could not be serialized
+     * @param brokerURI URI of the broker the connector will try to unregister the resource at.
+     * @param resource The resource that will be unregistered at the broker.
+     * @return The ResponseMessage of the Broker.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
+     * @throws NoTemplateProvidedException If no internal template can be found for the message.
      */
     MessageContainer<?> updateResourceAtBroker(URI brokerURI, Resource resource)
-            throws IOException,
+            throws
+            IOException,
             DapsTokenManagerException,
             MultipartParseException,
             ClaimsException,
@@ -81,15 +105,30 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException;
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 
     /**
-     * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
+     * Builds and sends a
+     * {@link de.fraunhofer.iais.eis.ConnectorUnavailableMessage} to the broker.
      * The Connector will be unregistered from the broker.
      *
-     * @param brokerURI URI of the broker the connector will try to unregister at
-     * @return the ResponseMessage of the Broker (NotificationMessage if it worked, RejectionMessage if not)
-     * @throws IOException if the message could not be serialized
+     * @param brokerURI URI of the broker the connector will try to unregister at.
+     * @return The ResponseMessage of the Broker (NotificationMessage
+     * if it worked, RejectionMessage if not).
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
+     * @throws NoTemplateProvidedException If no internal template can be found for the message.
      */
     MessageContainer<?> unregisterAtBroker(URI brokerURI)
             throws IOException,
@@ -101,16 +140,33 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException;
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 
     /**
-     * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage} to the broker.
-     * The currently available connector self declaration at the broker will be updated. In order to update the
-     * connector uuid in the self declaration has to be the same as the registered one at the broker.
+     * Builds and sends a {@link de.fraunhofer.iais.eis.ConnectorUpdateMessage}
+     * to the broker.
+     * The currently available connector self declaration at the
+     * broker will be updated. In order to update the
+     * connector uuid in the self declaration has to be the same
+     * as the registered one at the broker.
      *
-     * @param brokerURI URI of the broker the connector will try to update its information at
-     * @return the ResponseMessage of the Broker (NotificationMessage if it worked, RejectionMessage if not)
-     * @throws IOException if the built message could not be serialized
+     * @param brokerURI URI of the broker the connector will try to update its information at.
+     * @return The ResponseMessage of the Broker (NotificationMessage if it worked,
+     * RejectionMessage if not).
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
+     * @throws NoTemplateProvidedException If no internal template can be found for the message.
      */
     MessageContainer<?> updateSelfDescriptionAtBroker(URI brokerURI)
             throws IOException,
@@ -122,20 +178,40 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException;
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 
     /**
-     * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage} to the broker.
+     * Builds and sends a {@link de.fraunhofer.iais.eis.QueryMessage}
+     * to the broker.
      *
-     * @param brokerURI     the URI of the broker the message is sent to
-     * @param query         the query as payload for the QueryMessage
-     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY). See {@link QueryLanguage}
-     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors, INACTIVE connectors). See {@link QueryScope}
-     * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
-     * @return the brokers response to the query request
-     * @throws IOException if the built message could not be serialized
+     * @param brokerURI The URI of the broker the message is sent to.
+     * @param query The query as payload for the QueryMessage.
+     * @param queryLanguage The Language of the Query (e.g. SPARQL, SQL, XQUERY).
+     *                      See {@link QueryLanguage}
+     * @param queryScope The Scope of the Query (ALL connectors, ACTIVE connectors,
+     *                   INACTIVE connectors). See {@link QueryScope}.
+     * @param queryTarget The type of IDS Components that are queried. See {@link QueryTarget}.
+     * @return The brokers response to the query request.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
+     * @throws NoTemplateProvidedException If no internal template can be found for the message.
      */
-    MessageContainer<?> queryBroker(URI brokerURI, String query, QueryLanguage queryLanguage, QueryScope queryScope, QueryTarget queryTarget)
+    MessageContainer<String> queryBroker(URI brokerURI,
+                                         String query,
+                                         QueryLanguage queryLanguage,
+                                         QueryScope queryScope,
+                                         QueryTarget queryTarget)
             throws IOException,
             DapsTokenManagerException,
             MultipartParseException,
@@ -145,7 +221,9 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException;
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 
     /**
      * Do a FullText Query on the Broker with default limit and offset.
@@ -155,15 +233,23 @@ public interface IDSBrokerService {
      * @param queryScope The Scope of the query.
      * @param queryTarget The target of the query.
      * @return The query result from the Broker.
-     * @throws ConnectorMissingCertExtensionException Exception while getting DAT from DAPS.
-     * @throws DapsConnectionException Exception while getting DAT from DAPS.
-     * @throws DapsEmptyResponseException Exception while getting DAT from DAPS.
-     * @throws IOException Exception while getting DAT from DAPS.
-     * @throws MultipartParseException Exception while parsing the response.
-     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
+     * @throws NoTemplateProvidedException If no internal template can be found for the message.
      */
-    MessageContainer<?> fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
-                                   QueryTarget queryTarget)
+    MessageContainer<String> fullTextSearchBroker(URI brokerURI,
+                                                  String searchTerm,
+                                                  QueryScope queryScope,
+                                                  QueryTarget queryTarget)
             throws
             DapsTokenManagerException,
             IOException,
@@ -174,7 +260,9 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException;
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 
     /**
      * Do a FullText Query on the Broker with custom limit and offset.
@@ -186,15 +274,25 @@ public interface IDSBrokerService {
      * @param limit Custom limit used in the query.
      * @param offset Custom offset used in the query.
      * @return The query result from the Broker.
-     * @throws ConnectorMissingCertExtensionException Exception while getting DAT from DAPS.
-     * @throws DapsConnectionException Exception while getting DAT from DAPS.
-     * @throws DapsEmptyResponseException Exception while getting DAT from DAPS.
-     * @throws IOException Exception while getting DAT from DAPS.
-     * @throws MultipartParseException Exception while parsing the response.
-     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
+     * @throws NoTemplateProvidedException If no internal template can be found for the message.
      */
-    MessageContainer<?> fullTextSearchBroker(URI brokerURI, String searchTerm, QueryScope queryScope,
-                                   QueryTarget queryTarget, int limit, int offset)
+    MessageContainer<String> fullTextSearchBroker(URI brokerURI,
+                                                  String searchTerm,
+                                                  QueryScope queryScope,
+                                                  QueryTarget queryTarget,
+                                                  int limit,
+                                                  int offset)
             throws
             DapsTokenManagerException,
             IOException,
@@ -205,5 +303,7 @@ public interface IDSBrokerService {
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException;
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException;
 }

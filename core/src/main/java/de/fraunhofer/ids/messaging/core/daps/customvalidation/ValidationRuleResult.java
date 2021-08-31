@@ -24,13 +24,20 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class ValidationRuleResult {
 
+    /**
+     * True if validation was successful.
+     */
     private boolean success;
+
+    /**
+     * The ValidationRuleResult message.
+     */
     private String message;
 
     /**
      * Create a successResult.
      *
-     * @return CustomRuleResult with success flag set to true
+     * @return CustomRuleResult with success flag set to true.
      */
     public static ValidationRuleResult success() {
         return new ValidationRuleResult(true, "");
@@ -39,8 +46,8 @@ public class ValidationRuleResult {
     /**
      * Create a failureResult with an error Message.
      *
-     * @param message error message (information why validation failed)
-     * @return CustomRuleResult with success flag set to false
+     * @param message Error message (information why validation failed).
+     * @return CustomRuleResult with success flag set to false.
      */
     public static ValidationRuleResult failure(@NonNull final String message) {
         return new ValidationRuleResult(false, message);

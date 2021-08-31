@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.Key;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
@@ -32,6 +34,8 @@ import io.jsonwebtoken.Jwts;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -42,22 +46,62 @@ import org.springframework.stereotype.Service;
 
 /**
  * Get Daps Tokens and Daps Public Key from specified URLs.
- * Spring Component Wrapper for TokenManagerService
+ * Spring Component Wrapper for TokenManagerService.
  */
 @Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
-    final ClientProvider      clientProvider;
-    final TokenManagerService tokenManagerService;
+
+    /**
+     * The ClientProvider.
+     */
+    private final ClientProvider clientProvider;
+
+    /**
+     * The TokenManagerService.
+     */
+    private final TokenManagerService tokenManagerService;
+
+    /**
+     * The ConfigContainer.
+     */
+    private final ConfigContainer configContainer;
 
     String      currentJwt;
 
-    @Value("${daps.token.url}")
-    String dapsTokenUrl;
+    /**
+     * The public keys.
+     */
+    private List<Key> publicKeys;
 
+    /**
+     * The DAPS token URL.
+     */
+    @Value("${daps.token.url}")
+    private String dapsTokenUrl;
+
+    /**
+     * The Daps key url kid.
+     */
     @Value("#{${daps.key.url.kid}}")
-    Map<String, String> urlKidMap;
+    private Map<String, String> urlKidMap;
+
+    /**
+     * Constructor for TokenProviderService.
+     *
+     * @param clientProvider The ClientProvider.
+     * @param tokenManagerService The TokenManagerService.
+     * @param configContainer The ConfigContainer.
+     */
+    @Autowired
+    public TokenProviderService(final ClientProvider clientProvider,
+                                final TokenManagerService tokenManagerService,
+                                final ConfigContainer configContainer) {
+        this.clientProvider = clientProvider;
+        this.tokenManagerService = tokenManagerService;
+        this.configContainer = configContainer;
+    }
 
     @SuppressWarnings("FieldMayBeFinal")
     Map<String, Key> publicKeyMap;
@@ -77,11 +121,14 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * Return the DAT as a Infomodel {@link DynamicAttributeToken}.
      *
-     * @return acquire a new DAPS Token and return it as a {@link DynamicAttributeToken}
+     * @return Acquire a new DAPS Token and return it as a {@link DynamicAttributeToken}.
      */
     @Override
     public DynamicAttributeToken getDAT()
-            throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException {
         return new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)
                 ._tokenValue_(provideDapsToken())
@@ -91,14 +138,17 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * Return the DAT as JWT String.
      *
-     * @return acquire a new DAPS Token and return the JWT String value
+     * @return Acquire a new DAPS Token and return the JWT String value.
      */
     @Override
     public String provideDapsToken()
-            throws ConnectorMissingCertExtensionException, DapsConnectionException, DapsEmptyResponseException {
+            throws
+            ConnectorMissingCertExtensionException,
+            DapsConnectionException,
+            DapsEmptyResponseException {
         if (this.currentJwt == null || isExpired(currentJwt)) {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Get a new DAT Token from %s", dapsTokenUrl));
+                log.debug("Requesting a new DAT Token from DAPS! [url=({})]", dapsTokenUrl);
             }
 
             currentJwt = tokenManagerService.acquireToken(dapsTokenUrl);
@@ -110,7 +160,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * Return the Public Key from the DAPS JWKS.
      *
-     * @return the Public Key from the DAPS (used for validating Tokens of incoming Messages)
+     * @return The Public Key from the DAPS (used for validating Tokens of incoming Messages).
      */
     @Override
     public Set<Key> providePublicKeys() {
@@ -199,7 +249,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug(String.format("Getting json web keyset from %s", entry.getKey()));
+                    log.debug("Getting json web keyset. [key=({})]", entry.getKey());
                 }
 
                 final var request = new Request.Builder().url(entry.getKey()).build();
@@ -207,7 +257,8 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                 final var keySetJSON = Objects.requireNonNull(response.body()).string();
                 final var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
                 final var jsonWebKey =
-                        jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(entry.getValue()))
+                        jsonWebKeySet.getJsonWebKeys().stream()
+                                     .filter(k -> k.getKeyId().equals(entry.getValue()))
                                      .findAny()
                                      .orElse(null);
 
@@ -215,26 +266,27 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                     this.publicKeyMap.put(String.format("%s:%s", entry.getKey(), entry.getValue()), jsonWebKey.getKey());
                 } else {
                     if (log.isWarnEnabled()) {
-                        log.warn("Could not get JsonWebKey with kid " + entry.getValue() + " from received KeySet! PublicKey is null!");
+                        log.warn("Could not get JsonWebKey from received KeySet! PublicKey is null!"
+                                 + "[kid=({})]", entry.getValue());
                     }
                 }
             } catch (IOException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not get key from " + entry.getKey() + "!");
-                    log.warn(e.getMessage(), e);
+                    log.warn("Could not load the key. [key=({}), exception=({})]", entry.getKey(),
+                             e.getMessage());
                 }
             } catch (JoseException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not create JsonWebKeySet from response!");
-                    log.warn(e.getMessage(), e);
+                    log.warn("Could not create JsonWebKeySet from response! [exception=({})]",
+                             e.getMessage());
                 }
             }
         }
     }
 
     /**
-     * @param jwt the jwt to check expiration
-     * @return true if jwt expired
+     * @param jwt The jwt to check expiration.
+     * @return True if jwt expired.
      */
     private boolean isExpired(final String jwt) {
         var noSigJwt = jwt.substring(0, jwt.lastIndexOf('.') + 1);

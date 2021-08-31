@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,17 +34,18 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'app'.
  *
  * @param <T> Type of expected Payload.
  */
-public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, AppRequestBuilder<T>> {
+public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
+        ExecutableBuilder<T>,
+        SupportsMultipart<T, AppRequestBuilder<T>> {
 
+    /**
+     * URI of the requested APP.
+     */
     private URI affectedApp;
 
     AppRequestBuilder(
@@ -84,8 +89,8 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     /**
      * Set the operation to DELETE: describes an {@link de.fraunhofer.iais.eis.AppDeleteMessage}.
      *
-     * @param affectedApp affected app id for message header
-     * @return this builder instance
+     * @param affectedApp Affected app id for message header.
+     * @return This builder instance.
      */
     public AppRequestBuilder<T> operationDelete(final URI affectedApp) {
         operation = Crud.DELETE;
@@ -94,10 +99,11 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     }
 
     /**
-     * Set the operation to DISABLE: describes an {@link de.fraunhofer.iais.eis.AppUnavailableMessage}.
+     * Set the operation to DISABLE: describes an
+     * {@link de.fraunhofer.iais.eis.AppUnavailableMessage}.
      *
-     * @param affectedApp affected app id for message header
-     * @return this builder instance
+     * @param affectedApp Affected app id for message header.
+     * @return This builder instance.
      */
     public AppRequestBuilder<T> operationUnavailable(final URI affectedApp) {
         operation = Crud.DISABLE;
@@ -106,10 +112,11 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
     }
 
     /**
-     * Set the operation to REGISTER: describes an {@link de.fraunhofer.iais.eis.AppRegistrationRequestMessage}.
+     * Set the operation to REGISTER: describes an
+     * {@link de.fraunhofer.iais.eis.AppRegistrationRequestMessage}.
      *
-     * @param affectedApp affected app id for message header
-     * @return this builder instance
+     * @param affectedApp Affected app id for message header.
+     * @return This builder instance.
      */
     public AppRequestBuilder<T> operationRegistration(final URI affectedApp) {
         operation = Crud.REGISTER;
@@ -133,6 +140,14 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -141,19 +156,19 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements Execut
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
+                        final var updateMessage = notificationTemplateProvider
                                 .appAvailableMessageTemplate(affectedApp).buildMessage();
                         return sendMultipart(target, updateMessage);
                     case DELETE:
-                        var deleteMessage = notificationTemplateProvider
+                        final var deleteMessage = notificationTemplateProvider
                                 .appDeleteMessageTemplate(affectedApp).buildMessage();
                         return sendMultipart(target, deleteMessage);
                     case DISABLE:
-                        var disableMessage = notificationTemplateProvider
+                        final var disableMessage = notificationTemplateProvider
                                 .appUnavailableMessageTemplate(affectedApp).buildMessage();
                         return sendMultipart(target, disableMessage);
                     case REGISTER:
-                        var registerMessage = requestTemplateProvider
+                        final var registerMessage = requestTemplateProvider
                                 .appRegistrationRequestMessageTemplate(affectedApp).buildMessage();
                         return sendMultipart(target, registerMessage);
                     default:

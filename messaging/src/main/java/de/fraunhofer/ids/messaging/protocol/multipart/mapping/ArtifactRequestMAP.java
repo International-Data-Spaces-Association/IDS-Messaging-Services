@@ -22,19 +22,30 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 
+/**
+ * MAP representing the ArtifactRequestMessage.
+ */
 @AllArgsConstructor
 public class ArtifactRequestMAP implements MessageAndPayload<ArtifactRequestMessage, Void> {
 
+    /**
+     * The ArtifactRequestMessage.
+     */
     @Getter
     @NonNull
     private final ArtifactRequestMessage message;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return null;

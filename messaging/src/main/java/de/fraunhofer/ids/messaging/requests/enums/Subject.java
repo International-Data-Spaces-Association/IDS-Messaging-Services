@@ -13,25 +13,108 @@
  */
 package de.fraunhofer.ids.messaging.requests.enums;
 
+/**
+ * All possible subject for the internal builders.
+ */
 public enum Subject {
+
+    /**
+     * Subject: CONNECTOR.
+     */
     CONNECTOR,
+
+    /**
+     * Subject: RESOURCE.
+     */
     RESOURCE,
+
+    /**
+     * Subject: CONTRACT.
+     */
     CONTRACT,
+
+    /**
+     * Subject: ARTIFACT.
+     */
     ARTIFACT,
+
+    /**
+     * Subject: TOKEN.
+     */
     TOKEN,
+
+    /**
+     * Subject: QUERY.
+     */
     QUERY,
+
+    /**
+     * Subject: DESCRIPTION.
+     */
     DESCRIPTION,
+
+    /**
+     * Subject: DATA.
+     */
     DATA,
+
+    /**
+     * Subject: APP.
+     */
     APP,
+
+    /**
+     * Subject: APP_RESOURCE.
+     */
     APP_RESOURCE,
+
+    /**
+     * Subject: ACCESS_TOKEN.
+     */
     ACCESS_TOKEN,
+
+    /**
+     * Subject: CONTRACT_AGREEMENT.
+     */
     CONTRACT_AGREEMENT,
+
+    /**
+     * Subject: QUERY_RESULT.
+     */
     QUERY_RESULT,
+
+    /**
+     * Subject: REJECTION.
+     */
     REJECTION,
+
+    /**
+     * Subject: PARTICIPANT.
+     */
     PARTICIPANT,
+
+    /**
+     * Subject: CONTRACT_REJECTION.
+     */
     CONTRACT_REJECTION,
+
+    /**
+     * Subject: OK.
+     */
     OK,
+
+    /**
+     * Subject: LOG.
+     */
     LOG,
+
+    /**
+     * Subject: CONTRACT_OFFER.
+     */
     CONTRACT_OFFER,
+
+    /**
+     * Subject: CONTRACT_SUPPLEMENT.
+     */
     CONTRACT_SUPPLEMENT
 }

@@ -27,10 +27,8 @@ import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -39,39 +37,51 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 @AllArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ErrorResponse implements MessageResponse {
+    /**
+     * The message (RejectionMessage).
+     */
+    private final RejectionMessage rejectionMessage;
 
-    RejectionMessage rejectionMessage;
-    String           errorMessage;
+    /**
+     * The error message.
+     */
+    private final String  errorMessage;
 
     /**
      * Create an ErrorResponse with a RejectionMessage header and errorReason String payload.
      *
-     * @param rejectionMessage a RejectionMessage
-     * @param errorReason      a detailed Error description
+     * @param rejectionMessage A RejectionMessage.
+     * @param errorReason A detailed Error description.
      *
-     * @return an instance of ErrorResponse with the given parameters
+     * @return An instance of ErrorResponse with the given parameters.
      */
-    public static ErrorResponse create(final RejectionMessage rejectionMessage, final String errorReason) {
+    public static ErrorResponse create(final RejectionMessage rejectionMessage,
+                                       final String errorReason) {
         return new ErrorResponse(rejectionMessage, errorReason);
     }
 
     /**
-     * Create an ErrorResponse with Default RejectionMessage as header (only RejectionReason has to be Provided).
+     * Create an ErrorResponse with Default RejectionMessage as header
+     * (only RejectionReason has to be Provided).
      *
-     * @param rejectionReason RejectionReason (why the message was rejected)
-     * @param errorMessage    detailed error description
-     * @param connectorId     id of the current connector
-     * @param modelVersion    infomodelversion of the current connector
-     * @param messageId       id of the message being rejected (from message-header)
-     * @return an instance of ErrorResponse with the given parameters
+     * @param rejectionReason RejectionReason (why the message was rejected).
+     * @param errorMessage Detailed error description.
+     * @param connectorId ID of the current connector.
+     * @param modelVersion Infomodelversion of the current connector.
+     * @param messageId ID of the message being rejected (from message-header).
+     * @return An instance of ErrorResponse with the given parameters.
      */
-    public static ErrorResponse withDefaultHeader(final RejectionReason rejectionReason, final String errorMessage,
-                                                  final URI connectorId, final String modelVersion,
-                                                  URI messageId) {
+    public static ErrorResponse withDefaultHeader(
+            final RejectionReason rejectionReason,
+            final String errorMessage,
+            final URI connectorId,
+            final String modelVersion,
+            final URI messageId) {
+
+        var builderMessageId = messageId;
         if (messageId == null) {
-            messageId = URI.create("https://INVALID");
+            builderMessageId = URI.create("https://INVALID");
         }
 
         final var rejectionMessage = new RejectionMessageBuilder()
@@ -80,7 +90,7 @@ public class ErrorResponse implements MessageResponse {
                                 ._tokenFormat_(TokenFormat.JWT)
                                 ._tokenValue_("rejected!")
                                 .build())
-                ._correlationMessage_(messageId)
+                ._correlationMessage_(builderMessageId)
                 ._senderAgent_(connectorId)
                 ._issuerConnector_(connectorId)
                 ._modelVersion_(modelVersion)
@@ -92,16 +102,18 @@ public class ErrorResponse implements MessageResponse {
     }
 
     /**
-     * Create an ErrorResponse with Default RejectionMessage as header (only RejectionReason has to be Provided).
+     * Create an ErrorResponse with Default RejectionMessage as header (only RejectionReason
+     * has to be Provided).
      *
-     * @param rejectionReason RejectionReason (why the message was rejected)
-     * @param errorMessage    detailed error description
-     * @param connectorId     id of the current connector
-     * @param modelVersion    infomodelversion of the current connector
-     * @return an instance of ErrorResponse with the given parameters
+     * @param rejectionReason RejectionReason (why the message was rejected).
+     * @param errorMessage Detailed error description.
+     * @param connectorId ID of the current connector.
+     * @param modelVersion Infomodelversion of the current connector.
+     * @return An instance of ErrorResponse with the given parameters.
      */
-    public static ErrorResponse withDefaultHeader(final RejectionReason rejectionReason, final String errorMessage,
-                                                  final URI connectorId, final String modelVersion) {
+    public static ErrorResponse withDefaultHeader(
+            final RejectionReason rejectionReason, final String errorMessage,
+            final URI connectorId, final String modelVersion) {
         return withDefaultHeader(rejectionReason, errorMessage, connectorId, modelVersion, null);
     }
 
@@ -109,7 +121,8 @@ public class ErrorResponse implements MessageResponse {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> createMultipartMap(final Serializer serializer) throws SerializeException {
+    public Map<String, Object> createMultipartMap(final Serializer serializer)
+            throws SerializeException {
         try {
             final var multiMap = new LinkedHashMap<String, Object>();
             multiMap.put(MultipartDatapart.HEADER.toString(),

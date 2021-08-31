@@ -18,27 +18,44 @@ import java.util.Optional;
 import de.fraunhofer.iais.eis.DescriptionResponseMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
+/**
+ * MAP representing the DescriptionResponseMessage.
+ */
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class DescriptionResponseMAP implements MessageAndPayload<DescriptionResponseMessage, String> {
+public class DescriptionResponseMAP
+        implements MessageAndPayload<DescriptionResponseMessage, String> {
 
-    DescriptionResponseMessage message;
-    String payload;
+    /**
+     * The message.
+     */
+    private DescriptionResponseMessage message;
 
+    /**
+     * The payload.
+     */
+    private String payload;
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DescriptionResponseMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<String> getPayload() {
         return Optional.of(payload);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return new SerializedPayload(payload.getBytes(), "application/ld+json");

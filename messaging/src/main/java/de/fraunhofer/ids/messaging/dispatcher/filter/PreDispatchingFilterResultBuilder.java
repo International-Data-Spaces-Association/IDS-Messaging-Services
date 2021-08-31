@@ -13,25 +13,34 @@
  */
 package de.fraunhofer.ids.messaging.dispatcher.filter;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 /**
  * Builder class for PreDispatchingFilterResults.
  */
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PreDispatchingFilterResultBuilder {
-    Throwable error;
-    boolean   success;
-    String    message;
+
+    /**
+     * Possible error to throw if not successful.
+     */
+    private Throwable error;
+
+    /**
+     * True if filter was successful.
+     */
+    private boolean success;
+
+    /**
+     * The message.
+     */
+    private String message;
 
     /**
      * Error message of the PreDispatchingFilter.
      *
-     * @param error the throwable error
-     * @return PreDispatchingFilterResultBuilder
+     * @param error The throwable error.
+     * @return PreDispatchingFilterResultBuilder.
      */
     public PreDispatchingFilterResultBuilder withError(final Throwable error) {
         this.error = error;
@@ -41,8 +50,8 @@ public class PreDispatchingFilterResultBuilder {
     /**
      * Success indicator of the PreDispatchingFilter.
      *
-     * @param success boolean if filter was successfull
-     * @return PreDispatchingFilterResultBuilder
+     * @param success Boolean if filter was successful.
+     * @return PreDispatchingFilterResultBuilder.
      */
     public PreDispatchingFilterResultBuilder withSuccess(final boolean success) {
         this.success = success;
@@ -52,8 +61,8 @@ public class PreDispatchingFilterResultBuilder {
     /**
      * Message of the PreDispatchingFilter.
      *
-     * @param message Message of the PreDispatchingFilter
-     * @return PreDispatchingFilterResultBuilder
+     * @param message Message of the PreDispatchingFilter.
+     * @return PreDispatchingFilterResultBuilder.
      */
     public PreDispatchingFilterResultBuilder withMessage(final String message) {
         this.message = message;
@@ -63,7 +72,7 @@ public class PreDispatchingFilterResultBuilder {
     /**
      * Build the PreDispatchingFilter-Result.
      *
-     * @return The build PreDispatchingFilter-Result
+     * @return The build PreDispatchingFilter-Res.ult
      */
     public PreDispatchingFilterResult build() {
         return new PreDispatchingFilterResult(error, success, message);

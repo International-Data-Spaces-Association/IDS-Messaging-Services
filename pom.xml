@@ -29,10 +29,13 @@
         <module>messaging</module>
         <module>clearinghouse</module>
         <module>broker</module>
+        <module>vocol</module>
+        <module>paris</module>
+        <module>appstore</module>
     </modules>
 
     <properties>
-        <revision>4.2.0.0</revision>
+        <revision>4.3.0</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -52,7 +55,7 @@
     </licenses>
 
     <repositories>
-        <!-- Infomodel -->
+        <!-- Infomodel artifacts repository (java, serializer, interaction) -->
         <repository>
             <id>snapshots</id>
             <name>maven-snapshots</name>
@@ -61,12 +64,56 @@
     </repositories>
 
     <dependencies>
+        <!-- Java Mapping of the IDS Information Model Ontology -->
+        <!-- Infomodel artifact: java -->
+        <dependency>
+            <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
+            <artifactId>java</artifactId>
+            <version>4.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Infomodel artifact: serializer -->
+        <dependency>
+            <groupId>de.fraunhofer.iais.eis.ids</groupId>
+            <artifactId>infomodel-serializer</artifactId>
+            <version>4.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Infomodel artifact: interaction -->
+        <dependency>
+            <groupId>de.fraunhofer.iais.eis.ids</groupId>
+            <artifactId>interaction</artifactId>
+            <version>4.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-compress</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
         <!-- License: Apache License, Version 2.0 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>2.5.2</version>
+            <version>2.5.4</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
@@ -83,6 +130,20 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <!-- License: Apache License, Version 2.0 -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -108,7 +169,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.5.2</version>
+            <version>2.5.4</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -164,7 +225,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>5.3.8</version>
+            <version>5.3.9</version>
             <scope>test</scope>
         </dependency>
 
@@ -173,26 +234,15 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.3.8</version>
+            <version>5.3.9</version>
         </dependency>
 
-        <!-- Java Mapping of the IDS Information Model Ontology -->
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+        <!-- License: Apache License, Version 2.0 -->
         <dependency>
-            <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
-            <artifactId>java</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.fraunhofer.iais.eis.ids</groupId>
-            <artifactId>infomodel-serializer</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.fraunhofer.iais.eis.ids</groupId>
-            <artifactId>interaction</artifactId>
-            <version>4.1.0</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.21</version>
         </dependency>
     </dependencies>
 
@@ -271,12 +321,40 @@
                     </licenseSets>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.45.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>scripts/ci/checkstyle.xml</configLocation>
+                    <encoding>UTF-8</encoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failOnViolation>true</failOnViolation>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
+            <id>no-tests</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+        <profile>
             <id>release</id>
+            <properties>
+                <!-- Force override profile "no-tests" -->
+                <maven.test.skip>false</maven.test.skip>
+            </properties>
             <distributionManagement>
                 <repository>
                     <id>isst-nexus-public</id>

@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.ids.messaging.common.DeserializeException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -30,16 +34,14 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'contract supplement'.
  *
  * @param <T> Type of expected Payload.
  */
-public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, ContractSupplementRequestBuilder<T>> {
+public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>,
+        SupportsMultipart<T, ContractSupplementRequestBuilder<T>> {
 
     ContractSupplementRequestBuilder(
             final Class<T> expected,
@@ -68,9 +70,10 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
     }
 
     /**
-     * Set the operation to UPDATE: describes a {@link de.fraunhofer.iais.eis.ContractSupplementMessage}.
+     * Set the operation to UPDATE: describes a
+     * {@link de.fraunhofer.iais.eis.ContractSupplementMessage}.
      *
-     * @return this builder instance
+     * @return This builder instance.
      */
     private ContractSupplementRequestBuilder<T> operationUpdate() {
         this.operation = Crud.UPDATE;
@@ -93,6 +96,14 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
             DeserializeException,
             RejectionException,
             UnexpectedPayloadException {
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -101,7 +112,7 @@ public class ContractSupplementRequestBuilder<T> extends IdsRequestBuilder<T> im
             case MULTIPART:
                 switch (operation) {
                     case UPDATE:
-                        var updateMessage = notificationTemplateProvider
+                        final var updateMessage = notificationTemplateProvider
                                 .contractSupplementMessageTemplate().buildMessage();
                         return sendMultipart(target, updateMessage);
                     default:

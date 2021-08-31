@@ -29,16 +29,15 @@ import de.fraunhofer.iais.eis.RejectionMessageBuilder;
 import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.common.SerializeException;
-import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
+import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.dispatcher.MessageDispatcher;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
+import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,13 +50,35 @@ import org.springframework.util.MultiValueMap;
  */
 @Slf4j
 @Controller
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessageController {
 
-    MessageDispatcher messageDispatcher;
-    ConfigContainer   configContainer;
-    Serializer        serializer;
+    /**
+     * The MessageDispatcher.
+     */
+    private final MessageDispatcher messageDispatcher;
 
+    /**
+     * The ConfigContainer.
+     */
+    private final ConfigContainer configContainer;
+
+    /**
+     * The infomodel serializer.
+     */
+    private final Serializer serializer;
+
+    /**
+     * Used to switch incoming infomodel version compatibility check off or on (default on).
+     */
+    @Value("#{new Boolean('${infomodel.compatibility.validation:true}')}")
+    private Boolean validateInfVer;
+
+    /**
+     * Constructor for the MessageController.
+     * @param messageDispatcher The MessageDispatcher.
+     * @param serializer The infomodel serializer.
+     * @param configContainer The ConfigContainer.
+     */
     @Autowired
     public MessageController(final MessageDispatcher messageDispatcher,
                              final Serializer serializer,
@@ -69,60 +90,85 @@ public class MessageController {
 
     /**
      * Generic method to handle all incoming ids messages. One Method to Rule them All.
-     * Get header and payload from incoming message, let the MessageDispatcher and MessageHandler process it
-     * and return the result as a Multipart response.
+     * Get header and payload from incoming message, let the MessageDispatcher and
+     * MessageHandler process it and return the result as a Multipart response.
      *
-     * @param request incoming http request
-     * @return multipart MultivalueMap containing ResponseMessage header and some payload
+     * @param request Incoming http request.
+     * @return Multipart MultivalueMap containing ResponseMessage header and some payload.
      */
-    public ResponseEntity<MultiValueMap<String, Object>> handleIDSMessage(final HttpServletRequest request) {
+    public ResponseEntity<MultiValueMap<String, Object>> handleIDSMessage(
+            final HttpServletRequest request) {
         try {
-            final var headerPart = request.getPart(MultipartDatapart.HEADER.toString());
-            final var payloadPart = request.getPart(MultipartDatapart.PAYLOAD.toString());
+            if (log.isInfoEnabled()) {
+                log.info("Received incoming message.");
+            }
+
+            final var headerPart =
+                    request.getPart(MultipartDatapart.HEADER.toString());
+            final var payloadPart =
+                    request.getPart(MultipartDatapart.PAYLOAD.toString());
 
             if (headerPart == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("header of incoming message were empty!");
+                    log.debug("Header of incoming message were empty!");
                 }
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                     .body(createDefaultErrorMessage(RejectionReason.MALFORMED_MESSAGE,
-                                                                     "Header was missing!"));
+                                     .body(createDefaultErrorMessage(
+                                             RejectionReason.MALFORMED_MESSAGE,
+                                             "Header was missing!"));
             }
 
             String input;
 
             if (log.isDebugEnabled()) {
-                log.debug("parsing header of incoming message");
+                log.debug("Parsing header of incoming message.");
             }
 
-            try (var scanner = new Scanner(headerPart.getInputStream(), StandardCharsets.UTF_8.name())) {
+            try (var scanner = new Scanner(headerPart.getInputStream(),
+                                           StandardCharsets.UTF_8.name())) {
                 input = scanner.useDelimiter("\\A").next();
             }
 
-            if (!checkInboundVersion(input)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(createDefaultErrorMessage(RejectionReason.VERSION_NOT_SUPPORTED, "Infomodel Version of incoming Message not supported"));
+            if (!validateInfomodelVersion(input)) {
+                final var errorMessage = "Infomodel Version of incoming Message not supported!";
+
+                if (log.isWarnEnabled()) {
+                    log.warn("Infomodel model-version validation of received messages is switched"
+                             + " on. Model-version of incoming message not supported."
+                             + " Sending BAD_REQUEST response as a result."
+                             + " [response-message=({})]", errorMessage);
+                }
+
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(createDefaultErrorMessage(
+                                RejectionReason.VERSION_NOT_SUPPORTED,
+                                errorMessage));
             }
 
             // Deserialize JSON-LD headerPart to its RequestMessage.class
             final var requestHeader = serializer.deserialize(input, Message.class);
 
             if (log.isDebugEnabled()) {
-                log.debug("hand the incoming message to the message dispatcher!");
+                log.debug("Hand the incoming message to the message dispatcher!");
             }
 
-            final var response = this.messageDispatcher.process(requestHeader,
-                                                                payloadPart == null ? null : payloadPart
-                                                                        .getInputStream()); //pass null if payloadPart is null, else pass it as inputStream
+            //pass null if payloadPart is null, else pass it as inputStream
+            final var response = this.messageDispatcher
+                    .process(requestHeader, payloadPart == null
+                            ? null
+                            : payloadPart.getInputStream());
 
             if (response != null) {
                 //get Response as MultiValueMap
-                final var responseAsMap = createMultiValueMap(response.createMultipartMap(serializer));
+                final var responseAsMap = createMultiValueMap(
+                        response.createMultipartMap(serializer));
 
-                // return the ResponseEntity as Multipart content with created MultiValueMap
-                if (log.isDebugEnabled()) {
-                    log.debug("sending response with status OK (200)");
+                // return the ResponseEntity as Multipart content
+                // with created MultiValueMap
+                if (log.isInfoEnabled()) {
+                    log.info("Sending response with status OK (200).");
                 }
 
                 return ResponseEntity
@@ -130,10 +176,16 @@ public class MessageController {
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .body(responseAsMap);
             } else {
-                //if no response-body specified by the implemented handler of the connector (e.g. for received RequestInProcessMessage)
+                //if no response-body specified by the implemented handler
+                // of the connector (e.g. for received RequestInProcessMessage)
 
-                if (log.isWarnEnabled()) {
-                    log.warn("Implemented Message-Handler didn't return a response!");
+                if (log.isDebugEnabled()) {
+                    log.debug("Implemented Message-Handler didn't return a response,"
+                              + " sending status OK instead as response!");
+                }
+
+                if (log.isInfoEnabled()) {
+                    log.info("Sending response with status OK (200) without body.");
                 }
 
                 return ResponseEntity
@@ -142,42 +194,74 @@ public class MessageController {
             }
         } catch (PreDispatchingFilterException e) {
             if (log.isErrorEnabled()) {
-                log.error("Error during pre-processing with a PreDispatchingFilter! " + e.getMessage());
+                log.error("Error during pre-processing with a PreDispatchingFilter!"
+                          + " Sending BAD_REQUEST as response."
+                          + " [exception=({})]", e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                 .body(createDefaultErrorMessage(RejectionReason.BAD_PARAMETERS,
-                                                                 String.format("Error during preprocessing: %s",
-                                                                               e.getMessage())));
+                                 .body(createDefaultErrorMessage(
+                                     RejectionReason.BAD_PARAMETERS,
+                                     String.format(
+                                         "Error during preprocessing: %s", e.getMessage())));
         } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
-                log.warn("incoming message could not be parsed!");
-                log.warn(e.getMessage(), e);
+                log.warn("Incoming message could not be parsed, sending response BAD_REQUEST"
+                         + " with RejectionReason.MALFORMED_MESSAGE! [exception=({})]",
+                         e.getMessage());
             }
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                 .body(createDefaultErrorMessage(RejectionReason.MALFORMED_MESSAGE,
-                                                                 "Could not parse incoming message!"));
+                                 .body(createDefaultErrorMessage(
+                                         RejectionReason.MALFORMED_MESSAGE,
+                                         "Could not parse incoming message!"));
         } catch (ServletException e) {
             if (log.isWarnEnabled()) {
-                log.warn("incoming request was not multipart!");
-                log.warn(e.getMessage(), e);
+                log.warn("Incoming request was not multipart!"
+                         + " Sending INTERNAL_SERVER_ERROR as response [exception=({})]",
+                         e.getMessage());
             }
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(createDefaultErrorMessage(RejectionReason.INTERNAL_RECIPIENT_ERROR,
-                                                                 String.format(
-                                                                         "Could not read incoming request! Error: %s",
-                                                                         e.getMessage())));
+            return ResponseEntity
+                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                         .body(createDefaultErrorMessage(
+                             RejectionReason.INTERNAL_RECIPIENT_ERROR,
+                             String.format(
+                                 "Could not read incoming request! Error: %s", e.getMessage())));
         }
+    }
+
+    /**
+     * Decides whether to run the infomodel compatibility check and if so, whether the
+     * incoming message is compatible.
+     *
+     * @param input The received message.
+     * @return True if compatible or no validation to be performed, false otherwise.
+     * @throws IOException No model version information found in the header.
+     */
+    private boolean validateInfomodelVersion(final String input) throws IOException {
+        if (validateInfVer && !checkInboundVersion(input)) {
+            return false;
+        } else if (!validateInfVer) {
+            if (log.isDebugEnabled()) {
+                log.debug("Skipped validating infomodel compability!");
+            }
+        } else {
+            if (log.isInfoEnabled()) {
+                log.info("Successfully validated infomodel compability.");
+            }
+        }
+
+        return true;
     }
 
     /**
      * Create a Spring {@link MultiValueMap} from a {@link java.util.Map}.
      *
-     * @param map a map as provided by the MessageResponse
-     * @return a MultiValueMap used as ResponseEntity for Spring
+     * @param map A map as provided by the MessageResponse.
+     * @return A MultiValueMap used as ResponseEntity for Spring.
      */
-    private MultiValueMap<String, Object> createMultiValueMap(final Map<String, Object> map) {
+    private MultiValueMap<String, Object> createMultiValueMap(
+            final Map<String, Object> map) {
         if (log.isDebugEnabled()) {
             log.debug("Creating MultiValueMap for the response");
         }
@@ -192,14 +276,17 @@ public class MessageController {
     }
 
     /**
-     * Create a default RejectionMessage with a given RejectionReason and specific error message for the payload.
+     * Create a default RejectionMessage with a given RejectionReason
+     * and specific error message for the payload.
      *
-     * @param rejectionReason reason why the message was rejected
-     * @param errorMessage    a specific error message for the payload
-     * @return MultiValueMap with given error information that can be used for a multipart response
+     * @param rejectionReason Reason why the message was rejected.
+     * @param errorMessage A specific error message for the payload.
+     * @return MultiValueMap with given error information that can
+     * be used for a multipart response.
      */
-    private MultiValueMap<String, Object> createDefaultErrorMessage(final RejectionReason rejectionReason,
-                                                                    final String errorMessage) {
+    private MultiValueMap<String, Object> createDefaultErrorMessage(
+            final RejectionReason rejectionReason,
+            final String errorMessage) {
         try {
             final var rejectionMessage = new RejectionMessageBuilder()
                     ._securityToken_(
@@ -209,40 +296,46 @@ public class MessageController {
                                     .build())
                     ._correlationMessage_(URI.create("https://INVALID"))
                     ._senderAgent_(configContainer.getConnector().getId())
-                    ._modelVersion_(configContainer.getConnector().getOutboundModelVersion())
+                    ._modelVersion_(configContainer.getConnector()
+                                                   .getOutboundModelVersion())
                     ._rejectionReason_(rejectionReason)
                     ._issuerConnector_(configContainer.getConnector().getId())
                     ._issued_(IdsMessageUtils.getGregorianNow())
                     .build();
 
             final var multiMap = new LinkedMultiValueMap<String, Object>();
-            multiMap.put(MultipartDatapart.HEADER.toString(), List.of(serializer.serialize(rejectionMessage)));
-            multiMap.put(MultipartDatapart.PAYLOAD.toString(), List.of(errorMessage));
+            multiMap.put(MultipartDatapart.HEADER.toString(),
+                         List.of(serializer.serialize(rejectionMessage)));
+            multiMap.put(MultipartDatapart.PAYLOAD.toString(),
+                         List.of(errorMessage));
 
             return multiMap;
         } catch (IOException e) {
-            if (log.isInfoEnabled()) {
-                log.info(e.getMessage(), e);
+            if (log.isErrorEnabled()) {
+                log.error("Serializer threw exception while creating default rejection message!"
+                          + " [exception=({})]", e.getMessage());
             }
             return null;
         }
     }
 
     /**
-     * @param input controllers header input as string
-     * @return true if infomodel version is supported
-     * @throws IOException if no infomodel version is found in input
+     * @param input Controllers header input as string.
+     * @return True if infomodel version is supported.
+     * @throws IOException If no infomodel version is found in input.
      */
     private boolean checkInboundVersion(final String input) throws IOException {
         final var jsonInput = new ObjectMapper().readTree(input);
 
         if (jsonInput.has("ids:modelVersion")) {
-            final var inputVersion = jsonInput.get("ids:modelVersion").textValue();
+            final var inputVersion = jsonInput.get("ids:modelVersion")
+                                              .textValue();
             final var inboundList = configContainer.getConfigurationModel()
                     .getConnectorDescription()
                     .getInboundModelVersion();
                     return inboundList.stream()
-                            .map(supportedVersion -> checkInfomodelContainment(inputVersion, supportedVersion))
+                            .map(supportedVersion -> checkInfomodelContainment(
+                                inputVersion, supportedVersion))
                             .reduce(Boolean::logicalOr)
                             .orElse(false);
         } else {
@@ -251,11 +344,12 @@ public class MessageController {
     }
 
     /**
-     * @param input input infomodel version (eg 4.0.1)
-     * @param accepted accepted infomodel version (eg 4.0.2, supports wildcards eg 4.*.*)
-     * @return true if infomodel input is covered by accepted input
+     * @param input Input infomodel version (eg 4.0.1).
+     * @param accepted Accepted infomodel version (eg 4.0.2, supports wildcards eg 4.*.*).
+     * @return True if infomodel input is covered by accepted input.
      */
-    private boolean checkInfomodelContainment(final String input, final String accepted) {
+    private boolean checkInfomodelContainment(final String input,
+                                              final String accepted) {
         if (input.equals(accepted))  {
             return true;
         }
@@ -268,7 +362,8 @@ public class MessageController {
         }
 
         for (var i = 0; i < inputSplit.length; i++) {
-           if (!inputSplit[i].equals(acceptedSplit[i]) && !"*".equals(acceptedSplit[i])) {
+           if (!inputSplit[i].equals(acceptedSplit[i])
+               && !"*".equals(acceptedSplit[i])) {
                return false;
            }
         }

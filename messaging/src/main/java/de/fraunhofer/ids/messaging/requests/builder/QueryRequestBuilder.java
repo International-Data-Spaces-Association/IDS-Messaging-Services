@@ -13,6 +13,10 @@
  */
 package de.fraunhofer.ids.messaging.requests.builder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import de.fraunhofer.iais.eis.QueryLanguage;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
@@ -33,19 +37,27 @@ import de.fraunhofer.ids.messaging.requests.enums.ProtocolType;
 import de.fraunhofer.ids.messaging.requests.exceptions.RejectionException;
 import de.fraunhofer.ids.messaging.requests.exceptions.UnexpectedPayloadException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
 /**
  * RequestBuilder for messages with subject 'query'.
  *
  * @param <T> Type of expected Payload.
  */
-public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements ExecutableBuilder<T>, SupportsMultipart<T, QueryRequestBuilder<T>> {
+public class QueryRequestBuilder<T> extends IdsRequestBuilder<T>
+        implements ExecutableBuilder<T>, SupportsMultipart<T, QueryRequestBuilder<T>> {
 
+    /**
+     * The query language (sparql, xquery..).
+     */
     private QueryLanguage queryLanguage;
+
+    /**
+     * The query scope (active, inactive, all).
+     */
     private QueryScope queryScope;
+
+    /**
+     * The query target (all, broker..).
+     */
     private QueryTarget queryTarget;
 
     QueryRequestBuilder(
@@ -77,10 +89,12 @@ public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements Exec
     /**
      * Set the operation to RECEIVE: describes a {@link de.fraunhofer.iais.eis.QueryMessage}.
      *
-     * @param queryLanguage the Language of the Query (e.g. SPARQL, SQL, XQUERY). See {@link QueryLanguage}
-     * @param queryScope    the Scope of the Query (ALL connectors, ACTIVE connectors, INACTIVE connectors). See {@link QueryScope}
-     * @param queryTarget   the type of IDS Components that are queried. See {@link QueryTarget}
-     * @return this builder instance
+     * @param queryLanguage The Language of the Query (e.g. SPARQL, SQL, XQUERY).
+     *                      See {@link QueryLanguage}
+     * @param queryScope The Scope of the Query (ALL connectors, ACTIVE connectors,
+     *                      INACTIVE connectors). See {@link QueryScope}.
+     * @param queryTarget The type of IDS Components that are queried. See {@link QueryTarget}.
+     * @return This builder instance.
      */
     public QueryRequestBuilder<T> operationSend(final QueryLanguage queryLanguage,
                                                 final QueryScope queryScope,
@@ -109,6 +123,14 @@ public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements Exec
             RejectionException,
             UnexpectedPayloadException {
         //send ArtifactRequestMessage with settings:
+        if (protocolType == null || operation == null) {
+            final var errorMessage = String.format(
+                    "Could not send Message, needed Fields are null: %s%s",
+                    protocolType == null ? "protocolType is null! " : "",
+                    operation == null ? "operation is null! " : ""
+            );
+            throw new SendMessageException(errorMessage);
+        }
         switch (protocolType) {
             case IDSCP:
                 throw new UnsupportedOperationException("Not yet implemented Protocol!");
@@ -118,7 +140,7 @@ public class QueryRequestBuilder<T> extends IdsRequestBuilder<T> implements Exec
                 switch (operation) {
                     case RECEIVE:
                         //build and send artifact request message
-                        var message = requestTemplateProvider
+                        final var message = requestTemplateProvider
                                 .queryMessageTemplate(queryLanguage, queryScope, queryTarget)
                                 .buildMessage();
                         return sendMultipart(target, message);

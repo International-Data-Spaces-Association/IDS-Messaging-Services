@@ -18,7 +18,6 @@ import java.net.URI;
 import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.RequestMessageImpl;
 import de.fraunhofer.ids.messaging.handler.message.MessageHandler;
-import de.fraunhofer.ids.messaging.handler.message.MessageHandlerException;
 import de.fraunhofer.ids.messaging.handler.message.MessagePayload;
 import de.fraunhofer.ids.messaging.handler.message.SupportedMessageType;
 import de.fraunhofer.ids.messaging.response.ErrorResponse;
@@ -30,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class RequestMessageHandler implements MessageHandler<RequestMessageImpl> {
     @Override
     public MessageResponse handleMessage( final RequestMessageImpl queryHeader,
-                                          final MessagePayload payload) throws MessageHandlerException {
+                                          final MessagePayload payload) {
         return ErrorResponse.withDefaultHeader(RejectionReason.BAD_PARAMETERS,
                                                "request",
                                                URI.create("http://uri"),

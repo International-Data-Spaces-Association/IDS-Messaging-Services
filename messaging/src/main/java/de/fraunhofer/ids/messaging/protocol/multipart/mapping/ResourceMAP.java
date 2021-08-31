@@ -19,30 +19,53 @@ import de.fraunhofer.iais.eis.Message;
 import de.fraunhofer.iais.eis.Resource;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
+/**
+ * MAP representing the ResourceMAP.
+ */
 public class ResourceMAP implements MessageAndPayload<Message, Resource> {
 
-    final Message  message;
+    /**
+     * The message.
+     */
+    private final Message  message;
 
-    Resource resource;
+    /**
+     * The resource.
+     */
+    private Resource resource;
 
+    /**
+     * Constructor for the ResourceMAP.
+     *
+     * @param m The message.
+     */
     public ResourceMAP(final Message m) {
         this.message = m;
     }
 
+    /**
+     * Constructor for the ResourceMAP.
+     *
+     * @param m The message.
+     * @param r The resource.
+     */
     public ResourceMAP(final Message m, final Resource r) {
         this.message = m;
         resource = r;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Resource> getPayload() {
         if (resource == null) {
@@ -52,6 +75,9 @@ public class ResourceMAP implements MessageAndPayload<Message, Resource> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         if (resource != null) {

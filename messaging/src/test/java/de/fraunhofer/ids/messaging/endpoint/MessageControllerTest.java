@@ -13,7 +13,19 @@
  */
 package de.fraunhofer.ids.messaging.endpoint;
 
-import de.fraunhofer.iais.eis.*;
+import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.fraunhofer.iais.eis.ConfigurationModel;
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
+import de.fraunhofer.iais.eis.NotificationMessageBuilder;
+import de.fraunhofer.iais.eis.RequestMessageBuilder;
+import de.fraunhofer.iais.eis.ResponseMessage;
+import de.fraunhofer.iais.eis.ResponseMessageBuilder;
+import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsTokenProvider;
@@ -22,8 +34,6 @@ import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParser;
 import de.fraunhofer.ids.messaging.response.BodyResponse;
 import de.fraunhofer.ids.messaging.util.IdsMessageUtils;
 import de.fraunhofer.ids.messaging.util.ResourceIDGenerator;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -42,45 +52,39 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @ExtendWith(SpringExtension.class)
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @ContextConfiguration(classes = {MessageController.class, MessageControllerTest.TestContextConfiguration.class})
 class MessageControllerTest {
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    MessageController idsController;
+    private MessageController idsController;
 
     @Autowired
-    RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Autowired
-    Serializer serializer;
+    private Serializer serializer;
 
     @MockBean
-    MessageDispatcher messageDispatcher;
+    private MessageDispatcher messageDispatcher;
 
     @MockBean
-    ConfigContainer configurationContainer;
+    private ConfigContainer configurationContainer;
 
     @MockBean
-    Connector connector;
+    private Connector connector;
 
     @MockBean
     private ConfigurationModel configurationModel;
 
     @MockBean
-    DapsTokenProvider provider;
+    private DapsTokenProvider provider;
 
     @Configuration
     static class TestContextConfiguration{

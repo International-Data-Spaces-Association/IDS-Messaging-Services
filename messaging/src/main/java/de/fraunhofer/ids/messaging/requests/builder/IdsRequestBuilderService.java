@@ -16,9 +16,7 @@ package de.fraunhofer.ids.messaging.requests.builder;
 import de.fraunhofer.ids.messaging.protocol.MessageService;
 import de.fraunhofer.ids.messaging.requests.NotificationTemplateProvider;
 import de.fraunhofer.ids.messaging.requests.RequestTemplateProvider;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,37 +24,48 @@ import org.springframework.stereotype.Service;
  * Service for building and sending ids requests.
  */
 @Slf4j
-@RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
+@RequiredArgsConstructor
 public class IdsRequestBuilderService {
 
     /**
      * {@link MessageService} used for sending messages.
      */
-    MessageService messageService;
-    RequestTemplateProvider requestTemplateProvider;
-    NotificationTemplateProvider notificationTemplateProvider;
+    private final MessageService messageService;
+
+    /**
+     * The RequestTemplateProvider.
+     */
+    private final RequestTemplateProvider requestTemplateProvider;
+
+    /**
+     * The NotificationTemplateProvider.
+     */
+    private final NotificationTemplateProvider notificationTemplateProvider;
 
     /**
      * Get a requestbuilder, expecting no specific payload type.
      *
-     * @return an {@link IdsRequestBuilder} expecting no specific payload type.
+     * @return an {@link IdsRequestBuilder} Expecting no specific payload type.
      */
     public IdsRequestBuilder<Object> newRequest() {
-        return new IdsRequestBuilder<>(null, messageService, requestTemplateProvider, notificationTemplateProvider);
+        return new IdsRequestBuilder<>(null,
+                                       messageService,
+                                       requestTemplateProvider,
+                                       notificationTemplateProvider);
     }
 
     /**
      * Get a requestbuilder, expecting payload of type T.
      *
-     * @param expected expected class of payload object.
-     * @param <T> expected type of payload.
-     * @return an {@link IdsRequestBuilder} expecting payload of type T.
+     * @param expected Expected class of payload object.
+     * @param <T> Expected type of payload.
+     * @return An {@link IdsRequestBuilder} expecting payload of type T.
      */
     public <T> IdsRequestBuilder<T> newRequestExpectingType(final Class<T> expected) {
-        return new IdsRequestBuilder<>(expected, messageService, requestTemplateProvider, notificationTemplateProvider);
+        return new IdsRequestBuilder<>(expected,
+                                       messageService,
+                                       requestTemplateProvider,
+                                       notificationTemplateProvider);
     }
-
-
 }

@@ -26,8 +26,15 @@ import lombok.NoArgsConstructor;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
 
+/**
+ * Class for building multipart requests.
+ */
 @NoArgsConstructor
 public class MultipartRequestBuilder implements RequestBuilder {
+
+    /**
+     * The infomodel serializer.
+     */
     private static final Serializer SERIALIZER = new Serializer();
 
     /**

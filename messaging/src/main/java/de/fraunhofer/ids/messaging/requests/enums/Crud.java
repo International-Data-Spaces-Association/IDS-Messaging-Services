@@ -13,11 +13,37 @@
  */
 package de.fraunhofer.ids.messaging.requests.enums;
 
+/**
+ * All possible CRUD operations within the internal builders.
+ */
 public enum Crud {
+    /**
+     * Operation command.
+     */
     COMMAND,
+
+    /**
+     * Operation receive.
+     */
     RECEIVE,
+
+    /**
+     * Operation disable.
+     */
     DISABLE,
+
+    /**
+     * Operation delete.
+     */
     DELETE,
+
+    /**
+     * Operation update.
+     */
     UPDATE,
+
+    /**
+     * Operation register.
+     */
     REGISTER
 }

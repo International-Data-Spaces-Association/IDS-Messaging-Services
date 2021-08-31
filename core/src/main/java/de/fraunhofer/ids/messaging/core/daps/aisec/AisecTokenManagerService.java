@@ -60,14 +60,29 @@ import static org.apache.commons.codec.binary.Hex.encodeHexString;
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "daps", name = "mode", havingValue = "aisec")
 public class AisecTokenManagerService implements TokenManagerService {
+    /**
+     * Seconds to add to the expiry date.
+     */
     public static final int ONE_DAY_IN_SECONDS  = 86_400;
+
+    /**
+     * Seconds to subtract for the issued at value.
+     */
     public static final int SECONDS_TO_SUBTRACT = 10;
 
+    /**
+     * The ClientProvider.
+     */
     private final ClientProvider  clientProvider;
+
+    /**
+     * The ConfigContainer.
+     */
     private final ConfigContainer configContainer;
 
     /***
-     * Beautyfies Hex strings and will generate a result later used to create the client id (XX:YY:ZZ).
+     * Beautifies Hex strings and will generate a result later used to
+     * create the client id (XX:YY:ZZ).
      *
      * @param hexString HexString to be beautified
      * @return beautifiedHex result
@@ -86,7 +101,10 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     @Override
     public String acquireToken(final String dapsUrl)
-            throws DapsConnectionException, DapsEmptyResponseException, ConnectorMissingCertExtensionException {
+            throws
+            DapsConnectionException,
+            DapsEmptyResponseException,
+            ConnectorMissingCertExtensionException {
 
         final var keyStoreManager = configContainer.getKeyStoreManager();
         final var targetAudience = "idsc:IDS_CONNECTORS_ALL";
@@ -96,14 +114,16 @@ public class AisecTokenManagerService implements TokenManagerService {
         // Try clause for setup phase (loading keys, building trust manager)
         try {
             final var privateKey = getPrivateKey(keyStoreManager);
-            final var connectorUUID = getConnectorUUID(keyStoreManager);
 
-            if (log.isInfoEnabled()) {
-                log.info("ConnectorUUID: " + connectorUUID);
-                log.info("Retrieving Dynamic Attribute Token...");
+            //This is the fingerprint of the connector, not the UUID (can als be called UID).
+            //
+            final var connectorFingerprint = getConnectorFingerprint(keyStoreManager);
+
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieving Dynamic Attribute Token from DAPS...");
             }
 
-            final var jws = getRequestToken(targetAudience, privateKey, connectorUUID);
+            final var jws = getRequestToken(targetAudience, privateKey, connectorFingerprint);
 
             // build form body to embed client assertion into post request
             final var formBody = getFormBody(jws);
@@ -113,19 +133,22 @@ public class AisecTokenManagerService implements TokenManagerService {
             }
 
             final var client = clientProvider.getClient();
-            final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
-            if (log.isInfoEnabled()) {
-                log.info(String.format("Sending request to DAPS: %s", dapsUrl));
+            if (log.isDebugEnabled()) {
+                log.debug("Sending DAT request to DAPS. [url=({})]", dapsUrl);
             }
+            final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
             final var jwtResponse = sendRequestToDAPS(client, request);
             final var responseBody = jwtResponse.body();
             checkEmptyDAPSResponse(responseBody); //can throw exception
 
             final var jwtString = responseBody.string();
-
             dynamicAttributeToken = getDAT(jwtString);
+
+            if (jwtResponse.isSuccessful() && log.isInfoEnabled()) {
+                log.info("Successfully received DAT from DAPS.");
+            }
         } catch (IOException e) {
             handleIOException(e);
         } catch (DapsEmptyResponseException e) {
@@ -140,12 +163,19 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Handle exception if AKI or SKI of Certificate are not valid or missing.
      *
-     * @throws ConnectorMissingCertExtensionException forwarded to the connector developer if AKI or SKI of Certificate are not valid or missing
+     * @throws ConnectorMissingCertExtensionException forwarded to the
+     * connector developer if AKI or SKI of Certificate are not
+     * valid or missing
      */
-    private void handleConnectorMissingCertExtensionException() throws ConnectorMissingCertExtensionException {
-        final var error = "Mandatorily required information of the connector certificate is missing (AKI/SKI)!";
+    private void handleConnectorMissingCertExtensionException()
+            throws ConnectorMissingCertExtensionException {
+        final var error = "Mandatory required information of the connector "
+          + "certificate is missing (AKI/SKI)!"
+          + " Needed to determine the fingerprint of the connector for the DAPS!"
+          + " Possible reason: Are you using a valid connector certificate issued by the DAPS?";
 
-        if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+        if (configContainer.getConfigurationModel().getConnectorDeployMode()
+           != ConnectorDeployMode.TEST_DEPLOYMENT) {
             printProductiveDeploymentError(error);
             throw new ConnectorMissingCertExtensionException(error);
         } else {
@@ -156,13 +186,19 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Handle exception if DAPS returned an empty response.
      *
-     * @param e the thrown excpetion
-     * @throws DapsEmptyResponseException forwarded exception to the connector developer if DAPS returned an empty response
+     * @param e the thrown exception
+     * @throws DapsEmptyResponseException forwarded exception to the connector
+     * developer if DAPS returned an empty response
      */
-    private void handleDapsEmptyResponseException(final DapsEmptyResponseException e) throws DapsEmptyResponseException {
-        final var error = String.format("Unusable answer from DAPS: Possible empty DAPS-Response, something went wrong at DAPS: %s", e.getMessage());
+    private void handleDapsEmptyResponseException(
+            final DapsEmptyResponseException e)
+            throws DapsEmptyResponseException {
+        final var error = String.format("Unusable answer from DAPS: Possible "
+            + "empty DAPS-Response, something went wrong at DAPS: %s",
+            e.getMessage());
 
-        if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+        if (configContainer.getConfigurationModel().getConnectorDeployMode()
+           != ConnectorDeployMode.TEST_DEPLOYMENT) {
             printProductiveDeploymentError(error);
             throw new DapsEmptyResponseException(error);
         } else {
@@ -173,13 +209,16 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Handle exception if connection to DAPS failed.
      *
-     * @param e the thrwon IOException
-     * @throws DapsConnectionException mapped exception, thworn if connection to DAPS failed
+     * @param e the thrown IOException
+     * @throws DapsConnectionException mapped exception, thrown if connection to DAPS failed
      */
     private void handleIOException(final IOException e) throws DapsConnectionException {
-        final var error = String.format("Error connecting to DAPS (possibly currently not reachable or wrong DAPS-URL): %s", e.getMessage());
+        final var error = String.format("Error connecting to DAPS "
+            + "(possibly currently not reachable or wrong DAPS-URL): %s",
+            e.getMessage());
 
-        if (configContainer.getConfigurationModel().getConnectorDeployMode() != ConnectorDeployMode.TEST_DEPLOYMENT) {
+        if (configContainer.getConfigurationModel().getConnectorDeployMode()
+           != ConnectorDeployMode.TEST_DEPLOYMENT) {
             printProductiveDeploymentError(error);
             throw new DapsConnectionException(error);
         } else {
@@ -189,13 +228,17 @@ public class AisecTokenManagerService implements TokenManagerService {
 
     private void printTestDeploymentWarning(final String error) {
         if (log.isWarnEnabled()) {
-            log.warn("TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, will not be send in PRODUCTIVE_DEPLOYMENT, reason: " + error);
+            log.warn(
+                    "TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, "
+                    + "will not be sent in PRODUCTIVE_DEPLOYMENT. [reason=({})]", error);
         }
     }
 
     private void printProductiveDeploymentError(final String error) {
         if (log.isErrorEnabled()) {
-            log.error("PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! No DAT could be loaded from DAPS, reason: " + error);
+            log.error(
+                    "PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! "
+                    + "No DAT could be acquired from DAPS! [reason=({})]", error);
         }
     }
 
@@ -216,7 +259,8 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @param responseBody the response of the DAPS to be checked
      * @throws DapsEmptyResponseException thrown if response of DAPS is empty
      */
-    private void checkEmptyDAPSResponse(final ResponseBody responseBody) throws DapsEmptyResponseException {
+    private void checkEmptyDAPSResponse(final ResponseBody responseBody)
+            throws DapsEmptyResponseException {
         if (responseBody == null) {
             throw new DapsEmptyResponseException("JWT response is null.");
         }
@@ -231,7 +275,9 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @throws IOException thrown if something went wrong connecting to the DAPS
      */
     @NotNull
-    private Response sendRequestToDAPS(final OkHttpClient client, final Request request) throws IOException {
+    private Response sendRequestToDAPS(final OkHttpClient client,
+                                       final Request request)
+            throws IOException {
         final var jwtResponse = client.newCall(request).execute();
 
         if (!jwtResponse.isSuccessful()) {
@@ -254,7 +300,8 @@ public class AisecTokenManagerService implements TokenManagerService {
     private FormBody getFormBody(final String jws) {
         return new FormBody.Builder()
                 .add("grant_type", "client_credentials")
-                .add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
+                .add("client_assertion_type",
+                     "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
                 .add("client_assertion", jws)
                 .add("scope", "idsc:IDS_CONNECTOR_ATTRIBUTES_ALL")
                 .build();
@@ -263,18 +310,20 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Get the signed(!) request token.
      *
-     * @param targetAudience The target audience
-     * @param privateKey     the private key of the keystore
-     * @param connectorUUID  the UUID of the Connector
-     * @return The signed request token
+     * @param targetAudience The target audience.
+     * @param privateKey The private key of the keystore.
+     * @param connectorFingerprint The fingerprint of the Connector (UID).
+     * @return The signed request token.
      */
-    private String getRequestToken(final String targetAudience, final PrivateKey privateKey, final String connectorUUID) {
+    private String getRequestToken(final String targetAudience,
+                                   final PrivateKey privateKey,
+                                   final String connectorFingerprint) {
         if (log.isDebugEnabled()) {
             log.debug("Building jwt token");
         }
 
         final var expiryDate = Date.from(Instant.now().plusSeconds(ONE_DAY_IN_SECONDS));
-        final var jwtb = getJwtBuilder(targetAudience, connectorUUID, expiryDate);
+        final var jwtb = getJwtBuilder(targetAudience, connectorFingerprint, expiryDate);
 
         if (log.isDebugEnabled()) {
             log.debug("Signing jwt token");
@@ -286,15 +335,17 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Get the JWT Builder.
      *
-     * @param targetAudience The targetAudience
-     * @param connectorUUID  The UUID of the Connector
-     * @param expiryDate     The set expiry date
-     * @return The JWT-Builder
+     * @param targetAudience The targetAudience.
+     * @param connectorFingerprint The fingerprint of the Connector (UID).
+     * @param expiryDate The set expiry date.
+     * @return The JWT-Builder.
      */
-    private JwtBuilder getJwtBuilder(final String targetAudience, final String connectorUUID, final Date expiryDate) {
+    private JwtBuilder getJwtBuilder(final String targetAudience,
+                                     final String connectorFingerprint,
+                                     final Date expiryDate) {
         return Jwts.builder()
-                   .setIssuer(connectorUUID)
-                   .setSubject(connectorUUID)
+                   .setIssuer(connectorFingerprint)
+                   .setSubject(connectorFingerprint)
                    .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
                    .claim("@type", "ids:DatRequestToken")
                    .setExpiration(expiryDate)
@@ -304,30 +355,33 @@ public class AisecTokenManagerService implements TokenManagerService {
     }
 
     /**
-     * Generated the UUID of the Connector by giving the method only the KeyStoreManager.
+     * Generates the fingerprint of the Connector (UID) using the KeyStoreManager.
      *
-     * @param keyStoreManager The KeyStoremanager used to access the AKI and SKI of the Certificate
-     * @return The generated Connector-UUID
-     * @throws ConnectorMissingCertExtensionException Thrown if either AKI or SKI are not valid within the Connector-Certificate
+     * @param keyStoreManager The KeyStoremanager used to access the AKI and SKI of the certificate.
+     * @return The generated connector fingerprint (UID).
+     * @throws ConnectorMissingCertExtensionException Thrown if either AKI
+     * or SKI are not valid within the connector certificate.
      */
     @NotNull
-    private String getConnectorUUID(final KeyStoreManager keyStoreManager) throws ConnectorMissingCertExtensionException {
+    private String getConnectorFingerprint(final KeyStoreManager keyStoreManager)
+            throws ConnectorMissingCertExtensionException {
         final var certificate = getCertificate(keyStoreManager);
         final var authorityKeyIdentifier = getCertificateAKI(certificate);
         final var subjectKeyIdentifier = getCertificateSKI(certificate);
 
-        return generateConnectorUUID(authorityKeyIdentifier, subjectKeyIdentifier);
+        return generateConnectorFingerprint(authorityKeyIdentifier, subjectKeyIdentifier);
     }
 
     /**
-     * Generates the UUID of the Connector.
+     * Generates the fingerprint of the connector (UID).
      *
-     * @param authorityKeyIdentifier The Connector-Certificate AKI
-     * @param subjectKeyIdentifier   The Connector-Certificate SKI
-     * @return The generated UUID of the Connector
+     * @param authorityKeyIdentifier The connector certificate AKI.
+     * @param subjectKeyIdentifier The connector certificate SKI.
+     * @return The generated fingerprint of the connector (UID).
      */
     @NotNull
-    private String generateConnectorUUID(final byte[] authorityKeyIdentifier, final byte[] subjectKeyIdentifier) {
+    private String generateConnectorFingerprint(final byte[] authorityKeyIdentifier,
+                                                final byte[] subjectKeyIdentifier) {
         final var akiResult = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
         final var skiResult = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
 
@@ -339,9 +393,10 @@ public class AisecTokenManagerService implements TokenManagerService {
      *
      * @param cert The X509Certificate-Certificate
      * @return The SKI-KeyIdentifier of the certificate
-     * @throws ConnectorMissingCertExtensionException thrwon if SKI of certificateis empty
+     * @throws ConnectorMissingCertExtensionException thrown if SKI of certificate is empty
      */
-    private byte[] getCertificateSKI(final X509Certificate cert) throws ConnectorMissingCertExtensionException {
+    private byte[] getCertificateSKI(final X509Certificate cert)
+            throws ConnectorMissingCertExtensionException {
         if (log.isDebugEnabled()) {
             log.debug("Get SKI from certificate");
         }
@@ -350,7 +405,8 @@ public class AisecTokenManagerService implements TokenManagerService {
         final var rawSubjectKeyIdentifier = cert.getExtensionValue(skiOid);
 
         if (rawSubjectKeyIdentifier == null) {
-            throw new ConnectorMissingCertExtensionException("SKI of the Connector Certificate is null!");
+            throw new ConnectorMissingCertExtensionException(
+                    "SKI of the Connector Certificate is null!");
         }
 
         final var ski0c = ASN1OctetString.getInstance(rawSubjectKeyIdentifier);
@@ -366,7 +422,8 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @return The AKI-KeyIdentifier of the Certificate
      * @throws ConnectorMissingCertExtensionException thrown if AKI of certificate is empty
      */
-    private byte[] getCertificateAKI(final X509Certificate cert) throws ConnectorMissingCertExtensionException {
+    private byte[] getCertificateAKI(final X509Certificate cert)
+            throws ConnectorMissingCertExtensionException {
         if (log.isDebugEnabled()) {
             log.debug("Get AKI from certificate");
         }
@@ -388,9 +445,11 @@ public class AisecTokenManagerService implements TokenManagerService {
      * @param rawAuthorityKeyIdentifier The AKI to check
      * @throws ConnectorMissingCertExtensionException thrown if AKI of certificate is null
      */
-    private void checkEmptyRawAKI(final byte[] rawAuthorityKeyIdentifier) throws ConnectorMissingCertExtensionException {
+    private void checkEmptyRawAKI(final byte[] rawAuthorityKeyIdentifier)
+            throws ConnectorMissingCertExtensionException {
         if (rawAuthorityKeyIdentifier == null) {
-            throw new ConnectorMissingCertExtensionException("AKI of the Connector Certificate is null!");
+            throw new ConnectorMissingCertExtensionException(
+                    "AKI of the Connector Certificate is null!");
         }
     }
 

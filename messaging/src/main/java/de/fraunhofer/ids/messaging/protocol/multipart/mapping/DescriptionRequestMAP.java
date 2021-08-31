@@ -19,24 +19,44 @@ import de.fraunhofer.iais.eis.DescriptionRequestMessage;
 import de.fraunhofer.ids.messaging.protocol.multipart.MessageAndPayload;
 import de.fraunhofer.ids.messaging.protocol.multipart.SerializedPayload;
 
+/**
+ * MAP representing the DescriptionRequestMessage.
+ */
 public class DescriptionRequestMAP implements MessageAndPayload<DescriptionRequestMessage, Void> {
 
+    /**
+     * The DescriptionRequestMessage.
+     */
     private DescriptionRequestMessage message;
 
+    /**
+     * The constructor of DescriptionRequestMAP.
+     *
+     * @param selfDescriptionRequest The message.
+     */
     public DescriptionRequestMAP(final DescriptionRequestMessage selfDescriptionRequest) {
         this.message = selfDescriptionRequest;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DescriptionRequestMessage getMessage() {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Void> getPayload() {
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SerializedPayload serializePayload() {
         return SerializedPayload.EMPTY;

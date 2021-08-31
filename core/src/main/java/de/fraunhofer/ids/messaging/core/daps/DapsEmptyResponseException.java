@@ -22,7 +22,7 @@ public class DapsEmptyResponseException extends DapsTokenManagerException {
     /**
      * For Throwing a EmptyDapsResponseException with a custom error message.
      *
-     * @param message the error message to be included with the exception
+     * @param message The error message to be included with the exception.
      */
     public DapsEmptyResponseException(final String message) {
         super(message);

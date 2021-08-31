@@ -13,22 +13,32 @@
  */
 package de.fraunhofer.ids.messaging.protocol.multipart.parser;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
+/**
+ * Different data parts of a multipart message.
+ */
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public enum MultipartDatapart {
+    /**
+     * Multipart header.
+     */
     HEADER("header"),
+
+    /**
+     * Multipart payload.
+     */
     PAYLOAD("payload");
 
-    String name;
+    /**
+     * The name of the enum.
+     */
+    private final String name;
 
     /**
      * One way to get the Name of the enum-item.
      *
-     * @return name of tje enum item
+     * @return Name of tje enum item.
      */
     @Override
     public String toString() {

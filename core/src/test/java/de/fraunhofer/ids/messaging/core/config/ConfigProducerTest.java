@@ -22,8 +22,6 @@ import de.fraunhofer.ids.messaging.core.daps.DapsConnectionException;
 import de.fraunhofer.ids.messaging.core.daps.DapsEmptyResponseException;
 import de.fraunhofer.ids.messaging.core.daps.aisec.AisecTokenManagerService;
 import de.fraunhofer.ids.messaging.core.daps.orbiter.OrbiterTokenManagerService;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,17 +35,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @SpringBootTest(classes = TestSpringApp.class)
 @TestPropertySource(locations = "classpath:application.properties")
 class ConfigProducerTest {
-    //TODO check through .p12 files in test resources, replace everything there with localhost certificates just for testing
+    @Autowired
+    private ConfigContainer configContainer;
 
     @Autowired
-    ConfigContainer configContainer;
-
-    @Autowired
-    ClientProvider clientProvider;
+    private ClientProvider clientProvider;
 
     /**
      * SpringBootTest will initialize all Components in Core using the test/resources/application.properties file
@@ -62,6 +57,9 @@ class ConfigProducerTest {
         assertNotNull(clientProvider.getClient());
         assertNotNull(configContainer.getKeyStoreManager().getCert());
         assertNotNull(configContainer.getKeyStoreManager().getTrustManager());
+        //should be set, when configinterceptor sets it
+        assertNotNull(configContainer.getConfigurationModel().getProperties().get("modified"));
+        assertNotNull(configContainer.getConfigurationModel().getProperties().get("preInterceptor"));
         assertDoesNotThrow(() -> configContainer.updateConfiguration(configModel));
     }
 

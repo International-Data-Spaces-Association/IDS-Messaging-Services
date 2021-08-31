@@ -31,10 +31,10 @@ public class TrustStoreManager {
     /**
      * Create a merged trustmanager (trust anchors are TrustStore + java Truststore combined).
      *
-     * @param myTrustManager the IDS truststore
-     * @return a new truststore merging the IDS and Java Truststores
-     * @throws NoSuchAlgorithmException if default Truststore cannot be loaded
-     * @throws KeyStoreException        if default Truststore cannot be loaded
+     * @param myTrustManager The IDS truststore.
+     * @return A new truststore merging the IDS and Java Truststores.
+     * @throws NoSuchAlgorithmException If default Truststore cannot be loaded.
+     * @throws KeyStoreException If default Truststore cannot be loaded.
      */
     public X509TrustManager configureTrustStore(final X509TrustManager myTrustManager)
             throws NoSuchAlgorithmException, KeyStoreException {
@@ -45,15 +45,20 @@ public class TrustStoreManager {
     /**
      * Find the default system trustmanager.
      *
-     * @return the default java truststore
-     * @throws NoSuchAlgorithmException if default Truststore cannot be loaded
-     * @throws KeyStoreException        if default Truststore cannot be loaded
+     * @return The default java truststore.
+     * @throws NoSuchAlgorithmException If default Truststore cannot be loaded.
+     * @throws KeyStoreException If default Truststore cannot be loaded.
      */
-    private X509TrustManager findDefaultTrustManager() throws NoSuchAlgorithmException, KeyStoreException {
+    private X509TrustManager findDefaultTrustManager()
+            throws
+            NoSuchAlgorithmException,
+            KeyStoreException {
         final var tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         final KeyStore blank = null;
 
-        tmf.init(blank); // If keyStore is null, tmf will be initialized with the default jvm trust store
+        tmf.init(blank);
+        // If keyStore is null, tmf will be
+        // initialized with the default jvm trust store
 
         for (final var tm : tmf.getTrustManagers()) {
             if (tm instanceof X509TrustManager) {
@@ -66,9 +71,10 @@ public class TrustStoreManager {
     /**
      * Create a merged trustmanager from 2 given trustmanagers.
      *
-     * @param jreTrustManager    the jre truststore
-     * @param customTrustManager the custom ids truststore
-     * @return a new truststore which will check the IDS Truststore and the default java truststore for certificates
+     * @param jreTrustManager The jre truststore.
+     * @param customTrustManager The custom ids truststore.
+     * @return A new truststore which will check the IDS Truststore and the
+     * default java truststore for certificates.
      */
     private X509TrustManager createMergedTrustManager(final X509TrustManager jreTrustManager,
                                                       final X509TrustManager customTrustManager) {
