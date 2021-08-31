@@ -117,13 +117,13 @@ public class KeyStoreManager {
             if (log.isDebugEnabled()) {
                 log.debug("Initializing KeyStoreManager");
             }
-            if(configurationModel.getKeyStorePassword() == null) {
+            if (configurationModel.getKeyStorePassword() == null) {
                 throwKeyStoreInitException("No KeyStore password provided!");
             }
             final char[] keystorePw = configurationModel.getKeyStorePassword().toCharArray();
             char[] trustStorePw = new char[]{};
-            if(configurationModel.getTrustStore() != null){
-                if(configurationModel.getTrustStorePassword() == null) {
+            if (configurationModel.getTrustStore() != null) {
+                if (configurationModel.getTrustStorePassword() == null) {
                     throwKeyStoreInitException("TrustStore is specified, but password is empty!");
                 }
                 trustStorePw = configurationModel.getTrustStorePassword().toCharArray();
@@ -183,7 +183,7 @@ public class KeyStoreManager {
         this.keyAlias = keyAlias;
 
         createKeyStore(configurationModel, keystorePw);
-        if(configurationModel.getTrustStore() != null) {
+        if (configurationModel.getTrustStore() != null) {
             createTrustStore(configurationModel, trustStorePw);
         }
         initTrustManager(trustStorePw);
@@ -212,7 +212,7 @@ public class KeyStoreManager {
 
     private void initTrustManager(final char... trustStorePw)
             throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
-        if(trustStore != null) {
+        if (trustStore != null) {
             final var myManager = loadTrustManager(trustStorePw);
             trustManager = trustStoreManager.configureTrustStore(myManager);
         }
