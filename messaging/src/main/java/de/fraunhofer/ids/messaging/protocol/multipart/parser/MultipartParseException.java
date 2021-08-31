@@ -21,6 +21,7 @@ public class MultipartParseException extends Exception {
 
     /**
      * Constructor for the MultipartParseException.
+     *
      * @param message The exception message.
      */
     public MultipartParseException(final String message) {
@@ -29,6 +30,7 @@ public class MultipartParseException extends Exception {
 
     /**
      * Constructor for the MultipartParseException.
+     *
      * @param message The exception message.
      * @param cause The cause of the exception.
      */

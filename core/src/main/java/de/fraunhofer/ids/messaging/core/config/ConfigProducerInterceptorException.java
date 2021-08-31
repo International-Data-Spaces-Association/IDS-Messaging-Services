@@ -26,6 +26,7 @@ public class ConfigProducerInterceptorException extends Exception {
 
     /**
      * Exception thrown on failure by ConfigProducerInterceptors.
+     *
      * @param message The exception message.
      */
     public ConfigProducerInterceptorException(final String message) {
@@ -34,6 +35,7 @@ public class ConfigProducerInterceptorException extends Exception {
 
     /**
      * Exception thrown on failure by ConfigProducerInterceptors.
+     *
      * @param message The exception message.
      * @param cause The exception cause.
      */
@@ -43,6 +45,7 @@ public class ConfigProducerInterceptorException extends Exception {
 
     /**
      * Exception thrown on failure by ConfigProducerInterceptors.
+     *
      * @param cause The exception cause.
      */
     public ConfigProducerInterceptorException(final Throwable cause) {
@@ -51,6 +54,7 @@ public class ConfigProducerInterceptorException extends Exception {
 
     /**
      * Exception thrown on failure by ConfigProducerInterceptors.
+     *
      * @param message The exception message.
      * @param cause The exception cause.
      * @param enableSuppression Whether or not suppression is enabled or disabled.

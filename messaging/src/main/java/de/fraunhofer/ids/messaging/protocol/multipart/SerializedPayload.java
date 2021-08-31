@@ -51,6 +51,7 @@ public class SerializedPayload {
 
     /**
      * Constructor for SerializedPayload.
+     *
      * @param serialization The serialized payload.
      */
     public SerializedPayload(final byte... serialization) {
@@ -59,6 +60,7 @@ public class SerializedPayload {
 
     /**
      * Constructor for SerializedPayload.
+     *
      * @param serialization The serialized payload.
      * @param contentType The content type of the payload.
      */

@@ -31,6 +31,7 @@ public class DescriptionRequestMAP implements MessageAndPayload<DescriptionReque
 
     /**
      * The constructor of DescriptionRequestMAP.
+     *
      * @param selfDescriptionRequest The message.
      */
     public DescriptionRequestMAP(final DescriptionRequestMessage selfDescriptionRequest) {

@@ -286,6 +286,7 @@ public class IdsHttpService implements HttpService {
     /**
      * Checks if the payload is a valid JSON (array or object) and if it contains
      * a securityProfile specification.
+     *
      * @param payload The received payload.
      * @return True if valid JSON and contains securityProfile, else false.
      */
@@ -385,7 +386,7 @@ public class IdsHttpService implements HttpService {
         if (!response.isSuccessful()) {
             if (log.isErrorEnabled()) {
                 log.error("Received response but response-code not in 200-299!"
-                          + " [code=({})]!", response.code());
+                          + " [code=({})]", response.code());
             }
 
             throw new IOException("Unexpected code " + response + " With Body: " + Objects

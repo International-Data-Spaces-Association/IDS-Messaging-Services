@@ -29,6 +29,7 @@ public class UnexpectedPayloadException extends IdsRequestException {
 
     /**
      * Constructor for the UnexpectedPayloadException.
+     *
      * @param messageContainer The MessageContainer.
      */
     public UnexpectedPayloadException(final MessageContainer<?> messageContainer) {
@@ -38,6 +39,7 @@ public class UnexpectedPayloadException extends IdsRequestException {
 
     /**
      * Constructor for the UnexpectedPayloadException.
+     *
      * @param message The exception message.
      * @param messageContainer The MessageContainer.
      */

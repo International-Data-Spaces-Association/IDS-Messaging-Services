@@ -79,6 +79,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ConnectorUpdateMessage.
+     *
      * @param affectedConnector URI of the affected connector.
      * @return The Template.
      */
@@ -97,6 +98,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ConnectorUnavailableMessage.
+     *
      * @param affectedConnector URI of the affected connector.
      * @return The Template.
      */
@@ -115,6 +117,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ConnectorCertificateGrantedMessage.
+     *
      * @param affectedConnector URI of the affected connector.
      * @return The Template.
      */
@@ -133,6 +136,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ConnectorCertificateRevokedMessage.
+     *
      * @param affectedConnector URI of the affected connector.
      * @param revocationReason The reason for certificate revocation.
      * @return The Template.
@@ -155,6 +159,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ParticipantUpdateMessage.
+     *
      * @param affectedParticipant URI of the affected participant.
      * @return The Template.
      */
@@ -173,6 +178,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ParticipantUnavailableMessage.
+     *
      * @param affectedParticipant URI of the affected participant.
      * @return The Template.
      */
@@ -191,6 +197,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ParticipantCertificateGrantedMessage.
+     *
      * @param affectedParticipant URI of the affected participant.
      * @return The Template.
      */
@@ -210,6 +217,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ParticipantCertificateRevokedMessage.
+     *
      * @param affectedParticipant URI of the affected participant.
      * @param revocationReason The reason for revocation.
      * @return The Template.
@@ -232,6 +240,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the AppAvailableMessage.
+     *
      * @param affectedApp URI of the affected app.
      * @return The Template.
      */
@@ -250,6 +259,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the AppUnavailableMessage.
+     *
      * @param affectedApp URI of the affected app.
      * @return The Template.
      */
@@ -268,6 +278,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the AppDeleteMessage.
+     *
      * @param affectedApp URI of the affected app.
      * @return The Template.
      */
@@ -286,6 +297,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ResourceUpdateMessage.
+     *
      * @param affectedResource URI of the affected resource.
      * @return The Template.
      */
@@ -304,6 +316,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ResourceUnavailableMessage.
+     *
      * @param affectedResource URI of the affected resource.
      * @return The Template.
      */
@@ -322,6 +335,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ContractOfferMessage.
+     *
      * @return The Template.
      */
     public MessageTemplate<ContractOfferMessage>
@@ -338,6 +352,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the ContractSupplementMessage.
+     *
      * @return The Template.
      */
     public MessageTemplate<ContractSupplementMessage>
@@ -354,6 +369,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the RequestInProcessMessage.
+     *
      * @return The Template.
      */
     public MessageTemplate<RequestInProcessMessage>
@@ -370,6 +386,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the MessageProcessedNotificationMessage.
+     *
      * @return The Template.
      */
     public MessageTemplate<MessageProcessedNotificationMessage>
@@ -386,6 +403,7 @@ public class NotificationTemplateProvider {
 
     /**
      * Template for the LogMessage.
+     *
      * @param clearingHouseUrl The URL of the CH.
      * @return The Template.
      */

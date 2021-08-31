@@ -27,6 +27,7 @@ public class ValidationRuleException extends Exception {
 
     /**
      * Constructor for ValidationRuleException.
+     *
      * @param message The exception message.
      */
     public ValidationRuleException(final String message) {

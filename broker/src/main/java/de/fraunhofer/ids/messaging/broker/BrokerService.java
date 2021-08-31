@@ -50,8 +50,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class BrokerService extends InfrastructureService
-        implements IDSBrokerService {
+public class BrokerService extends InfrastructureService implements IDSBrokerService {
 
     /**
      * Default item limit for the query.
@@ -85,6 +84,7 @@ public class BrokerService extends InfrastructureService
 
     /**
      * BrokerService constructor.
+     *
      * @param container The ConfigContainer.
      * @param tokenProvider The DapsTokenProvider.
      * @param messageService The MessageService.

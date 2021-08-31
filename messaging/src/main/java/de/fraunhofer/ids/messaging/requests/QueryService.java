@@ -54,6 +54,7 @@ public class QueryService extends InfrastructureService implements
 
     /**
      * QueryService constructor.
+     *
      * @param container The ConfigContainer.
      * @param tokenProvider The DapsTokenProvider.
      * @param messageService The MessageService.

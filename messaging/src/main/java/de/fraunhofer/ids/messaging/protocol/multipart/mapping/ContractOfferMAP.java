@@ -26,6 +26,7 @@ public class ContractOfferMAP extends AbstractContractMAP<ContractOfferMessage, 
 
     /**
      * Constructor for ContractOfferMAP.
+     *
      * @param contractOfferMessage The message.
      * @param payload The payload.
      */

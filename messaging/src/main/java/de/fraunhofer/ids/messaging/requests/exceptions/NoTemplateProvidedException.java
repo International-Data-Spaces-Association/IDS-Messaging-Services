@@ -27,6 +27,7 @@ public class NoTemplateProvidedException extends IdsRequestException {
 
     /**
      * Constructor for NoTemplateProvidedException.
+     *
      * @param message The exception message.
      */
     public NoTemplateProvidedException(final String message) {

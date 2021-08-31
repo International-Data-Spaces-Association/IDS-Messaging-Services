@@ -220,6 +220,7 @@ public class MessageController {
     /**
      * Decides whether to run the infomodel compatibility check and if so, whether the
      * incoming message is compatible.
+     *
      * @param input The received message.
      * @return True if compatible or no validation to be performed, false otherwise.
      * @throws IOException No model version information found in the header.

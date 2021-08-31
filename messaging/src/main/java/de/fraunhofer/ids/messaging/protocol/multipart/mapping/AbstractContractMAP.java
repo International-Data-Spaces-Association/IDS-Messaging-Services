@@ -23,6 +23,7 @@ import lombok.Getter;
 
 /**
  * Abstract MAP class representing the contract-messages.
+ *
  * @param <M> The message (type).
  * @param <C> The contract (type).
  */

@@ -20,6 +20,7 @@ import de.fraunhofer.ids.messaging.common.SerializeException;
 
 /**
  * Interface for the MessageAndPayload.
+ *
  * @param <M> The message.
  * @param <T> The payload.
  */
@@ -27,12 +28,14 @@ public interface MessageAndPayload<M extends Message, T> {
 
     /**
      * Get the message of the received response.
+     *
      * @return The message.
      */
     M getMessage();
 
     /**
      * Get the payload of the received response.
+     *
      * @return The payload.
      */
     Optional<T> getPayload();

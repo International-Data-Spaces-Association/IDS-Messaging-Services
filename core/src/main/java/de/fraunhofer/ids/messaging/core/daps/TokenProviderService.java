@@ -85,6 +85,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
     /**
      * Constructor for TokenProviderService.
+     *
      * @param clientProvider The ClientProvider.
      * @param tokenManagerService The TokenManagerService.
      * @param configContainer The ConfigContainer.

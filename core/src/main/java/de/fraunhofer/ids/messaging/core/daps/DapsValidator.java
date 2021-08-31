@@ -99,6 +99,8 @@ public class DapsValidator {
     }
 
     /**
+     * Get the claims of the DAT.
+     *
      * @param token Incoming DAT token.
      * @return Claims extracted from the DAT.
      * @throws ClaimsException If token cannot be parsed using a DAPS public key.

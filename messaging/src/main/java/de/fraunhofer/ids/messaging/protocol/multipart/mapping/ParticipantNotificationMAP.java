@@ -46,6 +46,7 @@ public class ParticipantNotificationMAP
 
     /**
      * Constructor for ParticipantNotificationMAP.
+     *
      * @param message The message.
      * @param participantSelfDescription The self description.
      */
