@@ -100,7 +100,10 @@ public class ConfigProducer {
             try {
                 //initialize the KeyStoreManager with Key and Truststore
                 //locations in the ConfigurationModel
-                final var manager = new KeyStoreManager(configModel, properties.getKeyAlias());
+                final var manager = new KeyStoreManager(
+                        configModel,
+                        properties.getKeyAlias()
+                );
 
                 configContainer = new ConfigContainer(configModel, manager);
                 clientProvider = new ClientProvider(configContainer);

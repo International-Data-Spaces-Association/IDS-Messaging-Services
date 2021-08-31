@@ -20,6 +20,15 @@ public class KeyStoreManagerInitializationException extends Exception {
     private static final long serialVersionUID = 42L;
 
     /**
+     * Create a KeyStoreManagerInitializationException with a given Message.
+     *
+     * @param message Error message of the exception.
+     */
+    public KeyStoreManagerInitializationException(final String message) {
+        super(message);
+    }
+
+    /**
      * Create a KeyStoreManagerInitializationException with a given Message and Cause.
      *
      * @param message Error message of the exception.

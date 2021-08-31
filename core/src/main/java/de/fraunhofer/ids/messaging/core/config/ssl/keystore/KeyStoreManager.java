@@ -108,23 +108,25 @@ public class KeyStoreManager {
      * Build the KeyStoreManager from the given configuration.
      *
      * @param configurationModel A ConfigurationModel.
-     * @param keystorePw The password for the IDSKeyStore.
-     * @param trustStorePw The password for the IDSTrustStore.
      * @param keyAlias The alias of the IDS PrivateKey.
      * @throws KeyStoreManagerInitializationException When the KeyStoreManager cannot be initialized
      */
     public KeyStoreManager(final ConfigurationModel configurationModel,
-                           final char[] keystorePw,
-                           final char[] trustStorePw,
                            final String keyAlias) throws KeyStoreManagerInitializationException {
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Initializing KeyStoreManager");
             }
-            var keystorePw = configurationModel.getKeyStorePassword().get(0).toCharArray();
-            char[] trustStorePw = null;
-            if(configurationModel.getTrustStorePassword() != null && !configurationModel.getTrustStorePassword().isEmpty()) {
-                trustStorePw = configurationModel.getTrustStorePassword().get(0).toCharArray();
+            if(configurationModel.getKeyStorePassword() == null) {
+                throwKeyStoreInitException("No KeyStore password provided!");
+            }
+            final char[] keystorePw = configurationModel.getKeyStorePassword().toCharArray();
+            char[] trustStorePw = new char[]{};
+            if(configurationModel.getTrustStore() != null){
+                if(configurationModel.getTrustStorePassword() == null) {
+                    throwKeyStoreInitException("TrustStore is specified, but password is empty!");
+                }
+                trustStorePw = configurationModel.getTrustStorePassword().toCharArray();
             }
             initClassVars(configurationModel, keystorePw, trustStorePw, keyAlias);
         } catch (IOException e) {
@@ -146,6 +148,14 @@ public class KeyStoreManager {
      */
     public Date getCertExpiration() {
         return ((X509Certificate) cert).getNotAfter();
+    }
+
+    private void throwKeyStoreInitException(final String message)
+            throws KeyStoreManagerInitializationException  {
+        if (log.isErrorEnabled()) {
+            log.error(message);
+        }
+        throw new KeyStoreManagerInitializationException(message);
     }
 
     private void throwKeyStoreInitException(final Exception exception, final String message)
