@@ -177,7 +177,9 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         logBuildingHeader();
         return idsRequestBuilderService.newRequest()
                                        .subjectConnector()
@@ -199,7 +201,9 @@ public class BrokerService extends InfrastructureService implements IDSBrokerSer
             SerializeException,
             UnknownResponseException,
             SendMessageException,
-            DeserializeException, RejectionException, UnexpectedPayloadException {
+            DeserializeException,
+            RejectionException,
+            UnexpectedPayloadException {
         logBuildingHeader();
         return idsRequestBuilderService.newRequest()
                                        .withPayload(container.getConnector())
