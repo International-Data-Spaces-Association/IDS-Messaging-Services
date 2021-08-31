@@ -64,16 +64,14 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private final TokenManagerService tokenManagerService;
 
     /**
-     * The ConfigContainer.
+     * Saves current DAT token.
      */
-    private final ConfigContainer configContainer;
-
-    String      currentJwt;
+    private String currentJwt;
 
     /**
      * The public keys.
      */
-    private List<Key> publicKeys;
+    private Set<Key> publicKeys;
 
     /**
      * The DAPS token URL.
@@ -86,22 +84,6 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      */
     @Value("#{${daps.key.url.kid}}")
     private Map<String, String> urlKidMap;
-
-    /**
-     * Constructor for TokenProviderService.
-     *
-     * @param clientProvider The ClientProvider.
-     * @param tokenManagerService The TokenManagerService.
-     * @param configContainer The ConfigContainer.
-     */
-    @Autowired
-    public TokenProviderService(final ClientProvider clientProvider,
-                                final TokenManagerService tokenManagerService,
-                                final ConfigContainer configContainer) {
-        this.clientProvider = clientProvider;
-        this.tokenManagerService = tokenManagerService;
-        this.configContainer = configContainer;
-    }
 
     @SuppressWarnings("FieldMayBeFinal")
     Map<String, Key> publicKeyMap;

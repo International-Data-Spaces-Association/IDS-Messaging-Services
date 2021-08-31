@@ -17,6 +17,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.List;
+import java.util.Set;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import io.jsonwebtoken.Claims;
@@ -75,8 +76,8 @@ public class DapsValidator {
      * @return The Claims of the messages DAT Token, when it can be signed with the given key.
      * @throws ClaimsException If Token cannot be signed with the given key.
      */
-    public static Jws<Claims> getClaims(final DynamicAttributeToken token,
-                                        final List<Key> signingKeys)
+    public Jws<Claims> getClaims(final DynamicAttributeToken token,
+                                        final Set<Key> signingKeys)
             throws ClaimsException {
         final var tokenValue = token.getTokenValue();
         //try to find public key from token fields

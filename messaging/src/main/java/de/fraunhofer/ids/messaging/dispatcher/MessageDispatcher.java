@@ -26,7 +26,6 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
 import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
-import de.fraunhofer.ids.messaging.core.daps.DapsVerifier;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilter;
 import de.fraunhofer.ids.messaging.dispatcher.filter.PreDispatchingFilterException;
 import de.fraunhofer.ids.messaging.handler.message.MessageAndClaimsHandler;
@@ -74,9 +73,13 @@ public class MessageDispatcher {
     private final DapsValidator dapsValidator;
 
     /**
+     * The Daps provider.
+     */
+    private final DapsPublicKeyProvider provider;
+
+    /**
      * Create a MessageDispatcher.
-     *
-     * @param objectMapper A jackson objectmapper for (de)serializing objects.
+     *  @param objectMapper A jackson objectmapper for (de)serializing objects.
      * @param requestMessageHandler Resolver for finding the fitting {@link MessageHandler} for
      *                              the incoming Message.
      * @param configContainer The connector configuration.
@@ -85,46 +88,16 @@ public class MessageDispatcher {
     public MessageDispatcher(final ObjectMapper objectMapper,
                              final RequestMessageHandler requestMessageHandler,
                              final DapsPublicKeyProvider provider,
-                             final ConfigContainer configContainer, DapsValidator dapsValidator) {
+                             final ConfigContainer configContainer,
+                             DapsValidator dapsValidator) {
         this.objectMapper = objectMapper;
         this.requestMessageHandler = requestMessageHandler;
         this.configContainer = configContainer;
         this.dapsValidator = dapsValidator;
+        this.provider = provider;
         this.preDispatchingFilters = new LinkedList<>();
-
-        registerDatVerificationFilter(provider, configContainer);
     }
 
-
-    /**
-     * Incoming messages are checked for a valid DAT token.
-     *
-     * @param provider               DAPS Public Key Provider
-     * @param configurationContainer Configuration
-     */
-    private void registerDatVerificationFilter(final DapsPublicKeyProvider provider,
-                                               final ConfigContainer configurationContainer) {
-        //add DAT verification as PreDispatchingFilter
-        registerPreDispatchingAction(in -> {
-            if (configurationContainer.getConfigurationModel().getConnectorDeployMode() == ConnectorDeployMode.TEST_DEPLOYMENT) {
-                return PreDispatchingFilterResult.successResult("ConnectorDeployMode is Test. Skipping Token verification!");
-            }
-
-            try {
-                final var verified = DapsVerifier.verify(dapsValidator.getClaims(in.getSecurityToken(), provider.providePublicKeys()));
-
-                return PreDispatchingFilterResult.builder()
-                                                 .withSuccess(verified)
-                                                 .withMessage(String.format("Token verification result is: %s", verified))
-                                                 .build();
-            } catch (ClaimsException e) {
-                return PreDispatchingFilterResult.builder()
-                                                 .withSuccess(false)
-                                                 .withMessage("Token could not be parsed!" + e.getMessage())
-                                                 .build();
-            }
-        });
-    }
 
     /**
      * Register a new PreDispatchingFilter which will
@@ -165,7 +138,10 @@ public class MessageDispatcher {
            == ConnectorDeployMode.PRODUCTIVE_DEPLOYMENT) {
             try {
                 final var claims =
-                        dapsValidator.getClaims(header.getSecurityToken());
+                        dapsValidator.getClaims(
+                                header.getSecurityToken(),
+                                provider.providePublicKeys()
+                        );
 
                 optionalClaimsJws = Optional.ofNullable(claims);
 

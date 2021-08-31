@@ -18,7 +18,6 @@ import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.DapsPublicKeyProvider;
 import de.fraunhofer.ids.messaging.core.daps.DapsValidator;
 import de.fraunhofer.ids.messaging.handler.request.RequestMessageHandler;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
