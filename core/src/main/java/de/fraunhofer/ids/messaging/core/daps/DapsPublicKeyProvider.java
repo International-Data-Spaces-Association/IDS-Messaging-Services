@@ -14,7 +14,6 @@
 package de.fraunhofer.ids.messaging.core.daps;
 
 import java.security.Key;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,7 +29,7 @@ public interface DapsPublicKeyProvider {
     Set<Key> providePublicKeys();
 
     /**
-     * Try to get the Public Key with kid keyId from jwks of issuer DAPS
+     * Try to get the Public Key with kid keyId from jwks of issuer DAPS.
      *
      * @param issuer base uri of issuer DAPS
      * @param keyId kid of public key from jwks

@@ -17,7 +17,6 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.Key;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,17 +24,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import io.jsonwebtoken.Jwts;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -85,11 +80,15 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     @Value("#{${daps.key.url.kid}}")
     private Map<String, String> urlKidMap;
 
+    /**
+     * Map to persist public keys.
+     */
     @SuppressWarnings("FieldMayBeFinal")
-    Map<String, Key> publicKeyMap;
+    private Map<String, Key> publicKeyMap;
 
     /**
-     * @param clientProvider      the {@link ClientProvider} providing HttpClients using the current connector configuration
+     * @param clientProvider      the {@link ClientProvider} providing HttpClients
+     *                            using the current connector configuration
      * @param tokenManagerService client to get a DAT Token from a DAPS (eg Orbiter/AISEC)
      */
     @Autowired
@@ -185,7 +184,9 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                 final var keySetJSON = Objects.requireNonNull(response.body()).string();
                 final var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
                 final var jsonWebKey =
-                        jsonWebKeySet.getJsonWebKeys().stream().filter(k -> k.getKeyId().equals(keyId))
+                        jsonWebKeySet.getJsonWebKeys().stream().filter(
+                                k -> k.getKeyId().equals(keyId)
+                                )
                                 .findAny()
                                 .orElse(null);
                 if (jsonWebKey != null) {
@@ -196,13 +197,19 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                 } else {
                     //if no key was found, return null
                     if (log.isWarnEnabled()) {
-                        log.warn(String.format("No key found at DAPS url, kid combination %s:%s!", dapsUrl, keyId));
+                        log.warn(String.format(
+                                "No key found at DAPS url, kid combination %s:%s!", dapsUrl, keyId)
+                        );
                     }
                     return null;
                 }
             }
             if (log.isWarnEnabled()) {
-                log.warn(String.format("DAT url, kid combination %s:%s not from a trusted DAPS!", dapsUrl, keyId));
+                log.warn(String.format(
+                        "DAT url, kid combination %s:%s not from a trusted DAPS!",
+                        dapsUrl,
+                        keyId
+                ));
             }
             //if key is not trusted, return null
             return null;
@@ -225,7 +232,9 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
         for (final var entry : urlKidMap.entrySet()) {
             //if key was already saved, skip it
-            if (publicKeyMap.containsKey(String.format("%s:%s", entry.getKey(), entry.getValue()))) {
+            if (publicKeyMap.containsKey(
+                    String.format("%s:%s", entry.getKey(), entry.getValue()))
+            ) {
                 continue;
             }
 
@@ -245,7 +254,14 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                                      .orElse(null);
 
                 if (jsonWebKey != null) {
-                    this.publicKeyMap.put(String.format("%s:%s", entry.getKey(), entry.getValue()), jsonWebKey.getKey());
+                    this.publicKeyMap.put(
+                            String.format(
+                                    "%s:%s",
+                                    entry.getKey(),
+                                    entry.getValue()
+                            ),
+                            jsonWebKey.getKey()
+                    );
                 } else {
                     if (log.isWarnEnabled()) {
                         log.warn("Could not get JsonWebKey from received KeySet! PublicKey is null!"

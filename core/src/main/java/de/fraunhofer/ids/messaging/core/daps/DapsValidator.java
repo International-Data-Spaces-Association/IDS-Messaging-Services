@@ -16,7 +16,6 @@ package de.fraunhofer.ids.messaging.core.daps;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.List;
 import java.util.Set;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
@@ -194,7 +193,9 @@ public class DapsValidator {
             var noSigJwt = tokenValue.substring(0, tokenValue.lastIndexOf('.') + 1);
             var claim = Jwts.parser()
                     .parseClaimsJwt(noSigJwt);
-            return this.keyProvider.providePublicKey(claim.getBody().getIssuer(), (String) claim.getHeader().get("kid"));
+            return this.keyProvider.providePublicKey(
+                    claim.getBody().getIssuer(), (String) claim.getHeader().get("kid")
+            );
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error(e.getMessage(), e);
