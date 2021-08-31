@@ -117,7 +117,7 @@ public final class DapsVerifier {
                 }
             }
             if (log.isInfoEnabled()) {
-                log.info("Successfully verified claims.");
+                log.info("Successfully verified DAT claims.");
             }
 
             return true;
