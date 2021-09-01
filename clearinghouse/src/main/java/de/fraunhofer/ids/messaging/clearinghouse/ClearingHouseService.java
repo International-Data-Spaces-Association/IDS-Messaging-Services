@@ -25,6 +25,7 @@ import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import de.fraunhofer.ids.messaging.common.DeserializeException;
+import de.fraunhofer.ids.messaging.common.MessageBuilderException;
 import de.fraunhofer.ids.messaging.common.SerializeException;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
 import de.fraunhofer.ids.messaging.core.daps.ClaimsException;
@@ -234,6 +235,14 @@ public class ClearingHouseService extends InfrastructureService
         final var map = multipartResponseConverter.convertResponse(response);
         return expectMapOfTypeT(map, ResultMAP.class);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MessageProcessedNotificationMAP registerPidAtClearingHouse(String pid, String providerId, String consumerId) throws DapsTokenManagerException, URISyntaxException, ClaimsException, MultipartParseException, IOException, UnknownResponseException, DeserializeException, UnexpectedResponseException, ShaclValidatorException, SerializeException, MessageBuilderException {
+        return null;
     }
 
     /**

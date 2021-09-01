@@ -164,4 +164,46 @@ public interface IDSClearingHouseService {
             UnexpectedResponseException,
             ShaclValidatorException, SerializeException,
             MessageBuilderException;
+
+    /**
+     * Register a pid at the clearinghouse for logging usage.
+     *
+     * @param pid pid to register.
+     * @param providerId uuid of provider connector.
+     * @param consumerId uuid of consumer connector.
+     * @return Response from clearing house
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws URISyntaxException If Clearing House URI can not be parsed from String.
+     * Check Application Properties!
+     * @throws IOException If message could not be sent or Serializer could not parse
+     * RDF to Java Object.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
+     * @throws UnknownResponseException Thrown during converting IDS-Response into a
+     * corresponding Object if no possible cast found.
+     * @throws DeserializeException Exception that is thrown if deserializing a message
+     * threw an IOException.
+     * @throws UnexpectedResponseException Exception that is thrown if the received
+     * response-type is not expected as a response to the request send.
+     * @throws SerializeException Exception is thrown if serializing a message threw an IOException.
+     * @throws ShaclValidatorException SHACL-Validation, received message header does not
+     * conform to IDS-Infomodel and did not pass SHACL-Validation.
+     * @throws MessageBuilderException Exception that is thrown if building an IDS-Message with
+     * the given information threw a RuntimeException.
+     */
+    MessageProcessedNotificationMAP registerPidAtClearingHouse(String pid,
+                                                               String providerId,
+                                                               String consumerId)
+            throws
+            DapsTokenManagerException,
+            URISyntaxException,
+            ClaimsException,
+            MultipartParseException,
+            IOException,
+            UnknownResponseException,
+            DeserializeException,
+            UnexpectedResponseException,
+            ShaclValidatorException, SerializeException,
+            MessageBuilderException;
 }
