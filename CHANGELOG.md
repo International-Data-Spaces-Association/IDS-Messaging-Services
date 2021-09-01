@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version [4.3.1] UNRELEASED
 
+### Patch Change: Dependency Maintenance
+- Upgrade: com.puppycrawl.tools:checkstyle 8.45.1 -> 9.0
+
 ### Patch Change: Miscellaneous
 - Other minor enhancements to existing Javadoc.
 
