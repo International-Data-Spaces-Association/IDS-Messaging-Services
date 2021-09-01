@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 ## Version [5.0.0] UNRELEASED
 
 ### Major Change: ClearingHouse Module - New Endpoint
-- The ClearingHouse has a new endpoint, which allows the registration of a freely selectable PID that has not been assigned, whereby the PID access-authorized Connectors (Owners) must be specified as UUIDs in the body. As a result the previous existing functionality of the ClearingHouse module to log a message at the ClearingHouse, where the Messaging-Services randomly generated the PID, was removed (ClearingHouseService sendLogToClearingHouse). The new method is the ClearingHouseService.registerPidAtClearingHouse, which expects as parameter the desired PID and as array the IDs of the Connectors, which should all be set as Owners for the PID (can also be exactly 1 Connector-Id).
+- The ClearingHouse has a new endpoint, which allows the registration of a freely selectable PID that has not been assigned, whereby the PID access-authorized Connectors (Owners) must be specified as with their IDs in the body. As a result the previous existing functionality of the ClearingHouse module to log a message at the ClearingHouse, where the Messaging-Services randomly generated the PID, was removed (ClearingHouseService sendLogToClearingHouse). The new method is the ClearingHouseService.registerPidAtClearingHouse, which expects as parameters the desired PID and the IDs of the Connectors, which should all be set as Owners for the PID (can also be exactly 1 Connector-Id).
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45.1 -> 9.0
