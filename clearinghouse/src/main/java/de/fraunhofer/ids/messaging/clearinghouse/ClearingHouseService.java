@@ -137,27 +137,6 @@ public class ClearingHouseService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP sendLogToClearingHouse(final Message messageToLog)
-            throws DapsTokenManagerException,
-            ClaimsException,
-            MultipartParseException,
-            URISyntaxException,
-            IOException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            ShaclValidatorException,
-            SerializeException {
-        //log message under some random processId
-        final var pid = Math.abs(secureRandom.nextInt());
-
-        return sendLogToClearingHouse(messageToLog, String.valueOf(pid));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public MessageProcessedNotificationMAP sendLogToClearingHouse(final Message messageToLog,
                                                                   final String pid)
             throws

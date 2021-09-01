@@ -38,45 +38,6 @@ import de.fraunhofer.ids.messaging.protocol.multipart.parser.MultipartParseExcep
 public interface IDSClearingHouseService {
 
     /**
-     * Send a LogMessage with some random pid to ClearingHouse.
-     *
-     * @param messageToLog Infomodel Message that should be Logged.
-     * @return Response from ClearingHouse.
-     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
-     * @throws URISyntaxException If Clearing House URI can not be parsed from String.
-     * Check Application Properties!
-     * @throws IOException If message could not be sent or Serializer could not parse RDF
-     * to Java Object.
-     * @throws ClaimsException If DAT of incoming message could not be validated.
-     * @throws MultipartParseException If response could not be parsed to header and payload.
-     * @throws ClaimsException Exception while validating the DAT from the Broker Response.
-     * @throws UnknownResponseException Thrown during converting IDS-Response into a
-     * corresponding Object if no possible cast found.
-     * @throws DeserializeException Exception that is thrown if deserializing a message
-     * threw an IOException
-     * @throws UnexpectedResponseException Exception that is thrown if the received response-type
-     * is not expected as a response to the request send.
-     * @throws SerializeException Exception is thrown if serializing a message threw an IOException.
-     * @throws ShaclValidatorException SHACL-Validation, received message
-     * header does not conform to IDS-Infomodel and did not pass SHACL-Validation.
-     * @throws MessageBuilderException Exception that is thrown if building an IDS-Message with
-     * the given information threw a  RuntimeException.
-     */
-    MessageProcessedNotificationMAP sendLogToClearingHouse(Message messageToLog)
-            throws
-            DapsTokenManagerException,
-            ClaimsException,
-            MultipartParseException,
-            URISyntaxException,
-            IOException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            ShaclValidatorException,
-            SerializeException,
-            MessageBuilderException;
-
-    /**
      * Send a LogMessage with given pid to ClearingHouse.
      *
      * @param messageToLog Infomodel Message that should be Logged.
