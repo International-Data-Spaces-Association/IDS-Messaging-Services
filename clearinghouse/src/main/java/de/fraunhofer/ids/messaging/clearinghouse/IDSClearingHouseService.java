@@ -130,8 +130,7 @@ public interface IDSClearingHouseService {
      * Register a pid at the clearinghouse for logging usage.
      *
      * @param pid pid to register.
-     * @param providerId uuid of provider connector.
-     * @param consumerId uuid of consumer connector.
+     * @param connectorIDs IDs the pid is registered for
      * @return Response from clearing house
      * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      * @throws URISyntaxException If Clearing House URI can not be parsed from String.
@@ -154,8 +153,7 @@ public interface IDSClearingHouseService {
      * the given information threw a RuntimeException.
      */
     MessageProcessedNotificationMAP registerPidAtClearingHouse(String pid,
-                                                               String providerId,
-                                                               String consumerId)
+                                                               String... connectorIDs)
             throws
             DapsTokenManagerException,
             URISyntaxException,

@@ -222,8 +222,7 @@ public class ClearingHouseService extends InfrastructureService
      */
     @Override
     public MessageProcessedNotificationMAP registerPidAtClearingHouse(final String pid,
-                                                                      final String providerId,
-                                                                      final String consumerId)
+                                                                      final String... connectorIDs)
             throws DapsTokenManagerException,
             URISyntaxException,
             ClaimsException,
@@ -236,10 +235,7 @@ public class ClearingHouseService extends InfrastructureService
             SerializeException {
         //Build request json
         var payload = new JSONObject();
-        var owners = new JSONArray();
-        owners.put(providerId);
-        owners.put(consumerId);
-        payload.put("owners", owners);
+        payload.put("owners", new JSONArray(connectorIDs));
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
