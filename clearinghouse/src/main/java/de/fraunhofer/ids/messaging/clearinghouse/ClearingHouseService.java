@@ -244,14 +244,14 @@ public class ClearingHouseService extends InfrastructureService
 
         //Build IDS Multipart Message
         final var body = buildMultipartWithInternalHeaders(
-                notificationTemplateProvider
-                        .logMessageTemplate(new URI(clearingHouseUrl)).buildMessage(),
+                requestTemplateProvider
+                        .requestMessageTemplate().buildMessage(),
                 payload.toString(),
                 MediaType.parse("application/json"));
 
-        //set given id for message
+        //send message to clearinghosue
         final var response = idsHttpService
-                .sendAndCheckDat(body, new URI(clearingHouseUrl + "/process"));
+                .sendAndCheckDat(body, new URI(clearingHouseUrl + "/process/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
         return expectMapOfTypeT(map, MessageProcessedNotificationMAP.class);
     }
