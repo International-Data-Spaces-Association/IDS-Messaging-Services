@@ -49,6 +49,8 @@ import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -158,7 +160,7 @@ public class ClearingHouseService extends InfrastructureService
                 serializer.serialize(messageToLog),
                 MediaType.parse("application/json"));
 
-        //set some random id for message
+        //set given id for message
         final var response = idsHttpService
             .sendAndCheckDat(body, new URI(clearingHouseUrl + logEndpoint + "/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
@@ -220,8 +222,38 @@ public class ClearingHouseService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP registerPidAtClearingHouse(String pid, String providerId, String consumerId) throws DapsTokenManagerException, URISyntaxException, ClaimsException, MultipartParseException, IOException, UnknownResponseException, DeserializeException, UnexpectedResponseException, ShaclValidatorException, SerializeException, MessageBuilderException {
-        return null;
+    public MessageProcessedNotificationMAP registerPidAtClearingHouse(final String pid,
+                                                                      final String providerId,
+                                                                      final String consumerId)
+            throws DapsTokenManagerException,
+            URISyntaxException,
+            ClaimsException,
+            MultipartParseException,
+            IOException,
+            UnknownResponseException,
+            DeserializeException,
+            UnexpectedResponseException,
+            ShaclValidatorException,
+            SerializeException {
+        //Build request json
+        var payload = new JSONObject();
+        var owners = new JSONArray();
+        owners.put(providerId);
+        owners.put(consumerId);
+        payload.put("owners", owners);
+
+        //Build IDS Multipart Message
+        final var body = buildMultipartWithInternalHeaders(
+                notificationTemplateProvider
+                        .logMessageTemplate(new URI(clearingHouseUrl)).buildMessage(),
+                payload.toString(),
+                MediaType.parse("application/json"));
+
+        //set given id for message
+        final var response = idsHttpService
+                .sendAndCheckDat(body, new URI(clearingHouseUrl + "/process"));
+        final var map = multipartResponseConverter.convertResponse(response);
+        return expectMapOfTypeT(map, MessageProcessedNotificationMAP.class);
     }
 
     /**
