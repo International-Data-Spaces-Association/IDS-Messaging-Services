@@ -41,7 +41,7 @@ public interface IDSClearingHouseService {
      * Send a LogMessage with given pid to ClearingHouse.
      *
      * @param messageToLog Infomodel Message that should be Logged.
-     * @param pid process id under which the message will be logged.
+     * @param pid Process id under which the message will be logged.
      * @return Response from ClearingHouse.
      * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      * @throws URISyntaxException If Clearing House URI can not be parsed from String.
@@ -123,15 +123,16 @@ public interface IDSClearingHouseService {
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException, SerializeException,
+            ShaclValidatorException,
+            SerializeException,
             MessageBuilderException;
 
     /**
      * Register a pid at the clearinghouse for logging usage.
      *
-     * @param pid pid to register.
-     * @param connectorIDs IDs the pid is registered for
-     * @return Response from clearing house
+     * @param pid Pid to register.
+     * @param connectorIDs IDs the pid is registered for.
+     * @return Response from clearing house.
      * @throws DapsTokenManagerException If no DAT for sending the message could be received.
      * @throws URISyntaxException If Clearing House URI can not be parsed from String.
      * Check Application Properties!
@@ -163,6 +164,7 @@ public interface IDSClearingHouseService {
             UnknownResponseException,
             DeserializeException,
             UnexpectedResponseException,
-            ShaclValidatorException, SerializeException,
+            ShaclValidatorException,
+            SerializeException,
             MessageBuilderException;
 }

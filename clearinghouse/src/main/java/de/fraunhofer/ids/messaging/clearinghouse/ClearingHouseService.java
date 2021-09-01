@@ -16,7 +16,6 @@ package de.fraunhofer.ids.messaging.clearinghouse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.SecureRandom;
 import java.util.Objects;
 
 import de.fraunhofer.iais.eis.Message;
@@ -67,11 +66,6 @@ public class ClearingHouseService extends InfrastructureService
     private final Serializer   serializer   = new Serializer();
 
     /**
-     * SecureRandom function.
-     */
-    private final SecureRandom secureRandom = new SecureRandom();
-
-    /**
      * The MultipartResponseConverter.
      */
     private final MultipartResponseConverter multipartResponseConverter
@@ -109,6 +103,12 @@ public class ClearingHouseService extends InfrastructureService
      */
     @Value("${clearinghouse.log.endpoint:/messages/log}")
     private String logEndpoint;
+
+    /**
+     * The CH endpoint for creating PIDs.
+     */
+    @Value("${clearinghouse.log.endpoint:/process}")
+    private String processEndpoint;
 
     /**
      * Constructor for the ClearingHouseService.
@@ -234,7 +234,7 @@ public class ClearingHouseService extends InfrastructureService
             ShaclValidatorException,
             SerializeException {
         //Build request json
-        var payload = new JSONObject();
+        final var payload = new JSONObject();
         payload.put("owners", new JSONArray(connectorIDs));
 
         //Build IDS Multipart Message
@@ -244,10 +244,11 @@ public class ClearingHouseService extends InfrastructureService
                 payload.toString(),
                 MediaType.parse("application/json"));
 
-        //send message to clearinghosue
+        //send message to clearinghouse
         final var response = idsHttpService
-                .sendAndCheckDat(body, new URI(clearingHouseUrl + "/process/" + pid));
+                .sendAndCheckDat(body, new URI(clearingHouseUrl + processEndpoint + "/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
+
         return expectMapOfTypeT(map, MessageProcessedNotificationMAP.class);
     }
 
