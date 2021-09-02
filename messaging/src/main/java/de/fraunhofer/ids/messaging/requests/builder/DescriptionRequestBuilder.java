@@ -133,24 +133,6 @@ public class DescriptionRequestBuilder<T> extends IdsRequestBuilder<T>
         }
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public DescriptionRequestBuilder<T> useIDSCP() {
-//        this.protocolType = ProtocolType.IDSCP;
-//        return this;
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public DescriptionRequestBuilder<T> useLDP() {
-//        this.protocolType = ProtocolType.LDP;
-//        return this;
-//    }
-
     /**
      * {@inheritDoc}
      */

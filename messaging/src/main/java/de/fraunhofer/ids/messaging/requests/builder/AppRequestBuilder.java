@@ -179,24 +179,6 @@ public class AppRequestBuilder<T> extends IdsRequestBuilder<T> implements
         }
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public AppRequestBuilder<T> useIDSCP() {
-//        this.protocolType = ProtocolType.IDSCP;
-//        return this;
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public AppRequestBuilder<T> useLDP() {
-//        this.protocolType = ProtocolType.LDP;
-//        return this;
-//    }
-
     /**
      * {@inheritDoc}
      */

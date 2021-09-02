@@ -147,24 +147,6 @@ public class ResourceRequestBuilder<T> extends IdsRequestBuilder<T>
         }
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public ResourceRequestBuilder<T> useIDSCP() {
-//        this.protocolType = ProtocolType.IDSCP;
-//        return this;
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public ResourceRequestBuilder<T> useLDP() {
-//        this.protocolType = ProtocolType.LDP;
-//        return this;
-//    }
-
     /**
      * {@inheritDoc}
      */
