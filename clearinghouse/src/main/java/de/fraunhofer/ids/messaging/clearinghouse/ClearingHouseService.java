@@ -107,7 +107,7 @@ public class ClearingHouseService extends InfrastructureService
     /**
      * The CH endpoint for creating PIDs.
      */
-    @Value("${clearinghouse.log.endpoint:/process}")
+    @Value("${clearinghouse.process.endpoint:/process}")
     private String processEndpoint;
 
     /**
