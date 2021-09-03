@@ -175,7 +175,7 @@ class ClearingHouseServiceTest {
                .thenReturn(map);
         Mockito.when(multipartResponseConverter.convertResponse(any(Map.class)))
                .thenReturn(new MessageProcessedNotificationMAP(message));
-        final var result = idsClearingHouseService.sendLogToClearingHouse(message);
+        final var result = idsClearingHouseService.sendLogToClearingHouse(message, "id");
         assertNotNull(result.getMessage(), "Method should return a message");
         assertEquals(MessageProcessedNotificationMAP.class, result.getClass(), "Method should return MessageProcessedNotificationMessage");
 

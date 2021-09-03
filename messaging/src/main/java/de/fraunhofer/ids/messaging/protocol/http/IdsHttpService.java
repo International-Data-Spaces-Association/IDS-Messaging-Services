@@ -384,13 +384,10 @@ public class IdsHttpService implements HttpService {
         final var response = client.newCall(request).execute();
 
         if (!response.isSuccessful()) {
-            if (log.isErrorEnabled()) {
-                log.error("Received response but response-code not in 200-299!"
+            if (log.isWarnEnabled()) {
+                log.warn("Received response but response-code not in 200-299."
                           + " [code=({})]", response.code());
             }
-
-            throw new IOException("Unexpected code " + response + " With Body: " + Objects
-                    .requireNonNull(response.body()).string());
         } else {
             if (log.isInfoEnabled()) {
                 log.info("Successfully received response to request.");
