@@ -131,24 +131,6 @@ public class LogRequestBuilder<T> extends IdsRequestBuilder<T> implements
         }
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public LogRequestBuilder<T> useIDSCP() {
-//        this.protocolType = ProtocolType.IDSCP;
-//        return this;
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public LogRequestBuilder<T> useLDP() {
-//        this.protocolType = ProtocolType.LDP;
-//        return this;
-//    }
-
     /**
      * {@inheritDoc}
      */
