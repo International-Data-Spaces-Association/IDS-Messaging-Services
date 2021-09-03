@@ -12,10 +12,13 @@ All notable changes to this project will be documented in this file.
 ## Version [5.0.0] UNRELEASED
 
 ### Major Change: ClearingHouse Module - New Endpoint
-- The ClearingHouse has a new endpoint, which allows the registration of a freely selectable PID that has not been assigned, whereby the PID access-authorized Connectors (Owners) must be specified as with their IDs in the body. As a result the previous existing functionality of the ClearingHouse module to log a message at the ClearingHouse, where the Messaging-Services randomly generated the PID, was removed (ClearingHouseService sendLogToClearingHouse). The new method is the ClearingHouseService.registerPidAtClearingHouse, which expects as parameters the desired PID and the IDs of the Connectors, which should all be set as Owners for the PID (can also be exactly 1 Connector-Id).
+- The ClearingHouse has a new endpoint, which allows the registration of a freely selectable PID that has not been assigned, whereby the PID access-authorized Connectors (Owners) must be specified as with their IDs in the body. As a result the previous existing functionality of the ClearingHouse module to log a message at the ClearingHouse, where the Messaging-Services randomly generated the PID, was removed (ClearingHouseService sendLogToClearingHouse). The new method is the ClearingHouseService.registerPidAtClearingHouse, which expects as parameters the desired PID and the IDs of the Connectors, which should all be set as Owners for the PID (can also be exactly 1 Connector-Id). ([Issue 259](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/259))
+
+### Patch Change: Fixes
+- For incoming responses to sent requests, an IOException is now no longer thrown for response codes outside 200-299. These responses may also be valid IDS-messages, for example a RejectionMessage with the status BAD_REQUEST. ([Issue 277](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/277))
 
 ### Patch Change: Dependency Maintenance
-- Upgrade: com.puppycrawl.tools:checkstyle 8.45.1 -> 9.0
+- Upgrade: com.puppycrawl.tools:checkstyle 8.45.1 -> 9.0 ([PR 275](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/275))
 
 ### Patch Change: Miscellaneous
 - Other minor enhancements to existing Javadoc.
@@ -23,16 +26,16 @@ All notable changes to this project will be documented in this file.
 ## Version [4.3.0] 2021-08-31
 
 ### Minor Change: Incoming message infomodel compatibility check
-- The check whether an incoming message is compatible with its ModelVersion to the inbound ModelVersions of the Connector can be switched on or off via application.properties (infomodel.compatibility.validation=true/false). The default value if not set is true (switched on).
+- The check whether an incoming message is compatible with its ModelVersion to the inbound ModelVersions of the Connector can be switched on or off via application.properties (infomodel.compatibility.validation=true/false). The default value if not set is true (switched on). ([PR 267](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/267))
 
 ### Patch Change: Infomodel Maintenance
-- Used Dependency Version: 4.2.1 (released 2021-08-30)
+- Used Dependency Version: 4.2.1 (released 2021-08-30) ([Issue 268](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/268))
 - Used Artifacts: java, infomodel-serializer, interaction
 
 ### Patch Change: Enhancements
-- If no private key can be found for a given alias within a keystore, a KeyStoreException is now thrown and an error is logged, preventing an otherwise possible NullpointerException (KeystoreManager getPrivateKeyFromKeyStore).
-- The payload of incoming messages is now first validated for valid JSON and whether the securityProfile attribute is present, if not, this check is skipped instead of issuing an error message in the logs (IdsHttpService checkDatFromResponse).
-- For log error messages and others important logs with dynamic content, the e.g. exception reason is now highlighted to distinguish it from the rest of the log message. Format: [exception=(...)].
+- If no private key can be found for a given alias within a keystore, a KeyStoreException is now thrown and an error is logged, preventing an otherwise possible NullpointerException (KeystoreManager getPrivateKeyFromKeyStore). ([Issue 263](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/263))
+- The payload of incoming messages is now first validated for valid JSON and whether the securityProfile attribute is present, if not, this check is skipped instead of issuing an error message in the logs (IdsHttpService checkDatFromResponse). ([PR 266](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/266))
+- For log error messages and others important logs with dynamic content, the e.g. exception reason is now highlighted to distinguish it from the rest of the log message. Format: [exception=(...)]. ([PR 269](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/269))
 
 ### Patch Change: Miscellaneous
 - Other minor enhancements to existing Javadoc and log messages.
