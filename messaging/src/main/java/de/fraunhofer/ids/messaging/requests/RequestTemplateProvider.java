@@ -34,6 +34,8 @@ import de.fraunhofer.iais.eis.QueryMessage;
 import de.fraunhofer.iais.eis.QueryMessageBuilder;
 import de.fraunhofer.iais.eis.QueryScope;
 import de.fraunhofer.iais.eis.QueryTarget;
+import de.fraunhofer.iais.eis.RequestMessage;
+import de.fraunhofer.iais.eis.RequestMessageBuilder;
 import de.fraunhofer.iais.eis.UploadMessage;
 import de.fraunhofer.iais.eis.UploadMessageBuilder;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
@@ -104,6 +106,21 @@ public class RequestTemplateProvider {
      */
     public MessageTemplate<ContractRequestMessage> contractRequestMessageTemplate() {
         return () -> new ContractRequestMessageBuilder()
+                ._issued_(IdsMessageUtils.getGregorianNow())
+                ._modelVersion_(container.getConnector().getOutboundModelVersion())
+                ._issuerConnector_(container.getConnector().getId())
+                ._senderAgent_(container.getConnector().getId())
+                ._securityToken_(tokenProvider.getDAT())
+                .build();
+    }
+
+    /**
+     * Template for RequestMessage.
+     *
+     * @return Template to build a {@link RequestMessage}.
+     */
+    public MessageTemplate<RequestMessage> requestMessageTemplate() {
+        return () -> new RequestMessageBuilder()
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._modelVersion_(container.getConnector().getOutboundModelVersion())
                 ._issuerConnector_(container.getConnector().getId())
