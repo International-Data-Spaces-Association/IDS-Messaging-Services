@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45.1 -> 9.0 ([PR 275](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/275))
+- Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.0 -> 3.3.1 ([PR 281](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/281))
 
 ### Patch Change: Miscellaneous
 - Other minor enhancements to existing Javadoc.
