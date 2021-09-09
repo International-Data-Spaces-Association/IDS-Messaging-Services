@@ -411,7 +411,7 @@ public class IdsHttpService implements HttpService {
      * @param request The request message to be send.
      * @throws IOException If Buffer could not be accessed.
      */
-    private void debugLogRequest(Request request) throws IOException {
+    private void debugLogRequest(final Request request) throws IOException {
         final var requestCopy = request.newBuilder().build();
         final var buffer = new Buffer();
         requestCopy.body().writeTo(buffer);
