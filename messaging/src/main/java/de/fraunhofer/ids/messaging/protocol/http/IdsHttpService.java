@@ -44,6 +44,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.Buffer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -377,6 +378,14 @@ public class IdsHttpService implements HttpService {
      */
     private Response sendRequest(final Request request,
                                  final OkHttpClient client) throws IOException {
+        if (log.isDebugEnabled() && request.body() != null) {
+            try {
+                debugLogRequest(request);
+            } catch (Exception exception) {
+                //Nothing to do, request message could not be logged.
+            }
+        }
+
         if (log.isInfoEnabled()) {
             log.info("Sending request to {} ...", request.url());
         }
@@ -395,6 +404,18 @@ public class IdsHttpService implements HttpService {
         }
 
         return response;
+    }
+
+    /**
+     * Logs the request message to be send in debug-level log.
+     * @param request The request message to be send.
+     * @throws IOException If Buffer could not be accessed.
+     */
+    private void debugLogRequest(Request request) throws IOException {
+        final var requestCopy = request.newBuilder().build();
+        final var buffer = new Buffer();
+        requestCopy.body().writeTo(buffer);
+        log.debug("Sending request message: [request=({})]", buffer.readUtf8());
     }
 
     /**

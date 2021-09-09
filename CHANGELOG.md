@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.0 -> 3.3.1 ([PR 281](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/281))
 
 ### Patch Change: Miscellaneous
+- Outgoing messages to be sent can now be logged in debug-loglevel. ([Issue 284](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/284))
 - Other minor enhancements to existing Javadoc.
 
 ## Version [4.3.0] 2021-08-31
