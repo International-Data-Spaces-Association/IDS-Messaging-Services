@@ -408,6 +408,7 @@ public class IdsHttpService implements HttpService {
 
     /**
      * Logs the request message to be send in debug-level log.
+     *
      * @param request The request message to be send.
      * @throws IOException If Buffer could not be accessed.
      */
