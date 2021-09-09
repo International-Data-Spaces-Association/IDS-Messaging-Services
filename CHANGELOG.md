@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Fixes
 - For incoming responses to sent requests, an IOException is now no longer thrown for response codes outside 200-299. These responses may also be valid IDS-messages, for example a RejectionMessage with the status BAD_REQUEST. ([Issue 277](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/277))
+- If the connector's proxy configuration contains an incorrect empty hostname, a warning message is now logged and an attempt is made to send the message without this proxy instead of throwing an IllegalArgumentException. ([Issue 285](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/285))
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45.1 -> 9.0 ([PR 275](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/275))
