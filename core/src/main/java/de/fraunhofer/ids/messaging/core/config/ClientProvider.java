@@ -180,8 +180,17 @@ public class ClientProvider {
                     if (log.isDebugEnabled()) {
                         log.debug("Address: [host=({})], Port: [port=({})]", proxyHost, proxyPort);
                     }
-                    proxyList.add(new Proxy(Proxy.Type.HTTP,
-                        new InetSocketAddress(proxyHost, proxyPort)));
+
+                    if (proxyHost == null || proxyHost.trim().equals("")) {
+                        if (log.isWarnEnabled()) {
+                            log.warn("Proxy hostname invalid! Trying to skip using this proxy!"
+                                     + " Please check configuration! [hostname=({})]", proxyHost);
+                        }
+                    } else {
+                        proxyList.add(new Proxy(Proxy.Type.HTTP,
+                                            new InetSocketAddress(proxyHost, proxyPort)));
+                    }
+
                 }
                 return proxyList;
             }
