@@ -325,6 +325,7 @@ public class KeyStoreManager {
 
     /**
      * Checks whether the keystore path specification is set in the connector configuration.
+     *
      * @param location The keystore path.
      * @param keyStoreType Indication whether it is keystore or truststore.
      * @throws KeyStoreManagerInitializationException Thrown if location specification is not set.
