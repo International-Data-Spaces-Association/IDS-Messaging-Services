@@ -18,6 +18,10 @@ All notable changes to this project will be documented in this file.
 - For incoming responses to sent requests, an IOException is now no longer thrown for response codes outside 200-299. These responses may also be valid IDS-messages, for example a RejectionMessage with the status BAD_REQUEST. ([Issue 277](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/277))
 - If the connector's proxy configuration contains an incorrect empty hostname, a warning message is now logged and an attempt is made to send the message without this proxy instead of throwing an IllegalArgumentException. ([Issue 285](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/285))
 
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.3 ([Issue 288](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/288))
+- Used Artifacts: java, infomodel-serializer, interaction
+
 ### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 8.45.1 -> 9.0 ([PR 275](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/275))
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.0 -> 3.3.1 ([PR 281](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/281))
