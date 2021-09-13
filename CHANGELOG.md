@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.0 -> 3.3.1 ([PR 281](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/281))
 
 ### Patch Change: Miscellaneous
+- Due to an incorrect or missing connector configuration it could happen that the location of the KeyStore is null. This is now handled in the form of a KeyStoreManagerInitializationException and log message at KeyStoreManager init. ([Issue 290](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/290))
 - Other minor enhancements to existing Javadoc.
 
 ## Version [4.3.0] 2021-08-31
