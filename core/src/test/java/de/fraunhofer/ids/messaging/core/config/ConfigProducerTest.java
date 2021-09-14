@@ -75,7 +75,7 @@ class ConfigProducerTest {
         final var tokenManagerService = new AisecTokenManagerService(clientProvider, configContainer);
         assertEquals("INVALID_TOKEN", tokenManagerService.acquireToken("https://daps.aisec.fraunhofer.de/v2/token"));
 
-        //orbiter DAPS currently not reachable (and currently not added to test connectors NO_PROXY), so this should throw an IllegalArgumentException
+        //orbiter DAPS currently not functional reachable
         //test will either throw IllegalArgumentException (URL not reachable) or JSONException (some HTML error code returned)
         //test will fail, if Orbiter DAPS reachable and working again
         final var orbiterTokenManagerService = new OrbiterTokenManagerService(clientProvider);
