@@ -240,6 +240,9 @@ public class KeyStoreManager {
             NoSuchAlgorithmException,
             IOException,
             KeyStoreManagerInitializationException {
+
+        validateLocation(location, keyStoreType);
+
         if (log.isDebugEnabled()) {
             log.debug("Searching for keystore file. [location=({})]", location.toString());
         }
@@ -318,6 +321,26 @@ public class KeyStoreManager {
             log.info("Successfully loaded {}.", keyStoreType);
         }
         return store;
+    }
+
+    /**
+     * Checks whether the keystore path specification is set in the connector configuration.
+     *
+     * @param location The keystore path.
+     * @param keyStoreType Indication whether it is keystore or truststore.
+     * @throws KeyStoreManagerInitializationException Thrown if location specification is not set.
+     */
+    private void validateLocation(final URI location, final String keyStoreType)
+            throws KeyStoreManagerInitializationException {
+        if (location == null) {
+            if (log.isErrorEnabled()) {
+                log.error("Location input for keystore-path from connector configuration"
+                          + " is not valid!"
+                         + " [type=({}), location=(null)]", keyStoreType);
+            }
+            throw new KeyStoreManagerInitializationException(
+                    "Location input for keystore-path is null! Type: " + keyStoreType);
+        }
     }
 
     @Nullable
