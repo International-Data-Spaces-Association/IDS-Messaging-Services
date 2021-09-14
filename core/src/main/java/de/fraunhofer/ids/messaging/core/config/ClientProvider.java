@@ -186,6 +186,13 @@ public class ClientProvider {
                             log.warn("Proxy hostname invalid! Trying to skip using this proxy!"
                                      + " Please check configuration! [hostname=({})]", proxyHost);
                         }
+                        proxyList.add(Proxy.NO_PROXY);
+                    } else if (proxyPort == -1) {
+                        if (log.isWarnEnabled()) {
+                            log.warn("Proxy port invalid! Trying to skip using this proxy!"
+                                    + " Please check configuration! [port=({})]", proxyPort);
+                        }
+                        proxyList.add(Proxy.NO_PROXY);
                     } else {
                         proxyList.add(new Proxy(Proxy.Type.HTTP,
                                             new InetSocketAddress(proxyHost, proxyPort)));
