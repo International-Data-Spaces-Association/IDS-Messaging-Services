@@ -16,7 +16,6 @@ package de.fraunhofer.ids.messaging.clearinghouse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.SecureRandom;
 import java.util.Objects;
 
 import de.fraunhofer.iais.eis.Message;
@@ -48,6 +47,8 @@ import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -63,11 +64,6 @@ public class ClearingHouseService extends InfrastructureService
      * The infomodel serializer.
      */
     private final Serializer   serializer   = new Serializer();
-
-    /**
-     * SecureRandom function.
-     */
-    private final SecureRandom secureRandom = new SecureRandom();
 
     /**
      * The MultipartResponseConverter.
@@ -109,6 +105,12 @@ public class ClearingHouseService extends InfrastructureService
     private String logEndpoint;
 
     /**
+     * The CH endpoint for creating PIDs.
+     */
+    @Value("${clearinghouse.process.endpoint:/process}")
+    private String processEndpoint;
+
+    /**
      * Constructor for the ClearingHouseService.
      *
      * @param container The ConfigContainer.
@@ -136,27 +138,6 @@ public class ClearingHouseService extends InfrastructureService
      * {@inheritDoc}
      */
     @Override
-    public MessageProcessedNotificationMAP sendLogToClearingHouse(final Message messageToLog)
-            throws DapsTokenManagerException,
-            ClaimsException,
-            MultipartParseException,
-            URISyntaxException,
-            IOException,
-            UnknownResponseException,
-            DeserializeException,
-            UnexpectedResponseException,
-            ShaclValidatorException,
-            SerializeException {
-        //log message under some random processId
-        final var pid = Math.abs(secureRandom.nextInt());
-
-        return sendLogToClearingHouse(messageToLog, String.valueOf(pid));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public MessageProcessedNotificationMAP sendLogToClearingHouse(final Message messageToLog,
                                                                   final String pid)
             throws
@@ -178,7 +159,7 @@ public class ClearingHouseService extends InfrastructureService
                 serializer.serialize(messageToLog),
                 MediaType.parse("application/json"));
 
-        //set some random id for message
+        //set given id for message
         final var response = idsHttpService
             .sendAndCheckDat(body, new URI(clearingHouseUrl + logEndpoint + "/" + pid));
         final var map = multipartResponseConverter.convertResponse(response);
@@ -234,6 +215,41 @@ public class ClearingHouseService extends InfrastructureService
         final var map = multipartResponseConverter.convertResponse(response);
         return expectMapOfTypeT(map, ResultMAP.class);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MessageProcessedNotificationMAP registerPidAtClearingHouse(final String pid,
+                                                                      final String... connectorIDs)
+            throws DapsTokenManagerException,
+            URISyntaxException,
+            ClaimsException,
+            MultipartParseException,
+            IOException,
+            UnknownResponseException,
+            DeserializeException,
+            UnexpectedResponseException,
+            ShaclValidatorException,
+            SerializeException {
+        //Build request json
+        final var payload = new JSONObject();
+        payload.put("owners", new JSONArray(connectorIDs));
+
+        //Build IDS Multipart Message
+        final var body = buildMultipartWithInternalHeaders(
+                requestTemplateProvider
+                        .requestMessageTemplate().buildMessage(),
+                payload.toString(),
+                MediaType.parse("application/json"));
+
+        //send message to clearinghouse
+        final var response = idsHttpService
+                .sendAndCheckDat(body, new URI(clearingHouseUrl + processEndpoint + "/" + pid));
+        final var map = multipartResponseConverter.convertResponse(response);
+
+        return expectMapOfTypeT(map, MessageProcessedNotificationMAP.class);
     }
 
     /**

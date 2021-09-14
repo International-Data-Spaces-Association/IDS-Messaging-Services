@@ -49,9 +49,17 @@ public interface IDSQueryService extends IDSInfrastructureService {
      *                   INACTIVE connectors). See {@link QueryScope}.
      * @param queryTarget The type of IDS Components that are queried. See {@link QueryTarget}.
      * @return The response to the query request.
-     * @throws IOException Exception while getting DAT from DAPS.
-     * @throws MultipartParseException Exception while parsing the response.
-     * @throws ClaimsException Exception while validating the DAT from the Response.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<String> query(@NonNull URI targetURI,
                                    @NonNull String query,
@@ -78,9 +86,17 @@ public interface IDSQueryService extends IDSInfrastructureService {
      * @param queryScope The Scope of the query.
      * @param queryTarget The target of the query.
      * @return The query result.
-     * @throws IOException Exception while getting DAT from DAPS.
-     * @throws MultipartParseException Exception while parsing the response.
-     * @throws ClaimsException Exception while validating the DAT from the Response.
+     * @throws DapsTokenManagerException If no DAT for sending the message could be received.
+     * @throws ClaimsException If DAT of incoming message could not be validated.
+     * @throws MultipartParseException If response could not be parsed to header and payload.
+     * @throws IOException Other errors, which were not categorized.
+     * @throws ShaclValidatorException If the message does not pass the SHACL validation test.
+     * @throws SerializeException If there are problems with serializing.
+     * @throws UnknownResponseException If the format of the answer is not known.
+     * @throws SendMessageException If there is an error when sending the request.
+     * @throws DeserializeException If the deserialization of the received message fails.
+     * @throws RejectionException When a RejectionMessage arrives unexpectedly.
+     * @throws UnexpectedPayloadException When the payload cannot be used.
      */
     MessageContainer<String> boundFullTextSearch(URI targetURI,
                                                  String searchTerm,

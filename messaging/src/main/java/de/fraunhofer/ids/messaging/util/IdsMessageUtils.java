@@ -107,6 +107,7 @@ public final class IdsMessageUtils {
      *
      * @param property Like version, artifactID etc.
      * @return The pom value.
+     * @throws IOException If the pom and its data can not be read.
      */
     public static String getProjectProperty(final String property) throws IOException {
 

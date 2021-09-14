@@ -86,6 +86,7 @@ public class MultipartResponseConverter {
      * @return MessageAndPayload containing the corresponding Message and the payload parsed
      * in Infomodel classes.
      * @throws UnknownResponseException If message or payload cannot be parsed.
+     * @throws DeserializeException If problems occur deseralizing the message.
      */
     public MessageAndPayload<?, ?> convertResponse(
             final Map<String, String> responseMap)
