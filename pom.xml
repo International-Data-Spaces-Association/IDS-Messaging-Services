@@ -69,7 +69,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
             <artifactId>java</artifactId>
-            <version>4.2.1</version>
+            <version>4.2.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>infomodel-serializer</artifactId>
-            <version>4.2.1</version>
+            <version>4.2.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>interaction</artifactId>
-            <version>4.2.1</version>
+            <version>4.2.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.commons</groupId>
@@ -366,7 +366,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.3.0</version>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
