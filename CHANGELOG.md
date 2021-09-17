@@ -9,6 +9,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [5.0.1] UNRELEASED
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework:spring-webmvc 5.3.9 -> 5.3.10 ([PR 300](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/300))
+- Upgrade: org.springframework:spring-test 5.3.9 -> 5.3.10 ([PR 299](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/299))
+- Upgrade: org.springframework:spring-core 5.3.9 -> 5.3.10 ([PR 297](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/297))
+- Upgrade: org.springframework:spring-web 5.3.9 -> 5.3.10 ([PR 301](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/301))
+- Upgrade: org.springframework:spring-tx 5.3.9 -> 5.3.10 ([PR 298](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/298))
+
 ## Version [5.0.0] 2021-09-14
 
 ### Major Change: ClearingHouse Module - New Endpoint
