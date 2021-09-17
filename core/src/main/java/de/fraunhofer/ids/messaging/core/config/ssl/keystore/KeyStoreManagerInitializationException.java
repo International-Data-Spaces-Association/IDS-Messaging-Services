@@ -38,12 +38,4 @@ public class KeyStoreManagerInitializationException extends Exception {
         super(message, cause);
     }
 
-    /**
-     * Create a KeyStoreManagerInitializationException with a given Message.
-     *
-     * @param message Error message of the exception.
-     */
-    public KeyStoreManagerInitializationException(final String message) {
-        super(message);
-    }
 }
