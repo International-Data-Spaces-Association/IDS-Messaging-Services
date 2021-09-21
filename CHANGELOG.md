@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [5.0.1] UNRELEASED
+## Version [5.0.1] 2021-09-21
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework:spring-webmvc 5.3.9 -> 5.3.10 ([PR 300](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/300))
