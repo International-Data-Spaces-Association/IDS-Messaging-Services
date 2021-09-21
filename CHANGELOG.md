@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework:spring-core 5.3.9 -> 5.3.10 ([PR 297](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/297))
 - Upgrade: org.springframework:spring-web 5.3.9 -> 5.3.10 ([PR 301](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/301))
 - Upgrade: org.springframework:spring-tx 5.3.9 -> 5.3.10 ([PR 298](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/298))
+- Replace: de.fraunhofer.iais.eis.ids:interaction org.apache.jena:jena-core 4.1.0 -> 4.2.0 ([PR 303](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/303))   
 
 ## Version [5.0.0] 2021-09-14
 
