@@ -15,6 +15,11 @@ All notable changes to this project will be documented in this file.
 - Used Dependency Version: 4.2.4 ([PR 307](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/307))
 - Used Artifacts: java, infomodel-serializer, interaction
 
+### Patch Change: Dependency Maintenance
+- Upgrade: org.junit.jupiter:junit-jupiter-engine 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+- Upgrade: org.junit.jupiter:junit-jupiter-api 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+- Upgrade: org.junit.jupiter:junit-jupiter 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+
 ## Version [5.0.1] 2021-09-21
 
 ### Patch Change: Dependency Maintenance
