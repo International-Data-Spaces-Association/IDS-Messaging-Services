@@ -16,6 +16,8 @@ All notable changes to this project will be documented in this file.
 - Used Artifacts: java, infomodel-serializer, interaction
 
 ### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.4 -> 2.5.5 ([PR 314](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/314))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.4 -> 2.5.5 ([PR 314](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/314))
 - Upgrade: org.junit.jupiter:junit-jupiter-engine 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
 - Upgrade: org.junit.jupiter:junit-jupiter-api 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
 - Upgrade: org.junit.jupiter:junit-jupiter 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
