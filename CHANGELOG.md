@@ -9,7 +9,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [5.0.1] UNRELEASED
+## Version [5.0.2] UNRELEASED
+
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.4 ([PR 307](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/307))
+- Used Artifacts: java, infomodel-serializer, interaction
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.4 -> 2.5.5 ([PR 314](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/314))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.4 -> 2.5.5 ([PR 314](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/314))
+- Upgrade: org.junit.jupiter:junit-jupiter-engine 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+- Upgrade: org.junit.jupiter:junit-jupiter-api 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+- Upgrade: org.junit.jupiter:junit-jupiter 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+
+## Version [5.0.1] 2021-09-21
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework:spring-webmvc 5.3.9 -> 5.3.10 ([PR 300](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/300))
@@ -17,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework:spring-core 5.3.9 -> 5.3.10 ([PR 297](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/297))
 - Upgrade: org.springframework:spring-web 5.3.9 -> 5.3.10 ([PR 301](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/301))
 - Upgrade: org.springframework:spring-tx 5.3.9 -> 5.3.10 ([PR 298](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/298))
+- Replace: de.fraunhofer.iais.eis.ids:interaction org.apache.jena:jena-core 4.1.0 -> 4.2.0 ([PR 303](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/303))   
 
 ## Version [5.0.0] 2021-09-14
 
