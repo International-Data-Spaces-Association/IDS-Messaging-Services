@@ -10,6 +10,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Version [5.0.2] UNRELEASED
+- Upgrade: com.squareup.okhttp3-okhttp 4.9.1 -> 4.9.2
+- Upgrade: com.squareup.okhttp3-mockwebserver 4.9.1 -> 4.9.2
+- Upgrade: com.puppycrawl.tools-checkstyle 9.0 -> 9.0.1
 
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.2.4 ([PR 307](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/307))
