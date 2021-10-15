@@ -132,6 +132,16 @@ public class MessageDispatcher {
                 final var claims =
                         dapsValidator.getClaims(header.getSecurityToken());
 
+                //TODO add application properties switch to deactivate check
+                if (!claims.getBody().get("referringConnector")
+                        .equals(header.getIssuerConnector())) {
+                    return ErrorResponse.withDefaultHeader(
+                            RejectionReason.BAD_PARAMETERS,
+                            "Issuer of message does not match DAT claims!",
+                            connectorId,
+                            modelVersion, header.getId());
+                }
+
                 optionalClaimsJws = Optional.ofNullable(claims);
 
                 if (!dapsValidator.checkClaims(claims, null)) {
