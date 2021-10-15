@@ -18,7 +18,9 @@ import java.util.List;
 /**
  * Provider for currently used Infomodel and compatible inbound versions.
  */
-public class InfomodelVersionProvider {
+public final class InfomodelVersionProvider {
+
+    private InfomodelVersionProvider() { }
 
     /**
      * Currently used infomodel version.
