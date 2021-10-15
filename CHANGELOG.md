@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.0.2] UNRELEASED
 
+### Patch Change: Enhancements
+- Added an `InfomodelVersionProvider` giving information about the used and supported infomodel versions. ([PR 327]https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/327))
+
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.2.4 ([PR 307](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/307))
 - Used Artifacts: java, infomodel-serializer, interaction
