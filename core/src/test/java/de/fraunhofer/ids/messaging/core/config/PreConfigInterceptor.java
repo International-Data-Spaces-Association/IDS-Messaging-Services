@@ -48,7 +48,8 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
     private ConfigurationModel loadConfig(final ConfigProperties properties)
             throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading configuration from {}", properties.getPath());
+            log.debug("Loading configuration from {} [code=(IMSCOD0114)]",
+                      properties.getPath());
         }
 
         final var config = getConfiguration(properties);

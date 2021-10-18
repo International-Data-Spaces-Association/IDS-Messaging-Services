@@ -119,7 +119,7 @@ public class KeyStoreManager {
                            final String keyAlias) throws KeyStoreManagerInitializationException {
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Initializing KeyStoreManager");
+                log.debug("Initializing KeyStoreManager... [code=(IMSCOD0090)]");
             }
             initClassVars(configurationModel, keystorePw, trustStorePw, keyAlias);
         } catch (IOException e) {
@@ -188,7 +188,8 @@ public class KeyStoreManager {
         } catch (Exception exception) {
             if (log.isDebugEnabled()) {
                 log.debug("Could not read Subject-CN UUID from the connector certificate."
-                         + " Valid connector certificate? Will generate random UUID.");
+                         + " Valid connector certificate? Will generate random UUID."
+                         + " [code=(IMSCOD0091)]");
             }
 
             CertificateSubjectCnProvider.certificateSubjectCn = UUID.randomUUID();
@@ -246,7 +247,8 @@ public class KeyStoreManager {
         validateLocation(location, keyStoreType);
 
         if (log.isDebugEnabled()) {
-            log.debug("Searching for keystore file. [location=({})]", location.toString());
+            log.debug("Searching for keystore file. [code=(IMSCOD0092), location=({})]",
+                      location.toString());
         }
         final var store = getKeyStoreInstance();
 
@@ -266,14 +268,15 @@ public class KeyStoreManager {
                                   .toString();
 
         if (log.isDebugEnabled()) {
-            log.debug("Determined relative path. [path=({})]", relativepathString);
+            log.debug("Determined relative path. [code=(IMSCOD0093), path=({})]",
+                      relativepathString);
         }
 
         final var keyStoreOnClassPath = new ClassPathResource(relativepathString).exists();
 
         if (keyStoreOnClassPath) {
             if (log.isDebugEnabled()) {
-                log.debug("Loading KeyStore from ClassPath ...");
+                log.debug("Loading KeyStore from ClassPath... [code=(IMSCOD0094)]");
             }
             final var is = new ClassPathResource(relativepathString).getInputStream();
             try {
@@ -289,11 +292,11 @@ public class KeyStoreManager {
         } else {
             if (log.isDebugEnabled()) {
                 log.debug("Could not load keystore from classpath, trying"
-                    + " to find it at system scope!");
+                    + " to find it at system scope! [code=(IMSCOD0095)]");
             }
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug("System Path [path=({})]", pathString);
+                    log.debug("System Path [code=(IMSCOD0096), path=({})]", pathString);
                 }
 
                 //try absolute path
@@ -373,7 +376,7 @@ public class KeyStoreManager {
     private X509TrustManager loadTrustManager(final char... password)
             throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading trustmanager...");
+            log.debug("Loading trustmanager... [code=(IMSCOD0097)]");
         }
 
         final var keyManagerFactory = KeyManagerFactory
@@ -386,7 +389,8 @@ public class KeyStoreManager {
         final var trustManagers = trustManagerFactory.getTrustManagers();
 
         if (log.isDebugEnabled()) {
-            log.debug("Successfully loaded the trustmanager using the TrustStore.");
+            log.debug("Successfully loaded the trustmanager using the TrustStore."
+                      + " [code=(IMSCOD0098)]");
         }
 
         if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
@@ -410,7 +414,8 @@ public class KeyStoreManager {
             throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Getting private key from keystore. [alias=({})]", keyAlias);
+            log.debug("Getting private key from keystore. [code=(IMSCOD0098), alias=({})]",
+                      keyAlias);
         }
         final var key = keyStore.getKey(keyAlias, keyStorePw);
 
@@ -429,7 +434,7 @@ public class KeyStoreManager {
 
         if (key instanceof PrivateKey) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting private key and connector certificate");
+                log.debug("Setting private key and connector certificate. [code=(IMSCOD0099)]");
             }
             this.privateKey = (PrivateKey) key;
             this.cert = keyStore.getCertificate(keyAlias);

@@ -86,7 +86,7 @@ public final class DapsVerifier {
                 throw new ClaimsException("The token's not before time is invalid");
             }
             if (log.isDebugEnabled()) {
-                log.debug("Checking custom rules...");
+                log.debug("Checking custom rules... [code=(IMSCOD0100)]");
             }
             //check custom dat rules
             if (!datValidationRules.isEmpty()) {

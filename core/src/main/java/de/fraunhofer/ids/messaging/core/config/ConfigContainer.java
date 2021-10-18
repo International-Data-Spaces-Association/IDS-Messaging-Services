@@ -81,13 +81,13 @@ public class ConfigContainer {
             throws ConfigUpdateException {
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Updating the current configuration");
+                log.debug("Updating the current configuration... [code=(IMSCOD0083)]");
             }
 
             final var manager = rebuildKeyStoreManager(configurationModel);
 
             if (log.isDebugEnabled()) {
-                log.debug("KeyStoreManager rebuilt");
+                log.debug("KeyStoreManager rebuilt. [code=(IMSCOD0084)]");
             }
 
             this.configurationModel = configurationModel;
@@ -96,7 +96,7 @@ public class ConfigContainer {
             if (clientProvider != null) {
                 clientProvider.updateConfig();
                 if (log.isDebugEnabled()) {
-                    log.debug("ClientProvider updated!");
+                    log.debug("ClientProvider updated! [code=(IMSCOD0085)]");
                 }
             }
         } catch (KeyStoreManagerInitializationException e) {
@@ -128,7 +128,8 @@ public class ConfigContainer {
     private KeyStoreManager rebuildKeyStoreManager(final ConfigurationModel configurationModel)
             throws KeyStoreManagerInitializationException {
         if (log.isDebugEnabled()) {
-            log.debug("Creating a new KeyStoreManager using current configuration");
+            log.debug("Creating a new KeyStoreManager using current(!) configuration..."
+                      + " [code=(IMSCOD0086)]");
         }
 
         final var keyPw = keyStoreManager.getKeyStorePw();

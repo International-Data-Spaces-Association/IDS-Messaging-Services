@@ -140,7 +140,8 @@ public class ConfigProducer {
 
     private ConfigurationModel loadConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading configuration. [path=({})]", properties.getPath());
+            log.debug("Loading configuration... [code=(IMSCOD0087), path=({})]",
+                      properties.getPath());
         }
 
         final var config = getConfiguration(properties);
@@ -158,7 +159,7 @@ public class ConfigProducer {
 
     private String getClassPathConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading configuration from classpath. [path=({})]",
+            log.debug("Loading configuration from classpath. [code=(IMSCOD0088), path=({})]",
                       properties.getPath());
         }
 
@@ -172,7 +173,8 @@ public class ConfigProducer {
 
     private String getAbsolutePathConfig(final ConfigProperties properties) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading config from absolute Path. [path=({})]", properties.getPath());
+            log.debug("Loading config from absolute Path. [code=(IMSCOD0089), path=({})]",
+                      properties.getPath());
         }
 
         final var fis = new FileInputStream(properties.getPath());

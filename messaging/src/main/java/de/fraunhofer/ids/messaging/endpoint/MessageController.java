@@ -110,7 +110,7 @@ public class MessageController {
 
             if (headerPart == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Header of incoming message were empty!");
+                    log.debug("Header of incoming message were empty! [code=(IMSMED0119)]");
                 }
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -122,7 +122,7 @@ public class MessageController {
             String input;
 
             if (log.isDebugEnabled()) {
-                log.debug("Parsing header of incoming message.");
+                log.debug("Parsing header of incoming message. [code=(IMSMED0120)]");
             }
 
             try (var scanner = new Scanner(headerPart.getInputStream(),
@@ -151,7 +151,8 @@ public class MessageController {
             final var requestHeader = serializer.deserialize(input, Message.class);
 
             if (log.isDebugEnabled()) {
-                log.debug("Hand the incoming message to the message dispatcher!");
+                log.debug("Hand the incoming message to the message dispatcher!"
+                          + " [code=(IMSMED0121)]");
             }
 
             //pass null if payloadPart is null, else pass it as inputStream
@@ -181,7 +182,7 @@ public class MessageController {
 
                 if (log.isDebugEnabled()) {
                     log.debug("Implemented Message-Handler didn't return a response,"
-                              + " sending status OK instead as response!");
+                              + " sending status OK instead as response! [code=(IMSMED0122)]");
                 }
 
                 if (log.isInfoEnabled()) {
@@ -244,7 +245,7 @@ public class MessageController {
             return false;
         } else if (!validateInfVer) {
             if (log.isDebugEnabled()) {
-                log.debug("Skipped validating infomodel compability!");
+                log.debug("Skipped validating infomodel compability! [code=(IMSMED0123)]");
             }
         } else {
             if (log.isInfoEnabled()) {
@@ -264,7 +265,7 @@ public class MessageController {
     private MultiValueMap<String, Object> createMultiValueMap(
             final Map<String, Object> map) {
         if (log.isDebugEnabled()) {
-            log.debug("Creating MultiValueMap for the response");
+            log.debug("Creating MultiValueMap for the response... [code=(IMSMED0124)]");
         }
 
         final var multiMap = new LinkedMultiValueMap<String, Object>();
