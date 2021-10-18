@@ -147,7 +147,7 @@ public class AisecTokenManagerService implements TokenManagerService {
             dynamicAttributeToken = getDAT(jwtString);
 
             if (jwtResponse.isSuccessful() && log.isInfoEnabled()) {
-                log.info("Successfully received DAT from DAPS.");
+                log.info("Successfully received DAT from DAPS. [code=(IMSCOI0050)]");
             }
         } catch (IOException e) {
             handleIOException(e);

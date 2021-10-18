@@ -63,7 +63,7 @@ public final class RequestUtils {
      */
     public static void logRequest(final Request request) {
         if (log.isInfoEnabled()) {
-            log.info(printRequest(request));
+            log.info(printRequest(request) + " [code=(IMSMEI0047)]");
         }
     }
 }

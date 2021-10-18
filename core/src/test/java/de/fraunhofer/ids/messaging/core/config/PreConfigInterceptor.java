@@ -35,7 +35,7 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
             throws ConfigProducerInterceptorException {
         try {
             if (log.isInfoEnabled()) {
-                log.info("Intercepting loading of configuration!");
+                log.info("Intercepting loading of configuration! [code=(IMSCOI0052)]");
             }
             final var config = loadConfig(properties);
             config.setProperty("preInterceptor", true);
@@ -54,7 +54,7 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
         final var config = getConfiguration(properties);
 
         if (log.isInfoEnabled()) {
-            log.info("Importing configuration from file");
+            log.info("Importing configuration from file. [code=(IMSCOI0053)]");
         }
 
         return SERIALIZER.deserialize(config, ConfigurationModel.class);
@@ -70,7 +70,7 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
 
     private String getClassPathConfig(final ConfigProperties properties) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info("Loading config from classpath: {}", properties.getPath());
+            log.info("Loading config from classpath: {} [code=(IMSCOI0054)]", properties.getPath());
         }
 
         final var configurationStream = new ClassPathResource(properties.getPath()).getInputStream();
@@ -82,7 +82,8 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
 
     private String getAbsolutePathConfig(final ConfigProperties properties) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info("Loading config from absolute Path {}", properties.getPath());
+            log.info("Loading config from absolute Path {} [code=(IMSCOI0055)]",
+                     properties.getPath());
         }
 
         final var fis = new FileInputStream(properties.getPath());

@@ -320,7 +320,7 @@ public class KeyStoreManager {
             }
         }
         if (log.isInfoEnabled()) {
-            log.info("Successfully loaded {}.", keyStoreType);
+            log.info("Successfully loaded {}. [code=(IMSCOI0049)]", keyStoreType);
         }
         return store;
     }
