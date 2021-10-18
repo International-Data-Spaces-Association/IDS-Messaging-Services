@@ -97,8 +97,8 @@ public final class DapsVerifier {
                         if (!result.isSuccess()) {
                             //if a rule fails, reject token
                             if (log.isWarnEnabled()) {
-                                log.warn("Custom DAT validation rule failed! [message=({})]",
-                                         result.getMessage());
+                                log.warn("Custom DAT validation rule failed! [code=(IMSCOW0035),"
+                                         + " message=({})]", result.getMessage());
                             }
 
                             throw new ClaimsException(String.format(
@@ -123,7 +123,7 @@ public final class DapsVerifier {
             return true;
         } catch (NullPointerException e) {
             if (log.isWarnEnabled()) {
-                log.warn("Could not verify DAT Claims!");
+                log.warn("Could not verify DAT Claims! [code=(IMSCOW0036)]");
             }
 
             throw new ClaimsException(e.getMessage());

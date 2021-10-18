@@ -184,13 +184,15 @@ public class ClientProvider {
                     if (proxyHost == null || proxyHost.trim().equals("")) {
                         if (log.isWarnEnabled()) {
                             log.warn("Proxy hostname invalid! Trying to skip using this proxy!"
-                                     + " Please check configuration! [hostname=({})]", proxyHost);
+                                     + " Please check configuration! [code=(IMSCOW0030),"
+                                     + " hostname=({})]", proxyHost);
                         }
                         proxyList.add(Proxy.NO_PROXY);
                     } else if (proxyPort == -1) {
                         if (log.isWarnEnabled()) {
                             log.warn("Proxy port invalid! Trying to skip using this proxy!"
-                                    + " Please check configuration! [port=({})]", proxyPort);
+                                    + " Please check configuration! [code=(IMSCOW0031),"
+                                     + " port=({})]", proxyPort);
                         }
                         proxyList.add(Proxy.NO_PROXY);
                     } else {
@@ -264,7 +266,8 @@ public class ClientProvider {
             throws NoSuchAlgorithmException, KeyManagementException {
         if (log.isWarnEnabled()) {
             log.warn("Trustmanager is trusting all Certificates in "
-                     + "TEST_DEPLOYMENT mode, you should not use this in production!");
+                     + "TEST_DEPLOYMENT mode, you should not use this in production!"
+                     + " [code=(IMSCOW0032)]");
         }
 
         final var trustmanager = getAllTrustingTrustManager();

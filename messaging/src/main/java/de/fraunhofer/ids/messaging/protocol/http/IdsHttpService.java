@@ -163,7 +163,7 @@ public class IdsHttpService implements HttpService {
 
             if (!valid) {
                 if (log.isWarnEnabled()) {
-                    log.warn("DAT of incoming response is not valid!");
+                    log.warn("DAT of incoming response is not valid! [code=(IMSMEW0045)]");
                 }
 
                 throw new ClaimsException("DAT of incoming response is not valid!");
@@ -395,7 +395,7 @@ public class IdsHttpService implements HttpService {
         if (!response.isSuccessful()) {
             if (log.isWarnEnabled()) {
                 log.warn("Received response but response-code not in 200-299."
-                          + " [code=({})]", response.code());
+                          + " [code=(IMSMEW0046), response-code=({})]", response.code());
             }
         } else {
             if (log.isInfoEnabled()) {

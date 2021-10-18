@@ -137,7 +137,7 @@ public class MessageController {
                     log.warn("Infomodel model-version validation of received messages is switched"
                              + " on. Model-version of incoming message not supported."
                              + " Sending BAD_REQUEST response as a result."
-                             + " [response-message=({})]", errorMessage);
+                             + " [code=(IMSMEW0042), response-message=({})]", errorMessage);
                 }
 
                 return ResponseEntity
@@ -206,8 +206,8 @@ public class MessageController {
         } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Incoming message could not be parsed, sending response BAD_REQUEST"
-                         + " with RejectionReason.MALFORMED_MESSAGE! [exception=({})]",
-                         e.getMessage());
+                         + " with RejectionReason.MALFORMED_MESSAGE! [code=(IMSMEW0043),"
+                         + " exception=({})]", e.getMessage());
             }
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -217,8 +217,8 @@ public class MessageController {
         } catch (ServletException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Incoming request was not multipart!"
-                         + " Sending INTERNAL_SERVER_ERROR as response [exception=({})]",
-                         e.getMessage());
+                         + " Sending INTERNAL_SERVER_ERROR as response [code=(IMSMEW0044),"
+                         + " exception=({})]", e.getMessage());
             }
 
             return ResponseEntity
