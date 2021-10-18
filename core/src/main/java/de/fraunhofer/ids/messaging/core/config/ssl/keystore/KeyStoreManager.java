@@ -123,14 +123,16 @@ public class KeyStoreManager {
             }
             initClassVars(configurationModel, keystorePw, trustStorePw, keyAlias);
         } catch (IOException e) {
-            throwKeyStoreInitException(e, "Key- or Truststore could not be loaded!");
+            throwKeyStoreInitException(e, "Key- or Truststore could not be loaded!"
+                                          + " [code=(IMSCOE0010)]");
         } catch (CertificateException | NoSuchAlgorithmException e) {
-            throwKeyStoreInitException(e, "Error while loading a Certificate!");
+            throwKeyStoreInitException(e, "Error while loading a Certificate! [code=(IMSCOE0011)]");
         } catch (UnrecoverableKeyException e) {
             throwKeyStoreInitException(e,
-               "Could not initialize Key/Truststore: password is incorrect!");
+               "Could not initialize Key/Truststore: password is incorrect! [code=(IMSCOE0012)]");
         } catch (KeyStoreException e) {
-            throwKeyStoreInitException(e, "Initialization of Key- or Truststore failed!");
+            throwKeyStoreInitException(e, "Initialization of Key- or Truststore failed!"
+                                        + " [code=(IMSCOE0013)]");
         }
     }
 
@@ -279,8 +281,8 @@ public class KeyStoreManager {
                 is.close();
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Could not find {} aborting! [exception=({})]", keyStoreType,
-                              e.getMessage());
+                    log.error("Could not find {} aborting! [code=(IMSCOE0014),"
+                              + " exception=({})]", keyStoreType, e.getMessage());
                 }
                 throwKeyStoreInitException(e, e.getMessage());
             }
@@ -311,8 +313,8 @@ public class KeyStoreManager {
 
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Could not find {} at system scope, aborting! [exception=({})]",
-                              keyStoreType, e.getMessage());
+                    log.error("Could not find {} at system scope, aborting! [code=(IMSCOE0015),"
+                              + " exception=({})]", keyStoreType, e.getMessage());
                 }
                 throwKeyStoreInitException(e, e.getMessage());
             }
@@ -336,7 +338,7 @@ public class KeyStoreManager {
             if (log.isErrorEnabled()) {
                 log.error("Location input for keystore-path from connector configuration"
                           + " is not valid!"
-                         + " [type=({}), location=(null)]", keyStoreType);
+                         + " [code=(IMSCOE0016), type=({}), location=(null)]", keyStoreType);
             }
             throw new KeyStoreManagerInitializationException(
                     "Location input for keystore-path is null! Type: " + keyStoreType);
@@ -350,8 +352,8 @@ public class KeyStoreManager {
             store = KeyStore.getInstance(KeyStore.getDefaultType());
         } catch (KeyStoreException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not create a KeyStore with default type! [exception=({})]",
-                          e.getMessage());
+                log.error("Could not create a KeyStore with default type! [code=(IMSCOE0017),"
+                          + "exception=({})]", e.getMessage());
             }
         }
         return store;
@@ -416,8 +418,8 @@ public class KeyStoreManager {
             if (log.isErrorEnabled()) {
                 log.error("Keystoremanager: No private key for the given alias found"
                           + " within the Keystore! Given alias does not exist"
-                          + " or does not identify a key-related entry! [alias=({})]",
-                          keyAlias);
+                          + " or does not identify a key-related entry! [code=(IMSCOE0018),"
+                          + "alias=({})]", keyAlias);
             }
             throw new KeyStoreException("Keystoremanager: No private key for the given alias found"
                                         + " within the Keystore! Given alias does not exist"

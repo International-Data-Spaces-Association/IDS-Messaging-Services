@@ -196,7 +196,7 @@ public class MessageController {
             if (log.isErrorEnabled()) {
                 log.error("Error during pre-processing with a PreDispatchingFilter!"
                           + " Sending BAD_REQUEST as response."
-                          + " [exception=({})]", e.getMessage());
+                          + " [code=(IMSMEE0021), exception=({})]", e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(createDefaultErrorMessage(
@@ -313,7 +313,7 @@ public class MessageController {
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
                 log.error("Serializer threw exception while creating default rejection message!"
-                          + " [exception=({})]", e.getMessage());
+                          + " [code=(IMSMEE0022), exception=({})]", e.getMessage());
             }
             return null;
         }

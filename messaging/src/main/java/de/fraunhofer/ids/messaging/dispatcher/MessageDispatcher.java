@@ -162,8 +162,8 @@ public class MessageDispatcher {
                 if (!result.isSuccess()) {
                     if (log.isErrorEnabled()) {
                         log.error("A preDispatchingFilter failed, sending"
-                              + " response RejectionReason.MALFORMED_MESSAGE! [result=({})]",
-                                  result.getMessage());
+                              + " response RejectionReason.MALFORMED_MESSAGE! [code=(IMSMEE0019),"
+                              + " result=({})]", result.getMessage());
                     }
 
                     return ErrorResponse.withDefaultHeader(

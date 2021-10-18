@@ -79,7 +79,8 @@ public class EndpointService {
                     .getDeclaredMethod("handleIDSMessage", HttpServletRequest.class));
         } catch (NoSuchMethodException e) {
             if (log.isErrorEnabled()) {
-                log.error("MessageController could not be found for mapping route!");
+                log.error("MessageController could not be found for mapping route!"
+                          + " [code=(IMSMEE0020)]");
             }
         }
     }

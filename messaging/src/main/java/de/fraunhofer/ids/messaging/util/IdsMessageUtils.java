@@ -125,7 +125,8 @@ public final class IdsMessageUtils {
                                 .getResourceAsStream("project.properties")));
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not read property from pom! [exception=({})]", e.getMessage());
+                log.error("Could not read property from pom! [code=(IMSMEE0025),"
+                          + " exception=({})]", e.getMessage());
             }
             throw e;
         }
@@ -148,7 +149,7 @@ public final class IdsMessageUtils {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
         } catch (DatatypeConfigurationException e) {
             if (log.isErrorEnabled()) {
-                log.error(e.getMessage());
+                log.error("[code=(IMSMEE0026)] " + e.getMessage());
             }
         }
         return null;

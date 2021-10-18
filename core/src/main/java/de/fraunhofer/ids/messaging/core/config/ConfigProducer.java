@@ -78,7 +78,8 @@ public class ConfigProducer {
                 configModel = preInterceptor.get().perform(properties);
             } catch (ConfigProducerInterceptorException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("PreConfigProducerInterceptor failed! [exception=({})]",
+                    log.error("PreConfigProducerInterceptor failed! [code=(IMSCOE0005),"
+                              + " exception=({})]",
                               e.getMessage());
                 }
             }
@@ -90,7 +91,7 @@ public class ConfigProducer {
                 }
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Configuration cannot be parsed! [exception=({})]",
+                    log.error("Configuration cannot be parsed! [code=(IMSCOE0006), exception=({})]",
                               e.getMessage());
                 }
             }
@@ -116,8 +117,8 @@ public class ConfigProducer {
                             } catch (ConfigProducerInterceptorException e) {
                                 if (log.isErrorEnabled()) {
                                     log.error(
-                                        "PreConfigProducerInterceptor failed! [exception=({})]",
-                                        e.getMessage());
+                                        "PreConfigProducerInterceptor failed! [code=(IMSCOE0007),"
+                                        + " exception=({})]", e.getMessage());
                                 }
                             }
                         }
@@ -125,13 +126,13 @@ public class ConfigProducer {
 
             } catch (KeyStoreManagerInitializationException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("KeyStoreManager could not be initialized! [exception=({})]",
-                              e.getMessage());
+                    log.error("KeyStoreManager could not be initialized! [code=(IMSCOE0008),"
+                              + " exception=({})]", e.getMessage());
                 }
             } catch (NoSuchAlgorithmException | KeyManagementException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("ClientProvider could not be initialized! [exception=({})]",
-                              e.getMessage());
+                    log.error("ClientProvider could not be initialized! [code=(IMSCOE0009),"
+                              + " exception=({})]", e.getMessage());
                 }
             }
         }

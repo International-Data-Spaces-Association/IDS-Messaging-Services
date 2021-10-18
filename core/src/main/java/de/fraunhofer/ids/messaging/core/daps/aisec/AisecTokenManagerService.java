@@ -238,7 +238,8 @@ public class AisecTokenManagerService implements TokenManagerService {
         if (log.isErrorEnabled()) {
             log.error(
                     "PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! "
-                    + "No DAT could be acquired from DAPS! [reason=({})]", error);
+                    + "No DAT could be acquired from DAPS! [code=(IMSCOE0001),"
+                    + " reason=({})]", error);
         }
     }
 

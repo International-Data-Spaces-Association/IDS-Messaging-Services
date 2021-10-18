@@ -108,8 +108,8 @@ public final class DapsVerifier {
                         //if a rule throws an exception, log exception and reject token
                         if (log.isErrorEnabled()) {
                             log.error(
-                                "Exception thrown by custom DAT validation rule! [exception=({})]",
-                                e.getMessage());
+                                "Exception thrown by custom DAT validation rule!"
+                                + " [code=(IMSCOE0002), exception=({})]", e.getMessage());
                         }
                         throw new ClaimsException(String.format(
                             "Custom Rule threw Exception! Message: %s", e.getMessage()));
