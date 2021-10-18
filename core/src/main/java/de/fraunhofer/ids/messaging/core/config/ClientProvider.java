@@ -444,7 +444,8 @@ public class ClientProvider {
         }
         if (callTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting call timeout. [code=(IMSCOD0080), timeout=({})]", callTimeout.toString());
+                log.debug("Setting call timeout. [code=(IMSCOD0080), timeout=({})]",
+                          callTimeout.toString());
             }
             builder.callTimeout(callTimeout);
         }
