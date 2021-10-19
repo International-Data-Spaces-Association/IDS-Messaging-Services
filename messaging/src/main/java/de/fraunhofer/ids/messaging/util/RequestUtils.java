@@ -48,7 +48,8 @@ public final class RequestUtils {
             buffer.close();
         } catch (IOException | NullPointerException e) {
             if (log.isErrorEnabled()) {
-                log.error("Printing failed! [error=({})]", e.getClass().toString());
+                log.error("Printing failed! [code=(IMSMEE0027), error=({})]",
+                          e.getClass().toString());
             }
         }
 
@@ -62,7 +63,7 @@ public final class RequestUtils {
      */
     public static void logRequest(final Request request) {
         if (log.isInfoEnabled()) {
-            log.info(printRequest(request));
+            log.info(printRequest(request) + " [code=(IMSMEI0047)]");
         }
     }
 }

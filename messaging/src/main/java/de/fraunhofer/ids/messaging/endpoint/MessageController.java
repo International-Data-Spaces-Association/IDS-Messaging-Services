@@ -100,7 +100,7 @@ public class MessageController {
             final HttpServletRequest request) {
         try {
             if (log.isInfoEnabled()) {
-                log.info("Received incoming message.");
+                log.info("Received incoming message. [code=(IMSMEI0056)]");
             }
 
             final var headerPart =
@@ -110,7 +110,7 @@ public class MessageController {
 
             if (headerPart == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Header of incoming message were empty!");
+                    log.debug("Header of incoming message were empty! [code=(IMSMED0119)]");
                 }
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -122,7 +122,7 @@ public class MessageController {
             String input;
 
             if (log.isDebugEnabled()) {
-                log.debug("Parsing header of incoming message.");
+                log.debug("Parsing header of incoming message. [code=(IMSMED0120)]");
             }
 
             try (var scanner = new Scanner(headerPart.getInputStream(),
@@ -137,7 +137,7 @@ public class MessageController {
                     log.warn("Infomodel model-version validation of received messages is switched"
                              + " on. Model-version of incoming message not supported."
                              + " Sending BAD_REQUEST response as a result."
-                             + " [response-message=({})]", errorMessage);
+                             + " [code=(IMSMEW0042), response-message=({})]", errorMessage);
                 }
 
                 return ResponseEntity
@@ -151,7 +151,8 @@ public class MessageController {
             final var requestHeader = serializer.deserialize(input, Message.class);
 
             if (log.isDebugEnabled()) {
-                log.debug("Hand the incoming message to the message dispatcher!");
+                log.debug("Hand the incoming message to the message dispatcher!"
+                          + " [code=(IMSMED0121)]");
             }
 
             //pass null if payloadPart is null, else pass it as inputStream
@@ -168,7 +169,7 @@ public class MessageController {
                 // return the ResponseEntity as Multipart content
                 // with created MultiValueMap
                 if (log.isInfoEnabled()) {
-                    log.info("Sending response with status OK (200).");
+                    log.info("Sending response with status OK (200). [code=(IMSMEI0057)]");
                 }
 
                 return ResponseEntity
@@ -181,11 +182,12 @@ public class MessageController {
 
                 if (log.isDebugEnabled()) {
                     log.debug("Implemented Message-Handler didn't return a response,"
-                              + " sending status OK instead as response!");
+                              + " sending status OK instead as response! [code=(IMSMED0122)]");
                 }
 
                 if (log.isInfoEnabled()) {
-                    log.info("Sending response with status OK (200) without body.");
+                    log.info("Sending response with status OK (200) without body."
+                             + " [code=(IMSMEI0058)]");
                 }
 
                 return ResponseEntity
@@ -196,7 +198,7 @@ public class MessageController {
             if (log.isErrorEnabled()) {
                 log.error("Error during pre-processing with a PreDispatchingFilter!"
                           + " Sending BAD_REQUEST as response."
-                          + " [exception=({})]", e.getMessage());
+                          + " [code=(IMSMEE0021), exception=({})]", e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(createDefaultErrorMessage(
@@ -206,8 +208,8 @@ public class MessageController {
         } catch (IOException | SerializeException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Incoming message could not be parsed, sending response BAD_REQUEST"
-                         + " with RejectionReason.MALFORMED_MESSAGE! [exception=({})]",
-                         e.getMessage());
+                         + " with RejectionReason.MALFORMED_MESSAGE! [code=(IMSMEW0043),"
+                         + " exception=({})]", e.getMessage());
             }
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -217,8 +219,8 @@ public class MessageController {
         } catch (ServletException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Incoming request was not multipart!"
-                         + " Sending INTERNAL_SERVER_ERROR as response [exception=({})]",
-                         e.getMessage());
+                         + " Sending INTERNAL_SERVER_ERROR as response [code=(IMSMEW0044),"
+                         + " exception=({})]", e.getMessage());
             }
 
             return ResponseEntity
@@ -243,11 +245,11 @@ public class MessageController {
             return false;
         } else if (!validateInfVer) {
             if (log.isDebugEnabled()) {
-                log.debug("Skipped validating infomodel compability!");
+                log.debug("Skipped validating infomodel compability! [code=(IMSMED0123)]");
             }
         } else {
             if (log.isInfoEnabled()) {
-                log.info("Successfully validated infomodel compability.");
+                log.info("Successfully validated infomodel compability. [code=(IMSMEI0059)]");
             }
         }
 
@@ -263,7 +265,7 @@ public class MessageController {
     private MultiValueMap<String, Object> createMultiValueMap(
             final Map<String, Object> map) {
         if (log.isDebugEnabled()) {
-            log.debug("Creating MultiValueMap for the response");
+            log.debug("Creating MultiValueMap for the response... [code=(IMSMED0124)]");
         }
 
         final var multiMap = new LinkedMultiValueMap<String, Object>();
@@ -313,7 +315,7 @@ public class MessageController {
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
                 log.error("Serializer threw exception while creating default rejection message!"
-                          + " [exception=({})]", e.getMessage());
+                          + " [code=(IMSMEE0022), exception=({})]", e.getMessage());
             }
             return null;
         }

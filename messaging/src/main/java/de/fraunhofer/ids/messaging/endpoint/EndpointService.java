@@ -53,7 +53,7 @@ public class EndpointService {
         this.requestMappingHandlerMapping = requestMappingHandlerMapping;
 
         if (log.isDebugEnabled()) {
-            log.debug("Adding default mappings");
+            log.debug("Adding default mappings. [code=(IMSMED0063)]");
         }
 
         addMapping("/api/ids/data");
@@ -67,7 +67,7 @@ public class EndpointService {
      */
     public void addMapping(final String url) {
         if (log.isDebugEnabled()) {
-            log.debug("Adding an endpoint mapping. [endpoint=({})]", url);
+            log.debug("Adding an endpoint mapping. [code=(IMSMED0064), endpoint=({})]", url);
         }
 
         final var requestMappingInfo = getRequestMappingInfo(url);
@@ -79,7 +79,8 @@ public class EndpointService {
                     .getDeclaredMethod("handleIDSMessage", HttpServletRequest.class));
         } catch (NoSuchMethodException e) {
             if (log.isErrorEnabled()) {
-                log.error("MessageController could not be found for mapping route!");
+                log.error("MessageController could not be found for mapping route!"
+                          + " [code=(IMSMEE0020)]");
             }
         }
     }
@@ -92,7 +93,7 @@ public class EndpointService {
      */
     public void removeMapping(final String url) {
         if (log.isDebugEnabled()) {
-            log.debug("Removing endpoint mapping. [endpoint=({})]", url);
+            log.debug("Removing endpoint mapping. [code=(IMSMED0065), endpoint=({})]", url);
         }
 
         final var requestMappingInfo = getRequestMappingInfo(url);

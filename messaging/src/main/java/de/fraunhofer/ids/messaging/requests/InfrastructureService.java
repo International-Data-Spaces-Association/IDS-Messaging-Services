@@ -156,7 +156,7 @@ public abstract class InfrastructureService  {
      */
     protected void logBuildingHeader() {
         if (log.isDebugEnabled()) {
-            log.debug("Building message header");
+            log.debug("Building message header... [code=(IMSMED0141)]");
         }
     }
 }
