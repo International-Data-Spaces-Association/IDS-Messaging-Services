@@ -11,6 +11,13 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.0.2] UNRELEASED
 
+### Patch Change: Enhancements
+- Log Error Codes: Syntax IMS-XY-L-1234 shortened to IMSXYL1234. Will e.g. log as [code=(IMSCOE0001)]. ([PR 332](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/332))
+  - IMS = IDS-Messaging-Services
+  - XY = Subsystem Module (CO Core, AP AppStore, BR Broker, CL ClearingHouse, ME Messaging, PA Paris, VO Vocol)
+  - L = Event Severity (E Error, W Warn, I Info, D Debug)
+  - 1234 = Error number
+
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.2.5 ([PR 330](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/330))
 - Used Artifacts: java, infomodel-serializer, interaction

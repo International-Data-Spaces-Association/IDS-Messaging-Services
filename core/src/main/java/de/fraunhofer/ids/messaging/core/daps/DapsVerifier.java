@@ -86,7 +86,7 @@ public final class DapsVerifier {
                 throw new ClaimsException("The token's not before time is invalid");
             }
             if (log.isDebugEnabled()) {
-                log.debug("Checking custom rules...");
+                log.debug("Checking custom rules... [code=(IMSCOD0100)]");
             }
             //check custom dat rules
             if (!datValidationRules.isEmpty()) {
@@ -97,8 +97,8 @@ public final class DapsVerifier {
                         if (!result.isSuccess()) {
                             //if a rule fails, reject token
                             if (log.isWarnEnabled()) {
-                                log.warn("Custom DAT validation rule failed! [message=({})]",
-                                         result.getMessage());
+                                log.warn("Custom DAT validation rule failed! [code=(IMSCOW0035),"
+                                         + " message=({})]", result.getMessage());
                             }
 
                             throw new ClaimsException(String.format(
@@ -108,8 +108,8 @@ public final class DapsVerifier {
                         //if a rule throws an exception, log exception and reject token
                         if (log.isErrorEnabled()) {
                             log.error(
-                                "Exception thrown by custom DAT validation rule! [exception=({})]",
-                                e.getMessage());
+                                "Exception thrown by custom DAT validation rule!"
+                                + " [code=(IMSCOE0002), exception=({})]", e.getMessage());
                         }
                         throw new ClaimsException(String.format(
                             "Custom Rule threw Exception! Message: %s", e.getMessage()));
@@ -117,13 +117,13 @@ public final class DapsVerifier {
                 }
             }
             if (log.isInfoEnabled()) {
-                log.info("Successfully verified DAT claims.");
+                log.info("Successfully verified DAT claims. [code=(IMSCOI0049)]");
             }
 
             return true;
         } catch (NullPointerException e) {
             if (log.isWarnEnabled()) {
-                log.warn("Could not verify DAT Claims!");
+                log.warn("Could not verify DAT Claims! [code=(IMSCOW0036)]");
             }
 
             throw new ClaimsException(e.getMessage());
