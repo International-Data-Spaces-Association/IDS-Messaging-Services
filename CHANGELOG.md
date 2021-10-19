@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
   - XY = Subsystem Module (CO Core, AP AppStore, BR Broker, CL ClearingHouse, ME Messaging, PA Paris, VO Vocol)
   - L = Event Severity (E Error, W Warn, I Info, D Debug)
   - 1234 = Error number
+- Add `referred.check` flag, to enable comparison between DAT referringConnector and message issuer. ([PR 329](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/329))
 
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.2.5 ([PR 330](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/330))
