@@ -37,6 +37,7 @@ import de.fraunhofer.ids.messaging.response.MessageResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * The MessageDispatcher takes all incoming Messages, applies all defined PreDispatchingFilters
@@ -45,6 +46,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MessageDispatcher {
+
+    @Value("${referred.check:false}")
+    private boolean referringCheck;
 
     /**
      * The ObjectMapper.
@@ -132,8 +136,7 @@ public class MessageDispatcher {
                 final var claims =
                         dapsValidator.getClaims(header.getSecurityToken());
 
-                //TODO add application properties switch to deactivate check
-                if (!claims.getBody().get("referringConnector")
+                if (referringCheck && !claims.getBody().get("referringConnector")
                         .equals(header.getIssuerConnector())) {
                     return ErrorResponse.withDefaultHeader(
                             RejectionReason.BAD_PARAMETERS,
