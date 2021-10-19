@@ -48,7 +48,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class MessageDispatcher {
 
     /**
-     * Flag for checking referredConnector
+     * Flag for checking referredConnector.
      */
     @Value("${referred.check:false}")
     private boolean referringCheck;
