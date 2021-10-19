@@ -164,7 +164,7 @@ public class MessageDispatcher {
         //apply all preDispatchingFilters to the message
         for (final var preDispatchingFilter : this.preDispatchingFilters) {
             if (log.isDebugEnabled()) {
-                log.debug("Applying a preDispatchingFilter");
+                log.debug("Applying a preDispatchingFilter... [code=(IMSMED0115)]");
             }
 
             try {
@@ -172,8 +172,8 @@ public class MessageDispatcher {
                 if (!result.isSuccess()) {
                     if (log.isErrorEnabled()) {
                         log.error("A preDispatchingFilter failed, sending"
-                              + " response RejectionReason.MALFORMED_MESSAGE! [result=({})]",
-                                  result.getMessage());
+                              + " response RejectionReason.MALFORMED_MESSAGE! [code=(IMSMEE0019),"
+                              + " result=({})]", result.getMessage());
                     }
 
                     return ErrorResponse.withDefaultHeader(
@@ -184,8 +184,8 @@ public class MessageDispatcher {
                 }
             } catch (Exception e) {
                 if (log.isDebugEnabled()) {
-                    log.debug("A preDispatchingFilter threw an exception! [exception=({})]",
-                              e.getMessage());
+                    log.debug("A preDispatchingFilter threw an exception! [code=(IMSMED0116),"
+                              + " exception=({})]", e.getMessage());
                 }
 
                 throw new PreDispatchingFilterException(e);
@@ -217,7 +217,7 @@ public class MessageDispatcher {
                 }
             } catch (MessageHandlerException e) {
                 if (log.isDebugEnabled()) {
-                    log.debug("The message handler threw an exception!");
+                    log.debug("The message handler threw an exception! [code=(IMSMED0117)]");
                 }
 
                 return ErrorResponse.withDefaultHeader(
@@ -228,7 +228,8 @@ public class MessageDispatcher {
             }
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("No message handler exists! [type=({})]", header.getClass());
+                log.debug("No message handler exists! [code=(IMSMED0118), type=({})]",
+                          header.getClass());
             }
 
             //If no handler for the type exists, the message type isn't supported

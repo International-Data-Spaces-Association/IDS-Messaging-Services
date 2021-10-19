@@ -25,9 +25,9 @@ The following IDS-Infomodel-Artifacts are used as dependencies.
 
 | Group | Artifact | Version |
 | ------ | ------ | ------ | 
-| de.fraunhofer.iais.eis.ids.infomodel | java | 4.2.4 |
-| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.2.4 |
-| de.fraunhofer.iais.eis.ids | interaction | 4.2.4 |
+| de.fraunhofer.iais.eis.ids.infomodel | java | 4.2.5 |
+| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.2.5 |
+| de.fraunhofer.iais.eis.ids | interaction | 4.2.5 |
 
 ## Overview: Supported IDS-Message protocols
 
@@ -199,6 +199,15 @@ The sendAndCheckDat() returns a Map<String, String> where, for example, response
 
 For extended instructions and info on the other modules, see the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki">GitHub-Wiki</a>.
 
+## Other: Log Error Codes
+
+Syntax: IMS-XY-L-1234, shortened to: IMSXYL1234
+ - IMS = IDS-Messaging-Services
+ - XY = Subsystem Module (CO Core, AP AppStore, BR Broker, CL ClearingHouse, ME Messaging, PA Paris, VO Vocol)
+ - L = Event Severity (E Error, W Warn, I Info, D Debug)
+ - 1234 = Error number
+Will e.g. print as [code=(IMSCOE0001)], IDS-Messaging-Services Core-Module Error 0001.
+
 ## Other: Project-Wiki
 
 This project has a <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki">GitHub-Wiki</a> where more details about the individual java-modules and their functionalities are documented.
@@ -207,13 +216,9 @@ This project has a <a href="https://github.com/International-Data-Spaces-Associa
 
 You are very welcome to contribute to this project when you find a bug, want to suggest an improvement, or have an idea for a useful feature. Please find a set of guidelines at the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/blob/main/CONTRIBUTING.md">CONTRIBUTING-Guideline</a> and the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/blob/main/CODE_OF_CONDUCT.md">CODE_OF_CONDUCT-Guideline</a>.
 
-## Other: Contact Persons
+## Other: Questions and suggestions
 
-For any questions or suggestions that cannot be solved via <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues">GitHub-Issues</a> or the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/discussions">GitHub-Discussion</a> area, the following contacts are available:
-* [Matthias Böckmann](https://github.com/maboeckmann), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
-* [Stefanie Koslowski](https://github.com/stefkoslowski), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
-* [Tim Berthold](https://github.com/tmberthold), [Fraunhofer ISST](https://www.isst.fraunhofer.de/en.html)
-* [Erik van den Akker](https://github.com/vdakker), [Fraunhofer ISST](https://www.isst.fraunhofer.de/en.html)
+For any questions or suggestions please refer to the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues">GitHub-Issues</a> or the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/discussions">GitHub-Discussion</a> area.
 
 ## Other: License
 

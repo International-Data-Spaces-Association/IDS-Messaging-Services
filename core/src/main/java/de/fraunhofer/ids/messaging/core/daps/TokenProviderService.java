@@ -129,7 +129,8 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
             DapsEmptyResponseException {
         if (this.currentJwt == null || isExpired(currentJwt)) {
             if (log.isDebugEnabled()) {
-                log.debug("Requesting a new DAT Token from DAPS! [url=({})]", dapsTokenUrl);
+                log.debug("Requesting a new DAT Token from DAPS! [code=(IMSCOD0101), url=({})]",
+                          dapsTokenUrl);
             }
 
             currentJwt = tokenManagerService.acquireToken(dapsTokenUrl);
@@ -150,7 +151,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Provide public key!");
+            log.debug("Provide public key! [code=(IMSCOD0102)]");
         }
 
         return publicKeys;
@@ -168,7 +169,8 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         for (final var entry : urlKidMap.entrySet()) {
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug("Getting json web keyset. [key=({})]", entry.getKey());
+                    log.debug("Getting json web keyset. [code=(IMSCOD0103), key=({})]",
+                              entry.getKey());
                 }
 
                 final var request = new Request.Builder().url(entry.getKey()).build();
@@ -186,18 +188,19 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                 } else {
                     if (log.isWarnEnabled()) {
                         log.warn("Could not get JsonWebKey from received KeySet! PublicKey is null!"
-                                 + "[kid=({})]", entry.getValue());
+                                 + "[code=(IMSCOW0037), kid=({})]", entry.getValue());
                     }
                 }
             } catch (IOException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not load the key. [key=({}), exception=({})]", entry.getKey(),
+                    log.warn("Could not load the key. [code=(IMSCOW0038),"
+                             + " key=({}), exception=({})]", entry.getKey(),
                              e.getMessage());
                 }
             } catch (JoseException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Could not create JsonWebKeySet from response! [exception=({})]",
-                             e.getMessage());
+                    log.warn("Could not create JsonWebKeySet from response! [code=(IMSCOW0039),"
+                             + " exception=({})]", e.getMessage());
                 }
             }
         }
@@ -219,7 +222,8 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         } catch (ClaimsException e) {
             if (configContainer.getConfigurationModel().getConnectorDeployMode()
                 != ConnectorDeployMode.TEST_DEPLOYMENT && log.isWarnEnabled()) {
-                    log.warn("Could not parse JWT! Treat JWT as having expired.");
+                    log.warn("Could not parse JWT! Treat JWT as having expired."
+                             + " [code=(IMSCOW0040)]");
             }
 
             return true;
