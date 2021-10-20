@@ -23,7 +23,7 @@ public class PostConfigInterceptor implements PostConfigProducerInterceptor {
     @Override
     public void perform(final ConfigContainer configContainer) {
         if (log.isInfoEnabled()) {
-            log.info("Modifying configuration using interceptor interface. [code=(IMSCOI0051)]");
+            log.info("Modifying configuration using interceptor interface.");
         }
         final var conf = configContainer.getConfigurationModel();
         conf.setProperty("modified", true);

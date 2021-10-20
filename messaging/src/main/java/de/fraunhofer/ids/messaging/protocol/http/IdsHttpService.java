@@ -119,7 +119,7 @@ public class IdsHttpService implements HttpService {
             }
 
             if (log.isInfoEnabled()) {
-                log.info("Successfully passed SHACL-Validation. [code=(IMSMEI0060)]");
+                log.info("Successfully passed SHACL-Validation.");
             }
         }
 
@@ -390,7 +390,7 @@ public class IdsHttpService implements HttpService {
         }
 
         if (log.isInfoEnabled()) {
-            log.info("Sending request to {} ... [code=(IMSMEI0061)]", request.url());
+            log.info("Sending request to {} ...", request.url());
         }
 
         final var response = client.newCall(request).execute();
@@ -402,7 +402,7 @@ public class IdsHttpService implements HttpService {
             }
         } else {
             if (log.isInfoEnabled()) {
-                log.info("Successfully received response to request. [code=(IMSMEI0062)]");
+                log.info("Successfully received response to request.");
             }
         }
 

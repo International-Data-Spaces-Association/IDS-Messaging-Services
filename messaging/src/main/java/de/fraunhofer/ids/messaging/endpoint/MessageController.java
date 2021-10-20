@@ -100,7 +100,7 @@ public class MessageController {
             final HttpServletRequest request) {
         try {
             if (log.isInfoEnabled()) {
-                log.info("Received incoming message. [code=(IMSMEI0056)]");
+                log.info("Received incoming message.");
             }
 
             final var headerPart =
@@ -169,7 +169,7 @@ public class MessageController {
                 // return the ResponseEntity as Multipart content
                 // with created MultiValueMap
                 if (log.isInfoEnabled()) {
-                    log.info("Sending response with status OK (200). [code=(IMSMEI0057)]");
+                    log.info("Sending response with status OK (200).");
                 }
 
                 return ResponseEntity
@@ -186,8 +186,7 @@ public class MessageController {
                 }
 
                 if (log.isInfoEnabled()) {
-                    log.info("Sending response with status OK (200) without body."
-                             + " [code=(IMSMEI0058)]");
+                    log.info("Sending response with status OK (200) without body.");
                 }
 
                 return ResponseEntity
@@ -249,7 +248,7 @@ public class MessageController {
             }
         } else {
             if (log.isInfoEnabled()) {
-                log.info("Successfully validated infomodel compability. [code=(IMSMEI0059)]");
+                log.info("Successfully validated infomodel compability.");
             }
         }
 
