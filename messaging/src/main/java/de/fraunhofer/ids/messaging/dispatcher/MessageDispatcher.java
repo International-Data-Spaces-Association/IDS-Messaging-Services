@@ -143,8 +143,10 @@ public class MessageDispatcher {
                         .equals(header.getIssuerConnector())) {
                     return ErrorResponse.withDefaultHeader(
                             RejectionReason.BAD_PARAMETERS,
-                            "ids:issuerConnector in message-header does not match"
-                            + " referringConnector in body of DAT claims!",
+                            "ids:issuerConnector in message-header"
+                            + " (" + header.getIssuerConnector() + ") does not match"
+                            + " referringConnector in body of DAT claims"
+                            + " (" + claims.getBody().get("referringConnector") + ")!",
                             connectorId,
                             modelVersion, header.getId());
                 }
