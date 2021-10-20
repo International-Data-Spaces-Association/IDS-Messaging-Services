@@ -37,10 +37,10 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.junit.jupiter:junit-jupiter-engine 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
 - Upgrade: org.junit.jupiter:junit-jupiter-api 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
 - Upgrade: org.junit.jupiter:junit-jupiter 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
-- Upgrade: com.squareup.okhttp3-okhttp 4.9.1 -> 4.9.2 ([PR 317](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/317))
-- Upgrade: com.squareup.okhttp3-mockwebserver 4.9.1 -> 4.9.2 ([PR 318](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/318))
-- Upgrade: com.puppycrawl.tools-checkstyle 9.0 -> 9.0.1 ([PR 319](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/319))
-- Upgrade: org.projectlombok-lombok 1.18.20 -> 1.18.22 ([PR 320](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/320))
+- Upgrade: com.squareup.okhttp3:okhttp 4.9.1 -> 4.9.2 ([PR 317](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/317))
+- Upgrade: com.squareup.okhttp3:mockwebserver 4.9.1 -> 4.9.2 ([PR 318](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/318))
+- Upgrade: com.puppycrawl.tools:checkstyle 9.0 -> 9.0.1 ([PR 319](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/319))
+- Upgrade: org.projectlombok:lombok 1.18.20 -> 1.18.22 ([PR 320](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/320))
 
 ## Version [5.0.1] 2021-09-21
 
