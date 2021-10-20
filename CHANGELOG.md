@@ -9,6 +9,40 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [5.1.0] 2021-10-20
+
+### Minor Change: Validation referringConnector vs ids:issuerConnector
+- New application.properties flag `referred.check=true/false`, to enable comparison between DAT claims `referringConnector` and `ids:issuerConnector` in message-header for the validation of incoming messages. Can only be used in `PRODUCTIVE_DEPLOYMENT`. Default if not set is `false` (not enabled). ([PR 329](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/329))
+- Automatically sends RejectionMessage on incoming messages if validation not passed. Example of text included in RejectionMessage: `ids:issuerConnector in message-header (https://w3id.org/idsa/autogen/baseConnector/691b3a17-1e09-4a5a-9d9a-5627772222e9) does not match referringConnector in body of DAT claims (http://isst_ids_framework_demo_connector.demo)!`
+
+### Patch Change: Enhancement Log-Codes
+- Log-codes now exist for different log-levels. They allow easy search for the code location that produced the log. No log-code will be printed for log-info level. ([PR 332](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/332))
+- Syntax: IMS-XY-L-1234 shortened to IMSXYL1234. Will e.g. log as [code=(IMSCOE0001)].
+  - IMS = IDS-Messaging-Services
+  - XY = Subsystem Module (CO Core, AP AppStore, BR Broker, CL ClearingHouse, ME Messaging, PA Paris, VO Vocol)
+  - L = Event Severity (E Error, W Warn, D Debug)
+  - 1234 = Error number
+
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.5 ([PR 330](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/330))
+- Used Artifacts: java, infomodel-serializer, interaction
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework:spring-core 5.3.10 -> 5.3.11 ([PR 326](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/326))
+- Upgrade: org.springframework:spring-tx 5.3.10 -> 5.3.11 ([PR 326](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/326))
+- Upgrade: org.springframework:spring-webmvc 5.3.10 -> 5.3.11 ([PR 326](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/326))
+- Upgrade: org.springframework:spring-web 5.3.10 -> 5.3.11 ([PR 326](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/326))
+- Upgrade: org.springframework:spring-test 5.3.10 -> 5.3.11 ([PR 326](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/326))
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.4 -> 2.5.5 ([PR 314](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/314))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.4 -> 2.5.5 ([PR 314](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/314))
+- Upgrade: org.junit.jupiter:junit-jupiter-engine 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+- Upgrade: org.junit.jupiter:junit-jupiter-api 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+- Upgrade: org.junit.jupiter:junit-jupiter 5.8.0 -> 5.8.1 ([PR 311](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/311))
+- Upgrade: com.squareup.okhttp3:okhttp 4.9.1 -> 4.9.2 ([PR 317](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/317))
+- Upgrade: com.squareup.okhttp3:mockwebserver 4.9.1 -> 4.9.2 ([PR 318](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/318))
+- Upgrade: com.puppycrawl.tools:checkstyle 9.0 -> 9.0.1 ([PR 319](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/319))
+- Upgrade: org.projectlombok:lombok 1.18.20 -> 1.18.22 ([PR 320](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/320))
+
 ## Version [5.0.1] 2021-09-21
 
 ### Patch Change: Dependency Maintenance

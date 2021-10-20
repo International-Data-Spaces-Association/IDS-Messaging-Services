@@ -138,7 +138,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
                 | IOException
                 | CertificateException e) {
             if (log.isWarnEnabled()) {
-                log.warn(e.getMessage(), e);
+                log.warn("[code=(IMSCOW0028)] " + e.getMessage(), e);
             }
         }
     }
@@ -281,7 +281,7 @@ public class OrbiterTokenManagerService implements TokenManagerService {
             return getDAT(client, request);
         } catch (IOException e) {
             if (log.isWarnEnabled()) {
-                log.warn(e.getMessage(), e);
+                log.warn("[code=(IMSCOW0029)] " + e.getMessage(), e);
             }
 
             return "";

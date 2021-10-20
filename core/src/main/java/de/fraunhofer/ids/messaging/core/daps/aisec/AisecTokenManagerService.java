@@ -120,7 +120,7 @@ public class AisecTokenManagerService implements TokenManagerService {
             final var connectorFingerprint = getConnectorFingerprint(keyStoreManager);
 
             if (log.isDebugEnabled()) {
-                log.debug("Retrieving Dynamic Attribute Token from DAPS...");
+                log.debug("Retrieving Dynamic Attribute Token from DAPS... [code=(IMSCOD0104)]");
             }
 
             final var jws = getRequestToken(targetAudience, privateKey, connectorFingerprint);
@@ -129,13 +129,13 @@ public class AisecTokenManagerService implements TokenManagerService {
             final var formBody = getFormBody(jws);
 
             if (log.isDebugEnabled()) {
-                log.debug("Getting client");
+                log.debug("Getting client... [code=(IMSCOD0105)]");
             }
 
             final var client = clientProvider.getClient();
 
             if (log.isDebugEnabled()) {
-                log.debug("Sending DAT request to DAPS. [url=({})]", dapsUrl);
+                log.debug("Sending DAT request to DAPS. [code=(IMSCOD0106), url=({})]", dapsUrl);
             }
             final var request = new Request.Builder().url(dapsUrl).post(formBody).build();
 
@@ -230,7 +230,8 @@ public class AisecTokenManagerService implements TokenManagerService {
         if (log.isWarnEnabled()) {
             log.warn(
                     "TEST_DEPLOYMENT: IDS-Message is sent without a valid DAT, "
-                    + "will not be sent in PRODUCTIVE_DEPLOYMENT. [reason=({})]", error);
+                    + "will not be sent in PRODUCTIVE_DEPLOYMENT. [code=(IMSCOW0041),"
+                    + " reason=({})]", error);
         }
     }
 
@@ -238,7 +239,8 @@ public class AisecTokenManagerService implements TokenManagerService {
         if (log.isErrorEnabled()) {
             log.error(
                     "PRODUCTIVE_DEPLOYMENT: No IDS-Message sent! "
-                    + "No DAT could be acquired from DAPS! [reason=({})]", error);
+                    + "No DAT could be acquired from DAPS! [code=(IMSCOE0001),"
+                    + " reason=({})]", error);
         }
     }
 
@@ -282,7 +284,7 @@ public class AisecTokenManagerService implements TokenManagerService {
 
         if (!jwtResponse.isSuccessful()) {
             if (log.isDebugEnabled()) {
-                log.debug("DAPS request was not successful");
+                log.debug("DAPS request was not successful! [code=(IMSCOD0107)]");
             }
 
             throw new IOException("Unexpected code " + jwtResponse);
@@ -319,14 +321,14 @@ public class AisecTokenManagerService implements TokenManagerService {
                                    final PrivateKey privateKey,
                                    final String connectorFingerprint) {
         if (log.isDebugEnabled()) {
-            log.debug("Building jwt token");
+            log.debug("Building jwt token... [code=(IMSCOD0108)]");
         }
 
         final var expiryDate = Date.from(Instant.now().plusSeconds(ONE_DAY_IN_SECONDS));
         final var jwtb = getJwtBuilder(targetAudience, connectorFingerprint, expiryDate);
 
         if (log.isDebugEnabled()) {
-            log.debug("Signing jwt token");
+            log.debug("Signing jwt token... [code=(IMSCOD0109)]");
         }
 
         return jwtb.signWith(SignatureAlgorithm.RS256, privateKey).compact();
@@ -398,7 +400,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     private byte[] getCertificateSKI(final X509Certificate cert)
             throws ConnectorMissingCertExtensionException {
         if (log.isDebugEnabled()) {
-            log.debug("Get SKI from certificate");
+            log.debug("Get SKI from certificate... [code=(IMSCOD0110)]");
         }
 
         final var skiOid = Extension.subjectKeyIdentifier.getId();
@@ -425,7 +427,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     private byte[] getCertificateAKI(final X509Certificate cert)
             throws ConnectorMissingCertExtensionException {
         if (log.isDebugEnabled()) {
-            log.debug("Get AKI from certificate");
+            log.debug("Get AKI from certificate... [code=(IMSCOD0111)]");
         }
 
         final var akiOid = Extension.authorityKeyIdentifier.getId();
@@ -461,7 +463,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     private X509Certificate getCertificate(final KeyStoreManager keyStoreManager) {
         if (log.isDebugEnabled()) {
-            log.debug("Getting Certificate from KeyStoreManager");
+            log.debug("Getting Certificate from KeyStoreManager... [code=(IMSCOD0112)]");
         }
 
         return (X509Certificate) keyStoreManager.getCert();
@@ -475,7 +477,7 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     private PrivateKey getPrivateKey(final KeyStoreManager keyStoreManager) {
         if (log.isDebugEnabled()) {
-            log.debug("Getting PrivateKey from KeyStoreManager");
+            log.debug("Getting PrivateKey from KeyStoreManager... [code=(IMSCOD0113)]");
         }
 
         return keyStoreManager.getPrivateKey();

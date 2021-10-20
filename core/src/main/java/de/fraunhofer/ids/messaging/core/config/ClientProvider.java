@@ -92,7 +92,8 @@ public class ClientProvider {
 
         if (connector.getConnectorDeployMode() == ConnectorDeployMode.PRODUCTIVE_DEPLOYMENT) {
             if (log.isDebugEnabled()) {
-                log.debug("Productive Deployment, use Trustmanager from KeyStoreManager");
+                log.debug("Productive Deployment, use Trustmanager from KeyStoreManager."
+                          + " [code=(IMSMED0066)]");
             }
 
             setSSLSocketFactory(manager, okHttpBuilder);
@@ -101,7 +102,7 @@ public class ClientProvider {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Created SSLSocketFactory");
+            log.debug("Created SSLSocketFactory. [code=(IMSCOD0067)]");
         }
 
         handleConnectorProxy(connector, okHttpBuilder);
@@ -125,7 +126,7 @@ public class ClientProvider {
 
             if (proxyConfiguration != null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Proxy is set active! Configuring Proxy.");
+                    log.debug("Proxy is set active! Configuring Proxy. [code=(IMSCOD0068)]");
                 }
 
                 //create and set Proxy Authenticator with BasicAuth if
@@ -135,7 +136,7 @@ public class ClientProvider {
                 //create a custom proxySelector (will select the proxy when
                 //request goes to host not in NO_PROXY list, and NO_PROXY otherwise)
                 if (log.isDebugEnabled()) {
-                    log.debug("Create a ProxySelector");
+                    log.debug("Creating a ProxySelector. [code=(IMSCOD0069)]");
                 }
                 setProxySelector(okHttpBuilder, proxyConfiguration);
             }
@@ -159,8 +160,8 @@ public class ClientProvider {
 
                 if (proxyConfiguration.getNoProxy().contains(uri)) {
                     if (log.isDebugEnabled()) {
-                        log.debug("URI is in NoProxy List, no proxy is used. [uri=({})]",
-                                  uri.toString());
+                        log.debug("URI is in NoProxy List, no proxy is used. [code=(IMSCOD0070),"
+                                  + " uri=({})]", uri.toString());
                     }
 
                     //if the called uri is in the Exceptions of the
@@ -168,8 +169,8 @@ public class ClientProvider {
                     proxyList.add(Proxy.NO_PROXY);
                 } else {
                     if (log.isDebugEnabled()) {
-                        log.debug("URI is not in NoProxy List, use configured Proxy [uri=({})]",
-                                  uri.toString());
+                        log.debug("URI is not in NoProxy List, use configured Proxy."
+                                  + " [code=(IMSCOD0071), uri=({})]", uri.toString());
                     }
 
                     //else use proxy with ProxyConfig
@@ -178,19 +179,22 @@ public class ClientProvider {
                     final int proxyPort = proxyAddress.getPort();
 
                     if (log.isDebugEnabled()) {
-                        log.debug("Address: [host=({})], Port: [port=({})]", proxyHost, proxyPort);
+                        log.debug("Address: [code=(IMSCOD0072), host=({}), port=({})]",
+                                  proxyHost, proxyPort);
                     }
 
                     if (proxyHost == null || proxyHost.trim().equals("")) {
                         if (log.isWarnEnabled()) {
                             log.warn("Proxy hostname invalid! Trying to skip using this proxy!"
-                                     + " Please check configuration! [hostname=({})]", proxyHost);
+                                     + " Please check configuration! [code=(IMSCOW0030),"
+                                     + " hostname=({})]", proxyHost);
                         }
                         proxyList.add(Proxy.NO_PROXY);
                     } else if (proxyPort == -1) {
                         if (log.isWarnEnabled()) {
                             log.warn("Proxy port invalid! Trying to skip using this proxy!"
-                                    + " Please check configuration! [port=({})]", proxyPort);
+                                    + " Please check configuration! [code=(IMSCOW0031),"
+                                     + " port=({})]", proxyPort);
                         }
                         proxyList.add(Proxy.NO_PROXY);
                     } else {
@@ -230,7 +234,7 @@ public class ClientProvider {
             && proxyConfiguration.getProxyAuthentication().getAuthPassword() != null) {
 
             if (log.isDebugEnabled()) {
-                log.debug("Setting Proxy Authenticator");
+                log.debug("Setting Proxy Authenticator. [code=(IMSCOD0073)]");
             }
 
             final Authenticator proxyAuthenticator = (route, response) -> {
@@ -248,7 +252,7 @@ public class ClientProvider {
             okHttpBuilder.proxyAuthenticator(proxyAuthenticator);
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("No Proxy Authentication credentials are set!");
+                log.debug("No Proxy Authentication credentials are set! [code=(IMSCOD0074)]");
             }
         }
     }
@@ -264,7 +268,8 @@ public class ClientProvider {
             throws NoSuchAlgorithmException, KeyManagementException {
         if (log.isWarnEnabled()) {
             log.warn("Trustmanager is trusting all Certificates in "
-                     + "TEST_DEPLOYMENT mode, you should not use this in production!");
+                     + "TEST_DEPLOYMENT mode, you should not use this in production!"
+                     + " [code=(IMSCOW0032)]");
         }
 
         final var trustmanager = getAllTrustingTrustManager();
@@ -306,7 +311,7 @@ public class ClientProvider {
     @NotNull
     private static OkHttpClient.Builder getOkHttpBuilder() {
         if (log.isDebugEnabled()) {
-            log.debug("Creating OkHttp client");
+            log.debug("Creating OkHttp client... [code=(IMSCOD0075)]");
         }
         return new OkHttpClient.Builder();
     }
@@ -390,7 +395,8 @@ public class ClientProvider {
                                       callTimeout);
 
         if (log.isDebugEnabled()) {
-            log.debug("Ok Http Client Protocols: [protocols=({})]", withTimeout.protocols());
+            log.debug("Ok Http Client Protocols: [code=(IMSCOD0076),"
+                      + " protocols=({})]", withTimeout.protocols());
         }
         return withTimeout;
     }
@@ -417,37 +423,42 @@ public class ClientProvider {
 
         if (connectTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting connect timeout: [timeout=({})]", connectTimeout.toString());
+                log.debug("Setting connect timeout: [code=(IMSCOD0077),"
+                          + " timeout=({})]", connectTimeout.toString());
             }
             builder.connectTimeout(connectTimeout);
         }
         if (readTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting read timeout: [timeout=({})]", readTimeout.toString());
+                log.debug("Setting read timeout: [code=(IMSCOD0078), timeout=({})]",
+                          readTimeout.toString());
             }
             builder.readTimeout(readTimeout);
         }
         if (writeTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting write timeout: [timeout=({})]", writeTimeout.toString());
+                log.debug("Setting write timeout: [code=(IMSCOD0079), timeout=({})]",
+                          writeTimeout.toString());
             }
             builder.writeTimeout(writeTimeout);
         }
         if (callTimeout != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Setting call timeout: [timeout=({})]", callTimeout.toString());
+                log.debug("Setting call timeout. [code=(IMSCOD0080), timeout=({})]",
+                          callTimeout.toString());
             }
             builder.callTimeout(callTimeout);
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Building client!");
+            log.debug("Building client. [code=(IMSCOD0081)]");
         }
 
         final var okHttpClient = builder.build();
 
         if (log.isDebugEnabled()) {
-            log.debug("Ok Http Client Protocols [protocols=({})]", okHttpClient.protocols());
+            log.debug("Ok Http Client Protocols [code=(IMSCOD0082),"
+                      + " protocols=({})]", okHttpClient.protocols());
         }
 
         return okHttpClient;

@@ -142,14 +142,15 @@ public class IdsHttpService implements HttpService {
                     if (log.isDebugEnabled()) {
                         log.debug("Could not deserialize Payload to Connector class."
                                   + " Skipping Connector-SecurityProfile attribute"
-                                  + " in DAT validation. [exception=({})]", e.getMessage());
+                                  + " in DAT validation. [code=(IMSMED0125), exception=({})]",
+                                  e.getMessage());
                     }
                 }
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug("Payload is no valid JSON or does not contain a securityProfile"
                               + " attribute. Skipping Connector-SecurityProfile attribute"
-                              + " in DAT validation.");
+                              + " in DAT validation. [code=(IMSMED0126)]");
                 }
             }
 
@@ -163,7 +164,7 @@ public class IdsHttpService implements HttpService {
 
             if (!valid) {
                 if (log.isWarnEnabled()) {
-                    log.warn("DAT of incoming response is not valid!");
+                    log.warn("DAT of incoming response is not valid! [code=(IMSMEW0045)]");
                 }
 
                 throw new ClaimsException("DAT of incoming response is not valid!");
@@ -206,7 +207,7 @@ public class IdsHttpService implements HttpService {
     @Override
     public Response send(final String message, final URI target) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Creating requestBody");
+            log.debug("Creating requestBody... [code=(IMSMED0127)]");
         }
 
         final var body = RequestBody.create(message, MediaType.parse("application/json"));
@@ -230,7 +231,7 @@ public class IdsHttpService implements HttpService {
         final var request = buildRequest(requestBody, target);
 
         if (log.isDebugEnabled()) {
-            log.debug("Sending request. [url=({})]", target);
+            log.debug("Sending request. [code=(IMSMED0128), url=({})]", target);
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -247,7 +248,7 @@ public class IdsHttpService implements HttpService {
         final var request = buildWithHeaders(requestBody, target, headers);
 
         if (log.isDebugEnabled()) {
-            log.debug("Sending request. [url=({})]", target);
+            log.debug("Sending request. [code=(IMSMED0129), url=({})]", target);
         }
 
         return sendRequest(request, getClientWithSettings());
@@ -273,7 +274,8 @@ public class IdsHttpService implements HttpService {
 
         headers.keySet().forEach(key -> {
              if (log.isDebugEnabled()) {
-                 log.debug("Adding header. [key=({}), header=({})]", key, headers.get(key));
+                 log.debug("Adding header. [code=(IMSMED0130), key=({}), header=({})]", key,
+                           headers.get(key));
              }
 
              builder.addHeader(key, headers.get(key));
@@ -319,7 +321,7 @@ public class IdsHttpService implements HttpService {
         final var targetURL = target.toString();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request URL: [url=({})]", HttpUrl.parse(targetURL));
+            log.debug("Request URL: [code=(IMSMED0131), url=({})]", HttpUrl.parse(targetURL));
         }
 
         return new Request.Builder()
@@ -343,7 +345,7 @@ public class IdsHttpService implements HttpService {
         final var targetURL = target.toString();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request URL: [url=({})]", HttpUrl.parse(targetURL));
+            log.debug("Request URL: [code=(IMSMED0132), url=({})]", HttpUrl.parse(targetURL));
         }
 
         //!!! DO NOT PRINT RESPONSE BECAUSE RESPONSE BODY IS JUST ONE TIME READABLE
@@ -354,12 +356,13 @@ public class IdsHttpService implements HttpService {
 
         //add all headers to request
         if (log.isDebugEnabled()) {
-            log.debug("Adding headers");
+            log.debug("Adding headers... [code=(IMSMED0133)]");
         }
 
         headers.keySet().forEach(key -> {
             if (log.isDebugEnabled()) {
-                log.debug("Adding header [key=({}), header=({})]", key, headers.get(key));
+                log.debug("Adding header [code=(IMSMED0134), key=({}), header=({})]", key,
+                          headers.get(key));
             }
             builder.addHeader(key, headers.get(key));
         });
@@ -395,7 +398,7 @@ public class IdsHttpService implements HttpService {
         if (!response.isSuccessful()) {
             if (log.isWarnEnabled()) {
                 log.warn("Received response but response-code not in 200-299."
-                          + " [code=({})]", response.code());
+                          + " [code=(IMSMEW0046), response-code=({})]", response.code());
             }
         } else {
             if (log.isInfoEnabled()) {
@@ -416,7 +419,7 @@ public class IdsHttpService implements HttpService {
         final var requestCopy = request.newBuilder().build();
         final var buffer = new Buffer();
         requestCopy.body().writeTo(buffer);
-        log.debug("Sending request message: [request=({})]", buffer.readUtf8());
+        log.debug("Sending request message: [code=(IMSMED0135), request=({})]", buffer.readUtf8());
     }
 
     /**
@@ -429,13 +432,15 @@ public class IdsHttpService implements HttpService {
 
         if (timeoutSettings == null) {
             if (log.isDebugEnabled()) {
-                log.debug("No timeout settings specified, using default client.");
+                log.debug("No timeout settings specified, using default client."
+                          + " [code=(IMSMED0136)]");
             }
 
             client = provider.getClient();
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("Generating a Client with specified timeout settings.");
+                log.debug("Generating a Client with specified timeout settings."
+                          + " [code=(IMSMED0137)]");
             }
 
             client = provider.getClientWithTimeouts(
@@ -466,8 +471,8 @@ public class IdsHttpService implements HttpService {
             response = send(request);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message! [exception=({})]",
-                          ioException.getMessage());
+                log.debug("Error during transmission of the message! [code=(IMSMED0138),"
+                          + " exception=({})]", ioException.getMessage());
             }
 
             //throw SendMessageException instead of IOException
@@ -494,8 +499,8 @@ public class IdsHttpService implements HttpService {
             response = send(body, target);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message! [exception=({})]",
-                          ioException.getMessage());
+                log.debug("Error during transmission of the message! [code=(IMSMED0139),"
+                          + " exception=({})]", ioException.getMessage());
             }
 
             throw ioException;
@@ -523,8 +528,8 @@ public class IdsHttpService implements HttpService {
             response = sendWithHeaders(body, target, headers);
         } catch (IOException ioException) {
             if (log.isDebugEnabled()) {
-                log.debug("Error during transmission of the message! [exception=({})]",
-                          ioException.getMessage());
+                log.debug("Error during transmission of the message! [code=(IMSMED0140),"
+                          + " exception=({})]", ioException.getMessage());
             }
 
             throw ioException;

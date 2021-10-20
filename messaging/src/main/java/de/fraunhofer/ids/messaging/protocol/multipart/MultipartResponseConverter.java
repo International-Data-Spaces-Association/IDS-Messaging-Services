@@ -103,7 +103,8 @@ public class MultipartResponseConverter {
             responseHeader = getResponseHeader(responseMap);
         } catch (IOException ioException) {
             if (log.isErrorEnabled()) {
-                log.error("Error deserializing Header! [exception=({})]", ioException.getMessage());
+                log.error("Error deserializing Header! [code=(IMSMEE0023),"
+                          + " exception=({})]", ioException.getMessage());
             }
             throw new DeserializeException(ioException);
         }
@@ -156,7 +157,7 @@ public class MultipartResponseConverter {
                 //No match found, throw UnknownResponseException
                 if (log.isErrorEnabled()) {
                     log.error("Could not convert input header to suitable responseHeader"
-                              + " and payload type!");
+                              + " and payload type! [code=(IMSMEE0024)]");
                 }
                 throw new UnknownResponseException(
                         "Could not convert input header to suitable responseHeader and payload"

@@ -113,7 +113,8 @@ public final class IdsMessageUtils {
 
         //read /main/resources/project/properties
         if (log.isDebugEnabled()) {
-            log.debug("Trying to read Property from pom.xml properties. [property=({})]", property);
+            log.debug("Trying to read Property from pom.xml properties. [code=(IMSMED0142),"
+                      + " property=({})]", property);
         }
 
         final var properties = new Properties();
@@ -125,7 +126,8 @@ public final class IdsMessageUtils {
                                 .getResourceAsStream("project.properties")));
         } catch (IOException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not read property from pom! [exception=({})]", e.getMessage());
+                log.error("Could not read property from pom! [code=(IMSMEE0025),"
+                          + " exception=({})]", e.getMessage());
             }
             throw e;
         }
@@ -148,7 +150,7 @@ public final class IdsMessageUtils {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
         } catch (DatatypeConfigurationException e) {
             if (log.isErrorEnabled()) {
-                log.error(e.getMessage());
+                log.error("[code=(IMSMEE0026)] " + e.getMessage());
             }
         }
         return null;

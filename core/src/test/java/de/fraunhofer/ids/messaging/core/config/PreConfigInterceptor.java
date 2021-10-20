@@ -48,13 +48,14 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
     private ConfigurationModel loadConfig(final ConfigProperties properties)
             throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading configuration from {}", properties.getPath());
+            log.debug("Loading configuration from {} [code=(IMSCOD0114)]",
+                      properties.getPath());
         }
 
         final var config = getConfiguration(properties);
 
         if (log.isInfoEnabled()) {
-            log.info("Importing configuration from file");
+            log.info("Importing configuration from file.");
         }
 
         return SERIALIZER.deserialize(config, ConfigurationModel.class);
@@ -82,7 +83,8 @@ public class PreConfigInterceptor implements PreConfigProducerInterceptor{
 
     private String getAbsolutePathConfig(final ConfigProperties properties) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info("Loading config from absolute Path {}", properties.getPath());
+            log.info("Loading config from absolute Path {}",
+                     properties.getPath());
         }
 
         final var fis = new FileInputStream(properties.getPath());

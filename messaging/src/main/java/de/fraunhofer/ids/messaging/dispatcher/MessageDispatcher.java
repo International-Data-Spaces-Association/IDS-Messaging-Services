@@ -37,6 +37,7 @@ import de.fraunhofer.ids.messaging.response.MessageResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * The MessageDispatcher takes all incoming Messages, applies all defined PreDispatchingFilters
@@ -45,6 +46,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MessageDispatcher {
+
+    /**
+     * Flag for checking referredConnector.
+     */
+    @Value("${referred.check:false}")
+    private boolean referringCheck;
 
     /**
      * The ObjectMapper.
@@ -132,6 +139,18 @@ public class MessageDispatcher {
                 final var claims =
                         dapsValidator.getClaims(header.getSecurityToken());
 
+                if (referringCheck && !claims.getBody().get("referringConnector")
+                        .equals(header.getIssuerConnector())) {
+                    return ErrorResponse.withDefaultHeader(
+                            RejectionReason.BAD_PARAMETERS,
+                            "ids:issuerConnector in message-header"
+                            + " (" + header.getIssuerConnector() + ") does not match"
+                            + " referringConnector in body of DAT claims"
+                            + " (" + claims.getBody().get("referringConnector") + ")!",
+                            connectorId,
+                            modelVersion, header.getId());
+                }
+
                 optionalClaimsJws = Optional.ofNullable(claims);
 
                 if (!dapsValidator.checkClaims(claims, null)) {
@@ -154,7 +173,7 @@ public class MessageDispatcher {
         //apply all preDispatchingFilters to the message
         for (final var preDispatchingFilter : this.preDispatchingFilters) {
             if (log.isDebugEnabled()) {
-                log.debug("Applying a preDispatchingFilter");
+                log.debug("Applying a preDispatchingFilter... [code=(IMSMED0115)]");
             }
 
             try {
@@ -162,8 +181,8 @@ public class MessageDispatcher {
                 if (!result.isSuccess()) {
                     if (log.isErrorEnabled()) {
                         log.error("A preDispatchingFilter failed, sending"
-                              + " response RejectionReason.MALFORMED_MESSAGE! [result=({})]",
-                                  result.getMessage());
+                              + " response RejectionReason.MALFORMED_MESSAGE! [code=(IMSMEE0019),"
+                              + " result=({})]", result.getMessage());
                     }
 
                     return ErrorResponse.withDefaultHeader(
@@ -174,8 +193,8 @@ public class MessageDispatcher {
                 }
             } catch (Exception e) {
                 if (log.isDebugEnabled()) {
-                    log.debug("A preDispatchingFilter threw an exception! [exception=({})]",
-                              e.getMessage());
+                    log.debug("A preDispatchingFilter threw an exception! [code=(IMSMED0116),"
+                              + " exception=({})]", e.getMessage());
                 }
 
                 throw new PreDispatchingFilterException(e);
@@ -207,7 +226,7 @@ public class MessageDispatcher {
                 }
             } catch (MessageHandlerException e) {
                 if (log.isDebugEnabled()) {
-                    log.debug("The message handler threw an exception!");
+                    log.debug("The message handler threw an exception! [code=(IMSMED0117)]");
                 }
 
                 return ErrorResponse.withDefaultHeader(
@@ -218,7 +237,8 @@ public class MessageDispatcher {
             }
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("No message handler exists! [type=({})]", header.getClass());
+                log.debug("No message handler exists! [code=(IMSMED0118), type=({})]",
+                          header.getClass());
             }
 
             //If no handler for the type exists, the message type isn't supported
