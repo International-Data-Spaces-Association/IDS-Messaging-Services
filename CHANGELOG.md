@@ -9,16 +9,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [5.1.0] UNRELEASED
+## Version [5.1.0] 2021-10-20
 
 ### Minor Change: New application properties flag
-- New `referred.check` flag, to enable comparison between DAT referringConnector and message issuer. ([PR 329](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/329))
+- New `referred.check` flag, to enable comparison between DAT claims `referringConnector` and `ids:issuerConnector` in message-header for the validation of incoming messages. Default if not set is `false` (not enabled). ([PR 329](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/329))
 
-### Patch Change: Enhancements
-- Log Error Codes: Syntax IMS-XY-L-1234 shortened to IMSXYL1234. Will e.g. log as [code=(IMSCOE0001)]. ([PR 332](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/332))
+### Patch Change: Enhancement Log-Codes
+- Log-codes now exist for different log-levels. They allow easy search for the code location that produced the log. No log-code will be printed for log-info level. ([PR 332](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/332))
+- Syntax: IMS-XY-L-1234 shortened to IMSXYL1234. Will e.g. log as [code=(IMSCOE0001)].
   - IMS = IDS-Messaging-Services
   - XY = Subsystem Module (CO Core, AP AppStore, BR Broker, CL ClearingHouse, ME Messaging, PA Paris, VO Vocol)
-  - L = Event Severity (E Error, W Warn, I Info, D Debug)
+  - L = Event Severity (E Error, W Warn, D Debug)
   - 1234 = Error number
 
 ### Patch Change: Infomodel Maintenance
