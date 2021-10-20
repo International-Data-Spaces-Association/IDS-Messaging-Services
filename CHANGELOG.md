@@ -11,8 +11,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.1.0] 2021-10-20
 
-### Minor Change: New application properties flag
-- New `referred.check` flag, to enable comparison between DAT claims `referringConnector` and `ids:issuerConnector` in message-header for the validation of incoming messages. Default if not set is `false` (not enabled). ([PR 329](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/329))
+### Minor Change: Validation referringConnector vs ids:issuerConnector
+- New application.properties flag `referred.check=true/false`, to enable comparison between DAT claims `referringConnector` and `ids:issuerConnector` in message-header for the validation of incoming messages. Can only be used in `PRODUCTIVE_DEPLOYMENT`. Default if not set is `false` (not enabled). ([PR 329](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/329))
+- Automatically sends RejectionMessage on incoming messages if validation not passed. Example of text included in RejectionMessage: `ids:issuerConnector in message-header (https://w3id.org/idsa/autogen/baseConnector/691b3a17-1e09-4a5a-9d9a-5627772222e9) does not match referringConnector in body of DAT claims (http://isst_ids_framework_demo_connector.demo)!`
 
 ### Patch Change: Enhancement Log-Codes
 - Log-codes now exist for different log-levels. They allow easy search for the code location that produced the log. No log-code will be printed for log-info level. ([PR 332](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/332))
