@@ -199,14 +199,19 @@ The sendAndCheckDat() returns a Map<String, String> where, for example, response
 
 For extended instructions and info on the other modules, see the <a href="https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/wiki">GitHub-Wiki</a>.
 
-## Other: Log Error Codes
+## Other: Log-Codes
+
+Log-codes exist for different log-levels. They allow easy search for the code location that produced the log.
 
 Syntax: IMS-XY-L-1234, shortened to: IMSXYL1234
  - IMS = IDS-Messaging-Services
  - XY = Subsystem Module (CO Core, AP AppStore, BR Broker, CL ClearingHouse, ME Messaging, PA Paris, VO Vocol)
- - L = Event Severity (E Error, W Warn, I Info, D Debug)
- - 1234 = Error number
-Will e.g. print as [code=(IMSCOE0001)], IDS-Messaging-Services Core-Module Error 0001.
+ - L = Event Severity (E Error, W Warn, D Debug)
+ - 1234 = Log identifier
+ 
+Will e.g. print as [code=(IMSCOE0001)]: IDS-Messaging-Services Core-Module Error 0001.
+
+No log-code will be printed for log-info level.
 
 ## Other: Project-Wiki
 
