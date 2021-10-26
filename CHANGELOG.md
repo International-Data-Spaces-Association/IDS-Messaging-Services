@@ -14,6 +14,10 @@ All notable changes to this project will be documented in this file.
 ### Patch Change: Enhancements
 - If the request for the DAPS DAT fails, the response body is additionally logged if present. ([PR 342](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/342))
 
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.6 ([PR 343](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/343))
+- Used Artifacts: java, infomodel-serializer, interaction
+
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.5 -> 2.5.6 ([PR 341](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/341))
 - Upgrade: org.springframework.boot:spring-boot-starter 2.5.5 -> 2.5.6 ([PR 341](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/341))
