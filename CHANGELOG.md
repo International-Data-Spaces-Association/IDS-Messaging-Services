@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.1.1] UNRELEASED
 
+### Patch Change: Enhancements
+- If the request for the DAPS DAT fails, the response body is additionally logged if present. ([PR 342](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/342))
+
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.2.6 ([PR 343](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/343))
 - Used Artifacts: java, infomodel-serializer, interaction

@@ -287,7 +287,9 @@ public class AisecTokenManagerService implements TokenManagerService {
                 log.debug("DAPS request was not successful! [code=(IMSCOD0107)]");
             }
 
-            throw new IOException("Unexpected code " + jwtResponse);
+            final var responseBody = jwtResponse.body();
+            final var bodyString = responseBody == null ? "" : " Body: " + responseBody.string();
+            throw new IOException("Unexpected code " + jwtResponse + bodyString);
         }
         return jwtResponse;
     }
