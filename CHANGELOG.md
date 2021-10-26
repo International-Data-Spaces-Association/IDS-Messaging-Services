@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [5.1.1] UNRELEASED
+## Version [5.1.1] 2021-10-26
 
 ### Patch Change: Enhancements
 - If the request for the DAPS DAT fails, the response body is additionally logged if present. ([PR 342](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/342))
