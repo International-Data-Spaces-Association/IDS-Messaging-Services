@@ -35,7 +35,7 @@
     </modules>
 
     <properties>
-        <revision>5.1.1</revision>
+        <revision>5.1.2</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -341,7 +341,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>9.0.1</version>
+                        <version>9.1</version>
                     </dependency>
                 </dependencies>
                 <configuration>
