@@ -11,6 +11,13 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.1.2] UNRELEASED
 
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.7 ([PR 350](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/350))
+- Used Artifacts: java, infomodel-serializer, interaction
+- Note: There can be major changes depending on the setup, identified by us could be following:
+  - Configmodel: value of `ids:hasDefaultEndpoint` `@id` needs to be different from values of `ids:curator` `@id` and `ids:maintainer` `@id`, was allowed before (e.g. for testing).
+  - Serializer: `tokenvalue` of `DynamicAttributeToken` must not contain an empty string anymore (e.g. for testing or also in incoming requests), otherwise the serializer throws an `IOException` during deserializing -> `The following mandatory field(s) of DynamicAttributeToken are not filled or invalid: ids:tokenValue. [...]`. This change has no impact on the functionality of the `TEST_DEPLOYMENT`: if no DAT can be fetched, we use a dummy value as `tokenvalue` and thus no empty string. However, if, for whatever reason, requests are received with an empty `tokenvalue` in `TEST_DEPLOYMENT`, the serializer will now throw an `IOException`.
+
 ### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 9.0.1 -> 9.1 ([PR 347](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/347))
 
