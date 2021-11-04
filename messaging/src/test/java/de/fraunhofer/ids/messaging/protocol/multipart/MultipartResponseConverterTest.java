@@ -211,7 +211,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -222,7 +222,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -233,7 +233,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -244,7 +244,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -255,7 +255,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -266,7 +266,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 ._requestedArtifact_(URI.create("http://example.com"))
                 .build();
@@ -278,7 +278,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -289,7 +289,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 ._affectedConnector_(URI.create("http://example.com"))
                 .build();
@@ -301,7 +301,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 ._affectedConnector_(URI.create("http://example.com"))
                 .build();
@@ -313,7 +313,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -324,7 +324,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 ._affectedResource_(URI.create("http://example.com"))
                 .build();
@@ -336,7 +336,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 ._affectedResource_(URI.create("http://example.com"))
                 .build();
@@ -348,7 +348,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 ._affectedParticipant_(URI.create("http://example.com"))
                 .build();
@@ -360,7 +360,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 ._affectedParticipant_(URI.create("http://example.com"))
                 .build();
@@ -372,7 +372,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 ._requestedParticipant_(URI.create("http://example.com"))
                 .build();
@@ -384,7 +384,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -395,7 +395,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -406,7 +406,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
@@ -417,7 +417,7 @@ class MultipartResponseConverterTest {
                 ._issued_(IdsMessageUtils.getGregorianNow())
                 ._issuerConnector_(URI.create("http://example.com"))
                 ._modelVersion_("1.0.0")
-                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("")._tokenFormat_(TokenFormat.JWT).build())
+                ._securityToken_(new DynamicAttributeTokenBuilder()._tokenValue_("abc")._tokenFormat_(TokenFormat.JWT).build())
                 ._senderAgent_(URI.create("http://example.com"))
                 .build();
     }
