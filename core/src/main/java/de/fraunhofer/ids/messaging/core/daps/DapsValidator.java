@@ -133,7 +133,7 @@ public class DapsValidator {
             } catch (ClaimsException e) {
                 if (log.isWarnEnabled()) {
                     log.warn("Security profile does not match selfdescription!"
-                             + " [code=(IMSCOW0033)]");
+                             + " [message=({}), code=(IMSCOW0033)]", e.getMessage());
                 }
                 return false;
             }
@@ -142,7 +142,8 @@ public class DapsValidator {
             return DapsVerifier.verify(claims);
         } catch (ClaimsException e) {
             if (log.isWarnEnabled()) {
-                log.warn("Claims could not be successfully verified! [code=(IMSCOW0034)]");
+                log.warn("Claims could not be successfully verified! [message=({}),"
+                         + " code=(IMSCOW0034)]", e.getMessage());
             }
             return false;
         }
