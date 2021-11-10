@@ -132,7 +132,7 @@ public class DapsValidator {
                         extraAttributes.get("securityProfile").toString());
             } catch (ClaimsException e) {
                 if (log.isWarnEnabled()) {
-                    log.warn("Security profile does not match selfdescription!"
+                    log.warn("SecurityProfile could not be successfully verified!"
                              + " [message=({}), code=(IMSCOW0033)]", e.getMessage());
                 }
                 return false;
