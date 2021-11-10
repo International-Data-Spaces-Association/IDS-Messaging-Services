@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 ## Version [5.1.2] UNRELEASED
 
 ### Patch Change: Enhancements
-- If the validation of the SecurityProfile is performed and is not successful, the reason is now also output in the logs.  ([PR 352](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/352))
+- If the validation of the SecurityProfile is performed and is not successful, the reason is now also output in the logs. Possible reasons: no security profile given in DAT; registered security profile at DAPS does not match given security profile in message. ([PR 352](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/352))
 
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.2.7 ([PR 350](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/350))
