@@ -9,7 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [5.1.2] UNRELEASED
+## Version [5.2.0] UNRELEASED
+
+### Minor Change: Optional log DAPS response
+- New application.properties flag `log.daps.response=true/false`, to enable DAPS response logging including the JWT. Default if not set is `false` (logging not enabled). ([PR 353](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/353))
 
 ### Patch Change: Enhancements
 - If the validation of the SecurityProfile is performed and is not successful, the reason is now also output in the logs. Possible reasons: no security profile given in DAT; registered security profile at DAPS does not match given security profile in message. ([PR 352](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/352))
