@@ -67,9 +67,10 @@ public class AisecTokenManagerService implements TokenManagerService {
     public static final int ONE_DAY_IN_SECONDS  = 86_400;
 
     /**
-     * Seconds to subtract for the issued at value.
+     * Seconds to subtract for the issued at and not before in the JWT to the DAPS.
      */
-    public static final int SECONDS_TO_SUBTRACT = 10;
+    @Value("#{new Integer('${daps.time.offset:10}')}")
+    private Integer offset;
 
     /**
      * The ClientProvider.
@@ -358,15 +359,27 @@ public class AisecTokenManagerService implements TokenManagerService {
     private JwtBuilder getJwtBuilder(final String targetAudience,
                                      final String connectorFingerprint,
                                      final Date expiryDate) {
+
+        if (offset == null) {
+            offset = 10;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("JWT for DAPS request: using offset seconds for issuedAt and notBefore"
+                      + " [offset=({}), code=(IMSCOD0143)]", offset);
+        }
+
+        final var timeWithOffset = Date.from(Instant.now().minusSeconds(offset));
+
         return Jwts.builder()
                    .setIssuer(connectorFingerprint)
                    .setSubject(connectorFingerprint)
                    .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
                    .claim("@type", "ids:DatRequestToken")
                    .setExpiration(expiryDate)
-                   .setIssuedAt(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)))
+                   .setIssuedAt(timeWithOffset)
                    .setAudience(targetAudience)
-                   .setNotBefore(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
+                   .setNotBefore(timeWithOffset);
     }
 
     /**
