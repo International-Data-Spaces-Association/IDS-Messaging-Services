@@ -81,6 +81,12 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private String dapsTokenUrl;
 
     /**
+     * Used to switch DAT caching on and off.
+     */
+    @Value("#{new Boolean('${cache.daps.dat:true}')}")
+    private Boolean cacheDat;
+
+    /**
      * The Daps key url kid.
      */
     @Value("#{${daps.key.url.kid}}")
@@ -130,7 +136,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException {
-        if (currentJwt == null || isExpired()) {
+        if (!cacheDat || currentJwt == null || isExpired()) {
             if (log.isDebugEnabled()) {
                 log.debug("Requesting a new DAT Token from DAPS! [code=(IMSCOD0101), url=({})]",
                           dapsTokenUrl);
