@@ -67,6 +67,12 @@ public class AisecTokenManagerService implements TokenManagerService {
     public static final int ONE_DAY_IN_SECONDS  = 86_400;
 
     /**
+     * Default offset to be used for DAPS and Connector nbf and issued at dates.
+     * Must also be declared here for special use cases.
+     */
+    public static final int DEFAULT_TIME_OFFSET = 10;
+
+    /**
      * Seconds to subtract for the issued at and not before in the JWT to the DAPS.
      */
     @Value("#{new Integer('${daps.time.offset:10}')}")
@@ -361,7 +367,7 @@ public class AisecTokenManagerService implements TokenManagerService {
                                      final Date expiryDate) {
 
         if (offset == null) {
-            offset = 10;
+            offset = DEFAULT_TIME_OFFSET;
         }
 
         if (log.isDebugEnabled()) {
