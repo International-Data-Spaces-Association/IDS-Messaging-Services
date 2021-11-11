@@ -192,23 +192,13 @@ public class DapsValidator {
     private void verifySecurityProfile(final String registered,
                                        final String given)
             throws ClaimsException {
-        //Replace full URIs (if present) by prefixed values.
-        //This simplifies the potential number of values these strings can have
-        var adjustedRegistered = registered;
-        var adjustedGiven = given;
-
         if (registered == null) {
             throw new ClaimsException("Security profile violation."
-                  + " No security profile given in DAT!");
+                                      + " No security profile given in DAT!");
         }
 
-        if (registered.startsWith("https://w3id.org/idsa/code/")) {
-            adjustedRegistered = registered.replace("https://w3id.org/idsa/code/", "idsc:");
-        }
-
-        if (given.startsWith("https://w3id.org/idsa/code/")) {
-            adjustedGiven = given.replace("https://w3id.org/idsa/code/", "idsc:");
-        }
+        final var adjustedRegistered = registered.replace("https://w3id.org/idsa/code/", "idsc:");
+        final var adjustedGiven = given.replace("https://w3id.org/idsa/code/", "idsc:");
 
         String[] includedProfiles;
         switch (adjustedRegistered) {
@@ -216,12 +206,12 @@ public class DapsValidator {
             case "idsc:BASE_SECURITY_PROFILE":
                 includedProfiles = baseSecProfVals;
                 break;
-            case "idsc:TRUST_SECURITY_PROFILE:":
-            case "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE:":
+            case "idsc:TRUST_SECURITY_PROFILE":
+            case "idsc:TRUSTED_CONNECTOR_SECURITY_PROFILE":
                 includedProfiles = trustSecProfVals;
                 break;
-            case "idsc:TRUST_PLUS_SECURITY_PROFILE:":
-            case "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE:":
+            case "idsc:TRUST_PLUS_SECURITY_PROFILE":
+            case "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE":
                 includedProfiles = plusTrustSecProfVals;
                 break;
             default:
