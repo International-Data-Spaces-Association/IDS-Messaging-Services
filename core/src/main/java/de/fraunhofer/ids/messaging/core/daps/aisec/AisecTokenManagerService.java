@@ -155,7 +155,7 @@ public class AisecTokenManagerService implements TokenManagerService {
 
             if (jwtResponse.isSuccessful() && log.isInfoEnabled()) {
                 if (logDapsResponse) {
-                    log.info("Successfully received DAT from DAPS. [response=[{}]]", jwtString);
+                    log.info("Successfully received DAT from DAPS. [response=({})]", jwtString);
                 } else {
                     log.info("Successfully received DAT from DAPS.");
                 }
