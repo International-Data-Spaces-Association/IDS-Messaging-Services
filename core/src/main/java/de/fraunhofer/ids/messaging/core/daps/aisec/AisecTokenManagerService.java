@@ -45,6 +45,7 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -79,6 +80,12 @@ public class AisecTokenManagerService implements TokenManagerService {
      * The ConfigContainer.
      */
     private final ConfigContainer configContainer;
+
+    /**
+     * Used to switch logging the DAPS response on and off.
+     */
+    @Value("#{new Boolean('${log.daps.response:false}')}")
+    private Boolean logDapsResponse;
 
     /***
      * Beautifies Hex strings and will generate a result later used to
@@ -147,7 +154,11 @@ public class AisecTokenManagerService implements TokenManagerService {
             dynamicAttributeToken = getDAT(jwtString);
 
             if (jwtResponse.isSuccessful() && log.isInfoEnabled()) {
-                log.info("Successfully received DAT from DAPS.");
+                if (logDapsResponse) {
+                    log.info("Successfully received DAT from DAPS. [response=[{}]]", jwtString);
+                } else {
+                    log.info("Successfully received DAT from DAPS.");
+                }
             }
         } catch (IOException e) {
             handleIOException(e);
