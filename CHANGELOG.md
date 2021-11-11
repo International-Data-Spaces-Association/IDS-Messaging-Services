@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Enhancements
 - If the validation of the SecurityProfile is performed and is not successful, the reason is now also output in the logs. Possible reasons: no security profile given in DAT; registered security profile at DAPS does not match given security profile in message. ([PR 352](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/352))
+- When a DAPS DAT is received, the expiry time is cached directly when the DAT is received instead of being read from the claims for each message to be sent. Prevents an error-log-message from the JWT parser. ([Issue 351](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/351))
 
 ### Patch Change: Infomodel Maintenance
 - Used Dependency Version: 4.2.7 ([PR 350](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/350))
