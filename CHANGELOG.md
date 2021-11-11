@@ -11,8 +11,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.2.0] UNRELEASED
 
-### Minor Change: Optional log DAPS response
-- New application.properties flag `log.daps.response=true/false`, to enable DAPS response logging including the JWT. Default if not set is `false` (logging not enabled). ([PR 353](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/353))
+### Minor Change: New application.properties flags
+- `log.daps.response=true/false`, to enable DAPS response logging including the JWT. Default if not set is `false` (logging not enabled). ([PR 353](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/353))
+- `daps.time.offset=<INTEGER>`, to freely configure a possible time difference between the system of the connector and the DAPS. The entered interger value is subtracted from the current time in the form of seconds and the `isa` and `nbf` are set in the JWT from the connector to the DAPS with the adjusted time. Default if not set is `10` (current time minus 10 seconds).
 
 ### Patch Change: Enhancements
 - If the validation of the SecurityProfile is performed and is not successful, the reason is now also output in the logs. Possible reasons: no security profile given in DAT; registered security profile at DAPS does not match given security profile in message. ([PR 352](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/352))
