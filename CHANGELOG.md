@@ -29,6 +29,8 @@ All notable changes to this project will be documented in this file.
   - Serializer: `tokenvalue` of `DynamicAttributeToken` must not contain an empty string anymore (e.g. for testing or also in incoming requests), otherwise the serializer throws an `IOException` during deserializing -> `The following mandatory field(s) of DynamicAttributeToken are not filled or invalid: ids:tokenValue. [...]`. This change has no impact on the functionality of the `TEST_DEPLOYMENT`: if no DAT can be fetched, we use a dummy value as `tokenvalue` and thus no empty string. However, if, for whatever reason, requests are received with an empty `tokenvalue` in `TEST_DEPLOYMENT`, the serializer will now throw an `IOException`.
 
 ### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.6 -> 2.5.7 ([PR 363](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.6 -> 2.5.7 ([PR 363](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363))
 - Upgrade: org.springframework:spring-webmvc 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
 - Upgrade: org.springframework:spring-core 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
 - Upgrade: org.springframework:spring-web 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
