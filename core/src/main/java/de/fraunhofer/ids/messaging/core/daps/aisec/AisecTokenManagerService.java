@@ -75,7 +75,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Seconds to subtract for the issued at and not before in the JWT to the DAPS.
      */
-    @Value("#{new Integer('${daps.time.offset:10}')}")
+    @Value("#{new Integer('${daps.time.offset.seconds:10}')}")
     private Integer offset;
 
     /**
@@ -91,7 +91,7 @@ public class AisecTokenManagerService implements TokenManagerService {
     /**
      * Used to switch logging the DAPS response on and off.
      */
-    @Value("#{new Boolean('${log.daps.response:false}')}")
+    @Value("#{new Boolean('${daps.enable.log.jwt:false}')}")
     private Boolean logDapsResponse;
 
     /***
