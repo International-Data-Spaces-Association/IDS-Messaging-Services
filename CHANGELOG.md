@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework:spring-test 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
 - Upgrade: org.springframework:spring-tx 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
 - Upgrade: com.puppycrawl.tools:checkstyle 9.0.1 -> 9.1 ([PR 347](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/347))
+- Upgrade: com.squareup.okhttp3:okhttp 4.9.2 -> 4.9.3 ([PR 372](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/372))
 
 ## Version [5.1.1] 2021-10-26
 
