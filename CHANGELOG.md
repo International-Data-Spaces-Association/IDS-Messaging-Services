@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Minor Change: New application.properties flags
 - `daps.enable.log.jwt=true/false`, to enable DAPS response logging including the JWT. Default if not set is `false` (logging not enabled). ([PR 353](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/353))
-- `daps.enbale.cache.dat=true/false`, enables or disables caching of DAPS DAT. Default if not set is `true` (caching enabled). ([PR 354](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/354))
+- `daps.enable.cache.dat=true/false`, enables or disables caching of DAPS DAT. Default if not set is `true` (caching enabled). ([PR 354](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/354))
 - `daps.time.offset.seconds=<INTEGER>`, to freely configure a possible time difference between the system of the connector and the DAPS. The entered interger value is subtracted from the current time in the form of seconds and the `isa` and `nbf` are set in the JWT from the connector to the DAPS with the adjusted time. Default if not set is `10` (current time minus 10 seconds). ([PR 354](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/354))
 
 ### Patch Change: Enhancements

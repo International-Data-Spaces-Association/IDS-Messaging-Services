@@ -83,7 +83,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     /**
      * Used to switch DAT caching on and off.
      */
-    @Value("#{new Boolean('${daps.enbale.cache.dat:true}')}")
+    @Value("#{new Boolean('${daps.enable.cache.dat:true}')}")
     private Boolean cacheDat;
 
     /**
