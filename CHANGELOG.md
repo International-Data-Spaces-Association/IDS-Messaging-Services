@@ -9,6 +9,37 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [5.2.0] 2021-11-24
+
+### Minor Change: New application.properties flags
+- `daps.enable.log.jwt=true/false`, to enable DAPS response logging including the JWT. Default if not set is `false` (logging not enabled). ([PR 353](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/353))
+- `daps.enable.cache.dat=true/false`, enables or disables caching of DAPS DAT. Default if not set is `true` (caching enabled). ([PR 354](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/354))
+- `daps.time.offset.seconds=<INTEGER>`, to freely configure a possible time difference between the system of the connector and the DAPS. The entered interger value is subtracted from the current time in the form of seconds and the `isa` and `nbf` are set in the JWT from the connector to the DAPS with the adjusted time. Default if not set is `10` (current time minus 10 seconds). ([PR 354](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/354))
+
+### Patch Change: Enhancements
+- If the validation of the SecurityProfile is performed and is not successful, the reason is now also output in the logs. Possible reasons: no security profile given in DAT; registered security profile at DAPS does not match given security profile in message. ([PR 352](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/352))
+- When a DAPS DAT is received, the expiry time is cached directly when the DAT is received instead of being read from the claims for each message to be sent. Prevents an error-log-message from the JWT parser. ([Issue 351](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/351))
+- When using a cached DAPS DAT for sending a message, the expiration date is now logged at info-level, e.g. `Using cached DAPS DAT. [expiration=(Thu Nov 11 13:08:13 CET 2021)]` ([PR 354](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/354))
+
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.7 ([PR 350](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/350))
+- Used Artifacts: java, infomodel-serializer, interaction
+- Note: There can be major changes depending on the setup, identified by us could be following:
+  - Configmodel: value of `ids:hasDefaultEndpoint` `@id` needs to be different from values of `ids:curator` `@id` and `ids:maintainer` `@id`, was allowed before (e.g. for testing).
+  - Serializer: `tokenvalue` of `DynamicAttributeToken` must not contain an empty string anymore (e.g. for testing or also in incoming requests), otherwise the serializer throws an `IOException` during deserializing -> `The following mandatory field(s) of DynamicAttributeToken are not filled or invalid: ids:tokenValue. [...]`. This change has no impact on the functionality of the `TEST_DEPLOYMENT`: if no DAT can be fetched, we use a dummy value as `tokenvalue` and thus no empty string. However, if, for whatever reason, requests are received with an empty `tokenvalue` in `TEST_DEPLOYMENT`, the serializer will now throw an `IOException`.
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.5.6 -> 2.6.0 ([PR 363](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363), [PR 373](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/373))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.5.6 -> 2.6.0 ([PR 363](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363), [PR 373](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/373))
+- Upgrade: org.springframework:spring-webmvc 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
+- Upgrade: org.springframework:spring-core 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
+- Upgrade: org.springframework:spring-web 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
+- Upgrade: org.springframework:spring-test 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
+- Upgrade: org.springframework:spring-tx 5.3.12 -> 5.3.13 ([PR 360](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/360))
+- Upgrade: com.puppycrawl.tools:checkstyle 9.0.1 -> 9.1 ([PR 347](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/347))
+- Upgrade: com.squareup.okhttp3:mockwebserver 4.9.2 -> 4.9.3 ([PR 371](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/371))
+- Upgrade: com.squareup.okhttp3:okhttp 4.9.2 -> 4.9.3 ([PR 372](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/372))
+
 ## Version [5.1.1] 2021-10-26
 
 ### Patch Change: Enhancements

@@ -27,7 +27,7 @@
     },
     "ids:hasDefaultEndpoint" : {
       "@type": "ids:ConnectorEndpoint",
-      "@id": "https://example.com",
+      "@id": "https://example2.com",
       "ids:accessURL": {
         "@id": "https://localhost:8080/api/ids/data"
       }

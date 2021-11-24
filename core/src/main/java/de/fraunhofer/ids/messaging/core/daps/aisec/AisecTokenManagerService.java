@@ -45,6 +45,7 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -66,9 +67,16 @@ public class AisecTokenManagerService implements TokenManagerService {
     public static final int ONE_DAY_IN_SECONDS  = 86_400;
 
     /**
-     * Seconds to subtract for the issued at value.
+     * Default offset to be used for DAPS and Connector nbf and issued at dates.
+     * Must also be declared here for special use cases.
      */
-    public static final int SECONDS_TO_SUBTRACT = 10;
+    public static final int DEFAULT_TIME_OFFSET = 10;
+
+    /**
+     * Seconds to subtract for the issued at and not before in the JWT to the DAPS.
+     */
+    @Value("#{new Integer('${daps.time.offset.seconds:10}')}")
+    private Integer offset;
 
     /**
      * The ClientProvider.
@@ -79,6 +87,12 @@ public class AisecTokenManagerService implements TokenManagerService {
      * The ConfigContainer.
      */
     private final ConfigContainer configContainer;
+
+    /**
+     * Used to switch logging the DAPS response on and off.
+     */
+    @Value("#{new Boolean('${daps.enable.log.jwt:false}')}")
+    private Boolean logDapsResponse;
 
     /***
      * Beautifies Hex strings and will generate a result later used to
@@ -147,7 +161,11 @@ public class AisecTokenManagerService implements TokenManagerService {
             dynamicAttributeToken = getDAT(jwtString);
 
             if (jwtResponse.isSuccessful() && log.isInfoEnabled()) {
-                log.info("Successfully received DAT from DAPS.");
+                if (logDapsResponse) {
+                    log.info("Successfully received DAT from DAPS. [response=({})]", jwtString);
+                } else {
+                    log.info("Successfully received DAT from DAPS.");
+                }
             }
         } catch (IOException e) {
             handleIOException(e);
@@ -347,15 +365,27 @@ public class AisecTokenManagerService implements TokenManagerService {
     private JwtBuilder getJwtBuilder(final String targetAudience,
                                      final String connectorFingerprint,
                                      final Date expiryDate) {
+
+        if (offset == null) {
+            offset = DEFAULT_TIME_OFFSET;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("JWT for DAPS request: using offset seconds for issuedAt and notBefore"
+                      + " [offset=({}), code=(IMSCOD0143)]", offset);
+        }
+
+        final var timeWithOffset = Date.from(Instant.now().minusSeconds(offset));
+
         return Jwts.builder()
                    .setIssuer(connectorFingerprint)
                    .setSubject(connectorFingerprint)
                    .claim("@context", "https://w3id.org/idsa/contexts/context.jsonld")
                    .claim("@type", "ids:DatRequestToken")
                    .setExpiration(expiryDate)
-                   .setIssuedAt(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)))
+                   .setIssuedAt(timeWithOffset)
                    .setAudience(targetAudience)
-                   .setNotBefore(Date.from(Instant.now().minusSeconds(SECONDS_TO_SUBTRACT)));
+                   .setNotBefore(timeWithOffset);
     }
 
     /**

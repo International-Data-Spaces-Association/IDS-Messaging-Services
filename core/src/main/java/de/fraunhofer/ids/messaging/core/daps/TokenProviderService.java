@@ -23,13 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import de.fraunhofer.iais.eis.ConnectorDeployMode;
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
 import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -67,6 +65,11 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private String currentJwt;
 
     /**
+     * The expiration date of the cached DAT.
+     */
+    private Date expiration;
+
+    /**
      * The public keys.
      */
     private List<Key> publicKeys;
@@ -76,6 +79,12 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      */
     @Value("${daps.token.url}")
     private String dapsTokenUrl;
+
+    /**
+     * Used to switch DAT caching on and off.
+     */
+    @Value("#{new Boolean('${daps.enable.cache.dat:true}')}")
+    private Boolean cacheDat;
 
     /**
      * The Daps key url kid.
@@ -127,16 +136,34 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
             ConnectorMissingCertExtensionException,
             DapsConnectionException,
             DapsEmptyResponseException {
-        if (this.currentJwt == null || isExpired(currentJwt)) {
+        if (!cacheDat || currentJwt == null || isExpired()) {
             if (log.isDebugEnabled()) {
                 log.debug("Requesting a new DAT Token from DAPS! [code=(IMSCOD0101), url=({})]",
                           dapsTokenUrl);
             }
 
             currentJwt = tokenManagerService.acquireToken(dapsTokenUrl);
+            cacheExpiration();
         }
 
         return currentJwt;
+    }
+
+    /**
+     * Will cache the expiration date of the acquired DAPS DAT.
+     */
+    private void cacheExpiration() {
+        try {
+            final var token = new DynamicAttributeTokenBuilder()
+                    ._tokenFormat_(TokenFormat.JWT)
+                    ._tokenValue_(currentJwt)
+                    .build();
+            final var claims = DapsValidator.getClaims(token, this.publicKeys).getBody();
+            expiration = claims.getExpiration();
+        } catch (Exception e) {
+            //Will force acquire a new token next message request.
+            expiration = null;
+        }
     }
 
     /**
@@ -207,27 +234,22 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     }
 
     /**
-     * @param jwt The jwt to check expiration.
      * @return True if jwt expired.
      */
-    private boolean isExpired(final String jwt) {
-        final var token = new DynamicAttributeTokenBuilder()
-                ._tokenFormat_(TokenFormat.JWT)
-                ._tokenValue_(jwt)
-                .build();
+    private boolean isExpired() {
+        final var expired = expiration == null || expiration.before(Date.from(Instant.now()));
 
-        Claims claims;
-        try {
-            claims = DapsValidator.getClaims(token, this.publicKeys).getBody();
-        } catch (ClaimsException e) {
-            if (configContainer.getConfigurationModel().getConnectorDeployMode()
-                != ConnectorDeployMode.TEST_DEPLOYMENT && log.isWarnEnabled()) {
-                    log.warn("Could not parse JWT! Treat JWT as having expired."
-                             + " [code=(IMSCOW0040)]");
+        if (currentJwt != null) {
+            //Will only log if DAT was successfully acquired.
+            if (expired && log.isInfoEnabled()) {
+                log.info("Cached DAPS DAT expired or no expiration set. [expiration=({})]",
+                         expiration);
+            } else if (log.isInfoEnabled()) {
+                log.info("Using cached DAPS DAT. [expiration=({})]",
+                         expiration);
             }
-
-            return true;
         }
-        return claims.getExpiration().before(Date.from(Instant.now()));
+
+        return expired;
     }
 }
