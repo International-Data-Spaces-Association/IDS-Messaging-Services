@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [5.2.0] UNRELEASED
+## Version [5.2.0] 2021-11-24
 
 ### Minor Change: New application.properties flags
 - `daps.enable.log.jwt=true/false`, to enable DAPS response logging including the JWT. Default if not set is `false` (logging not enabled). ([PR 353](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/353))
