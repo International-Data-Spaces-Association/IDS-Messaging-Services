@@ -15,6 +15,8 @@ All notable changes to this project will be documented in this file.
 - `daps.jwt.signature.algorithm=RSA256/ECDSA256`, to be able to choose between RSA 256 and ECDSA 256 as signature signing algorithm for the JWTs to the DAPS for the DAT request. Default if not set is RSA256 (using RSA as signing algorithm). ([Issue 376](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/376))
 
 ### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.0 -> 2.6.1 ([PR 385](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363), [PR 373](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/385))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.6.0 -> 2.6.1 ([PR 385](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363), [PR 373](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/385))
 - Upgrade: org.junit.jupiter:junit-jupiter-engine 5.8.1 -> 5.8.2 ([PR 382](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
 - Upgrade: org.junit.jupiter:junit-jupiter-api 5.8.1 -> 5.8.2 ([PR 382](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
 - Upgrade: org.junit.jupiter:junit-jupiter 5.8.1 -> 5.8.2 ([PR 382](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
