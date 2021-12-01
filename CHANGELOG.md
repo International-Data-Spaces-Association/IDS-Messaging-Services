@@ -21,6 +21,8 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.junit.jupiter:junit-jupiter-api 5.8.1 -> 5.8.2 ([PR 382](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
 - Upgrade: org.junit.jupiter:junit-jupiter 5.8.1 -> 5.8.2 ([PR 382](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
 - Upgrade: com.puppycrawl.tools:checkstyle 9.1 -> 9.2 ([PR 381](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
+- Upgrade: org.bouncycastle:bcprov-jdk15on 1.69 -> 1.70 ([PR 388](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/388))
+- Upgrade: org.bouncycastle:bcmail-jdk15o 1.69 -> 1.70 ([PR 388](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/388))
 
 ## Version [5.2.0] 2021-11-24
 
