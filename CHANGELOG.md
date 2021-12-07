@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: com.puppycrawl.tools:checkstyle 9.1 -> 9.2 ([PR 381](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
 - Upgrade: org.bouncycastle:bcprov-jdk15on 1.69 -> 1.70 ([PR 388](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/388))
 - Upgrade: org.bouncycastle:bcmail-jdk15o 1.69 -> 1.70 ([PR 388](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/388))
+- Upgrade: org.json:json 20210307 -> 20211205 ([PR 389](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/389))
 
 ## Version [5.2.0] 2021-11-24
 
