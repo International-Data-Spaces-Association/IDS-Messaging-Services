@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.bouncycastle:bcprov-jdk15on 1.69 -> 1.70 ([PR 388](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/388))
 - Upgrade: org.bouncycastle:bcmail-jdk15o 1.69 -> 1.70 ([PR 388](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/388))
 - Upgrade: org.json:json 20210307 -> 20211205 ([PR 389](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/389))
+- Upgrade: org.apache.jena:jena-core 4.2.0 -> 4.3.0 ([PR 390](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/390))   
 
 ## Version [5.2.0] 2021-11-24
 
