@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [5.3.0] UNRELEASED
+## Version [5.3.0] 2021-12-13
 
 ### Minor Change: New application.properties flags
 - `daps.jwt.signature.algorithm=RSA256/ECDSA256`, to be able to choose between RSA 256 and ECDSA 256 as signature signing algorithm for the JWTs to the DAPS for the DAT request. Default if not set is RSA256 (using RSA as signing algorithm). ([Issue 376](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/376))
