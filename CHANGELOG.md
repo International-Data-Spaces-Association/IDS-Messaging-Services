@@ -14,6 +14,10 @@ All notable changes to this project will be documented in this file.
 ### Minor Change: New application.properties flags
 - `daps.jwt.signature.algorithm=RSA256/ECDSA256`, to be able to choose between RSA 256 and ECDSA 256 as signature signing algorithm for the JWTs to the DAPS for the DAT request. Default if not set is RSA256 (using RSA as signing algorithm). ([Issue 376](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/376))
 
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.8 ([PR 391](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/391))
+- Used Artifacts: java, infomodel-serializer, interaction
+
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.0 -> 2.6.1 ([PR 385](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363), [PR 373](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/385))
 - Upgrade: org.springframework.boot:spring-boot-starter 2.6.0 -> 2.6.1 ([PR 385](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363), [PR 373](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/385))
