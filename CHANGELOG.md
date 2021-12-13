@@ -9,6 +9,27 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [5.3.0] 2021-12-13
+
+### Minor Change: New application.properties flags
+- `daps.jwt.signature.algorithm=RSA256/ECDSA256`, to be able to choose between RSA 256 and ECDSA 256 as signature signing algorithm for the JWTs to the DAPS for the DAT request. Default if not set is RSA256 (using RSA as signing algorithm). ([Issue 376](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/376))
+
+### Patch Change: Infomodel Maintenance
+- Used Dependency Version: 4.2.8 ([PR 391](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/391))
+- Used Artifacts: java, infomodel-serializer, interaction
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.0 -> 2.6.1 ([PR 385](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363), [PR 373](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/385))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.6.0 -> 2.6.1 ([PR 385](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/363), [PR 373](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/385))
+- Upgrade: org.junit.jupiter:junit-jupiter-engine 5.8.1 -> 5.8.2 ([PR 382](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
+- Upgrade: org.junit.jupiter:junit-jupiter-api 5.8.1 -> 5.8.2 ([PR 382](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
+- Upgrade: org.junit.jupiter:junit-jupiter 5.8.1 -> 5.8.2 ([PR 382](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
+- Upgrade: com.puppycrawl.tools:checkstyle 9.1 -> 9.2 ([PR 381](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/382))
+- Upgrade: org.bouncycastle:bcprov-jdk15on 1.69 -> 1.70 ([PR 388](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/388))
+- Upgrade: org.bouncycastle:bcmail-jdk15o 1.69 -> 1.70 ([PR 388](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/388))
+- Upgrade: org.json:json 20210307 -> 20211205 ([PR 389](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/389))
+- Upgrade: org.apache.jena:jena-core 4.2.0 -> 4.3.0 ([PR 390](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/390))   
+
 ## Version [5.2.0] 2021-11-24
 
 ### Minor Change: New application.properties flags

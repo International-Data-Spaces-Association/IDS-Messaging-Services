@@ -52,9 +52,7 @@ import org.springframework.stereotype.Component;
 import static org.apache.commons.codec.binary.Hex.encodeHexString;
 
 /**
- * Manages Dynamic Attribute Tokens.
- *
- * @author Gerd Brost (gerd.brost@aisec.fraunhofer.de)
+ * Manages DAT requests to the DAPS.
  */
 @Slf4j
 @Component
@@ -93,6 +91,13 @@ public class AisecTokenManagerService implements TokenManagerService {
      */
     @Value("#{new Boolean('${daps.enable.log.jwt:false}')}")
     private Boolean logDapsResponse;
+
+    /**
+     * SinatureAlgorithm used for signing JWT for DAT request.
+     * Supported: RSA256, ECDSA256
+     */
+    @Value("${daps.jwt.signature.algorithm:RSA256}")
+    private String signatureAlgorithm;
 
     /***
      * Beautifies Hex strings and will generate a result later used to
@@ -351,7 +356,13 @@ public class AisecTokenManagerService implements TokenManagerService {
             log.debug("Signing jwt token... [code=(IMSCOD0109)]");
         }
 
-        return jwtb.signWith(SignatureAlgorithm.RS256, privateKey).compact();
+        if ("ECDSA256".equals(signatureAlgorithm)) {
+            // ECDSA 256
+            return jwtb.signWith(SignatureAlgorithm.ES256, privateKey).compact();
+        } else {
+            // Default: RSA 256
+            return jwtb.signWith(SignatureAlgorithm.RS256, privateKey).compact();
+        }
     }
 
     /**
