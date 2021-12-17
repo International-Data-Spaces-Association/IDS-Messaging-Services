@@ -11,10 +11,6 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.3.1] UNRELEASED
 
-### Patch Change: Infomodel Maintenance
-- Downgrade to older version: 4.2.7 ([PR 401](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/401))
-- Used Artifacts: java, infomodel-serializer, interaction
-
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework:spring-webmvc 5.3.13 -> 5.3.14 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400))
 - Upgrade: org.springframework:spring-core 5.3.13 -> 5.3.14 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400))
