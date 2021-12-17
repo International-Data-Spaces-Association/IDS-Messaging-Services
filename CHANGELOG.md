@@ -14,6 +14,10 @@ All notable changes to this project will be documented in this file.
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.apache.jena:jena-core 4.3.0 -> 4.3.1 ([PR 393](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/393))
 
+### Patch Change: Infomodel Maintenance
+- Downgrade to older version: 4.2.7
+- Used Artifacts: java, infomodel-serializer, interaction
+
 ## Version [5.3.0] 2021-12-13
 
 ### Minor Change: New application.properties flags
