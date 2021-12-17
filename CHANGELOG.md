@@ -11,12 +11,17 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.3.1] UNRELEASED
 
-### Patch Change: Dependency Maintenance
-- Upgrade: org.apache.jena:jena-core 4.3.0 -> 4.3.1 ([PR 393](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/393))
-
 ### Patch Change: Infomodel Maintenance
-- Downgrade to older version: 4.2.7
+- Downgrade to older version: 4.2.7 ([PR 401](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/401))
 - Used Artifacts: java, infomodel-serializer, interaction
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework:spring-webmvc 5.3.13 -> 5.3.14 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400))
+- Upgrade: org.springframework:spring-core 5.3.13 -> 5.3.14 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400))
+- Upgrade: org.springframework:spring-web 5.3.13 -> 5.3.14 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400))
+- Upgrade: org.springframework:spring-test 5.3.13 -> 5.3.14 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400))
+- Upgrade: org.springframework:spring-tx 5.3.13 -> 5.3.14 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400))
+- Upgrade: org.apache.jena:jena-core 4.3.0 -> 4.3.1 ([PR 393](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/393))
 
 ## Version [5.3.0] 2021-12-13
 
