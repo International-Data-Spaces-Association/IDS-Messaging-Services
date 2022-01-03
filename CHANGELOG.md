@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version [5.3.1] UNRELEASED
 
+### Patch Change: Fixes
+- When retrieving data from APIs outside the IDS context reusing the HTTP client of the Messaging-Services, there could be a problem with GZIP compressed API responses. An additional response interceptor has been added to handle all GZIP compressed responses, regardless of the details of the original request send. ([Issue 399](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/399))
+
 ### Patch Change: Infomodel Maintenance
 - Downgrade to older version: 4.2.7 ([PR 401](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/401))
 - Used Artifacts: java, infomodel-serializer, interaction
