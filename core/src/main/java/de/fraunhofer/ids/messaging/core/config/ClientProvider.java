@@ -36,9 +36,13 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import okhttp3.internal.http.RealResponseBody;
+import okio.GzipSource;
+import okio.Okio;
 import org.jetbrains.annotations.NotNull;
-
 
 /**
  * The ClientProvider uses the {@link ConfigContainer} to rebuild
@@ -122,7 +126,7 @@ public class ClientProvider {
         if (connector.getConnectorProxy() != null) {
             //if there is any proxy in the proxylist
             final var proxyConfiguration = connector
-                .getConnectorProxy().stream().findAny().orElse(null);
+                    .getConnectorProxy().stream().findAny().orElse(null);
 
             if (proxyConfiguration != null) {
                 if (log.isDebugEnabled()) {
@@ -193,13 +197,13 @@ public class ClientProvider {
                     } else if (proxyPort == -1) {
                         if (log.isWarnEnabled()) {
                             log.warn("Proxy port invalid! Trying to skip using this proxy!"
-                                    + " Please check configuration! [code=(IMSCOW0031),"
+                                     + " Please check configuration! [code=(IMSCOW0031),"
                                      + " port=({})]", proxyPort);
                         }
                         proxyList.add(Proxy.NO_PROXY);
                     } else {
                         proxyList.add(new Proxy(Proxy.Type.HTTP,
-                                            new InetSocketAddress(proxyHost, proxyPort)));
+                                                new InetSocketAddress(proxyHost, proxyPort)));
                     }
 
                 }
@@ -239,11 +243,11 @@ public class ClientProvider {
 
             final Authenticator proxyAuthenticator = (route, response) -> {
                 final var credential = Credentials.basic(proxyConfiguration
-                                                       .getProxyAuthentication()
-                                                       .getAuthUsername(),
-                                                   proxyConfiguration
-                                                       .getProxyAuthentication()
-                                                       .getAuthPassword());
+                                                                 .getProxyAuthentication()
+                                                                 .getAuthUsername(),
+                                                         proxyConfiguration
+                                                                 .getProxyAuthentication()
+                                                                 .getAuthPassword());
                 return response.request().newBuilder()
                                .header("Proxy-Authorization", credential)
                                .build();
@@ -354,7 +358,8 @@ public class ClientProvider {
         this.client =
                 createClientBuilder(configContainer.getConfigurationModel(),
                                     configContainer.getKeyStoreManager())
-                                    .build();
+                        .addInterceptor(new EncodingInterceptor())
+                        .build();
     }
 
     /**
@@ -390,9 +395,9 @@ public class ClientProvider {
                                               final Duration callTimeout) {
 
         final var withTimeout =
-            rebuildClientWithTimeouts(client, connectTimeout,
-                                      readTimeout, writeTimeout,
-                                      callTimeout);
+                rebuildClientWithTimeouts(client, connectTimeout,
+                                          readTimeout, writeTimeout,
+                                          callTimeout);
 
         if (log.isDebugEnabled()) {
             log.debug("Ok Http Client Protocols: [code=(IMSCOD0076),"
@@ -462,5 +467,62 @@ public class ClientProvider {
         }
 
         return okHttpClient;
+    }
+
+    /**
+     * Adds an interceptor to handle Content-Encodings in response header.
+     */
+    private class EncodingInterceptor implements Interceptor {
+        @Override
+        @NotNull
+        public Response intercept(final Chain chain) throws IOException {
+            if (log.isDebugEnabled()) {
+                log.debug("EncodingInterceptor: Checking response encoding for gzip."
+                          + " [code=(IMSCOD0144)");
+            }
+
+            final var response = chain.proceed(chain.request());
+
+            return handleGzip(response);
+        }
+
+        private Response handleGzip(final Response response) {
+            final var bodyPresent = (response.body() != null);
+            final var gzipPresent = "gzip".equalsIgnoreCase(
+                    response.headers().get("Content-Encoding"));
+
+            if (!bodyPresent || !gzipPresent) {
+                if (log.isDebugEnabled()) {
+                    log.debug("EncodingInterceptor: No body in response or no gzip present."
+                              + " [code=(IMSCOD0145)");
+                }
+
+                return response;
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("EncodingInterceptor: Response body present and"
+                              + " gzip encoded, uncompressing. [code=(IMSCOD0146)");
+                }
+
+                try {
+                    final var responseBody = new GzipSource(response.body().source());
+                    final var contentLength = response.body().contentLength();
+                    final var strippedHeaders = response.headers()
+                                                        .newBuilder()
+                                                        .removeAll("Content-Encoding")
+                                                        .build();
+
+                    return response.newBuilder()
+                                   .headers(strippedHeaders)
+                                   .body(new RealResponseBody(
+                                           response.body().contentType().toString(),
+                                           contentLength,
+                                           Okio.buffer(responseBody)))
+                                   .build();
+                } catch (Exception e) {
+                    return response;
+                }
+            }
+        }
     }
 }
