@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework:spring-tx 5.3.13 -> 5.3.14 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400))
 - Upgrade: org.apache.jena:jena-core 4.3.0 -> 4.3.2 ([PR 393](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/393), [PR 410](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/410))
 - Upgrade: com.puppycrawl.tools:checkstyle 9.2 -> 9.2.1 ([PR 410](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/410))
+- Upgrade: maven-compiler-plugin 3.8.1 -> 3.9.0 ([PR 411](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/411)) 
 
 ## Version [5.3.0] 2021-12-13
 
