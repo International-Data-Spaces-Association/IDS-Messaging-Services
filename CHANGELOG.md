@@ -9,7 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [5.3.1] UNRELEASED
+## Version [6.0.0] UNRELEASED
+
+### Major Change: dat issuer and public key kid are read from the received token
+- Until now, the two application.properties variables `daps.key.url` and `daps.key.url.kid` were used to determine the issuer-url and the key-id (kid) under which the public key of the issuer of the DAT of a received message can be requested. This information is now dynamically read directly from the DAT received (header:kid, payload:iss), which are mandatory fields for a DAT. As a result, the two settings variables mentioned above are omitted. Due to the consequential changes, there are now major changes when using the `getClaims` method of the `DapsValidator`, since this method is no longer static and no longer needs to be passed the public key as a parameter. ([Issue 418](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/418)) 
 
 ### Patch Change: Fixes
 - When retrieving data from APIs outside the IDS context reusing the HTTP client of the Messaging-Services, there could be a problem with GZIP compressed API responses. An additional response interceptor has been added to handle all GZIP compressed responses, regardless of the details of the original request send. ([Issue 399](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/399))
