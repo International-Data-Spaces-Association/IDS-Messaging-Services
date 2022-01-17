@@ -13,25 +13,20 @@
  */
 package de.fraunhofer.ids.messaging.core.daps;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.security.Key;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import de.fraunhofer.ids.messaging.core.config.ClientProvider;
-import de.fraunhofer.ids.messaging.core.config.ConfigContainer;
+import io.jsonwebtoken.Jwts;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
 import org.jose4j.jwk.JsonWebKeySet;
-import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,11 +50,6 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private final TokenManagerService tokenManagerService;
 
     /**
-     * The ConfigContainer.
-     */
-    private final ConfigContainer configContainer;
-
-    /**
      * The current jwt.
      */
     private String currentJwt;
@@ -70,15 +60,16 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private Date expiration;
 
     /**
-     * The public keys.
-     */
-    private List<Key> publicKeys;
-
-    /**
      * The DAPS token URL.
      */
     @Value("${daps.token.url}")
     private String dapsTokenUrl;
+
+    /**
+     * The well-known path for the public key of the token issuer.
+     */
+    @Value("${daps.incoming.dat.default.wellknown:}")
+    private String dafaultWellKnown;
 
     /**
      * Used to switch DAT caching on and off.
@@ -87,25 +78,16 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     private Boolean cacheDat;
 
     /**
-     * The Daps key url kid.
-     */
-    @Value("#{${daps.key.url.kid}}")
-    private Map<String, String> urlKidMap;
-
-    /**
      * Constructor for TokenProviderService.
      *
      * @param clientProvider The ClientProvider.
      * @param tokenManagerService The TokenManagerService.
-     * @param configContainer The ConfigContainer.
      */
     @Autowired
     public TokenProviderService(final ClientProvider clientProvider,
-                                final TokenManagerService tokenManagerService,
-                                final ConfigContainer configContainer) {
+                                final TokenManagerService tokenManagerService) {
         this.clientProvider = clientProvider;
         this.tokenManagerService = tokenManagerService;
-        this.configContainer = configContainer;
     }
 
     /**
@@ -158,8 +140,15 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
                     ._tokenFormat_(TokenFormat.JWT)
                     ._tokenValue_(currentJwt)
                     .build();
-            final var claims = DapsValidator.getClaims(token, this.publicKeys).getBody();
-            expiration = claims.getExpiration();
+
+            //remove signature from own token to read the expiration date
+            //(JWT-Parser requires public key of DAPS used otherwiese,
+            //saves call to DAPS to obtain public key), only needed for caching expiration date
+            final var tokenValue = token.getTokenValue();
+            final var noSigJwt = tokenValue.substring(0, tokenValue.lastIndexOf('.') + 1);
+            final var claims = Jwts.parser().parseClaimsJwt(noSigJwt);
+
+            expiration = claims.getBody().getExpiration();
         } catch (Exception e) {
             //Will force acquire a new token next message request.
             expiration = null;
@@ -167,69 +156,66 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
     }
 
     /**
-     * Return the Public Key from the DAPS JWKS.
+     * Try to get the Public Key with kid from jwks of issuer DAPS (infos from DAT).
      *
-     * @return The Public Key from the DAPS (used for validating Tokens of incoming Messages).
+     * @param issuer Base uri of DAT issuer DAPS.
+     * @param kid kid of public key from jwks (info from incoming DAT).
+     * @return publicKey with kid from jwks of issuer DAPS (or null if it does not exist)
      */
     @Override
-    public List<Key> providePublicKeys() {
-        if (publicKeys == null) {
-            getPublicKeys();
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Provide public key! [code=(IMSCOD0102)]");
-        }
-
-        return publicKeys;
-    }
-
-    /**
-     * Pull the Public Key from the DAPS and save it in the publicKey variable.
-     */
-    @PostConstruct
-    private void getPublicKeys() {
-        this.publicKeys = new ArrayList<>();
-        //request the JWK-Set
-        final var client = clientProvider.getClient();
-
-        for (final var entry : urlKidMap.entrySet()) {
-            try {
-                if (log.isDebugEnabled()) {
-                    log.debug("Getting json web keyset. [code=(IMSCOD0103), key=({})]",
-                              entry.getKey());
-                }
-
-                final var request = new Request.Builder().url(entry.getKey()).build();
-                final var response = client.newCall(request).execute();
-                final var keySetJSON = Objects.requireNonNull(response.body()).string();
-                final var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
-                final var jsonWebKey =
-                        jsonWebKeySet.getJsonWebKeys().stream()
-                                     .filter(k -> k.getKeyId().equals(entry.getValue()))
-                                     .findAny()
-                                     .orElse(null);
-
-                if (jsonWebKey != null) {
-                    this.publicKeys.add(jsonWebKey.getKey());
-                } else {
-                    if (log.isWarnEnabled()) {
-                        log.warn("Could not get JsonWebKey from received KeySet! PublicKey is null!"
-                                 + "[code=(IMSCOW0037), kid=({})]", entry.getValue());
-                    }
-                }
-            } catch (IOException e) {
-                if (log.isWarnEnabled()) {
-                    log.warn("Could not load the key. [code=(IMSCOW0038),"
-                             + " key=({}), exception=({})]", entry.getKey(),
-                             e.getMessage());
-                }
-            } catch (JoseException e) {
-                if (log.isWarnEnabled()) {
-                    log.warn("Could not create JsonWebKeySet from response! [code=(IMSCOW0039),"
-                             + " exception=({})]", e.getMessage());
-                }
+    public Key requestPublicKey(@NonNull final String issuer, @NonNull final String kid) {
+        try {
+            var issuerBase = issuer;
+            if (issuerBase.endsWith("/")) {
+                issuerBase = issuerBase.substring(0, issuer.length() - 1);
             }
+
+            var pubKeysUrl = issuerBase;
+            if (dafaultWellKnown == null || dafaultWellKnown.isBlank()) {
+                pubKeysUrl += "/.well-known/jwks.json";
+            } else {
+                pubKeysUrl += dafaultWellKnown;
+            }
+
+            if (log.isInfoEnabled()) {
+                log.info("Requesting public key of token issuer. "
+                         + "[url=({}), kid=({})]", pubKeysUrl, kid);
+            }
+
+            final var client = clientProvider.getClient();
+            final var request = new Request.Builder().url(pubKeysUrl).build();
+            final var response = client.newCall(request).execute();
+            final var keySetJSON = Objects.requireNonNull(response.body()).string();
+            final var jsonWebKeySet = new JsonWebKeySet(keySetJSON);
+
+            //Get public key for given kid
+            final var jsonWebKey =
+                    jsonWebKeySet.getJsonWebKeys().stream().filter(
+                            k -> k.getKeyId().equals(kid)
+                    ).findAny().orElse(null);
+
+            if (jsonWebKey != null) {
+                //if public key was found return it
+                return jsonWebKey.getKey();
+            } else {
+                //if no key was found, return null
+                if (log.isWarnEnabled()) {
+                    log.warn(String.format(
+                            "No key found at DAPS url, kid combination %s:%s!", pubKeysUrl, kid)
+                    );
+                }
+                if (log.isWarnEnabled()) {
+                    log.warn("No public key for DAPS was found for DAT to verify claims!"
+                             + " [code=(IMSCOW0147), url=[{}], kid=({})]", pubKeysUrl, kid);
+                }
+                return null;
+            }
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error("Exception while requesting public key from token issuer!"
+                          + " [code=(IMSCOE0148), message=[{}]]", e.getMessage());
+            }
+            return null;
         }
     }
 
