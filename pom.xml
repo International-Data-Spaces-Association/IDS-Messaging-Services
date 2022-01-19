@@ -35,7 +35,7 @@
     </modules>
 
     <properties>
-        <revision>6.0.0-SNAPSHOT</revision>
+        <revision>6.0.0</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
