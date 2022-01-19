@@ -9,6 +9,29 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [6.0.0] 2022-01-19
+
+### Major Change: dat issuer and public key kid are read from the received token
+- Until now, the two application.properties variables `daps.key.url` and `daps.key.url.kid` were used to determine the issuer-url and the key-id (kid) under which the public key of the issuer of the DAT of a received message can be requested. This information is now dynamically read directly from the DAT received (header:kid, payload:iss), which are mandatory fields for a DAT. As a result, the two settings variables mentioned above are omitted. Due to the consequential changes, there are now major changes when using the `getClaims` method of the `DapsValidator`, since this method is no longer static and no longer needs to be passed the public key as a parameter. ([Issue 418](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/418)) 
+
+### Patch Change: Fixes
+- When retrieving data from APIs outside the IDS context reusing the HTTP client of the Messaging-Services, there could be a problem with GZIP compressed API responses. An additional response interceptor has been added to handle all GZIP compressed responses, regardless of the details of the original request send. ([Issue 399](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/399))
+
+### Patch Change: Infomodel Maintenance
+- Update combination of used artifacts: java (v4.2.7), serializer (v4.2.8), interaction (v4.2.7)  ([PR 402](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/402))
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.1 -> 2.6.2 ([PR 410](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/410))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.6.1 -> 2.6.2 ([PR 410](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/410))
+- Upgrade: org.springframework:spring-webmvc 5.3.13 -> 5.3.15 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400), [PR 417](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/417))
+- Upgrade: org.springframework:spring-core 5.3.13 -> 5.3.15 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400), [PR 417](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/417))
+- Upgrade: org.springframework:spring-web 5.3.13 -> 5.3.15 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400), [PR 417](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/417))
+- Upgrade: org.springframework:spring-test 5.3.13 -> 5.3.15 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400), [PR 417](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/417))
+- Upgrade: org.springframework:spring-tx 5.3.13 -> 5.3.15 ([PR 400](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/400), [PR 417](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/417))
+- Upgrade: org.apache.jena:jena-core 4.3.0 -> 4.3.2 ([PR 393](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/393), [PR 410](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/410))
+- Upgrade: com.puppycrawl.tools:checkstyle 9.2 -> 9.2.1 ([PR 410](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/410))
+- Upgrade: maven-compiler-plugin 3.8.1 -> 3.9.0 ([PR 411](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/411)) 
+
 ## Version [5.3.0] 2021-12-13
 
 ### Minor Change: New application.properties flags

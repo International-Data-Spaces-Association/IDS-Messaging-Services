@@ -112,7 +112,6 @@ class MessageDispatcherTest {
         Mockito.when(configurationContainer.getConfigurationModel()).thenReturn(configurationModel);
         Mockito.when(configurationModel.getConnectorDeployMode()).thenReturn(ConnectorDeployMode.TEST_DEPLOYMENT);
         Mockito.when(provider.provideDapsToken()).thenReturn("Mocked Token.");
-        Mockito.when(publicKeyProvider.providePublicKeys()).thenReturn(null);
         Mockito.when(dapsValidator.checkDat(Mockito.any(DynamicAttributeToken.class), Mockito.anyMap())).thenReturn(true);
 
         final var dispatcher = messageDispatcherProvider.provideMessageDispatcher(objectMapper, requestMessageHandler, configurationContainer, dapsValidator);

@@ -16,14 +16,13 @@ package de.fraunhofer.ids.messaging.core.daps;
 import java.security.KeyPairGenerator;
 import java.sql.Date;
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.fraunhofer.iais.eis.DynamicAttributeTokenBuilder;
 import de.fraunhofer.iais.eis.TokenFormat;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -71,12 +70,15 @@ class DapsValidatorTest {
         keyGen.initialize(512);
         final var pair = keyGen.generateKeyPair();
         //when PublicKeyProvider is called, return generated Public Key
-        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
+        Mockito.when(dapsPublicKeyProvider.requestPublicKey("test","test"))
+               .thenReturn(pair.getPublic());
         //create JWT and sign it with generated private Key
         var jwt = Jwts.builder()
                 .setIssuedAt(Date.from(Instant.now()))
                 .setNotBefore(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(600)))
+                .setHeaderParam("kid","test")
+                .setIssuer("test")
                 .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
         var datToken = new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)
@@ -97,14 +99,6 @@ class DapsValidatorTest {
                 .build();
         //token should be rejected
         assertFalse(dapsValidator.checkDat(datToken, Map.of()));
-
-        //create an infomodel message with some random String as token
-        datToken = new DynamicAttributeTokenBuilder()
-                ._tokenFormat_(TokenFormat.JWT)
-                ._tokenValue_(RandomStringUtils.randomAlphabetic(12))
-                .build();
-        //token should be rejected
-        assertFalse(dapsValidator.checkDat(datToken, Map.of()));
     }
 
     @Test
@@ -115,12 +109,14 @@ class DapsValidatorTest {
         keyGen.initialize(512);
         final var pair = keyGen.generateKeyPair();
         //when PublicKeyProvider is called, return generated Public Key
-        Mockito.when(dapsPublicKeyProvider.providePublicKeys()).thenReturn(List.of(pair.getPublic()));
+        Mockito.when(dapsPublicKeyProvider.requestPublicKey("test","test")).thenReturn(pair.getPublic());
         //create JWT with BASE_CONNECTOR_SECURITY_PROFILE
         var jwt = Jwts.builder()
                 .setIssuedAt(Date.from(Instant.now()))
                 .setNotBefore(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(600)))
+                .setHeaderParam("kid","test")
+                .setIssuer("test")
                 .claim("securityProfile", "idsc:BASE_CONNECTOR_SECURITY_PROFILE")
                 .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
         var datToken = new DynamicAttributeTokenBuilder()
@@ -138,6 +134,8 @@ class DapsValidatorTest {
                 .setIssuedAt(Date.from(Instant.now()))
                 .setNotBefore(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(600)))
+                .setHeaderParam("kid","test")
+                .setIssuer("test")
                 .claim("securityProfile", "sjondfasdhfiou")
                 .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
         datToken = new DynamicAttributeTokenBuilder()
@@ -151,6 +149,8 @@ class DapsValidatorTest {
                 .setIssuedAt(Date.from(Instant.now()))
                 .setNotBefore(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(600)))
+                .setHeaderParam("kid","test")
+                .setIssuer("test")
                 .signWith(SignatureAlgorithm.RS256, pair.getPrivate());
         datToken = new DynamicAttributeTokenBuilder()
                 ._tokenFormat_(TokenFormat.JWT)

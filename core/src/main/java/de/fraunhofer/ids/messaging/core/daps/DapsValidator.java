@@ -15,7 +15,6 @@ package de.fraunhofer.ids.messaging.core.daps;
 
 import java.security.Key;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
@@ -23,6 +22,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -68,53 +68,55 @@ public class DapsValidator {
             "idsc:TRUSTED_CONNECTOR_PLUS_SECURITY_PROFILE"};
 
     /**
-     * Extract the Claims from the Dat token of a message, given the Message and a signingKey.
+     * Extract the Claims from the Dat token of a message, given the Message and a publicKey.
      *
      * @param token {@link DynamicAttributeToken} of an incoming RequestMessage.
-     * @param signingKeys A list of public Keys.
+     * @param publicKey The public Key.
      * @return The Claims of the messages DAT Token, when it can be signed with the given key.
      * @throws ClaimsException If Token cannot be signed with the given key.
      */
-    public static Jws<Claims> getClaims(final DynamicAttributeToken token,
-                                        final List<Key> signingKeys)
+    public Jws<Claims> getClaims(@NonNull final DynamicAttributeToken token,
+                                 @NonNull final Key publicKey)
             throws ClaimsException {
-
         final var tokenValue = token.getTokenValue();
 
-        if (signingKeys == null || signingKeys.isEmpty()) {
-            throw new ClaimsException("No signing keys were given!");
-        }
-
-        for (final var signingKey : signingKeys) {
-            try {
-                return Jwts.parser()
-                           .setSigningKey(signingKey)
-                           .parseClaimsJws(tokenValue);
-            } catch (Exception e) {
-                //nothing to do, exception is thrown below
+        try {
+            return Jwts.parser().setSigningKey(publicKey).parseClaimsJws(tokenValue);
+        } catch (Exception e) {
+            if (log.isWarnEnabled()) {
+                log.warn(
+                        "Claims could not be read from the token! [code=(IMSCOW0149),"
+                        + " message=({})]", e.getMessage());
             }
-        }
 
-        throw new ClaimsException("No given signing Key could validate JWT!");
+            throw new ClaimsException("Claims could not be read from the token! [message=({})]");
+        }
     }
 
     /**
-     * Get the claims of the DAT.
+     * Get the claims of the DAT and validate it using the public key of the issuer.
      *
      * @param token Incoming DAT token.
      * @return Claims extracted from the DAT.
      * @throws ClaimsException If token cannot be parsed using a DAPS public key.
      */
     public Jws<Claims> getClaims(final DynamicAttributeToken token) throws ClaimsException {
-        Jws<Claims> claims;
-        final var keys = keyProvider.providePublicKeys();
+        //remove signature from token, since public key not yet available
+        //(used JWT-Parser requires public key otherwise)
+        final var noSigJwt = token.getTokenValue().substring(0,
+                    token.getTokenValue().lastIndexOf('.') + 1);
 
-        try {
-            claims = getClaims(token, keys);
-            return claims;
-        } catch (ClaimsException | ExpiredJwtException e) {
-            throw e;
-        }
+        //read contents of token without signature using the JWT-Parser
+        final var claim = Jwts.parser().parseClaimsJwt(noSigJwt);
+
+        //read kid and issuer of token content and request public key from issuer using the kid
+        final var key = keyProvider.requestPublicKey(
+                claim.getBody().getIssuer(),
+                claim.getHeader().get("kid").toString());
+
+        //get claims from token using token and requested public key of issuer
+        //(and validate the token using the public key as signingKey in parser)
+        return getClaims(token, key);
     }
 
     /**
