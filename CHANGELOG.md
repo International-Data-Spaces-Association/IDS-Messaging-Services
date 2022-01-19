@@ -17,6 +17,10 @@ All notable changes to this project will be documented in this file.
 ### Patch Change: Fixes
 - When retrieving data from APIs outside the IDS context reusing the HTTP client of the Messaging-Services, there could be a problem with GZIP compressed API responses. An additional response interceptor has been added to handle all GZIP compressed responses, regardless of the details of the original request send. ([Issue 399](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/issues/399))
 
+### Patch Change: Infomodel Maintenance
+- Upgrade Infomodel-Serializer to version: 4.2.8 ([PR 402](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/402))
+- Used Artifacts: java (v4.2.7), serializer (v4.2.8), interaction (v4.2.7)
+
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.1 -> 2.6.2 ([PR 410](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/410))
 - Upgrade: org.springframework.boot:spring-boot-starter 2.6.1 -> 2.6.2 ([PR 410](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/410))
