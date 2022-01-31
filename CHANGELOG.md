@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [6.0.1] UNRELEASED
+## Version [6.0.1] 2022-01-31
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 9.2.1 -> 9.3 ([PR 425](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/425))
