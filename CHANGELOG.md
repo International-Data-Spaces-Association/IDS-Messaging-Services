@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.2 -> 2.6.3 ([PR 423](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/423))
 - Upgrade: org.springframework.boot:spring-boot-starter 2.6.2 -> 2.6.3 ([PR 423](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/423))
+- Upgrade: transitive com.fasterxml.jackson.core:jackson-databind to v2.9.10.8
 
 ## Version [6.0.0] 2022-01-19
 
