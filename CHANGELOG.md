@@ -9,6 +9,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [6.0.2] UNRELEASED
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.apache.jena:jena-core 4.3.2 -> 4.4.0 ([PR 426](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/426))
+
 ## Version [6.0.1] 2022-01-31
 
 ### Patch Change: Dependency Maintenance
