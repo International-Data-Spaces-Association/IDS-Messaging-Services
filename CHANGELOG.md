@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.apache.jena:jena-core 4.3.2 -> 4.4.0 ([PR 426](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/426))
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.1 -> 3.3.2 ([PR 428](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/428))
+- Upgrade: maven-compiler-plugin 3.9.0 -> 3.10.0 ([PR 429](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/429)) 
 
 ## Version [6.0.1] 2022-01-31
 
