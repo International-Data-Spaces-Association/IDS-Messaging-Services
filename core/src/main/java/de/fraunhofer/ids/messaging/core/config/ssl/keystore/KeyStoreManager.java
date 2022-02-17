@@ -263,6 +263,7 @@ public class KeyStoreManager {
      * @param pw Password of the keystore.
      * @param location Path of the keystore.
      * @param keyStoreType The type of the keystore (Keystore / Truststore).
+     * @return The IdsKeyStore as java keystore instance.
      * @throws CertificateException If any of the certificates in the keystore could not be loaded.
      * @throws NoSuchAlgorithmException If the algorithm used to check the integrity of the
      * keystore cannot be found.
