@@ -31,20 +31,30 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import de.fraunhofer.iais.eis.ConfigurationModel;
 import de.fraunhofer.ids.messaging.core.config.ssl.truststore.TrustStoreManager;
 import de.fraunhofer.ids.messaging.core.config.util.CertificateSubjectCnProvider;
+import de.fraunhofer.ids.messaging.core.config.util.ConnectorFingerprintProvider;
+import de.fraunhofer.ids.messaging.core.daps.ConnectorMissingCertExtensionException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.ClassPathResource;
+
+import static org.apache.commons.codec.binary.Hex.encodeHexString;
 
 /**
  * The KeyStoreManager loads the IDSKeyStore and provides the TrustManager.
@@ -174,6 +184,7 @@ public class KeyStoreManager {
         initTrustManager(trustStorePw);
         getPrivateKeyFromKeyStore(keyAlias);
         initCertificateSubjectCn(); //requires valid connector certificate (e.g. issued by DAPS)
+        initCertificateConnectorFingerprint();
     }
 
     private void initCertificateSubjectCn()  {
@@ -193,6 +204,27 @@ public class KeyStoreManager {
             }
 
             CertificateSubjectCnProvider.certificateSubjectCn = UUID.randomUUID();
+        }
+    }
+
+    /**
+     * Initialises the ConnectorFingerprintProvider fingerprint value (aki/ski) of the connector
+     * by the connector certificate.
+     */
+    private void initCertificateConnectorFingerprint() {
+        try {
+            ConnectorFingerprintProvider.fingerprint = Optional.of(getConnectorFingerprint());
+            if (log.isDebugEnabled()) {
+                log.debug("Determined AKI/SKI fingerprint of the connector. [code=(IMSCOD0150),"
+                          + " fingerprint=({})]",
+                         ConnectorFingerprintProvider.fingerprint.get());
+            }
+        } catch (Exception exception) {
+            ConnectorFingerprintProvider.fingerprint = Optional.empty();
+            if (log.isDebugEnabled()) {
+                log.debug("Could not determine AKI/SKI fingerprint of the connector."
+                         + " [code=(IMSCOD0151), error=({})]", exception.getMessage());
+            }
         }
     }
 
@@ -439,5 +471,114 @@ public class KeyStoreManager {
             this.privateKey = (PrivateKey) key;
             this.cert = keyStore.getCertificate(keyAlias);
         }
+    }
+
+    /**
+     * Generates the fingerprint of the Connector (UID) using the KeyStoreManager.
+     *
+     * @return The generated connector fingerprint (UID).
+     * @throws ConnectorMissingCertExtensionException Thrown if either AKI
+     * or SKI are not valid within the connector certificate.
+     */
+    private String getConnectorFingerprint()
+            throws ConnectorMissingCertExtensionException {
+        final var certificate = (X509Certificate) this.getCert();
+        final var authorityKeyIdentifier = getCertificateAKI(certificate);
+        final var subjectKeyIdentifier = getCertificateSKI(certificate);
+
+        return generateConnectorFingerprint(authorityKeyIdentifier, subjectKeyIdentifier);
+    }
+
+    /**
+     * Generates the fingerprint of the connector (UID).
+     *
+     * @param authorityKeyIdentifier The connector certificate AKI.
+     * @param subjectKeyIdentifier The connector certificate SKI.
+     * @return The generated fingerprint of the connector (UID).
+     */
+    private String generateConnectorFingerprint(final byte[] authorityKeyIdentifier,
+                                                final byte[] subjectKeyIdentifier) {
+        final var akiResult = beautifyHex(encodeHexString(authorityKeyIdentifier).toUpperCase());
+        final var skiResult = beautifyHex(encodeHexString(subjectKeyIdentifier).toUpperCase());
+
+        return skiResult + "keyid:" + akiResult.substring(0, akiResult.length() - 1);
+    }
+
+    /**
+     * Get the SKI of the certificate.
+     *
+     * @param cert The X509Certificate-Certificate
+     * @return The SKI-KeyIdentifier of the certificate
+     * @throws ConnectorMissingCertExtensionException thrown if SKI of certificate is empty
+     */
+    private byte[] getCertificateSKI(final X509Certificate cert)
+            throws ConnectorMissingCertExtensionException {
+        if (log.isDebugEnabled()) {
+            log.debug("Get SKI from certificate... [code=(IMSCOD0110)]");
+        }
+
+        final var skiOid = Extension.subjectKeyIdentifier.getId();
+        final var rawSubjectKeyIdentifier = cert.getExtensionValue(skiOid);
+
+        if (rawSubjectKeyIdentifier == null) {
+            throw new ConnectorMissingCertExtensionException(
+                    "SKI of the Connector Certificate is null!");
+        }
+
+        final var ski0c = ASN1OctetString.getInstance(rawSubjectKeyIdentifier);
+        final var ski = SubjectKeyIdentifier.getInstance(ski0c.getOctets());
+
+        return ski.getKeyIdentifier();
+    }
+
+    /**
+     * Get the AKI of the certificate.
+     *
+     * @param cert The X509Certificate-Certificate
+     * @return The AKI-KeyIdentifier of the Certificate
+     * @throws ConnectorMissingCertExtensionException thrown if AKI of certificate is empty
+     */
+    private byte[] getCertificateAKI(final X509Certificate cert)
+            throws ConnectorMissingCertExtensionException {
+        if (log.isDebugEnabled()) {
+            log.debug("Get AKI from certificate... [code=(IMSCOD0111)]");
+        }
+
+        final var akiOid = Extension.authorityKeyIdentifier.getId();
+        final var rawAuthorityKeyIdentifier = cert.getExtensionValue(akiOid);
+
+        checkEmptyRawAKI(rawAuthorityKeyIdentifier); //can throw exception
+
+        final var akiOc = ASN1OctetString.getInstance(rawAuthorityKeyIdentifier);
+        final var aki = AuthorityKeyIdentifier.getInstance(akiOc.getOctets());
+
+        return aki.getKeyIdentifier();
+    }
+
+    /**
+     * Checks if AKI is empty.
+     *
+     * @param rawAuthorityKeyIdentifier The AKI to check
+     * @throws ConnectorMissingCertExtensionException thrown if AKI of certificate is null
+     */
+    private void checkEmptyRawAKI(final byte[] rawAuthorityKeyIdentifier)
+            throws ConnectorMissingCertExtensionException {
+        if (rawAuthorityKeyIdentifier == null) {
+            throw new ConnectorMissingCertExtensionException(
+                    "AKI of the Connector Certificate is null!");
+        }
+    }
+
+    /**
+     * Beautifies Hex strings and will generate a result later used to
+     * create the client id (XX:YY:ZZ).
+     *
+     * @param hexString HexString to be beautified
+     * @return beautifiedHex result
+     */
+    private static String beautifyHex(final String hexString) {
+        return Arrays.stream(hexString.split("(?<=\\G..)"))
+                     .map(s -> s + ":")
+                     .collect(Collectors.joining());
     }
 }

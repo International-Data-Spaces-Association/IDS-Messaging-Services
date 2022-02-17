@@ -9,6 +9,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [6.1.0] 2022-02-17
+
+### Minor Change: New ConnectorFingerprintProvider
+- The static call `ConnectorFingerprintProvider.fingerprint` can be used to retrieve the aki/ski connector fingerprint from now on. This fingerprint is determined at the start of the connector based on its certificate. With each reload of the keystoremanager and thus potential change of the connector certificate, the entry is regenerated. If no valid connector certificate with the required aki/ski information is available, the `Optional<String> fingerprint` will be empty. ([PR 431](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/431))
+
+### Patch Change: Infomodel compatibility RejectionMessage refactoring
+- If the modelVersion of an inbound message is not compatible with the inbound model versions list in the connector configuration and validation is active, the version of the received message as well as the list of supported versions will now be included in the RejectionMessage. Example: `Infomodel version of incoming Message not in supported inbound model version list! [incoming=(4.2.3), supported=([4.2.0, 4.2.1, 4.2.2])]` ([PR 432](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/432)) 
+
+### Patch Change: Dependency Maintenance
+- Upgrade: org.apache.jena:jena-core 4.3.2 -> 4.4.0 ([PR 426](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/426))
+- Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.1 -> 3.3.2 ([PR 428](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/428))
+- Upgrade: maven-compiler-plugin 3.9.0 -> 3.10.0 ([PR 429](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/429)) 
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.9 -> 0.7.10 ([PR 430](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/430)) 
+
 ## Version [6.0.1] 2022-01-31
 
 ### Patch Change: Dependency Maintenance
