@@ -344,7 +344,7 @@ public class MessageController {
                 final var message = "Infomodel version of incoming Message not in"
                                     + " supported inbound model version list!"
                                     + " [incoming=(" + inputVersion + "),"
-                                    + " supported(" + inboundList + ")]";
+                                    + " supported=(" + inboundList + ")]";
                 return Optional.of(message);
             }
 
