@@ -14,8 +14,6 @@ All notable changes to this project will be documented in this file.
 ### Minor Change: New ConnectorFingerprintProvider
 - The static call `ConnectorFingerprintProvider.fingerprint` can be used to retrieve the aki/ski connector fingerprint from now on. This fingerprint is determined at the start of the connector based on its certificate. With each reload of the keystoremanager and thus potential change of the connector certificate, the entry is regenerated. If no valid connector certificate with the required aki/ski information is available, the `Optional<String> fingerprint` will be empty.
 
-Translated with www.DeepL.com/Translator (free version)
-
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.apache.jena:jena-core 4.3.2 -> 4.4.0 ([PR 426](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/426))
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.1 -> 3.3.2 ([PR 428](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/428))
