@@ -20,6 +20,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -130,14 +131,17 @@ public class MessageController {
                 input = scanner.useDelimiter("\\A").next();
             }
 
-            if (!validateInfomodelVersion(input)) {
-                final var errorMessage = "Infomodel Version of incoming Message not supported!";
+            final var infomodelCompability = validateInfomodelVersion(input);
+
+            if (infomodelCompability.isPresent()) {
+                final var errorMessage = infomodelCompability.get();
 
                 if (log.isWarnEnabled()) {
-                    log.warn("Infomodel model-version validation of received messages is switched"
+                    log.warn("Infomodel model version validation of received messages is switched"
                              + " on. Model-version of incoming message not supported."
                              + " Sending BAD_REQUEST response as a result."
-                             + " [code=(IMSMEW0042), response-message=({})]", errorMessage);
+                             + " [code=(IMSMEW0042), response-message=({})]",
+                             errorMessage);
                 }
 
                 return ResponseEntity
@@ -236,23 +240,18 @@ public class MessageController {
      * incoming message is compatible.
      *
      * @param input The received message.
-     * @return True if compatible or no validation to be performed, false otherwise.
+     * @return Optional<String> Empty if successful or skipped, else error message as string.
      * @throws IOException No model version information found in the header.
      */
-    private boolean validateInfomodelVersion(final String input) throws IOException {
-        if (validateInfVer && !checkInboundVersion(input)) {
-            return false;
-        } else if (!validateInfVer) {
+    private Optional<String> validateInfomodelVersion(final String input) throws IOException {
+        if (validateInfVer) {
+            return checkInboundVersion(input);
+        } else {
             if (log.isDebugEnabled()) {
                 log.debug("Skipped validating infomodel compability! [code=(IMSMED0123)]");
             }
-        } else {
-            if (log.isInfoEnabled()) {
-                log.info("Successfully validated infomodel compability.");
-            }
+            return Optional.empty();
         }
-
-        return true;
     }
 
     /**
@@ -322,10 +321,10 @@ public class MessageController {
 
     /**
      * @param input Controllers header input as string.
-     * @return True if infomodel version is supported.
+     * @return Optional<String> Empty if successful, else error message as string payload.
      * @throws IOException If no infomodel version is found in input.
      */
-    private boolean checkInboundVersion(final String input) throws IOException {
+    private Optional<String> checkInboundVersion(final String input) throws IOException {
         final var jsonInput = new ObjectMapper().readTree(input);
 
         if (jsonInput.has("ids:modelVersion")) {
@@ -334,11 +333,22 @@ public class MessageController {
             final var inboundList = configContainer.getConfigurationModel()
                     .getConnectorDescription()
                     .getInboundModelVersion();
-                    return inboundList.stream()
-                            .map(supportedVersion -> checkInfomodelContainment(
-                                inputVersion, supportedVersion))
-                            .reduce(Boolean::logicalOr)
-                            .orElse(false);
+
+            final var compatible = inboundList.stream()
+                                              .map(supportedVersion -> checkInfomodelContainment(
+                                                      inputVersion, supportedVersion))
+                                              .reduce(Boolean::logicalOr)
+                                              .orElse(false);
+
+            if (!compatible) {
+                final var message = "Infomodel version of incoming Message not in"
+                                    + " supported inbound model version list!"
+                                    + " [incoming=(" + inputVersion + "),"
+                                    + " supported(" + inboundList + ")]";
+                return Optional.of(message);
+            }
+
+            return Optional.empty();
         } else {
             throw new IOException("No ModelVersion in incoming header!");
         }
