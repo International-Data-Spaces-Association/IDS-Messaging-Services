@@ -9,6 +9,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [6.1.1] UNRELEASED
+
+- Upgrade: org.springframework:spring-webmvc 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
+- Upgrade: org.springframework:spring-core 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
+- Upgrade: org.springframework:spring-web 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
+- Upgrade: org.springframework:spring-test 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
+- Upgrade: org.springframework:spring-tx 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
+
 ## Version [6.1.0] 2022-02-17
 
 ### Minor Change: New ConnectorFingerprintProvider
