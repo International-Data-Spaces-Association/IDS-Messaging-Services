@@ -16,6 +16,8 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework:spring-web 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
 - Upgrade: org.springframework:spring-test 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
 - Upgrade: org.springframework:spring-tx 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.3 -> 2.6.4 ([PR 440](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/440))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.6.3 -> 2.6.4 ([PR 441](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/441))
 
 ## Version [6.1.0] 2022-02-17
 
