@@ -35,7 +35,7 @@
     </modules>
 
     <properties>
-        <revision>6.1.0</revision>
+        <revision>6.1.1</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -57,8 +57,8 @@
     <repositories>
         <!-- Infomodel artifacts repository (java, serializer, interaction) -->
         <repository>
-            <id>snapshots</id>
-            <name>maven-snapshots</name>
+            <id>eis-ids-public</id>
+            <name>Releases of IDS Infomodel (IAIS)</name>
             <url>https://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
         </repository>
     </repositories>
