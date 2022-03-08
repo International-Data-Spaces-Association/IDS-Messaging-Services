@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 
 ## Version [6.1.1] UNRELEASED
 
+### Patch Change: Dependency Maintenance
+- Upgrade: com.puppycrawl.tools:checkstyle 9.3 -> 10.0 ([PR 442](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/442))
 - Upgrade: org.springframework:spring-webmvc 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
 - Upgrade: org.springframework:spring-core 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
 - Upgrade: org.springframework:spring-web 5.3.15 -> 5.3.16 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438))
