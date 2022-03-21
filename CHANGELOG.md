@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.3 -> 2.6.4 ([PR 440](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/440))
 - Upgrade: org.springframework.boot:spring-boot-starter 2.6.3 -> 2.6.4 ([PR 441](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/441))
 - Upgrade: org.json:json 20211205 -> 20220320 ([PR 454](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/454))
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.10 -> 0.7.11 ([PR 455](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/455))
 
 ## Version [6.1.0] 2022-02-17
 
