@@ -12,37 +12,37 @@ updates:
       interval: "daily"
     target-branch: "development"
     open-pull-requests-limit: 30
-- package-ecosystem: "maven"
+  - package-ecosystem: "maven"
     directory: "/broker/"
     schedule:
       interval: "daily"
     target-branch: "development"
     open-pull-requests-limit: 30
-- package-ecosystem: "maven"
+  - package-ecosystem: "maven"
     directory: "/clearinghouse/"
     schedule:
       interval: "daily"
     target-branch: "development"
     open-pull-requests-limit: 30
-- package-ecosystem: "maven"
+  - package-ecosystem: "maven"
     directory: "/core/"
     schedule:
       interval: "daily"
     target-branch: "development"
     open-pull-requests-limit: 30
-- package-ecosystem: "maven"
+  - package-ecosystem: "maven"
     directory: "/messaging/"
     schedule:
       interval: "daily"
     target-branch: "development"
     open-pull-requests-limit: 30
-- package-ecosystem: "maven"
+  - package-ecosystem: "maven"
     directory: "/paris/"
     schedule:
       interval: "daily"
     target-branch: "development"
     open-pull-requests-limit: 30
-- package-ecosystem: "maven"
+  - package-ecosystem: "maven"
     directory: "/vocol/"
     schedule:
       interval: "daily"
