@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file.
 ### Organizational Note:
 The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH` as of this release. 
 
+### Fixes
+- ReferingConnector validation ([PR 526](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/526))
+
 ### Patch Change: Other 
 - Changed `name` and `id` of `eis-ids-public` repository in pom.
 
