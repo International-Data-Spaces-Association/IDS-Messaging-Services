@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.bitbucket.b_c</groupId>
             <artifactId>jose4j</artifactId>
-            <version>0.7.11</version>
+            <version>0.7.12</version>
         </dependency>
     </dependencies>
 
