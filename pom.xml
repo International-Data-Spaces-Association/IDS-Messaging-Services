@@ -61,6 +61,17 @@
             <name>Releases of IDS Infomodel (IAIS)</name>
             <url>https://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
         </repository>
+        <!-- exclude old IAIS http-repo from dependencies, not reachable any more -->
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>eis-public-repo</id>
+            <url>http://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
+        </repository>
     </repositories>
 
     <dependencies>
