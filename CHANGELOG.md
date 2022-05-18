@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version [6.1.1] UNRELEASED
 
-### Patch Change: Other
+### Patch Change: Other 
 - Changed `name` and `id` of `eis-ids-public` repository in pom.
 
 ### Patch Change: Dependency Maintenance
