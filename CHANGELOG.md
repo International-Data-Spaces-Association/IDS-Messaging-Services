@@ -37,7 +37,7 @@ The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH`
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.2 -> 3.4.0 ([PR 520](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/520))
 - Upgrade: com.fasterxml.jackson.core:jackson-databind 2.9.10.8 -> 2.13.3 ([PR 516](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/516))
 - Add: com.fasterxml.jackson.core:jackson-annotations 2.13.3 ([PR 516](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/516))
-- Remove: deprecated junit-platform-surefire-provider and use built-in support in surefire >= 2.22.0 instead.
+- Remove: deprecated junit-platform-surefire-provider and use built-in support in surefire >= 2.22.0 instead ([PR 525](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/525))
 
 ## Version [6.1.0] 2022-02-17
 
