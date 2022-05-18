@@ -307,33 +307,6 @@
                 <version>3.3.0</version>
             </plugin>
             <plugin>
-                <!-- https://mvnrepository.com/artifact/com.mycila/license-maven-plugin -->
-                <!-- License: Apache License, Version 2.0 -->
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>4.1</version>
-                <configuration>
-                    <licenseSets>
-                        <licenseSet>
-                            <header>scripts/ci/license/header.txt</header>
-                            <excludes>
-                                <exclude>**/README</exclude>
-                                <exclude>**/CHANGELOG</exclude>
-                                <exclude>**/CODE_OF_CONDUCT</exclude>
-                                <exclude>**/CONTRIBUTING</exclude>
-                                <exclude>src/test/resources/**</exclude>
-                                <exclude>src/main/resources/**</exclude>
-                                <exclude>**/*.env</exclude>
-                                <exclude>**/lombok.config</exclude>
-                                <exclude>**/*.tgz</exclude>
-                                <exclude>images/**</exclude>
-                                <exclude>logs/**</exclude>
-                            </excludes>
-                        </licenseSet>
-                    </licenseSets>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.1.2</version>
