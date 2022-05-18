@@ -40,6 +40,11 @@ import org.springframework.stereotype.Service;
 public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyProvider {
 
     /**
+     * Negative leeway for expiration of cached DAT.
+     */
+    private static final int EXPIRATION_LEEWAY = 5;
+
+    /**
      * The ClientProvider.
      */
     private final ClientProvider clientProvider;
@@ -223,7 +228,8 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
      * @return True if jwt expired.
      */
     private boolean isExpired() {
-        final var expired = expiration == null || expiration.before(Date.from(Instant.now()));
+        final var expired = expiration == null
+                || expiration.before(Date.from(Instant.now().plusSeconds(EXPIRATION_LEEWAY)));
 
         if (currentJwt != null) {
             //Will only log if DAT was successfully acquired.
