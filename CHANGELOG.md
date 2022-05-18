@@ -19,6 +19,7 @@ The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH`
 
 ### Patch Change: Other 
 - Changed `name` and `id` of `eis-ids-public` repository in pom.
+- Added negative leeway for expiration of cached DAT ([PR 527](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/527))
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: maven-dependency-plugin 3.2.0 -> 3.3.0 ([PR 446](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/446))
