@@ -139,8 +139,7 @@ public class MessageDispatcher {
                 final var claims =
                         dapsValidator.getClaims(header.getSecurityToken());
 
-                if (referringCheck && !claims.getBody().get("referringConnector")
-                        .equals(header.getIssuerConnector())) {
+                if (referringCheck && !isReferringConnector(header, claims)) {
                     return ErrorResponse.withDefaultHeader(
                             RejectionReason.BAD_PARAMETERS,
                             "ids:issuerConnector in message-header"
@@ -248,5 +247,13 @@ public class MessageDispatcher {
                     connectorId,
                     modelVersion, header.getId());
         }
+    }
+
+    private <R extends Message> boolean isReferringConnector(final R header,
+                                                             final Jws<Claims> claims) {
+        final var datClaim = claims.getBody().get("referringConnector").toString().strip();
+        final var issuer = header.getIssuerConnector().toString().strip();
+
+        return datClaim.equals(issuer);
     }
 }
