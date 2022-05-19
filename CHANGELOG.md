@@ -12,7 +12,14 @@ All notable changes to this project will be documented in this file.
 ## Version [7.0.0] SNAPSHOT
 
 ### Organizational Note:
-The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH` as of this release. This changes the naming of the internal package structure and, most importantly, the repository in which the artifacts are published. 
+The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH` as of this release. This changes the naming of the internal package structure and, most importantly, the repository in which the artifacts are published.
+
+The new repository can be included in projects as follows. As of version 7.0.0, the releases are published here:
+
+	<repository>
+	    <id>sovity-public</id>
+        <url>https://pkgs.dev.azure.com/sovity/5bec6cbd-c80a-47ac-86ce-1deb26cee853/_packaging/artifact/maven/v1</url>
+    </repository>
 
 ### Fixes
 - ReferingConnector validation ([PR 526](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/526))
