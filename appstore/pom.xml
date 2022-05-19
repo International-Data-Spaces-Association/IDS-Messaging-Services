@@ -21,7 +21,7 @@
 
     <parent>
         <artifactId>messaging-services</artifactId>
-        <groupId>de.fraunhofer.ids.messaging</groupId>
+        <groupId>ids.messaging</groupId>
         <version>${revision}</version>
     </parent>
 
@@ -39,7 +39,7 @@
     <dependencies>
         <!-- IDS-Messaging-Services Dependency -->
         <dependency>
-            <groupId>de.fraunhofer.ids.messaging</groupId>
+            <groupId>ids.messaging</groupId>
             <artifactId>messaging</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>

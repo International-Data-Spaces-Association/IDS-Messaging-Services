@@ -23,7 +23,7 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>de.fraunhofer.ids.messaging</groupId>
+        <groupId>ids.messaging</groupId>
         <artifactId>messaging-services</artifactId>
         <version>${revision}</version>
     </parent>
