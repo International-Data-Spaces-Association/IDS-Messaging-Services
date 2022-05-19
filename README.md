@@ -94,7 +94,7 @@ So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Br
 
 ```xml
 <dependency>
-    <groupId>de.fraunhofer.ids.messaging</groupId>
+    <groupId>ids.messaging</groupId>
     <artifactId>broker</artifactId>
     <version>IDS_MESSAGING_SERVICES_VERSION</version>
 </dependency>

@@ -9,10 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [6.1.1] UNRELEASED
+## Version [7.0.0] SNAPSHOT
 
 ### Organizational Note:
-The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH` as of this release. 
+The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH` as of this release. This changes the naming of the internal package structure and, most importantly, the repository in which the artifacts are published. 
 
 ### Fixes
 - ReferingConnector validation ([PR 526](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/526))
