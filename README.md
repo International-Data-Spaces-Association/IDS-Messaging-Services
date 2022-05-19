@@ -59,16 +59,13 @@ Supported out-of-the-box connectivity to the following IDS-Infrastructure-Compon
 
 ### Step 1
 
-The Java-modules provided by the project are accessible as Maven artifact dependencies. These artifacts are hosted on Fraunhofer ISST's Nexus. In order for the artifacts to be found, the Fraunhofer ISST Nexus repository must be added as a repository in the project's pom:
+The Java-modules provided by the project are accessible as Maven artifact dependencies. The repository must be added as a repository in the project's pom:
 
 ```xml
-<repositories>
-    <repository>
-        <id>isst-nexus-public</id>
-        <name>isst-public</name>
-        <url>https://mvn.ids.isst.fraunhofer.de/nexus/repository/ids-public/</url>
-    </repository>
-</repositories>
+<repository>
+    <id>sovity-public</id>
+    <url>https://pkgs.dev.azure.com/sovity/5bec6cbd-c80a-47ac-86ce-1deb26cee853/_packaging/artifact/maven/v1</url>
+</repository>
 ```
 
 ### Step 2
