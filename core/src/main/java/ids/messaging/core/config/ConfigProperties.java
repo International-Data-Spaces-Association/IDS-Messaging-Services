@@ -21,18 +21,23 @@ package ids.messaging.core.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Set of Properties to configure the imported configuration at startup.
  * Properties should be added to the application.properties file.
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "configuration")
 public class ConfigProperties {
     /**
      * Path to a configuration File (JsonLD representation of
      * a {@link de.fraunhofer.iais.eis.ConfigurationModel}.
      */
+    @NotNull
     private String path;
 
     /**
@@ -40,16 +45,19 @@ public class ConfigProperties {
      * {@link de.fraunhofer.iais.eis.ConfigurationModel} keyStore field.
      */
 
+    @NotNull
     private String keyStorePassword;
 
     /**
      * Alias of the connectors private key (used for signing DAT Requests).
      */
+    @NotNull
     private String keyAlias;
 
     /**
      * Password for the IDSTruststore configured in the
      * {@link de.fraunhofer.iais.eis.ConfigurationModel} trustStore field.
      */
+    @NotNull
     private String trustStorePassword;
 }
