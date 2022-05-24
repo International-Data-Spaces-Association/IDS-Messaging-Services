@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version [7.0.0] SNAPSHOT
 
-### Organizational Note:
+### Organizational Note (major change):
 The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH` as of this release. This changes the naming of the internal package structure and, most importantly, the repository in which the artifacts are published.
 
 The new repository can be included in projects as follows. As of version 7.0.0, the releases are published here:
@@ -21,7 +21,14 @@ The new repository can be included in projects as follows. As of version 7.0.0, 
         <url>https://pkgs.dev.azure.com/sovity/5bec6cbd-c80a-47ac-86ce-1deb26cee853/_packaging/artifact/maven/v1</url>
     </repository>
 
-### Fixes
+### Minor Change: Logging of incoming and outgoing messages
+It is as of now possible to log incoming messages (header, not payload), send requests and received responses to send requests. Following new optional application.properties settings are provided to enable or disable logging:
+
+- `messaging.log.incoming=true/false` Logs all header of incoming messages at info level. Default if not set is false = turned off.
+- `messaging.log.requests=true/false` Logs all send requests at info level. Default if not set is false = turned off.
+- `messaging.log.responses=true/false` Logs all responses to send requests at info level. Default if not set is false = turned off.
+
+### Patch Change: Fixes
 - ReferingConnector validation ([PR 526](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/526))
 
 ### Patch Change: Other 
