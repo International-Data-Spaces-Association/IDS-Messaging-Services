@@ -50,6 +50,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -94,6 +95,18 @@ public class IdsHttpService implements HttpService {
      */
     @Value("#{new Boolean('${shacl.validation:false}')}")
     private Boolean shaclValidation;
+
+    /**
+     * Used to switch logging incoming responses off or on (default off).
+     */
+    @Value("#{new Boolean('${messaging.log.responses:false}')}")
+    private Boolean logResponses;
+
+    /**
+     * Used to switch logging sending requests off or on (default off).
+     */
+    @Value("#{new Boolean('${messaging.log.requests:false}')}")
+    private Boolean logRequests;
 
     /**
      * @param response {@link Response} from an IDS Http request.
@@ -387,9 +400,9 @@ public class IdsHttpService implements HttpService {
      */
     private Response sendRequest(final Request request,
                                  final OkHttpClient client) throws IOException {
-        if (log.isDebugEnabled() && request.body() != null) {
+        if (logRequests && request.body() != null) {
             try {
-                debugLogRequest(request);
+                logRequest(request);
             } catch (Exception exception) {
                 //Nothing to do, request message could not be logged.
             }
@@ -399,7 +412,15 @@ public class IdsHttpService implements HttpService {
             log.info("Sending request to {} ...", request.url());
         }
 
-        final var response = client.newCall(request).execute();
+        var response = client.newCall(request).execute();
+        final var responseBody = response.body();
+
+        if (Boolean.TRUE.equals(logResponses) && responseBody != null) {
+            final var bodyString = responseBody.string();
+            log.info("Incoming response body: {}", bodyString);
+            final var body = ResponseBody.create(bodyString, responseBody.contentType());
+            response = response.newBuilder().body(body).build();
+        }
 
         if (!response.isSuccessful()) {
             if (log.isWarnEnabled()) {
@@ -416,16 +437,16 @@ public class IdsHttpService implements HttpService {
     }
 
     /**
-     * Logs the request message to be send in debug-level log.
+     * Logs the request message to be send in log.
      *
      * @param request The request message to be send.
      * @throws IOException If Buffer could not be accessed.
      */
-    private void debugLogRequest(final Request request) throws IOException {
+    private void logRequest(final Request request) throws IOException {
         final var requestCopy = request.newBuilder().build();
         final var buffer = new Buffer();
         requestCopy.body().writeTo(buffer);
-        log.debug("Sending request message: [code=(IMSMED0135), request=({})]", buffer.readUtf8());
+        log.info("Sending request message: {}", buffer.readUtf8());
     }
 
     /**
