@@ -89,6 +89,12 @@ public class MessageController {
     private Boolean logIncoming;
 
     /**
+     * Used to switch logging send responses to incoming requests off or on (default off).
+     */
+    @Value("#{new Boolean('${messaging.log.outgoing:false}')}")
+    private Boolean logResponse;
+
+    /**
      * Constructor for the MessageController.
      * @param messageDispatcher The MessageDispatcher.
      * @param serializer The infomodel serializer.
@@ -200,6 +206,8 @@ public class MessageController {
                     log.info("Sending response with status OK (200).");
                 }
 
+                logSendResponse(responseAsMap);
+
                 return ResponseEntity
                         .status(HttpStatus.OK)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -256,6 +264,13 @@ public class MessageController {
                              RejectionReason.INTERNAL_RECIPIENT_ERROR,
                              String.format(
                                  "Could not read incoming request! Error: %s", e.getMessage())));
+        }
+    }
+
+    private void logSendResponse(final MultiValueMap<String, Object> responseAsMap) {
+        if (Boolean.TRUE.equals(logResponse)) {
+            final var header = responseAsMap.get(MultipartDatapart.HEADER.toString()).toString();
+            log.info("Send response header: {}", header);
         }
     }
 

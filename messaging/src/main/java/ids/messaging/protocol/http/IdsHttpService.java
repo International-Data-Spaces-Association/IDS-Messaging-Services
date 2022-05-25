@@ -99,13 +99,13 @@ public class IdsHttpService implements HttpService {
     /**
      * Used to switch logging incoming responses off or on (default off).
      */
-    @Value("#{new Boolean('${messaging.log.responses:false}')}")
+    @Value("#{new Boolean('${messaging.log.incoming:false}')}")
     private Boolean logResponses;
 
     /**
      * Used to switch logging sending requests off or on (default off).
      */
-    @Value("#{new Boolean('${messaging.log.requests:false}')}")
+    @Value("#{new Boolean('${messaging.log.outgoing:false}')}")
     private Boolean logRequests;
 
     /**

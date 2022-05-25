@@ -24,9 +24,8 @@ The new repository can be included in projects as follows. As of version 7.0.0, 
 ### Minor Change: Logging of incoming and outgoing messages
 It is as of now possible to log incoming messages (header, not payload), send requests and received responses to send requests. Following new optional application.properties settings are provided to enable or disable logging:
 
-- `messaging.log.incoming=true/false` Logs all header of incoming messages at info level. Default if not set is false = turned off.
-- `messaging.log.requests=true/false` Logs all send requests at info level. Default if not set is false = turned off.
-- `messaging.log.responses=true/false` Logs all responses to send requests at info level. Default if not set is false = turned off.
+- `messaging.log.incoming=true/false` Logs all incoming messages at info level (incoming requests + incoming responses to self-send requests). Default if not set is false = turned off.
+- `messaging.log.outgoing=true/false` Logs all outgoing messages at info level (outgoing requests + outgoing responses to incoming requests). Default if not set is false = turned off.
 
 ### Patch Change: Fixes
 - ReferingConnector validation ([PR 526](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/526))
