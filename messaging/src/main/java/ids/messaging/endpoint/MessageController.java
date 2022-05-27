@@ -21,6 +21,7 @@ package ids.messaging.endpoint;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -43,6 +44,7 @@ import ids.messaging.dispatcher.filter.PreDispatchingFilterException;
 import ids.messaging.protocol.multipart.parser.MultipartDatapart;
 import ids.messaging.util.IdsMessageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -79,6 +81,18 @@ public class MessageController {
      */
     @Value("#{new Boolean('${infomodel.compatibility.validation:true}')}")
     private Boolean validateInfVer;
+
+    /**
+     * Used to switch logging incoming requests off or on (default off).
+     */
+    @Value("#{new Boolean('${messaging.log.incoming:false}')}")
+    private Boolean logIncoming;
+
+    /**
+     * Used to switch logging send responses to incoming requests off or on (default off).
+     */
+    @Value("#{new Boolean('${messaging.log.outgoing:false}')}")
+    private Boolean logResponse;
 
     /**
      * Constructor for the MessageController.
@@ -126,16 +140,28 @@ public class MessageController {
                                              "Header was missing!"));
             }
 
+            final var headerBytes = IOUtils.toByteArray(headerPart.getInputStream());
+            if (Boolean.TRUE.equals(logIncoming)) {
+                final var headerInput = new ByteArrayInputStream(headerBytes);
+                log.info("Incoming message header: {}",
+                        IOUtils.toString(headerInput, StandardCharsets.UTF_8));
+                headerInput.close();
+            }
+
             String input;
 
             if (log.isDebugEnabled()) {
                 log.debug("Parsing header of incoming message. [code=(IMSMED0120)]");
             }
 
-            try (var scanner = new Scanner(headerPart.getInputStream(),
+            final var headerInput = new ByteArrayInputStream(headerBytes);
+
+            try (var scanner = new Scanner(headerInput,
                                            StandardCharsets.UTF_8.name())) {
                 input = scanner.useDelimiter("\\A").next();
             }
+
+            headerInput.close();
 
             final var infomodelCompability = validateInfomodelVersion(input);
 
@@ -181,6 +207,8 @@ public class MessageController {
                 if (log.isInfoEnabled()) {
                     log.info("Sending response with status OK (200).");
                 }
+
+                logResponseHeader(responseAsMap);
 
                 return ResponseEntity
                         .status(HttpStatus.OK)
@@ -238,6 +266,13 @@ public class MessageController {
                              RejectionReason.INTERNAL_RECIPIENT_ERROR,
                              String.format(
                                  "Could not read incoming request! Error: %s", e.getMessage())));
+        }
+    }
+
+    private void logResponseHeader(final MultiValueMap<String, Object> responseAsMap) {
+        if (Boolean.TRUE.equals(logResponse)) {
+            final var header = responseAsMap.get(MultipartDatapart.HEADER.toString()).toString();
+            log.info("Send response header: {}", header);
         }
     }
 
