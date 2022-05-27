@@ -9,7 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [7.0.0] SNAPSHOT
+## Version [7.0.0] 2022-05-27
 
 ### Organizational Note (major change):
 The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH` as of this release. This changes the naming of the internal package structure and, most importantly, the repository in which the artifacts are published.
