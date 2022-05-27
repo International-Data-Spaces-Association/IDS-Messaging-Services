@@ -59,16 +59,13 @@ Supported out-of-the-box connectivity to the following IDS-Infrastructure-Compon
 
 ### Step 1
 
-The Java-modules provided by the project are accessible as Maven artifact dependencies. These artifacts are hosted on Fraunhofer ISST's Nexus. In order for the artifacts to be found, the Fraunhofer ISST Nexus repository must be added as a repository in the project's pom:
+The Java-modules provided by the project are accessible as Maven artifact dependencies. The repository must be added as a repository in the project's pom:
 
 ```xml
-<repositories>
-    <repository>
-        <id>isst-nexus-public</id>
-        <name>isst-public</name>
-        <url>https://mvn.ids.isst.fraunhofer.de/nexus/repository/ids-public/</url>
-    </repository>
-</repositories>
+<repository>
+    <id>sovity-public</id>
+    <url>https://pkgs.dev.azure.com/sovity/5bec6cbd-c80a-47ac-86ce-1deb26cee853/_packaging/artifact/maven/v1</url>
+</repository>
 ```
 
 ### Step 2
@@ -94,7 +91,7 @@ So, if an IDS-Connector should be implemented, in whose data ecosystem an IDS-Br
 
 ```xml
 <dependency>
-    <groupId>de.fraunhofer.ids.messaging</groupId>
+    <groupId>ids.messaging</groupId>
     <artifactId>broker</artifactId>
     <version>IDS_MESSAGING_SERVICES_VERSION</version>
 </dependency>
@@ -206,12 +203,10 @@ Log-codes exist for different log-levels. They allow easy search for the code lo
 Syntax: IMS-XY-L-1234, shortened to: IMSXYL1234
  - IMS = IDS-Messaging-Services
  - XY = Subsystem Module (CO Core, AP AppStore, BR Broker, CL ClearingHouse, ME Messaging, PA Paris, VO Vocol)
- - L = Event Severity (E Error, W Warn, D Debug)
+ - L = Event Severity (E Error, W Warn, D Debug, I Info)
  - 1234 = Log identifier
  
 Will e.g. print as [code=(IMSCOE0001)]: IDS-Messaging-Services Core-Module Error 0001.
-
-No log-code will be printed for log-info level.
 
 ## Other: Project-Wiki
 

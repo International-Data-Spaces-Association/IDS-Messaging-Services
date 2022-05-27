@@ -19,7 +19,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.fraunhofer.ids.messaging</groupId>
+    <groupId>ids.messaging</groupId>
     <artifactId>messaging-services</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
@@ -35,7 +35,7 @@
     </modules>
 
     <properties>
-        <revision>6.1.0</revision>
+        <revision>7.0.0</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -57,9 +57,30 @@
     <repositories>
         <!-- Infomodel artifacts repository (java, serializer, interaction) -->
         <repository>
-            <id>snapshots</id>
-            <name>maven-snapshots</name>
+            <id>eis-ids-public</id>
+            <name>Releases of IDS Infomodel (IAIS)</name>
             <url>https://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
+        </repository>
+        <!-- exclude old IAIS http-repo from dependencies, not reachable any more -->
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>eis-public-repo</id>
+            <url>http://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
+        </repository>
+        <repository>
+            <id>sovity-public</id>
+            <url>https://pkgs.dev.azure.com/sovity/5bec6cbd-c80a-47ac-86ce-1deb26cee853/_packaging/artifact/maven/v1</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -117,7 +138,7 @@
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
-            <version>4.4.0</version>
+            <version>4.5.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
@@ -125,7 +146,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>2.6.3</version>
+            <version>2.7.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
@@ -163,7 +184,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>1.18.24</version>
             <scope>provided</scope>
         </dependency>
 
@@ -181,7 +202,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.6.3</version>
+            <version>2.7.0</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -237,7 +258,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>5.3.15</version>
+            <version>5.3.20</version>
             <scope>test</scope>
         </dependency>
 
@@ -246,7 +267,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.3.15</version>
+            <version>5.3.20</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
@@ -300,38 +321,11 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.0</version>
+                <version>3.10.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.2.0</version>
-            </plugin>
-            <plugin>
-                <!-- https://mvnrepository.com/artifact/com.mycila/license-maven-plugin -->
-                <!-- License: Apache License, Version 2.0 -->
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>4.1</version>
-                <configuration>
-                    <licenseSets>
-                        <licenseSet>
-                            <header>scripts/ci/license/header.txt</header>
-                            <excludes>
-                                <exclude>**/README</exclude>
-                                <exclude>**/CHANGELOG</exclude>
-                                <exclude>**/CODE_OF_CONDUCT</exclude>
-                                <exclude>**/CONTRIBUTING</exclude>
-                                <exclude>src/test/resources/**</exclude>
-                                <exclude>src/main/resources/**</exclude>
-                                <exclude>**/*.env</exclude>
-                                <exclude>**/lombok.config</exclude>
-                                <exclude>**/*.tgz</exclude>
-                                <exclude>images/**</exclude>
-                                <exclude>logs/**</exclude>
-                            </excludes>
-                        </licenseSet>
-                    </licenseSets>
-                </configuration>
+                <version>3.3.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -341,7 +335,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>9.3</version>
+                        <version>10.2</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -369,8 +363,14 @@
             </properties>
             <distributionManagement>
                 <repository>
-                    <id>isst-nexus-public</id>
-                    <url>https://mvn.ids.isst.fraunhofer.de/nexus/repository/ids-public/</url>
+                    <id>sovity-public</id>
+                    <url>https://pkgs.dev.azure.com/sovity/5bec6cbd-c80a-47ac-86ce-1deb26cee853/_packaging/artifact/maven/v1</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
                 </repository>
             </distributionManagement>
             <build>
@@ -378,7 +378,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.3.2</version>
+                        <version>3.4.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>

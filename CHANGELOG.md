@@ -9,6 +9,54 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version [7.0.0] 2022-05-27
+
+### Organizational Note (major change):
+The IDSA repository of the IDS-Messaging-Services is maintained by `sovity GmbH` as of this release. This changes the naming of the internal package structure and, most importantly, the repository in which the artifacts are published.
+
+The new repository can be included in projects as follows. As of version 7.0.0, the releases are published here:
+
+	<repository>
+	    <id>sovity-public</id>
+        <url>https://pkgs.dev.azure.com/sovity/5bec6cbd-c80a-47ac-86ce-1deb26cee853/_packaging/artifact/maven/v1</url>
+    </repository>
+
+### Minor Change: Logging of incoming and outgoing messages
+It is as of now possible to log incoming messages (header, not payload), send requests and received responses to send requests. Following new optional application.properties settings are provided to enable or disable logging:
+
+- `messaging.log.incoming=true/false` Logs all incoming messages at info level (incoming requests + incoming responses to self-send requests). Default if not set is false = turned off.
+- `messaging.log.outgoing=true/false` Logs all outgoing messages at info level (outgoing requests + outgoing responses to incoming requests). Default if not set is false = turned off.
+
+### Patch Change: Fixes
+- ReferingConnector validation ([PR 526](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/526))
+
+### Patch Change: Other 
+- Added log-codes for event severity Info ([PR 537](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/537))
+- Changed `name` and `id` of `eis-ids-public` repository in pom.
+- Added negative leeway for expiration of cached DAT ([PR 527](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/527))
+
+### Patch Change: Dependency Maintenance
+- Upgrade: maven-dependency-plugin 3.2.0 -> 3.3.0 ([PR 446](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/446))
+- Upgrade: maven-compiler-plugin 3.10.0 -> 3.10.1 ([PR 445](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/445))
+- Upgrade: com.puppycrawl.tools:checkstyle 9.3 -> 10.2 ([PR 442](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/442), [PR 520](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/520))
+- Upgrade: org.springframework:spring-webmvc 5.3.15 -> 5.3.20 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/453), [PR 512](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/512))
+- Upgrade: org.springframework:spring-core 5.3.15 -> 5.3.20 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/453), [PR 512](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/512))
+- Upgrade: org.springframework:spring-web 5.3.15 -> 5.3.20 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/453), [PR 512](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/512))
+- Upgrade: org.springframework:spring-test 5.3.15 -> 5.3.20 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/453), [PR 512](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/512))
+- Upgrade: org.springframework:spring-tx 5.3.15 -> 5.3.20 ([PR 438](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/453), [PR 512](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/512))
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.6.3 -> 2.7.0 ([PR 440](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/440), [PR 512](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/512), [PR 531](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/531))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.6.3 -> 2.7.0 ([PR 441](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/441), [PR 512](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/438), [PR 453](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/512), [PR 531](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/531))
+- Upgrade: org.json:json 20211205 -> 20220320 ([PR 454](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/454))
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.10 -> 0.7.12 ([PR 455](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/455), [PR 517](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/517))
+- Upgrade: maven-surefire-plugin 2.19.1 -> 2.22.2 ([PR 515](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/515))
+- Upgrade: org.junit.platform:junit-platform-surefire-provider 1.0.3 -> 1.3.2 ([PR 515](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/515))
+- Upgrade: org.apache.jena:jena-core 4.4.0 -> 4.5.0 ([PR 520](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/520))
+- Upgrade: org.projectlombok:lombok 1.18.22 -> 1.18.24 ([PR 520](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/520))
+- Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.2 -> 3.4.0 ([PR 520](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/520))
+- Upgrade: com.fasterxml.jackson.core:jackson-databind 2.9.10.8 -> 2.13.3 ([PR 516](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/516))
+- Add: com.fasterxml.jackson.core:jackson-annotations 2.13.3 ([PR 516](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/516))
+- Remove: deprecated junit-platform-surefire-provider and use built-in support in surefire >= 2.22.0 instead ([PR 525](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/525))
+
 ## Version [6.1.0] 2022-02-17
 
 ### Minor Change: New ConnectorFingerprintProvider
