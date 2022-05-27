@@ -161,6 +161,8 @@ public class MessageController {
                 input = scanner.useDelimiter("\\A").next();
             }
 
+            headerInput.close();
+
             final var infomodelCompability = validateInfomodelVersion(input);
 
             if (infomodelCompability.isPresent()) {
@@ -206,7 +208,7 @@ public class MessageController {
                     log.info("Sending response with status OK (200).");
                 }
 
-                logSendResponse(responseAsMap);
+                logResponseHeader(responseAsMap);
 
                 return ResponseEntity
                         .status(HttpStatus.OK)
@@ -267,7 +269,7 @@ public class MessageController {
         }
     }
 
-    private void logSendResponse(final MultiValueMap<String, Object> responseAsMap) {
+    private void logResponseHeader(final MultiValueMap<String, Object> responseAsMap) {
         if (Boolean.TRUE.equals(logResponse)) {
             final var header = responseAsMap.get(MultipartDatapart.HEADER.toString()).toString();
             log.info("Send response header: {}", header);
