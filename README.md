@@ -203,12 +203,10 @@ Log-codes exist for different log-levels. They allow easy search for the code lo
 Syntax: IMS-XY-L-1234, shortened to: IMSXYL1234
  - IMS = IDS-Messaging-Services
  - XY = Subsystem Module (CO Core, AP AppStore, BR Broker, CL ClearingHouse, ME Messaging, PA Paris, VO Vocol)
- - L = Event Severity (E Error, W Warn, D Debug)
+ - L = Event Severity (E Error, W Warn, D Debug, I Info)
  - 1234 = Log identifier
  
 Will e.g. print as [code=(IMSCOE0001)]: IDS-Messaging-Services Core-Module Error 0001.
-
-No log-code will be printed for log-info level.
 
 ## Other: Project-Wiki
 

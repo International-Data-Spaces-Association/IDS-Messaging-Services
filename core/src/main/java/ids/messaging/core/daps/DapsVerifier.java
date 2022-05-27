@@ -123,7 +123,7 @@ public final class DapsVerifier {
                 }
             }
             if (log.isInfoEnabled()) {
-                log.info("Successfully verified DAT claims.");
+                log.info("Successfully verified DAT claims. [code=(IMSCOI0050)]");
             }
 
             return true;
