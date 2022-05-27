@@ -240,7 +240,8 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         if (currentJwt != null) {
             //Will only log if DAT was successfully acquired.
             if (expired && log.isInfoEnabled()) {
-                log.info("Cached DAPS DAT expired or no expiration set. [expiration=({}), code=(IMSCOI0052)]",
+                log.info("Cached DAPS DAT expired or no expiration set."
+                                + " [expiration=({}), code=(IMSCOI0052)]",
                          expiration);
             } else if (log.isInfoEnabled()) {
                 log.info("Using cached DAPS DAT. [expiration=({}), code=(IMSCOI0053)]",

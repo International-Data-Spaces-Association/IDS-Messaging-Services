@@ -141,13 +141,7 @@ public class MessageController {
             }
 
             final var headerBytes = IOUtils.toByteArray(headerPart.getInputStream());
-            if (Boolean.TRUE.equals(logIncoming)) {
-                final var headerInput = new ByteArrayInputStream(headerBytes);
-                log.info("Incoming message header: {} [code=(IMSMEI0060)]",
-                        IOUtils.toString(headerInput, StandardCharsets.UTF_8));
-                headerInput.close();
-            }
-
+            logIncomingMessage(headerBytes);
             String input;
 
             if (log.isDebugEnabled()) {
@@ -224,7 +218,8 @@ public class MessageController {
                 }
 
                 if (log.isInfoEnabled()) {
-                    log.info("Sending response with status OK (200) without body. [code=(IMSMEI0062)]");
+                    log.info("Sending response with status OK (200) without body."
+                            + " [code=(IMSMEI0062)]");
                 }
 
                 return ResponseEntity
@@ -266,6 +261,15 @@ public class MessageController {
                              RejectionReason.INTERNAL_RECIPIENT_ERROR,
                              String.format(
                                  "Could not read incoming request! Error: %s", e.getMessage())));
+        }
+    }
+
+    private void logIncomingMessage(final byte[] headerBytes) throws IOException {
+        if (Boolean.TRUE.equals(logIncoming)) {
+            final var headerInput = new ByteArrayInputStream(headerBytes);
+            log.info("Incoming message header: {} [code=(IMSMEI0060)]",
+                    IOUtils.toString(headerInput, StandardCharsets.UTF_8));
+            headerInput.close();
         }
     }
 
