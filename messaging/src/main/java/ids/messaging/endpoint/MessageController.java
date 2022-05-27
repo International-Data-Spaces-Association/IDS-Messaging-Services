@@ -121,7 +121,7 @@ public class MessageController {
             final HttpServletRequest request) {
         try {
             if (log.isInfoEnabled()) {
-                log.info("Received incoming message.");
+                log.info("Received incoming message. [code=(IMSMEI0059)]");
             }
 
             final var headerPart =
@@ -143,7 +143,7 @@ public class MessageController {
             final var headerBytes = IOUtils.toByteArray(headerPart.getInputStream());
             if (Boolean.TRUE.equals(logIncoming)) {
                 final var headerInput = new ByteArrayInputStream(headerBytes);
-                log.info("Incoming message header: {}",
+                log.info("Incoming message header: {} [code=(IMSMEI0060)]",
                         IOUtils.toString(headerInput, StandardCharsets.UTF_8));
                 headerInput.close();
             }
@@ -205,7 +205,7 @@ public class MessageController {
                 // return the ResponseEntity as Multipart content
                 // with created MultiValueMap
                 if (log.isInfoEnabled()) {
-                    log.info("Sending response with status OK (200).");
+                    log.info("Sending response with status OK (200). [code=(IMSMEI0061)]");
                 }
 
                 logResponseHeader(responseAsMap);
@@ -224,7 +224,7 @@ public class MessageController {
                 }
 
                 if (log.isInfoEnabled()) {
-                    log.info("Sending response with status OK (200) without body.");
+                    log.info("Sending response with status OK (200) without body. [code=(IMSMEI0062)]");
                 }
 
                 return ResponseEntity
@@ -272,7 +272,7 @@ public class MessageController {
     private void logResponseHeader(final MultiValueMap<String, Object> responseAsMap) {
         if (Boolean.TRUE.equals(logResponse)) {
             final var header = responseAsMap.get(MultipartDatapart.HEADER.toString()).toString();
-            log.info("Send response header: {}", header);
+            log.info("Send response header: {} [code=(IMSMEI0063)]", header);
         }
     }
 

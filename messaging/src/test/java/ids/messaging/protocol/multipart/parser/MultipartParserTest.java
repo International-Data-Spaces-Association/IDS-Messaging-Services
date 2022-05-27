@@ -40,7 +40,7 @@ class MultipartParserTest {
         final var multipartString = buffer.readUtf8();
 
         if (log.isInfoEnabled()) {
-            log.info(multipartString);
+            log.info(multipartString + " [code=(IMSMEI0070)]");
         }
 
         //parse the string and check if header and payload were parsed correctly

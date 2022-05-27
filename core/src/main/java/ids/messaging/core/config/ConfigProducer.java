@@ -93,7 +93,7 @@ public class ConfigProducer {
             try {
                 configModel = loadConfig(properties);
                 if (log.isInfoEnabled()) {
-                    log.info("Successfully imported configuration.");
+                    log.info("Successfully imported configuration. [code=(IMSCOI0048)]");
                 }
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {

@@ -138,7 +138,7 @@ public class IdsHttpService implements HttpService {
             }
 
             if (log.isInfoEnabled()) {
-                log.info("Successfully passed SHACL-Validation.");
+                log.info("Successfully passed SHACL-Validation. [code=(IMSMEI0064)]");
             }
         }
 
@@ -409,7 +409,7 @@ public class IdsHttpService implements HttpService {
         }
 
         if (log.isInfoEnabled()) {
-            log.info("Sending request to {} ...", request.url());
+            log.info("Sending request to {} ... [code=(IMSMEI0065)]", request.url());
         }
 
         var response = client.newCall(request).execute();
@@ -417,7 +417,7 @@ public class IdsHttpService implements HttpService {
 
         if (Boolean.TRUE.equals(logResponses) && responseBody != null) {
             final var bodyString = responseBody.string();
-            log.info("Incoming response body: {}", bodyString);
+            log.info("Incoming response body: {} [code=(IMSMEI0066)]", bodyString);
             final var body = ResponseBody.create(bodyString, responseBody.contentType());
             response = response.newBuilder().body(body).build();
         }
@@ -429,7 +429,7 @@ public class IdsHttpService implements HttpService {
             }
         } else {
             if (log.isInfoEnabled()) {
-                log.info("Successfully received response to request.");
+                log.info("Successfully received response to request. [code=(IMSMEI0067)]");
             }
         }
 
@@ -446,7 +446,7 @@ public class IdsHttpService implements HttpService {
         final var requestCopy = request.newBuilder().build();
         final var buffer = new Buffer();
         requestCopy.body().writeTo(buffer);
-        log.info("Sending request message: {}", buffer.readUtf8());
+        log.info("Sending request message: {} [code=(IMSMEI0068)]", buffer.readUtf8());
     }
 
     /**

@@ -190,7 +190,7 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
 
             if (log.isInfoEnabled()) {
                 log.info("Requesting public key of token issuer. "
-                         + "[url=({}), kid=({})]", pubKeysUrl, kid);
+                         + "[url=({}), kid=({}), code=(IMSCOI0051)]", pubKeysUrl, kid);
             }
 
             final var client = clientProvider.getClient();
@@ -240,10 +240,10 @@ public class TokenProviderService implements DapsTokenProvider, DapsPublicKeyPro
         if (currentJwt != null) {
             //Will only log if DAT was successfully acquired.
             if (expired && log.isInfoEnabled()) {
-                log.info("Cached DAPS DAT expired or no expiration set. [expiration=({})]",
+                log.info("Cached DAPS DAT expired or no expiration set. [expiration=({}), code=(IMSCOI0052)]",
                          expiration);
             } else if (log.isInfoEnabled()) {
-                log.info("Using cached DAPS DAT. [expiration=({})]",
+                log.info("Using cached DAPS DAT. [expiration=({}), code=(IMSCOI0053)]",
                          expiration);
             }
         }
