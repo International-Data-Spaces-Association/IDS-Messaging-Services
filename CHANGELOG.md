@@ -31,6 +31,7 @@ It is as of now possible to log incoming messages (header, not payload), send re
 - ReferingConnector validation ([PR 526](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/526))
 
 ### Patch Change: Other 
+- Added log-codes for event severity Info ([PR 537](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/537))
 - Changed `name` and `id` of `eis-ids-public` repository in pom.
 - Added negative leeway for expiration of cached DAT ([PR 527](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/527))
 
