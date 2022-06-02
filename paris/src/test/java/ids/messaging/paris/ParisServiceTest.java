@@ -36,7 +36,9 @@ import de.fraunhofer.iais.eis.MessageProcessedNotificationMessage;
 import de.fraunhofer.iais.eis.MessageProcessedNotificationMessageBuilder;
 import de.fraunhofer.iais.eis.Participant;
 import de.fraunhofer.iais.eis.ParticipantBuilder;
+import de.fraunhofer.iais.eis.ParticipantCertification;
 import de.fraunhofer.iais.eis.ParticipantCertificationBuilder;
+import de.fraunhofer.iais.eis.ParticipantCertificationLevel;
 import de.fraunhofer.iais.eis.PersonBuilder;
 import de.fraunhofer.iais.eis.SecurityProfile;
 import de.fraunhofer.iais.eis.SiteBuilder;
@@ -178,8 +180,8 @@ class ParisServiceTest {
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
                 ._outboundModelVersion_("4.0.0")
                 ._inboundModelVersion_(Util.asList("4.0.0"))
-                ._curator_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
-                ._maintainer_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._curatorAsUri_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._maintainerAsUri_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
                 ._hasDefaultEndpoint_(endpoint)
                 .build();
         Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
@@ -218,7 +220,7 @@ class ParisServiceTest {
                 ._corporateEmailAddress_(Util.asList("contact@ids.fraunhofer.de"))
                 ._corporateHomepage_(new URI("https://www.iais.fraunhofer.de/"))
                 ._memberParticipant_(Util.asList(new ParticipantBuilder(new URI("https://www.fraunhofer.de/"))._legalForm_("e.V.").build()))
-                ._participantCertification_(new ParticipantCertificationBuilder()._certificationLevel_(CertificationLevel.PARTICIPANT_MEMBER_LEVEL_CONTROL_FRAMEWORK)._lastValidDate_(
+                ._participantCertification_(new ParticipantCertificationBuilder()._certificationLevel_(ParticipantCertificationLevel.PARTICIPANT_MEMBER_LEVEL_CONTROL_FRAMEWORK)._lastValidDate_(
                         DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2021, 6, 30, 0)).build())
                 ._memberPerson_(Util.asList(new PersonBuilder()
                                                     ._familyName_("Mueller")

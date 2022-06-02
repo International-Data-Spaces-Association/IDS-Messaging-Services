@@ -9,7 +9,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [7.0.1] UNRELEASED
+## Version [7.0.1] SNAPSHOT
+
+### Patch Change: Infomodel Maintenance
+- Update infomodel artifacts: java (v5.0.0), serializer (v5.0.0), interaction (v5.0.0)  ([PR 545](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/545))
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.3 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539))
