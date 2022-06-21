@@ -155,8 +155,8 @@ class IdsRequestBuilderServiceTest {
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
                 ._outboundModelVersion_("4.0.0")
                 ._inboundModelVersion_(Util.asList("4.0.0"))
-                ._curator_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
-                ._maintainer_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._curatorAsUri_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
+                ._maintainerAsUri_(URI.create("https://isst.fraunhofer.de/ids/dc967f79-643d-4780-9e8e-3ca4a75ba6a5"))
                 ._hasDefaultEndpoint_(endpoint)
                 .build();
         Mockito.when(configurationContainer.getConnector()).thenReturn(connector);
