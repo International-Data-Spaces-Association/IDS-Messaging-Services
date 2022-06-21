@@ -110,8 +110,8 @@ Following is a first step guide to using the IDS-Messaging-Services after includ
 Add the ``@ComponentScan`` annotation to the SpringBoot-Application and scan for the IDS-Messaging-Services packages. This can be implemented, for example, as follows using wildcards:
 ```java
 @ComponentScan({
-        "de.fraunhofer.ids.*",
-        "de.fraunhofer.ids.messaging.*"
+        "ids.*",
+        "ids.messaging.*"
 })
 ```
 
