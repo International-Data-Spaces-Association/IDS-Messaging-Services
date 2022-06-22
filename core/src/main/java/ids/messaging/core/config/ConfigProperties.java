@@ -15,6 +15,7 @@
  *
  *  Contributors:
  *       sovity GmbH
+ *       Fraunhofer Institute for Transportation and Infrastructure Systems
  *
  */
 package ids.messaging.core.config;
