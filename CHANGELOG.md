@@ -25,6 +25,8 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework:spring-test 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
 - Upgrade: org.springframework:spring-core 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
 - Upgrade: com.squareup.okhttp3:mockwebserver 4.9.3 -> 4.10.0 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.7.0 -> 2.7.1 ([PR 564](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/564))
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.7.0 -> 2.7.1 ([PR 564](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/564))
 
 ## Version [7.0.0] 2022-05-27
 
