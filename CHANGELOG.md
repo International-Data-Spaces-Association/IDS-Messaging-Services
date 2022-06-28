@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 - Added spring validation to ConfigProperties ([PR 533](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/533))
 
 ### Patch Change: Dependency Maintenance
-- Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.3 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539))
+- Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.3.1 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539), [PR 565](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/565))
 - Upgrade: org.springframework:spring-web 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
 - Upgrade: org.springframework:spring-webmvc 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
 - Upgrage: org.springframework:spring-tx 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
