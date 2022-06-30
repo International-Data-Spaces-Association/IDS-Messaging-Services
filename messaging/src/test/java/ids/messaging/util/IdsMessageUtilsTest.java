@@ -41,10 +41,10 @@ class IdsMessageUtilsTest {
     @Test
     void testUtils(){
         final var connector = new BaseConnectorBuilder()
-                ._curatorAsUri_(URI.create("http://curator"))
+                ._curator_(URI.create("http://curator"))
                 ._hasDefaultEndpoint_(new ConnectorEndpointBuilder()._accessURL_(URI.create("http://localhost")).build())
                 ._inboundModelVersion_(List.of("1.0.0"))
-                ._maintainerAsUri_(URI.create("http://maintainer"))
+                ._maintainer_(URI.create("http://maintainer"))
                 ._outboundModelVersion_("1.0.0")
                 ._securityProfile_(SecurityProfile.BASE_SECURITY_PROFILE)
                 .build();

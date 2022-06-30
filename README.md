@@ -24,10 +24,10 @@ The IDS-Messaging-Service follows the SemanticVersioning system.
 The following IDS-Infomodel-Artifacts are used as dependencies.
 
 | Group | Artifact | Version |
-| ------ | ------ | ------ | 
-| de.fraunhofer.iais.eis.ids.infomodel | java | 5.0.0 |
-| de.fraunhofer.iais.eis.ids | infomodel-serializer | 5.0.0 |
-| de.fraunhofer.iais.eis.ids | interaction | 5.0.0 |
+| ------ | ------ |---------| 
+| de.fraunhofer.iais.eis.ids.infomodel | java | 4.2.7   |
+| de.fraunhofer.iais.eis.ids | infomodel-serializer | 4.2.8   |
+| de.fraunhofer.iais.eis.ids | interaction | 4.2.7   |
 
 ## Overview: Supported IDS-Message protocols
 

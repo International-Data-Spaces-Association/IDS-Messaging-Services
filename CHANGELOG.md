@@ -9,10 +9,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version [7.0.1] SNAPSHOT
-
-### Patch Change: Infomodel Maintenance
-- Update infomodel artifacts: java (v5.0.0), serializer (v5.0.0), interaction (v5.0.0)  ([PR 545](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/545))
+## Version [7.0.1] UNRELEASED
 
 ### Patch Change: Other
 - Added spring validation to ConfigProperties ([PR 533](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/533))
