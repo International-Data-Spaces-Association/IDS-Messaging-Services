@@ -16,11 +16,11 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.3.1 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539), [PR 565](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/565))
-- Upgrade: org.springframework:spring-web 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
-- Upgrade: org.springframework:spring-webmvc 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
-- Upgrage: org.springframework:spring-tx 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
-- Upgrade: org.springframework:spring-test 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
-- Upgrade: org.springframework:spring-core 5.3.20 -> 5.3.21 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
+- Upgrade: org.springframework:spring-web 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
+- Upgrade: org.springframework:spring-webmvc 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
+- Upgrage: org.springframework:spring-tx 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
+- Upgrade: org.springframework:spring-test 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
+- Upgrade: org.springframework:spring-core 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
 - Upgrade: com.squareup.okhttp3:mockwebserver 4.9.3 -> 4.10.0 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
 - Upgrade: org.springframework.boot:spring-boot-starter 2.7.0 -> 2.7.1 ([PR 564](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/564))
 - Upgrade: org.springframework.boot:spring-boot-starter-test 2.7.0 -> 2.7.1 ([PR 564](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/564))
