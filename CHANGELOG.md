@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.junit.jupiter:junit-jupiter-engine, :junit-jupiter-api, :junit-jupiter 5.8.2 -> 5.9.0 ([PR 583](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/583))
-- Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.3.1 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539), [PR 565](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/565))
+- Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.3.2 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539), [PR 565](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/565), [PR 584](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/584))
 - Upgrade: org.springframework:spring-web 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
 - Upgrade: org.springframework:spring-webmvc 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
 - Upgrage: org.springframework:spring-tx 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
