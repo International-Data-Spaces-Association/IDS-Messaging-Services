@@ -23,9 +23,11 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.springframework:spring-test 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
 - Upgrade: org.springframework:spring-core 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
 - Upgrade: com.squareup.okhttp3:mockwebserver 4.9.3 -> 4.10.0 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561))
-- Upgrade: org.springframework.boot:spring-boot-starter 2.7.0 -> 2.7.2 ([PR 564](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/564), [PR 579](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/579))
-- Upgrade: org.springframework.boot:spring-boot-starter-test 2.7.0 -> 2.7.2 ([PR 564](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/564), [PR 579](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/579))
+- Upgrade: org.springframework.boot:spring-boot-starter 2.7.0 -> 2.7.3 ([PR 564](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/564), [PR 579](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/579), [PR 587](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/587))
+- Upgrade: org.springframework.boot:spring-boot-starter-test 2.7.0 -> 2.7.3 ([PR 564](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/564), [PR 579](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/579), [PR 586](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/586))
 - Upgrade: maven-deploy-plugin 2.8.2 -> 3.0.0 ([PR 576](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/576))
+- Upgrade: maven-flatten-plugin 1.2.7 -> 1.3.0 ([PR 588](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/588))
+- Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.4.0 -> 3.4.1 ([PR 585](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/585))
 
 ## Version [7.0.0] 2022-05-27
 
