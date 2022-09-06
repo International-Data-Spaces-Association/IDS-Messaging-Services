@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Dependency Maintenance
 - Upgrade: org.junit.jupiter:junit-jupiter-engine, :junit-jupiter-api, :junit-jupiter 5.8.2 -> 5.9.0 ([PR 583](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/583))
-- Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.3.2 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539), [PR 565](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/565), [PR 584](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/584))
+- Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.3.3 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539), [PR 565](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/565), [PR 584](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/584), [PR 591](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/591))
 - Upgrade: org.springframework:spring-web 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
 - Upgrade: org.springframework:spring-webmvc 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
 - Upgrage: org.springframework:spring-tx 5.3.20 -> 5.3.22 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575))
@@ -28,6 +28,10 @@ All notable changes to this project will be documented in this file.
 - Upgrade: maven-deploy-plugin 2.8.2 -> 3.0.0 ([PR 576](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/576))
 - Upgrade: maven-flatten-plugin 1.2.7 -> 1.3.0 ([PR 588](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/588))
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.4.0 -> 3.4.1 ([PR 585](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/585))
+- Upgrade: org.apache.jena:jena-core 4.5.0 -> 4.6.0 ([PR 590](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/590))
+- Upgrade: org.apache.maven.plugins:maven-checkstyle-plugin 3.1.2 -> 3.2.0 ([PR 592](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/592))
+- Upgrade: com.fasterxml.jackson.core:jackson-annotations 2.13.3 -> 2.13.4 ([PR 593](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/593))
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.12 -> 0.8.0 ([PR 594](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/594))
 
 ## Version [7.0.0] 2022-05-27
 
@@ -73,7 +77,7 @@ It is as of now possible to log incoming messages (header, not payload), send re
 - Upgrade: org.apache.jena:jena-core 4.4.0 -> 4.5.0 ([PR 520](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/520))
 - Upgrade: org.projectlombok:lombok 1.18.22 -> 1.18.24 ([PR 520](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/520))
 - Upgrade: org.apache.maven.plugins:maven-javadoc-plugin 3.3.2 -> 3.4.0 ([PR 520](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/520))
-- Upgrade: com.fasterxml.jackson.core:jackson-databind 2.9.10.8 -> 2.13.3 ([PR 516](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/516))
+- Upgrade: com.fasterxml.jackson.core:jackson-databind 2.9.10.8 -> 2.13.4 ([PR 516](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/516), [PR 595](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/595))
 - Add: com.fasterxml.jackson.core:jackson-annotations 2.13.3 ([PR 516](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/516))
 - Remove: deprecated junit-platform-surefire-provider and use built-in support in surefire >= 2.22.0 instead ([PR 525](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/525))
 
