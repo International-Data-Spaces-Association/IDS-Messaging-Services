@@ -89,7 +89,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
             <artifactId>java</artifactId>
-            <version>4.2.7</version>
+            <version>5.0.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
