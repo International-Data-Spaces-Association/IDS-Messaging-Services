@@ -31,10 +31,11 @@ All notable changes to this project will be documented in this file.
 - Upgrade: org.apache.jena:jena-core 4.5.0 -> 4.6.1 ([PR 590](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/590), [PR 597](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/597))
 - Upgrade: org.apache.maven.plugins:maven-checkstyle-plugin 3.1.2 -> 3.2.0 ([PR 592](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/592))
 - Upgrade: com.fasterxml.jackson.core:jackson-annotations 2.13.3 -> 2.13.4 ([PR 593](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/593))
-- Upgrade: org.bitbucket.b_c:jose4j 0.7.12 -> 0.8.0 ([PR 594](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/594))
+- Upgrade: org.bitbucket.b_c:jose4j 0.7.12 -> 0.9.0 ([PR 594](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/594), [PR 622](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/622))
 - Upgrade: de.fraunhofer.iais.eis.ids:infomodel-serializer 4.2.8 -> 5.0.2 ([PR 601](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/601))
 - Upgrade: de.fraunhofer.iais.eis.ids:interaction 4.2.7 -> 5.0.2 ([PR 604](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/604))
 - Upgrade: org.json:json 20220320 -> 20220924 ([PR 619](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/619))
+- Upgrade: com.fasterxml.jackson.core:jackson-databind  2.13.4 -> 2.13.4.2 ([PR 623](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/624))
 
 ## Version [7.0.0] 2022-05-27
 
