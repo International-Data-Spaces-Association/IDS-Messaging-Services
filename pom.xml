@@ -102,7 +102,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>infomodel-serializer</artifactId>
-            <version>5.0.2</version>
+            <version>4.2.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>interaction</artifactId>
-            <version>5.0.2</version>
+            <version>4.2.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.commons</groupId>
