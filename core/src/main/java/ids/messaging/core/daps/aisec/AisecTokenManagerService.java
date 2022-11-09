@@ -117,6 +117,8 @@ public class AisecTokenManagerService implements TokenManagerService {
 
         // Try clause for setup phase (loading keys, building trust manager)
         try {
+            validateCertExpiration(keyStoreManager);
+
             final var privateKey = getPrivateKey(keyStoreManager);
 
             //aki/ski fingerprint of the connector
@@ -170,6 +172,20 @@ public class AisecTokenManagerService implements TokenManagerService {
         }
 
         return dynamicAttributeToken;
+    }
+
+    private static void validateCertExpiration(KeyStoreManager keyStoreManager) {
+        final var certExpiration = keyStoreManager.getCertExpiration();
+
+        if (log.isDebugEnabled()) {
+            log.debug("Certificate expiration: ({}) ... [code=(IMSCOI0152)]", certExpiration);
+        }
+
+        if (log.isWarnEnabled()) {
+            if (certExpiration.before(new Date())) {
+                log.warn("Certificate expired! [code=(IMSCOI0153), date=({})]", certExpiration);
+            }
+        }
     }
 
     /**
