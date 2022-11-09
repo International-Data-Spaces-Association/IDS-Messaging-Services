@@ -13,9 +13,9 @@ All notable changes to this project will be documented in this file.
 
 ### Patch Change: Other
 - Added spring validation to ConfigProperties ([PR 533](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/533))
+- Added log message for certificate expiration ([PR 643](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/643))
 
 ### Patch Change: Dependency Maintenance
-- 
 - Upgrade: org.junit.jupiter:junit-jupiter-engine, :junit-jupiter-api, :junit-jupiter 5.8.2 -> 5.9.1 ([PR 583](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/583), [PR 609](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/609))
 - Upgrade: com.puppycrawl.tools:checkstyle 10.2 -> 10.4 ([PR 539](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/539), [PR 565](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/565), [PR 584](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/584), [PR 591](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/591), [PR 617](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/617), [PR 638](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/638))
 - Upgrade: org.springframework:spring-web 5.3.20 -> 5.3.23 ([PR 561](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/561), [PR 575](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/575), [PR 603](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/603))
