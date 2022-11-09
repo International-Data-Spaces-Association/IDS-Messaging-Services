@@ -174,7 +174,7 @@ public class AisecTokenManagerService implements TokenManagerService {
         return dynamicAttributeToken;
     }
 
-    private static void validateCertExpiration(KeyStoreManager keyStoreManager) {
+    private static void validateCertExpiration(final KeyStoreManager keyStoreManager) {
         final var certExpiration = keyStoreManager.getCertExpiration();
 
         if (log.isDebugEnabled()) {
