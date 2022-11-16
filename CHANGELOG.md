@@ -11,8 +11,8 @@ All notable changes to this project will be documented in this file.
 
 ## Version [8.0.0] UNRELEASED
 
-### Major Change: Infomodel Artifacts 5.0.3
-- Bump infomodel artifacts to 5.0.3 ([PR 639](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/639))
+### Major Change: Infomodel Artifacts 5.0.4
+- Bump infomodel artifacts to 5.0.4 ([PR 639](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/639))
 
 ### Patch Change: Other
 - Added spring validation to ConfigProperties ([PR 533](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/533))
