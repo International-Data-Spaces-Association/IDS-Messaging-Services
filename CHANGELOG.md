@@ -36,7 +36,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade: de.fraunhofer.iais.eis.ids:infomodel-serializer 4.2.8 -> 5.0.2 ([PR 601](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/601))
 - Upgrade: de.fraunhofer.iais.eis.ids:interaction 4.2.7 -> 5.0.2 ([PR 604](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/604))
 - Upgrade: org.json:json 20220320 -> 20220924 ([PR 619](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/619))
-- Upgrade: com.fasterxml.jackson.core:jackson-databind  2.13.4 -> 2.14.0 ([PR 623](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/624), [PR 638](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/638))
+- Upgrade: com.fasterxml.jackson.core:jackson-databind  2.13.4 -> 2.14.1 ([PR 623](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/624), [PR 638](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/638), [PR 659](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/659))
 - Upgrade: org.apache.commons:commons-compress 1.21 -> 1.22 ([PR 638](https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/638))
 
 ## Version [7.0.0] 2022-05-27
