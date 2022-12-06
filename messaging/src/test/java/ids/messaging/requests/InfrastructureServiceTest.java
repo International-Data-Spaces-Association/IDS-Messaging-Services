@@ -123,8 +123,8 @@ class InfrastructureServiceTest {
                 ._inboundModelVersion_(List.of("1.0.0"))
                 ._outboundModelVersion_("1.0.0")
                 ._hasDefaultEndpoint_(new ConnectorEndpointBuilder()._accessURL_(URI.create("http://example.com")).build())
-                ._maintainer_(URI.create("http://example.com"))
-                ._curator_(URI.create("http://example.com"))
+                ._maintainerAsUri_(URI.create("http://example.com"))
+                ._curatorAsUri_(URI.create("http://example.com"))
                 .build();
 
         final var configurationModel = new ConfigurationModelBuilder()

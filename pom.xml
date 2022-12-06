@@ -35,7 +35,7 @@
     </modules>
 
     <properties>
-        <revision>7.0.1</revision>
+        <revision>8.0.0</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids.infomodel</groupId>
             <artifactId>java</artifactId>
-            <version>4.2.7</version>
+            <version>5.0.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>infomodel-serializer</artifactId>
-            <version>4.2.8</version>
+            <version>5.0.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>interaction</artifactId>
-            <version>4.2.7</version>
+            <version>5.0.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.commons</groupId>
