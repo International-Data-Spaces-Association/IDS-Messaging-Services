@@ -70,7 +70,7 @@
                 <enabled>false</enabled>
             </snapshots>
             <id>eis-public-repo</id>
-            <url>http://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
+            <url>https://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
         </repository>
         <repository>
             <id>sovity-public</id>
