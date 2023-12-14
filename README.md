@@ -15,6 +15,15 @@
 
 All participants of IDS-based data ecosystems must be able to communicate with each other. Even though different participants may have different implementations of IDS-Connectors, they all need to send and receive IDS-Messages. This commonality is addressed by the IDS-Messaging-Services, which provide a lightweight implementation for IDS-Message-Handling. The IDS-Messaging-Services offer open-source functionality for sending IDS-Messages as well as interfaces for processing received IDS-Messages. The architecture relies on a modern modular architecture-approach so that the functionalities needed for communication in a data ecosystems can be easily selected specific to the infrastructure components present in the data ecosystems. In addition, advanced functionalities are implemented, such as checking the validity of the Dynamic-Attribute-Token of incoming messages.
 
+## Overview: Maintainer
+
+**This project is currently no longer maintained but looking for new maintainers.**
+
+Applications for maintainers shall be directed to IDSA.
+
+This project was previously maintained by Fraunhofer ISST and after that by sovity GmbH.
+Please do not approach former maintainers. If you have questions, plase open an issue / discussion for the community or approach the IDSA.
+
 ## Overview: Versioning
 
 The IDS-Messaging-Service follows the SemanticVersioning system.
