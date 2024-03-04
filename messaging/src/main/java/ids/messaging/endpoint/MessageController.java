@@ -130,7 +130,7 @@ public class MessageController {
             final var payloadPart =
                     request.getPart(MultipartDatapart.PAYLOAD.toString());
 
-            final var filesPart =((StandardMultipartHttpServletRequest) request).getMultiFileMap();
+            final var filesPart = (new StandardMultipartHttpServletRequest(request)).getMultiFileMap();
 
             if (headerPart == null) {
                 if (log.isDebugEnabled()) {

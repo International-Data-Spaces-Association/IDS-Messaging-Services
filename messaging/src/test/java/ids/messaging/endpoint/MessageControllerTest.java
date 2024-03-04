@@ -151,7 +151,7 @@ class MessageControllerTest {
                 ._senderAgent_(configurationContainer.getConnector().getId())
                 ._modelVersion_(configurationContainer.getConnector().getOutboundModelVersion()).build();
 
-        Mockito.when(messageDispatcher.process(Mockito.any(), Mockito.any())).thenReturn(
+        Mockito.when(messageDispatcher.process(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(
                 BodyResponse.create(responseMessage, mockResponseBody));
 
         final var header = serializer.serialize(msgHeader);
