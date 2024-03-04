@@ -34,6 +34,7 @@ import ids.messaging.core.daps.DapsValidator;
 import ids.messaging.dispatcher.filter.PreDispatchingFilter;
 import ids.messaging.dispatcher.filter.PreDispatchingFilterException;
 import ids.messaging.handler.message.MessageAndClaimsHandler;
+import ids.messaging.handler.message.MessageFilesAndClaimsHandler;
 import ids.messaging.handler.message.MessageHandler;
 import ids.messaging.handler.message.MessageHandlerException;
 import ids.messaging.handler.message.MessagePayloadInputstream;
@@ -44,6 +45,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * The MessageDispatcher takes all incoming Messages, applies all defined PreDispatchingFilters
@@ -123,6 +127,7 @@ public class MessageDispatcher {
      *
      * @param header Header of the incoming Message (RequestMessage implementation).
      * @param payload Payload of the incoming Message.
+     * @param files Files payload of the incoming Message
      * @param <R> A subtype of RequestMessage.
      * @return The {@link MessageResponse} that is returned by the specified {@link MessageHandler}
      * for the type of the incoming Message.
@@ -131,7 +136,7 @@ public class MessageDispatcher {
      */
     @SuppressWarnings("unchecked")
     public <R extends Message> MessageResponse process(final R header,
-                                               final InputStream payload)
+                                                       final InputStream payload, MultiValueMap<String, MultipartFile> files)
             throws PreDispatchingFilterException {
         final var connectorId = configContainer.getConnector().getId();
         final var modelVersion =
@@ -213,11 +218,17 @@ public class MessageDispatcher {
 
         // Checks if revolvedHandler is not null
         if (resolvedHandler.isPresent()) {
-            //if an handler exists, let the handle handle the
+            //if a handler exists, let the handle handle the
             // message and return its response
             try {
                 final var handler = (MessageHandler<R>) resolvedHandler.get();
-                if (handler instanceof MessageAndClaimsHandler) {
+                if (handler.getClass().getSimpleName().equals("ArtifactRequestHandler") && files.size() != 0){
+                    return((MessageFilesAndClaimsHandler) handler)
+                            .handleMessage(header,
+                                    new MessagePayloadInputstream(payload, objectMapper),
+                                    optionalClaimsJws, files);
+                }
+                else if (handler instanceof MessageAndClaimsHandler) {
                     //for MessageAndClaims handlers, also pass parsed DAT claims
                     return ((MessageAndClaimsHandler) handler)
                         .handleMessage(header,
@@ -243,7 +254,7 @@ public class MessageDispatcher {
         } else {
             if (log.isDebugEnabled()) {
                 log.debug("No message handler exists! [code=(IMSMED0118), type=({})]",
-                          header.getClass());
+                        header.getClass());
             }
 
             //If no handler for the type exists, the message type isn't supported
@@ -253,6 +264,27 @@ public class MessageDispatcher {
                     connectorId,
                     modelVersion, header.getId());
         }
+    }
+
+    /**
+     * Apply the preDispatchingFilters to the message. If it wasn't filtered:
+     * find the {@link MessageHandler} for its type. Let the handler handle the Message and return
+     * the {@link MessageResponse}.
+     *
+     * @param header Header of the incoming Message (RequestMessage implementation).
+     * @param payload Payload of the incoming Message.
+     * @param <R> A subtype of RequestMessage.
+     * @return The {@link MessageResponse} that is returned by the specified {@link MessageHandler}
+     * for the type of the incoming Message.
+     * @throws PreDispatchingFilterException If an error occurs
+     * in a PreDispatchingFilter.
+     */
+    @SuppressWarnings("unchecked")
+    public <R extends Message> MessageResponse process(final R header,
+                                                       final InputStream payload)
+            throws PreDispatchingFilterException {
+        MultiValueMap<String, MultipartFile> files = new LinkedMultiValueMap<>();
+        return process(header, payload, files);
     }
 
     private <R extends Message> boolean isReferringConnector(final R header,

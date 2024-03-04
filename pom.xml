@@ -35,7 +35,7 @@
     </modules>
 
     <properties>
-        <revision>7.0.1</revision>
+        <revision>7.0.2</revision>
 
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -70,7 +70,7 @@
                 <enabled>false</enabled>
             </snapshots>
             <id>eis-public-repo</id>
-            <url>http://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
+            <url>https://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url>
         </repository>
         <repository>
             <id>sovity-public</id>
