@@ -53,6 +53,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 /**
  * REST controller for handling all incoming IDS multipart Messages.
@@ -129,6 +130,8 @@ public class MessageController {
             final var payloadPart =
                     request.getPart(MultipartDatapart.PAYLOAD.toString());
 
+            final var filesPart = (new StandardMultipartHttpServletRequest(request)).getMultiFileMap();
+
             if (headerPart == null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Header of incoming message were empty! [code=(IMSMED0119)]");
@@ -189,7 +192,7 @@ public class MessageController {
             final var response = this.messageDispatcher
                     .process(requestHeader, payloadPart == null
                             ? null
-                            : payloadPart.getInputStream());
+                            : payloadPart.getInputStream(), filesPart);
 
             if (response != null) {
                 //get Response as MultiValueMap
